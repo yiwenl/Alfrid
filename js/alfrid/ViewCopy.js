@@ -37,6 +37,7 @@ define(["alfrid/View", "alfrid/GLTool", "alfrid/Mesh"], function(View, GLTool, M
 
 	p.render = function(aTexture) {
 		// Were has the reference of this.shader come from?
+		if(!this.shader.isReady())return;
 		this.shader.bind();
 		this.shader.uniform("texture", "uniform1i", 0);
 		aTexture.bind(0);

@@ -28,11 +28,11 @@ define(["alfrid/GLTool", "alfrid/CameraPerspective", "alfrid/SceneRotation", "al
 	};
 
 	p._initTextures = function() {
-		console.log("Should be overwritten by SuperClass");
+		// console.log("Should be overwritten by SuperClass");
 	};
 
 	p._initViews = function() {
-		console.log("Should be overwritten by SuperClass");
+		// console.log("Should be overwritten by SuperClass");
 	};
 
 	p.loop = function() {

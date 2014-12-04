@@ -2,10 +2,11 @@ define(["alfrid/GLShader"], function(GLShader) {
 
 	var View = function(aPathVert, aPathFrag) {
 		if(aPathVert == undefined) {
-			console.warn("aPathVert is undefined");
+			// console.warn("aPathVert is undefined");
 			return;
 		}
 
+		// console.log("Create shader : ", aPathVert, aPathFrag);
 		this.shader = new GLShader(aPathVert, aPathFrag);
 		this._init();
 	};

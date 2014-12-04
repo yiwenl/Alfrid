@@ -14,7 +14,7 @@ define([], function() {
 		this.preMouse       = {x:0, y:0};
 		this.mouse          = {x:0, y:0};
 		this._isMouseDown   = false;
-		this._rotation      = quat4.create([1, 0, 0, 0]);
+		this._rotation      = quat4.create([0, 0, 1, 0]);
 		this.tempRotation   = quat4.create([0, 0, 0, 0]);
 		this._rotateZMargin = 0;
 		this.diffX          = 0;

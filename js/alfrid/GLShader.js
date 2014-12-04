@@ -13,6 +13,8 @@ define(["alfrid/GLTool"], function(GLTool) {
 
 		this.vertexShader = undefined;
 		this.fragmentShader = undefined;
+		this._isReady = false;
+		this._loadedCount = 0;
 
 		this.init();
 	};
@@ -21,8 +23,8 @@ define(["alfrid/GLTool"], function(GLTool) {
 
 	p.init = function() {
 		
-		this.getVertexShader(this.idVertex, true);
-		this.getFragmentShader(this.idFragment, false);
+		this.getShader(this.idVertex, true);
+		this.getShader(this.idFragment, false);
 
 	};
 
@@ -30,7 +32,7 @@ define(["alfrid/GLTool"], function(GLTool) {
 		var req = new XMLHttpRequest();
 		req.hasCompleted = false;
 		var that = this;
-		req.onreadystateChanged = function(e) {
+		req.onreadystatechange = function(e) {
 			if(e.target.readyState == 4) {
 				if(aIsVertexShader)
 					that.createVertexShaderProgram(e.target.responseText);
@@ -57,8 +59,11 @@ define(["alfrid/GLTool"], function(GLTool) {
 		
 		if(this.vertexShader != undefined && this.fragmentShader != undefined)
 			this.attachShaderProgram();
-		
+
+		this._loadedCount++;
 	};
+
+
 	p.createFragmentShaderProgram = function(aStr) {
 		var shader = this.gl.createShader(this.gl.FRAGMENT_SHADER);
 
@@ -74,9 +79,14 @@ define(["alfrid/GLTool"], function(GLTool) {
 
 		if(this.vertexShader != undefined && this.fragmentShader != undefined)
 			this.attachShaderProgram();
+
+		this._loadedCount++;
 	};
 
 	p.attachShaderProgram = function() {
+
+		this._isReady = true;
+		console.log("Create shader : ", this.idVertex, this.idFragment);
 		this.shaderProgram = this.gl.createProgram();
 		this.gl.attachShader(this.shaderProgram, this.vertexShader);
 		this.gl.attachShader(this.shaderProgram, this.fragmentShader);
@@ -84,6 +94,7 @@ define(["alfrid/GLTool"], function(GLTool) {
 	};
 
 	p.bind = function() {
+		if(!this._isReady) return;
 		this.gl.useProgram(this.shaderProgram);
 
 		if(this.shaderProgram.pMatrixUniform == undefined) this.shaderProgram.pMatrixUniform = this.gl.getUniformLocation(this.shaderProgram, "uPMatrix");
@@ -95,7 +106,11 @@ define(["alfrid/GLTool"], function(GLTool) {
 		this.uniformTextures = [];
 	};
 
+	p.isReady = function() {	return this._isReady;	};
+
 	p.uniform = function(aName, aType, aValue) {
+		if(!this._isReady) return;
+
 		if(aType == "texture") aType = "uniform1i";
 
 		var hasUniform = false;

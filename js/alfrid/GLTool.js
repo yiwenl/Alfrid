@@ -36,6 +36,11 @@ define([], function() {
 		this.gl.clearColor( 0, 0, 0, 1 );
 		this.gl.clearDepth( 1 );
 
+		this.depthTextureExt 	= this.gl.getExtension("WEBKIT_WEBGL_depth_texture"); // Or browser-appropriate prefix
+		this.floatTextureExt 	= this.gl.getExtension("OES_texture_float") // Or browser-appropriate prefix
+
+		console.log( "Extentions : ", this.depthTextureExt, this.floatTextureExt );
+
 		this.matrix = mat4.create();
 		mat4.identity(this.matrix);
 		this.enableAlphaBlending();
@@ -83,6 +88,11 @@ define([], function() {
 	p.enableAdditiveBlending = function() {
 		this.gl.blendFunc(this.gl.ONE, this.gl.ONE);
 	};
+
+	p.clear = function(r, g, b, a) {
+		this.gl.clearColor( r, g, b, a );
+		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+	}
 
 	p.draw = function(aMesh) {
 

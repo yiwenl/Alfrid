@@ -57,7 +57,7 @@ define(["alfrid/GLTool"], function(GLTool) {
 
 		this.gl.activeTexture(this.gl.TEXTURE0 + aIndex);
 		this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
-		if(toDebug) console.log( GLTool.shader.uniformTextures[aIndex], this );
+		if(aToDebug) console.log( GLTool.shader.uniformTextures[aIndex], this );
 		this.gl.uniform1i(GLTool.shader.uniformTextures[aIndex], aIndex);
 		this._bindIndex = aIndex;
 	};
