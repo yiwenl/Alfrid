@@ -1,0 +1,39 @@
+.DS_Store
+.settings
+.project
+_notes
+
+*.sublime-project
+*.sublime-workspace
+
+# Global Ignores
+*.tmproj
+*.svn
+.svn
+.pyc
+*.pyc
+deploy/gaesessions/__init__.pyc
+.svn
+*.swp
+
+# fileMerge
+*.orig
+
+# OS specific files
+
+# OS X
+
+*.DS_Store
+
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+
+# Windows image file caches
+Thumbs.db
+
+# Folder config file
+Desktop.ini
+.sass-cache
+compass.txt
+note.txt
