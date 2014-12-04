@@ -14,11 +14,11 @@ define(["alfrid/GLShader"], function(GLShader) {
 	var p = View.prototype;
 
 	p._init = function() {
-		// Initialise the mesh here.
+		console.log("Should be overwritten by SuperClass");
 	};
 
 	p.render = function() {
-
+		console.log("Should be overwritten by SuperClass");
 	};
 
 	return View;

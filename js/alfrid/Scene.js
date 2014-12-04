@@ -1,4 +1,4 @@
-define(["alfrid/GLTool", "alfrid/CameraPerspective", "alfrid/SceneRotation", "alfrid/Camera"], function(GLTool, CameraPerspective, SceneRotation, Camera) {
+define(["glMatrix", "alfrid/GLTool", "alfrid/CameraPerspective", "alfrid/SceneRotation", "alfrid/Camera"], function(glMatrix, GLTool, CameraPerspective, SceneRotation, Camera) {
 
 	var Scene = function() {
 
@@ -13,13 +13,13 @@ define(["alfrid/GLTool", "alfrid/CameraPerspective", "alfrid/SceneRotation", "al
 		this.camera = new CameraPerspective();
 		this.camera.setPerspective(45, window.innerWidth/window.innerHeight, 5, 3000);
 
-		var eye = vec3.create([0,0,500]);
-		var center = vec3.create([0,0,0]);
-		var up = vec3.create([0,-1,0]);
+		var eye = glMatrix.vec3.create([0,0,500]);
+		var center = glMatrix.vec3.create([0,0,0]);
+		var up = glMatrix.vec3.create([0,-1,0]);
 		this.camera.lookAt(eye, center, up);
 		this.sceneRotation = new SceneRotation();
-		this.rotationFront = mat4.create();
-		mat4.identity(this.rotationFront);
+		this.rotationFront = glMatrix.mat4.create();
+		glMatrix.mat4.identity(this.rotationFront);
 
 		this.cameraOtho = new Camera();
 

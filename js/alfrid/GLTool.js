@@ -1,4 +1,4 @@
-define([], function() {
+define(["glMatrix"], function(glMatrix) {
 
 	var instance = null;
 
@@ -36,6 +36,8 @@ define([], function() {
 		this.gl.clearColor( 0, 0, 0, 1 );
 		this.gl.clearDepth( 1 );
 
+		this.matrix = glMatrix.mat4.create();
+		glMatrix.mat4.identity(this.matrix);
 		this.depthTextureExt 	= this.gl.getExtension("WEBKIT_WEBGL_depth_texture"); // Or browser-appropriate prefix
 		this.floatTextureExt 	= this.gl.getExtension("OES_texture_float") // Or browser-appropriate prefix
 
@@ -72,7 +74,7 @@ define([], function() {
 	};
 
 	p.rotate = function(aRotation) {
-		mat4.set(aRotation, this.matrix);
+		glMatrix.mat4.set(aRotation, this.matrix);
 	};
 
 	p.render = function() {
@@ -152,7 +154,7 @@ define([], function() {
 		this.gl.viewport(0, 0, this.W, this.H);
 		this.aspectRatio = window.innerWidth/window.innerHeight;
 
-		this.projection 	= mat4.perspective(this.fieldOfView, this.aspectRatio, this.zNear, this.zFar);
+		this.projection 	= glMatrix.mat4.perspective(this.fieldOfView, this.aspectRatio, this.zNear, this.zFar);
 
 		this.render();
 	};
