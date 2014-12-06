@@ -9,13 +9,13 @@ define(["glMatrix"], function(glMatrix) {
 		this._isRotateZ     = 0;
 		this.matrix         = glMatrix.mat4.create();
 		this.m              = glMatrix.mat4.create();
-		this._vZaxis        = glMatrix.vec3.create([0, 0, 0]);
-		this._zAxis         = glMatrix.vec3.create([0, 0, -1]);
+		this._vZaxis        = glMatrix.vec3.clone([0, 0, 0]);
+		this._zAxis         = glMatrix.vec3.clone([0, 0, -1]);
 		this.preMouse       = {x:0, y:0};
 		this.mouse          = {x:0, y:0};
 		this._isMouseDown   = false;
-		this._rotation      = glMatrix.quat4.create([1, 0, 0, 0]);
-		this.tempRotation   = glMatrix.quat4.create([0, 0, 0, 0]);
+		this._rotation      = glMatrix.quat.clone([1, 0, 0, 0]);
+		this.tempRotation   = glMatrix.quat.clone([0, 0, 0, 0]);
 		this._rotateZMargin = 0;
 		this.diffX          = 0;
 		this.diffY          = 0;
@@ -56,7 +56,7 @@ define(["glMatrix"], function(glMatrix) {
 		if(this._isMouseDown) return;
 
 		var mouse = this.getMousePos(aEvent);
-		var tempRotation = glMatrix.quat4.create(this._rotation);
+		var tempRotation = glMatrix.quat.clone(this._rotation);
 		this._updateRotation(tempRotation);
 		this._rotation = tempRotation;
 
@@ -100,16 +100,16 @@ define(["glMatrix"], function(glMatrix) {
 
 		if(this._slerp > 0) return;
 
-		var tempRotation = glMatrix.quat4.create(this._rotation);
+		var tempRotation = glMatrix.quat.clone(this._rotation);
 		this._updateRotation(tempRotation);
-		this._rotation = glMatrix.quat4.create(tempRotation);
+		this._rotation = glMatrix.quat.clone(tempRotation);
 		this._currDiffX = this.diffX = 0;
 		this._currDiffY = this.diffY = 0;
 
 		this._isMouseDown = false;
 		this._isRotateZ = 0;
 
-		this._targetQuat = glMatrix.quat4.create(quat);
+		this._targetQuat = glMatrix.quat.clone(quat);
 		this._slerp = 1;
 
 	};
@@ -118,28 +118,28 @@ define(["glMatrix"], function(glMatrix) {
 		glMatrix.mat4.identity(this.m);
 
 		if(this._targetQuat == undefined) { 
-			glMatrix.quat4.set(this._rotation, this.tempRotation);
+			glMatrix.quat.set(this._rotation, this.tempRotation);
 			this._updateRotation(this.tempRotation);
 		} else {
 			this._slerp += (0 - this._slerp) * .1;
 
 			if(this._slerp < .001) {
-				glMatrix.quat4.set(this._targetQuat, this._rotation);
+				glMatrix.quat.set(this._targetQuat, this._rotation);
 				this._targetQuat = undefined;
 				this._slerp = -1;
 			} else {
-				glMatrix.quat4.set([0, 0, 0, 0], this.tempRotation);
-				glMatrix.quat4.slerp(this._targetQuat, this._rotation, this._slerp, this.tempRotation);
+				glMatrix.quat.set([0, 0, 0, 0], this.tempRotation);
+				glMatrix.quat.slerp(this._targetQuat, this._rotation, this._slerp, this.tempRotation);
 			}
 			
 		}
 
 		glMatrix.vec3.set([0, 0, this._z], this._vZaxis)
-		glMatrix.quat4.multiplyglMatrix.vec3(this.tempRotation, this._vZaxis);
+		glMatrix.quat.multiply(this._vZaxis, this.tempRotation, this._vZaxis);
 
-		glMatrix.mat4.translate(this.m, this._vZaxis);
-		this.matrix = glMatrix.quat4.toglMatrix.mat4(this.tempRotation);
-		glMatrix.mat4.multiply(this.matrix, this.m);
+		glMatrix.mat4.translate(this.m, this.m, this._vZaxis);
+		this.matrix = glMatrix.quat.toglMatrix.mat4(this.tempRotation);
+		glMatrix.mat4.multiply(this.matrix, this.matrix, this.m);
 
 	};
 
@@ -159,23 +159,23 @@ define(["glMatrix"], function(glMatrix) {
 			if(this._isRotateZ == 1) {
 				var angle = -this._currDiffX * this._offset; 
 				angle *= (this.preMouse.y < this._rotateZMargin) ? -1 : 1;
-				var quat = glMatrix.quat4.create( [0, 0, Math.sin(angle), Math.cos(angle) ] );
-				glMatrix.quat4.multiply(aTempRotation, quat);
+				var quat = glMatrix.quat.clone( [0, 0, Math.sin(angle), Math.cos(angle) ] );
+				glMatrix.quat.multiply(quat, aTempRotation, quat);
 			} else {
 				var angle = -this._currDiffY * this._offset; 
 				angle *= (this.preMouse.x < this._rotateZMargin) ? 1 : -1;
-				var quat = glMatrix.quat4.create( [0, 0, Math.sin(angle), Math.cos(angle) ] );
-				glMatrix.quat4.multiply(aTempRotation, quat);
+				var quat = glMatrix.quat.clone( [0, 0, Math.sin(angle), Math.cos(angle) ] );
+				glMatrix.quat.multiply(quat, aTempRotation, quat);
 			}
 		} else {
-			var v = glMatrix.vec3.create([this._currDiffX, this._currDiffY, 0]);
+			var v = glMatrix.vec3.clone([this._currDiffX, this._currDiffY, 0]);
 			var axis = glMatrix.vec3.create();
 			glMatrix.vec3.cross(v, this._zAxis, axis);
-			glMatrix.vec3.normalize(axis);
+			glMatrix.vec3.normalize(axis, axis);
 			var angle = glMatrix.vec3.length(v) * this._offset;
 
-			var quat = glMatrix.quat4.create( [Math.sin(angle) * axis[0], Math.sin(angle) * axis[1], Math.sin(angle) * axis[2], Math.cos(angle) ] );
-			glMatrix.quat4.multiply(aTempRotation, quat);
+			var quat = glMatrix.quat.clone( [Math.sin(angle) * axis[0], Math.sin(angle) * axis[1], Math.sin(angle) * axis[2], Math.cos(angle) ] );
+			glMatrix.quat.multiply(quat, aTempRotation, quat);
 		}
 		
 		this._z += (this._preZ - this._z) * this._easing;
