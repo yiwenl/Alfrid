@@ -21,8 +21,8 @@ define(["alfrid/GLTool"], function(GLTool) {
 
 	p.init = function() {
 		
-		this.getVertexShader(this.idVertex, true);
-		this.getFragmentShader(this.idFragment, false);
+		this.getShader(this.idVertex, true);
+		this.getShader(this.idFragment, false);
 
 	};
 

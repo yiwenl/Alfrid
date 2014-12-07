@@ -131,14 +131,15 @@ define(["glMatrix"], function(glMatrix) {
 				glMatrix.quat.set([0, 0, 0, 0], this.tempRotation);
 				glMatrix.quat.slerp(this._targetQuat, this._rotation, this._slerp, this.tempRotation);
 			}
-			
 		}
 
-		glMatrix.vec3.set([0, 0, this._z], this._vZaxis)
+
+		glMatrix.vec3.set([0, 0, this._z], this._vZaxis[0, this._vZaxis[1], this._vZaxis[2]])
 		glMatrix.quat.multiply(this._vZaxis, this.tempRotation, this._vZaxis);
 
 		glMatrix.mat4.translate(this.m, this.m, this._vZaxis);
-		this.matrix = glMatrix.quat.toglMatrix.mat4(this.tempRotation);
+		glMatrix.mat4.fromQuat(this.matrix, this.tempRotation);
+		 
 		glMatrix.mat4.multiply(this.matrix, this.matrix, this.m);
 
 	};
