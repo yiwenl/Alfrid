@@ -72,8 +72,8 @@ define(["alfrid/GLTool"], function(GLTool) {
 		}
 
 		var bufferData = [];
-		for(var i=0; i<data.length; i++) {
-			for(var j=0; j<data[i].length; j++) bufferData.push(data[i][j]);
+		for(var i=0; i<aData.length; i++) {
+			for(var j=0; j<aData[i].length; j++) bufferData.push(aData[i][j]);
 		}
 
 		if(index == -1) {
