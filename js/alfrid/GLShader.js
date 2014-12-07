@@ -12,6 +12,8 @@ define(["alfrid/GLTool"], function(GLTool) {
 		this.vertexShader = undefined;
 		this.fragmentShader = undefined;
 
+		this._ready = false;
+
 		this.init();
 	};
 
@@ -28,7 +30,7 @@ define(["alfrid/GLTool"], function(GLTool) {
 		var req = new XMLHttpRequest();
 		req.hasCompleted = false;
 		var that = this;
-		req.onreadystateChanged = function(e) {
+		req.onreadystatechange = function(e) {
 			if(e.target.readyState == 4) {
 				if(aIsVertexShader)
 					that.createVertexShaderProgram(e.target.responseText);
@@ -79,6 +81,8 @@ define(["alfrid/GLTool"], function(GLTool) {
 		this.gl.attachShader(this.shaderProgram, this.vertexShader);
 		this.gl.attachShader(this.shaderProgram, this.fragmentShader);
 		this.gl.linkProgram(this.shaderProgram);
+
+		this._ready = true;
 	};
 
 	p.bind = function() {
@@ -95,7 +99,7 @@ define(["alfrid/GLTool"], function(GLTool) {
 	};
 
 	p.uniform = function(aName, aType, aValue) {
-		
+
 		if(aType == "texture") aType = "uniform1i";
 
 		var hasUniform = false;
@@ -130,6 +134,10 @@ define(["alfrid/GLTool"], function(GLTool) {
 
 	p.unbind = function() {
 
+	};
+
+	p.isReady = function(){
+		return this._ready;
 	};
 
 	return GLShader;
