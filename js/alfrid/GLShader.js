@@ -7,9 +7,7 @@ define(["alfrid/GLTool"], function(GLTool) {
 		this.idFragment = aFragmentShaderId;
 		this.parameters = [];
 
-		// Can't decice if I would prefer this to be a null here then set to array in the Bind function.
-		// Or it's set to an array here then does not change in the bind function.
-		this.uniformTextures = [];
+		this.uniformTextures = null;
 
 		this.vertexShader = undefined;
 		this.fragmentShader = undefined;
@@ -84,6 +82,7 @@ define(["alfrid/GLTool"], function(GLTool) {
 	};
 
 	p.bind = function() {
+		
 		this.gl.useProgram(this.shaderProgram);
 
 		if(this.shaderProgram.pMatrixUniform == undefined) this.shaderProgram.pMatrixUniform = this.gl.getUniformLocation(this.shaderProgram, "uPMatrix");
@@ -96,6 +95,7 @@ define(["alfrid/GLTool"], function(GLTool) {
 	};
 
 	p.uniform = function(aName, aType, aValue) {
+		
 		if(aType == "texture") aType = "uniform1i";
 
 		var hasUniform = false;
