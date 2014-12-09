@@ -8,7 +8,6 @@ define(["glMatrix"], function(glMatrix) {
 	var p = Camera.prototype;
 
 	p.lookAt = function(aEye, aCenter, aUp) {
-		console.log("Camera look at : ", aEye, aCenter, aUp);
 		glMatrix.mat4.identity(this.matrix);
 		glMatrix.mat4.lookAt(this.matrix, aEye, aCenter, aUp);
 	};

@@ -194,7 +194,6 @@ define(["glMatrix"], function(glMatrix) {
 			var axis = glMatrix.vec3.create();
 			glMatrix.vec3.cross(axis, v, this._zAxis);
 			glMatrix.vec3.normalize(axis, axis);
-			if(Math.random() > .99) console.log(v, axis);
 			var angle = glMatrix.vec3.length(v) * this._offset;
 			var quat = glMatrix.quat.clone( [Math.sin(angle) * axis[0], Math.sin(angle) * axis[1], Math.sin(angle) * axis[2], Math.cos(angle) ] );
 			glMatrix.quat.multiply(aTempRotation, aTempRotation, quat);
