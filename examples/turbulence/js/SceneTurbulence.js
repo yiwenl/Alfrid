@@ -1,4 +1,5 @@
 // SceneTurbulence.js
+<<<<<<< HEAD
 
 define(["alfrid/GLTool", "alfrid/Scene", "alfrid/GLTexture", "alfrid/ViewCopy", "./ViewDot"], function(GLTool, Scene, GLTexture, ViewCopy, ViewDot) {
 
@@ -16,12 +17,24 @@ define(["alfrid/GLTool", "alfrid/Scene", "alfrid/GLTexture", "alfrid/ViewCopy", 
 
 		Scene.call(this);
 	};
+=======
+define(["alfrid/GLTool", "alfrid/Scene", "alfrid/GLTexture", "alfrid/ViewCopy", "ViewDot"], function(GLTool, Scene, GLTexture, ViewCopy, ViewDot) {
+	var SceneTurbulence = function() {
+		Scene.call(this);
+
+		GLTool.gl.disable(GLTool.gl.DEPTH_TEST);
+		GLTool.gl.disable(GLTool.gl.CULL_FACE);
+		this._initTextures();
+		this._initViews();
+	}
+>>>>>>> 6d975a773a6f2ad091b88f932153c0dd9582bcba
 
 	var p = SceneTurbulence.prototype = new Scene();
 	var s = Scene.prototype;
 
 
 	p._initTextures = function() {
+<<<<<<< HEAD
 		this.texBg = new GLTexture(imgBg);
 		this.texDot = new GLTexture(imgDot);
 	};
@@ -95,4 +108,29 @@ define(["alfrid/GLTool", "alfrid/Scene", "alfrid/GLTexture", "alfrid/ViewCopy", 
 
 	return SceneTurbulence;
 	
+=======
+		this.texBg = new GLTexture(images.bg);
+		this.texDot = new GLTexture(images.blackDot);
+	};
+
+
+	p._initViews = function() {
+		this._vCopy = new ViewCopy("assets/shaders/copy.vert", "assets/shaders/copy.frag");
+		this._vDot = new ViewDot();
+	};
+
+
+	p.render = function() {
+		GLTool.setMatrices(this.cameraOtho);
+		GLTool.rotate(this.rotationFront);
+		this._vCopy.render(this.texBg);
+
+
+		GLTool.setMatrices(this.camera);
+		GLTool.rotate(this.sceneRotation.matrix);
+		this._vDot.render(this.texDot);
+	};
+
+	return SceneTurbulence;
+>>>>>>> 6d975a773a6f2ad091b88f932153c0dd9582bcba
 });

@@ -74,7 +74,7 @@ define(["glMatrix"], function(glMatrix) {
 	};
 
 	p.rotate = function(aRotation) {
-		glMatrix.mat4.set(aRotation, this.matrix);
+		glMatrix.mat4.copy(this.matrix, aRotation);
 	};
 
 	p.render = function() {

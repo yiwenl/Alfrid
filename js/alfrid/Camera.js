@@ -1,4 +1,4 @@
-define(["glMatrix"], function("glMatrix") {
+define(["glMatrix"], function(glMatrix) {
 
 	var Camera = function() {
 		this.matrix = glMatrix.mat4.create();
@@ -9,7 +9,7 @@ define(["glMatrix"], function("glMatrix") {
 
 	p.lookAt = function(aEye, aCenter, aUp) {
 		glMatrix.mat4.identity(this.matrix);
-		this.matrix = glMatrix.mat4.lookAt(aEye, aCenter, aUp);
+		glMatrix.mat4.lookAt(this.matrix, aEye, aCenter, aUp);
 	};
 
 	p.getMatrix = function() {
