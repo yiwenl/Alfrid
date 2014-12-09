@@ -13,9 +13,11 @@ define(["glMatrix", "alfrid/GLTool", "alfrid/CameraPerspective", "alfrid/SceneRo
 		this.camera = new CameraPerspective();
 		this.camera.setPerspective(45, window.innerWidth/window.innerHeight, 5, 3000);
 
-		var eye = glMatrix.vec3.create( [0,0,500] );
+		var eye = glMatrix.vec3.create(  );
+		eye[2] = 500;
 		var center = glMatrix.vec3.create( [0,0,0] );
 		var up = glMatrix.vec3.create( [0,-1,0] );
+		up[1] = -1;
 		this.camera.lookAt(eye, center, up);
 
 		this.sceneRotation = new SceneRotation();

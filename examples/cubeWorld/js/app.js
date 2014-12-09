@@ -1,4 +1,4 @@
-define(["glMatrix", "Scheduler"], function (glMatrix, scheduler) {
+define(["glMatrix", "Scheduler", "SimpleImageLoader", "alfrid/GLTool", "SceneCube"], function (glMatrix, scheduler, SimpleImageLoader, GLTool, SceneCube) {
 
 	var check = function() {
 		this.count = 0;
@@ -8,23 +8,39 @@ define(["glMatrix", "Scheduler"], function (glMatrix, scheduler) {
 	var p = check.prototype;
 
 	p.setup = function() {
-		scheduler.delay(this, this.delayCall, ["Hello world"], 1000);
+		var loader = new SimpleImageLoader();
+		loader.load([
+			"assets/front.jpg",
+			"assets/back.jpg",
+			"assets/left.jpg",
+			"assets/right.jpg",
+			"assets/up.jpg",
+			"assets/down.jpg"
+		], this, this._onImageLoaded)
 
-		this._efIndex = scheduler.addEF(this, this.loop, [], 1000);
 	};
 
+	p._onImageLoaded = function(img) {
+		console.log("image loaded", img);
+		window.images = img;
 
 
-	p.delayCall = function(str) {
-		console.log("Delay call " , str);
+		this.canvas = document.createElement('canvas');
+		document.body.appendChild(this.canvas);
+
+		this.canvas.width = window.innerWidth;
+		this.canvas.height = window.innerHeight;
+
+		GLTool.init(this.canvas);
+
+		this.scene = new SceneCube();
+		scheduler.addEF(this, this.loop, []);
 	};
 
 
 	p.loop = function() {
-		console.log("Looping", this.count);
-		if(this.count++ > 10) scheduler.removeEF(this._efIndex);
+		this.scene.loop();
 	};
 
 	var checkTest = new check();
-
 });

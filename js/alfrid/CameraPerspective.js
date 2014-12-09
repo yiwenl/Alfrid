@@ -14,6 +14,7 @@ define(["glMatrix", "alfrid/Camera"], function(glMatrix, Camera) {
 	var s = SuperClass.prototype;
 
 	p.setPerspective = function(aFov, aAspectRatio, aNear, aFar) {
+		console.log("Set perspective : ", aFov, aAspectRatio, aNear, aFar);
 		glMatrix.mat4.perspective(this.projection, aFov, aAspectRatio, aNear, aFar);
 	};
 
