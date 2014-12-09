@@ -2,6 +2,9 @@
 define(["alfrid/GLTool", "alfrid/Scene", "alfrid/GLTexture", "alfrid/ViewCopy", "ViewCube"], function(GLTool, Scene, GLTexture, ViewCopy, ViewCube) {
 	var SceneCube = function() {
 		Scene.call(this);
+
+		GLTool.gl.disable(GLTool.gl.DEPTH_TEST);
+		GLTool.gl.disable(GLTool.gl.CULL_FACE);
 		this._initTextures();
 		this._initViews();
 	}
@@ -31,12 +34,6 @@ define(["alfrid/GLTool", "alfrid/Scene", "alfrid/GLTexture", "alfrid/ViewCopy", 
 
 
 	p.render = function() {
-		// this._vCube.render(this.texCube);
-
-		// return;
-		GLTool.setMatrices(this.cameraOtho);
-		GLTool.rotate(this.rotationFront);
-		// this._vCopy.render(this.texCube.front);
 		this._vCube.render(this.texCube);
 	};
 

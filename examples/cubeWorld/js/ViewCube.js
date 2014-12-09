@@ -104,16 +104,16 @@ define(["alfrid/View", "alfrid/Mesh", "alfrid/GLTool"], function(View, Mesh, GLT
 		this.shader.uniform("texture", "uniform1i", 0);
 		textures.front.bind(0);
 		GLTool.draw(this.meshFront);
-		// textures.left.bind(0);
-		// GLTool.draw(this.meshLeft);
-		// textures.right.bind(0);
-		// GLTool.draw(this.meshRight);
-		// textures.back.bind(0);
-		// GLTool.draw(this.meshBack);
-		// textures.up.bind(0);
-		// GLTool.draw(this.meshTop);
-		// textures.down.bind(0);
-		// GLTool.draw(this.meshBottom);
+		textures.left.bind(0);
+		GLTool.draw(this.meshLeft);
+		textures.right.bind(0);
+		GLTool.draw(this.meshRight);
+		textures.back.bind(0);
+		GLTool.draw(this.meshBack);
+		textures.up.bind(0);
+		GLTool.draw(this.meshTop);
+		textures.down.bind(0);
+		GLTool.draw(this.meshBottom);
 	};
 
 	return ViewCube;

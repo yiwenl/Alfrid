@@ -14,12 +14,14 @@ define(["glMatrix", "alfrid/Camera"], function(glMatrix, Camera) {
 	var s = SuperClass.prototype;
 
 	p.setPerspective = function(aFov, aAspectRatio, aNear, aFar) {
-		console.log("Set perspective : ", aFov, aAspectRatio, aNear, aFar);
+		
 		glMatrix.mat4.perspective(this.projection, aFov, aAspectRatio, aNear, aFar);
+		console.log("Set perspective : ", aFov, aAspectRatio, aNear, aFar, this.projection);
 	};
 
 	p.getMatrix = function() {
-		glMatrix.mat4.multiply(this.projection, this.matrix, this.mtxFinal);
+		// glMatrix.mat4.multiply(this.projection, this.matrix, this.mtxFinal);
+		glMatrix.mat4.multiply(this.mtxFinal, this.projection, this.matrix);
 		return this.mtxFinal;
 	};
 
