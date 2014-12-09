@@ -125,7 +125,7 @@ define(["alfrid/GLTool"], function(GLTool) {
 		}
 
 		if(!hasUniform) {
-			this.shaderProgram[name] = this.gl.getUniformLocation(this.shaderProgram, aName);
+			this.shaderProgram[aName] = this.gl.getUniformLocation(this.shaderProgram, aName);
 			this.parameters.push({name : aName, type: aType, value: aValue, uniformLoc: this.shaderProgram[aName]});
 		} else {
 			this.shaderProgram[aName] = oUniform.uniformLoc;

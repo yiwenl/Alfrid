@@ -1,25 +1,3 @@
-<<<<<<< HEAD
-define(function (require) {
-	imgBg = new Image();
-	imgBg.src = "assets/bg.jpg";
-	imgBg.onload = function() {	loadComplete();	}
-
-	imgDot = new Image();
-	imgDot.src = "assets/blackDot.png";
-	imgDot.onload = function() {	loadComplete();	}
-	var count = 0;
-	
-
-	var loadComplete = function() {
-		count++;
-
-		if(count == 2) {
-			var main = require("./main");
-			new main();
-		}
-	}
-
-=======
 define(["glMatrix", "Scheduler", "SimpleImageLoader", "alfrid/GLTool", "SceneTurbulence"], function (glMatrix, scheduler, SimpleImageLoader, GLTool, SceneTurbulence) {
 
 	var check = function() {
@@ -61,5 +39,4 @@ define(["glMatrix", "Scheduler", "SimpleImageLoader", "alfrid/GLTool", "SceneTur
 	};
 
 	var checkTest = new check();
->>>>>>> 6d975a773a6f2ad091b88f932153c0dd9582bcba
 });

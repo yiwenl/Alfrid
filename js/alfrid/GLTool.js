@@ -43,8 +43,6 @@ define(["glMatrix"], function(glMatrix) {
 
 		console.log( "Extentions : ", this.depthTextureExt, this.floatTextureExt );
 
-		this.matrix = mat4.create();
-		mat4.identity(this.matrix);
 		this.enableAlphaBlending();
 
 		var that = this;
