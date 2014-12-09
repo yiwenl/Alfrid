@@ -4,10 +4,10 @@ define(["alfrid/View", "alfrid/GLTool", "alfrid/Mesh"], function(View, GLTool, M
 
 	var ViewCopy = function(aPathVert, aPathFrag) {
 		if(aPathVert == undefined) {
-			aPathVert = "assets/shaders/copy.vert";
-			aPathFrag = "assets/shaders/copy.frag";
+			aPathVert = "files/shaders/basic.vert";
+			aPathFrag = "files/shaders/basic.frag";
 		}
-		SuperClass.apply(this, arguments);
+		SuperClass.call(this, aPathVert, aPathFrag);
 	};
 
 	var p = ViewCopy.prototype = new SuperClass();
@@ -36,11 +36,14 @@ define(["alfrid/View", "alfrid/GLTool", "alfrid/Mesh"], function(View, GLTool, M
 	};
 
 	p.render = function(aTexture) {
-		// Were has the reference of this.shader come from?
-		this.shader.bind();
-		this.shader.uniform("texture", "uniform1i", 0);
-		aTexture.bind(0);
-		GLTool.draw(this.mesh);
+		
+		if(this.shader.isReady()) {
+			this.shader.bind();
+			this.shader.uniform("texture", "uniform1i", 0);
+			aTexture.bind(0);
+			GLTool.draw(this.mesh);
+		}
+
 	};
 
 	return ViewCopy;
