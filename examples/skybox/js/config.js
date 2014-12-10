@@ -6,6 +6,7 @@
 			"paths": {
 				"alfrid": alfridJsFolder + "alfrid",
 				"glMatrix": ["../../../js/libs/gl-matrix-2.2.2-min"],
+				"text": ["../../../js/libs/text"],
 				"SimpleImageLoader": ["../../../js/bongiovi/SimpleImageLoader"],
 				"Scheduler": ["../../../js/bongiovi/Scheduler"]
 			},

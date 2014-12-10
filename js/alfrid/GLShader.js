@@ -1,7 +1,8 @@
 define(["alfrid/GLTool"], function(GLTool) {
 
-	var GLShader = function(aVertexShaderId, aFragmentShaderId) {
+	var checkIsShader = function(str) {	return str.indexOf("void main") > -1;	}
 
+	var GLShader = function(aVertexShaderId, aFragmentShaderId) {
 		this.gl = GLTool.getGL();
 		this.idVertex = aVertexShaderId;
 		this.idFragment = aFragmentShaderId;
@@ -19,12 +20,24 @@ define(["alfrid/GLTool"], function(GLTool) {
 		this.init();
 	};
 
+
+
+
 	var p = GLShader.prototype;
 
 	p.init = function() {
+		if(checkIsShader(this.idVertex)) {
+			this.createVertexShaderProgram(this.idVertex);
+		} else {
+			this.getShader(this.idVertex, true);
+		}
+
+		if(checkIsShader(this.idFragment)) {
+			this.createFragmentShaderProgram(this.idFragment);
+		} else {
+			this.getShader(this.idFragment, false);
+		}
 		
-		this.getShader(this.idVertex, true);
-		this.getShader(this.idFragment, false);
 
 	};
 
@@ -84,9 +97,8 @@ define(["alfrid/GLTool"], function(GLTool) {
 	};
 
 	p.attachShaderProgram = function() {
-
 		this._isReady = true;
-		console.log("Create shader : ", this.idVertex, this.idFragment);
+		// console.log("Create shader : ", this.idVertex, this.idFragment);
 		this.shaderProgram = this.gl.createProgram();
 		this.gl.attachShader(this.shaderProgram, this.vertexShader);
 		this.gl.attachShader(this.shaderProgram, this.fragmentShader);

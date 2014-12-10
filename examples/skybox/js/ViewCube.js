@@ -1,8 +1,9 @@
 // ViewCube.js
 
-define(["alfrid/View", "alfrid/Mesh", "alfrid/GLTool"], function(View, Mesh, GLTool) {
+define(["alfrid/View", "alfrid/Mesh", "alfrid/GLTool", "text!../assets/shaders/copy.vert", "text!../assets/shaders/copy.frag"], function(View, Mesh, GLTool, strVertShader, strFragShader) {
 	var ViewCube = function() {
-		View.call(this, "assets/shaders/copy.vert", "assets/shaders/copy.frag");
+		// View.call(this, "assets/shaders/copy.vert", "assets/shaders/copy.frag");
+		View.call(this, strVertShader, strFragShader);
 	}
 
 	var p = ViewCube.prototype = new View();
