@@ -1,12 +1,12 @@
 // ViewDot.js
-define(["alfrid/View", "alfrid/Mesh", "alfrid/GLTool"], function(View, Mesh, GLTool) {
+define(["alfrid/View", "alfrid/Mesh", "alfrid/GLTool", "text!../assets/shaders/general.vert", "text!../assets/shaders/general.frag"], function(View, Mesh, GLTool, strVertShader, strFragShader) {
 	var ViewDot = function() {
 		this.x = 0;
 		this.y = 0;
 		this.z = 0;
 		this.scale = 1;
 		this.alpha = 1;
-		View.call(this, "assets/shaders/general.vert", "assets/shaders/general.frag");
+		View.call(this, strVertShader, strFragShader);
 	};
 
 	var p = ViewDot.prototype = new View();
