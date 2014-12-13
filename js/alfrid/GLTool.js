@@ -145,14 +145,12 @@ define(["glMatrix"], function(glMatrix) {
 		this.W 	= window.innerWidth;
 		this.H  = window.innerHeight;
 
-		this.canvas.width = this.W;
-		this.canvas.height = this.H;
-		this.gl.viewportWidth = this.W;
+		this.canvas.width      = this.W;
+		this.canvas.height     = this.H;
+		this.gl.viewportWidth  = this.W;
 		this.gl.viewportHeight = this.H;
 		this.gl.viewport(0, 0, this.W, this.H);
-		this.aspectRatio = window.innerWidth/window.innerHeight;
-
-		this.projection 	= glMatrix.mat4.perspective(this.fieldOfView, this.aspectRatio, this.zNear, this.zFar);
+		this.aspectRatio       = window.innerWidth/window.innerHeight;
 
 		this.render();
 	};

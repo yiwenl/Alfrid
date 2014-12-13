@@ -114,6 +114,14 @@ define(["glMatrix"], function(glMatrix) {
 
 	};
 
+
+	p.resetQuat = function() {
+		this._rotation    = glMatrix.quat.clone([0, 0, 1, 0]);
+		this.tempRotation = glMatrix.quat.clone([0, 0, 0, 0]);
+		this._targetQuat  = undefined;
+		this._slerp       = -1;
+	};
+
 	p.update = function() {
 		glMatrix.mat4.identity(this.m);
 
@@ -130,7 +138,7 @@ define(["glMatrix"], function(glMatrix) {
 				this._slerp = -1;
 			} else {
 				glMatrix.quat.set(this.tempRotation, 0, 0, 0, 0);
-				glMatrix.quat.slerp(this._targetQuat, this._rotation, this._slerp, this.tempRotation);
+				glMatrix.quat.slerp(this.tempRotation, this._targetQuat, this._rotation, this._slerp);
 			}
 		}
 
@@ -143,8 +151,6 @@ define(["glMatrix"], function(glMatrix) {
 		glMatrix.mat4.fromQuat(this.matrix, this.tempRotation);
 		 
 		glMatrix.mat4.multiply(this.m, this.matrix, this.m);
-
-
 	};
 
 	var multiplyVec3 = function(out, quat, vec) {

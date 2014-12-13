@@ -1,71 +1,77 @@
-define(["alfrid/GLTool"], function(GLTool) {
+// GLTexture.js
 
-	var GLTexture = function(aSource, aIsTexture) {
-		aIsTexture = aIsTexture == undefined ? false : true;
-		this.gl = GLTool.gl;
-		if(aIsTexture) {
-			this.texture = aSource;
+define(["alfrid/GLTool"], function(GL, ViewCopy, Framebuffer) {
+	var gl;
+
+	var GLTexture = function(source, isTexture) {
+		isTexture = isTexture == undefined ? false : true;
+		gl = GL.gl;
+		if(isTexture) {
+			this.texture = source;
 		} else {
-			this.texture = this.gl.createTexture();
-			this._isVideo = (aSource.tagName == "VIDEO");
+			this.texture = gl.createTexture();
+			this._isVideo = (source.tagName == "VIDEO");
 
-			this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
-			this.gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, true);
-			this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, aSource);
 
-			if(this._isVideo) {
-				this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
-				this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
-				this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.MIRRORED_REPEAT);
-				this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.MIRRORED_REPEAT);
-				this.gl.generateMipmap(this.gl.TEXTURE_2D);
+			gl.bindTexture(gl.TEXTURE_2D, this.texture);
+			gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
+
+			if(!this._isVideo) {
+				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.MIRRORED_REPEAT);
+				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.MIRRORED_REPEAT);
+				gl.generateMipmap(gl.TEXTURE_2D);
 			} else {
-				this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
-				this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR_MIPMAP_NEAREST);
-				this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.MIRRORED_REPEAT);
-				this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.MIRRORED_REPEAT);
-				this.gl.generateMipmap(this.gl.TEXTURE_2D);
+				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.MIRRORED_REPEAT);
+				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.MIRRORED_REPEAT);
+				gl.generateMipmap(gl.TEXTURE_2D);
 			}
 
-			this.gl.bindTexture(this.gl.TEXTURE_2D, null);
+			gl.bindTexture(gl.TEXTURE_2D, null);
 		}
-
-		this._bindIndex = null;
-	};
+	}
 
 	var p = GLTexture.prototype;
 
-	p.updateTexture = function(aSource) {
-		this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
-		this.gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, true);
-		this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, aSource);
 
-		if(this._isVideo) {
-			this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
-			this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
+	p.updateTexture = function(source) {
+		gl.bindTexture(gl.TEXTURE_2D, this.texture);
+		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
+
+		if(!this._isVideo) {
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
+			gl.generateMipmap(gl.TEXTURE_2D);
 		} else {
-			this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
-			this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR_MIPMAP_NEAREST);
-			this.gl.generateMipmap(this.gl.TEXTURE_2D);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 		}
 
-		this.gl.bindTexture(this.gl.TEXTURE_2D, null);
+		gl.bindTexture(gl.TEXTURE_2D, null);
 	};
 
-	p.bind = function(aIndex, aToDebug) {
-		if(aIndex === undefined) aIndex = 0;
 
-		this.gl.activeTexture(this.gl.TEXTURE0 + aIndex);
-		this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
-		if(aToDebug) console.log( GLTool.shader.uniformTextures[aIndex], this );
-		this.gl.uniform1i(GLTool.shader.uniformTextures[aIndex], aIndex);
-		this._bindIndex = aIndex;
+	p.bind = function(index, toDebug) {
+		if(index == undefined) index = 0;
+
+		gl.activeTexture(gl.TEXTURE0 + index);
+		// console.log( gl.TEXTURE0 + i, this._textures[i].texture );
+		gl.bindTexture(gl.TEXTURE_2D, this.texture);
+		// gl.uniform1i(shaderProgram["samplerUniform"+i], i);
+		// if(toDebug) console.log( GL.shader.uniformTextures[index], this );
+		gl.uniform1i(GL.shader.uniformTextures[index], index);
+		this._bindIndex = index;
 	};
+
 
 	p.unbind = function() {
-		this.gl.bindTexture(this.gl.TEXTURE_2D, null);
+		gl.bindTexture(gl.TEXTURE_2D, null);
 	};
 
 	return GLTexture;
-
 });
