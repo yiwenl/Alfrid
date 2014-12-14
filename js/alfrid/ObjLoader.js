@@ -160,33 +160,33 @@ define(["require"], function(require) {
 					this.indices.push( this.verticesCount++);
 					this.indices.push( this.verticesCount++);
 				} else {
-					this.positions.push( this.vertices[parseInt( result[ 14 ] ) - 1]);
-					this.positions.push( this.vertices[parseInt( result[ 6 ] ) - 1]);
 					this.positions.push( this.vertices[parseInt( result[ 2 ] ) - 1]);
+					this.positions.push( this.vertices[parseInt( result[ 6 ] ) - 1]);
+					this.positions.push( this.vertices[parseInt( result[ 14 ] ) - 1]);
 					
-					this.coords.push( this.uvs[ parseInt( result[ 15 ] ) - 1 ]);
-					this.coords.push( this.uvs[ parseInt( result[ 7 ] ) - 1 ]);
 					this.coords.push( this.uvs[ parseInt( result[ 3 ] ) - 1 ]);
+					this.coords.push( this.uvs[ parseInt( result[ 7 ] ) - 1 ]);
+					this.coords.push( this.uvs[ parseInt( result[ 15 ] ) - 1 ]);
 					
-					this.normals.push( this.vertexNormals[ parseInt( result[ 16 ] ) - 1 ]);
-					this.normals.push( this.vertexNormals[ parseInt( result[ 8 ] ) - 1 ]);
 					this.normals.push( this.vertexNormals[ parseInt( result[ 4 ] ) - 1 ]);
+					this.normals.push( this.vertexNormals[ parseInt( result[ 8 ] ) - 1 ]);
+					this.normals.push( this.vertexNormals[ parseInt( result[ 16 ] ) - 1 ]);
 
 					this.indices.push(this.verticesCount++);
 					this.indices.push(this.verticesCount++);
 					this.indices.push(this.verticesCount++);
 					
-					this.positions.push(this.vertices[parseInt( result[ 14 ] ) - 1]);
-					this.positions.push(this.vertices[parseInt( result[ 10 ] ) - 1]);
 					this.positions.push(this.vertices[parseInt( result[ 6 ] ) - 1]);
+					this.positions.push(this.vertices[parseInt( result[ 10 ] ) - 1]);
+					this.positions.push(this.vertices[parseInt( result[ 14 ] ) - 1]);
 					
-					this.coords.push( this.uvs[ parseInt( result[ 15 ] ) - 1 ]);
-					this.coords.push( this.uvs[ parseInt( result[ 11 ] ) - 1 ]);
 					this.coords.push( this.uvs[ parseInt( result[ 7 ] ) - 1 ]);
+					this.coords.push( this.uvs[ parseInt( result[ 11 ] ) - 1 ]);
+					this.coords.push( this.uvs[ parseInt( result[ 15 ] ) - 1 ]);
 					
-					this.normals.push( this.vertexNormals[ parseInt( result[ 16 ] ) - 1 ]);
-					this.normals.push( this.vertexNormals[ parseInt( result[ 12 ] ) - 1 ]);
 					this.normals.push( this.vertexNormals[ parseInt( result[ 8 ] ) - 1 ]);
+					this.normals.push( this.vertexNormals[ parseInt( result[ 12 ] ) - 1 ]);
+					this.normals.push( this.vertexNormals[ parseInt( result[ 16 ] ) - 1 ]);
 
 					this.indices.push( this.verticesCount++);
 					this.indices.push( this.verticesCount++);
