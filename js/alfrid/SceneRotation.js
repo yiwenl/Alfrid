@@ -145,12 +145,16 @@ define(["glMatrix"], function(glMatrix) {
 
 		// glMatrix.vec3.set([0, 0, this._z], this._vZaxis[0], this._vZaxis[1], this._vZaxis[2]);
 		glMatrix.vec3.set(this._vZaxis, 0, 0, this._z);
-		multiplyVec3(this._vZaxis, this.tempRotation, this._vZaxis);
+		glMatrix.vec3.transformQuat(this._vZaxis, this._vZaxis, this.tempRotation);
 
 		glMatrix.mat4.translate(this.m, this.m, this._vZaxis);
+		var toTrace = Math.random() > .95;
+
+
 		glMatrix.mat4.fromQuat(this.matrix, this.tempRotation);
-		 
-		glMatrix.mat4.multiply(this.m, this.matrix, this.m);
+		// if(toTrace) console.log(glMatrix.mat4.str(this.matrix)); 
+		glMatrix.mat4.multiply(this.matrix, this.matrix, this.m);
+		// if(toTrace) console.log(glMatrix.mat4.str(this.matrix) + "\n\n");
 	};
 
 	var multiplyVec3 = function(out, quat, vec) {
