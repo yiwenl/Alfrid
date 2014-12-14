@@ -4,13 +4,13 @@
 define(["require"], function(require) {
 	var ObjLoader = function(strObj) {
 		this.strObj        = strObj;
-		
 		this.positions     = [];
 		this.coords        = [];
 		this.indices       = [];
 		this.verticesCount = 0;
 		this.vertices      = [];
 		this.normals       = [];
+		this.vertexNormals = [];
 		this.uvs           = [];
 		this.faces         = [];
 
@@ -72,7 +72,7 @@ define(["require"], function(require) {
 
 				// ["vn 1.0 2.0 3.0", "1.0", "2.0", "3.0"]
 
-				this.normals.push( [
+				this.vertexNormals.push( [
 					parseFloat( result[ 1 ] ),
 					parseFloat( result[ 2 ] ),
 					parseFloat( result[ 3 ] )
@@ -116,25 +116,25 @@ define(["require"], function(require) {
 					this.indices.push( this.verticesCount++);
 					this.indices.push( this.verticesCount++);
 				} else {
-					this.positions.push( this.vertices[parseInt( result[ 2 ] ) - 1]);
-					this.positions.push( this.vertices[parseInt( result[ 5 ] ) - 1]);
 					this.positions.push( this.vertices[parseInt( result[ 11 ] ) - 1]);
-
+					this.positions.push( this.vertices[parseInt( result[ 5 ] ) - 1]);
+					this.positions.push( this.vertices[parseInt( result[ 2 ] ) - 1]);
+					
+					this.coords.push( this.uvs[ parseInt( result[ 12 ] ) - 1 ]);
+					this.coords.push( this.uvs[ parseInt( result[ 6 ] ) - 1 ]);
 					this.coords.push( this.uvs[ parseInt( result[ 3 ] ) - 1 ]);
-					this.coords.push( this.uvs[ parseInt( result[ 6 ] ) - 1 ]);
-					this.coords.push( this.uvs[ parseInt( result[ 12 ] ) - 1 ]);
 
 					this.indices.push(this.verticesCount++);
 					this.indices.push(this.verticesCount++);
 					this.indices.push(this.verticesCount++);
-
-					this.positions.push(this.vertices[parseInt( result[ 5 ] ) - 1]);
-					this.positions.push(this.vertices[parseInt( result[ 8 ] ) - 1]);
+					
 					this.positions.push(this.vertices[parseInt( result[ 11 ] ) - 1]);
-
-					this.coords.push( this.uvs[ parseInt( result[ 6 ] ) - 1 ]);
-					this.coords.push( this.uvs[ parseInt( result[ 9 ] ) - 1 ]);
+					this.positions.push(this.vertices[parseInt( result[ 8 ] ) - 1]);
+					this.positions.push(this.vertices[parseInt( result[ 5 ] ) - 1]);
+					
 					this.coords.push( this.uvs[ parseInt( result[ 12 ] ) - 1 ]);
+					this.coords.push( this.uvs[ parseInt( result[ 9 ] ) - 1 ]);
+					this.coords.push( this.uvs[ parseInt( result[ 6 ] ) - 1 ]);
 
 					this.indices.push( this.verticesCount++);
 					this.indices.push( this.verticesCount++);
@@ -143,31 +143,57 @@ define(["require"], function(require) {
 
 			} else if ( ( result = face_pattern3.exec( line ) ) !== null ) {
 
-				console.log("Face 3");
-				// ["f 1/1/1 2/2/2 3/3/3", " 1/1/1", "1", "1", "1", " 2/2/2", "2", "2", "2", " 3/3/3", "3", "3", "3"]
+				if(result[ 14 ] == undefined) {
+					this.positions.push( this.vertices[parseInt( result[ 2 ] ) - 1]);
+					this.positions.push( this.vertices[parseInt( result[ 6 ] ) - 1]);
+					this.positions.push( this.vertices[parseInt( result[ 10 ] ) - 1]);
 
-				// geometry.vertices.push(
-				// 	vertices[ parseInt( result[ 2 ] ) - 1 ],
-				// 	vertices[ parseInt( result[ 6 ] ) - 1 ],
-				// 	vertices[ parseInt( result[ 10 ] ) - 1 ]
-				// );
+					this.coords.push( this.uvs[ parseInt( result[ 3 ] ) - 1 ]);
+					this.coords.push( this.uvs[ parseInt( result[ 7 ] ) - 1 ]);
+					this.coords.push( this.uvs[ parseInt( result[ 11 ] ) - 1 ]);
 
-				// geometry.faces.push( face3(
-				// 	verticesCount ++,
-				// 	verticesCount ++,
-				// 	verticesCount ++,
-				// 	[
-				// 		normals[ parseInt( result[ 4 ] ) - 1 ],
-				// 		normals[ parseInt( result[ 8 ] ) - 1 ],
-				// 		normals[ parseInt( result[ 12 ] ) - 1 ]
-				// 	]
-				// ) );
+					this.normals.push( this.vertexNormals[ parseInt( result[ 4 ] ) - 1 ]);
+					this.normals.push( this.vertexNormals[ parseInt( result[ 8 ] ) - 1 ]);
+					this.normals.push( this.vertexNormals[ parseInt( result[ 12 ] ) - 1 ]);
 
-				// geometry.faceVertexUvs[ 0 ].push( [
-				// 	uvs[ parseInt( result[ 3 ] ) - 1 ],
-				// 	uvs[ parseInt( result[ 7 ] ) - 1 ],
-				// 	uvs[ parseInt( result[ 11 ] ) - 1 ]
-				// ] );
+					this.indices.push( this.verticesCount++);
+					this.indices.push( this.verticesCount++);
+					this.indices.push( this.verticesCount++);
+				} else {
+					this.positions.push( this.vertices[parseInt( result[ 14 ] ) - 1]);
+					this.positions.push( this.vertices[parseInt( result[ 6 ] ) - 1]);
+					this.positions.push( this.vertices[parseInt( result[ 2 ] ) - 1]);
+					
+					this.coords.push( this.uvs[ parseInt( result[ 15 ] ) - 1 ]);
+					this.coords.push( this.uvs[ parseInt( result[ 7 ] ) - 1 ]);
+					this.coords.push( this.uvs[ parseInt( result[ 3 ] ) - 1 ]);
+					
+					this.normals.push( this.vertexNormals[ parseInt( result[ 16 ] ) - 1 ]);
+					this.normals.push( this.vertexNormals[ parseInt( result[ 8 ] ) - 1 ]);
+					this.normals.push( this.vertexNormals[ parseInt( result[ 4 ] ) - 1 ]);
+
+					this.indices.push(this.verticesCount++);
+					this.indices.push(this.verticesCount++);
+					this.indices.push(this.verticesCount++);
+					
+					this.positions.push(this.vertices[parseInt( result[ 14 ] ) - 1]);
+					this.positions.push(this.vertices[parseInt( result[ 10 ] ) - 1]);
+					this.positions.push(this.vertices[parseInt( result[ 6 ] ) - 1]);
+					
+					this.coords.push( this.uvs[ parseInt( result[ 15 ] ) - 1 ]);
+					this.coords.push( this.uvs[ parseInt( result[ 11 ] ) - 1 ]);
+					this.coords.push( this.uvs[ parseInt( result[ 7 ] ) - 1 ]);
+					
+					this.normals.push( this.vertexNormals[ parseInt( result[ 16 ] ) - 1 ]);
+					this.normals.push( this.vertexNormals[ parseInt( result[ 12 ] ) - 1 ]);
+					this.normals.push( this.vertexNormals[ parseInt( result[ 8 ] ) - 1 ]);
+
+					this.indices.push( this.verticesCount++);
+					this.indices.push( this.verticesCount++);
+					this.indices.push( this.verticesCount++);
+				}
+
+			
 
 			} else if ( ( result = face_pattern4.exec( line ) ) !== null ) {
 
@@ -194,6 +220,7 @@ define(["require"], function(require) {
 
 			}
 		}
+
 	};
 
 

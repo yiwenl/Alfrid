@@ -60,7 +60,6 @@ define(["alfrid/GLTool"], function(GLTool) {
 	};
 
 	p.bufferData = function(aData, aName, aItemSize) {
-
 		var index = -1;
 
 		for(var i=0; i<this.extraAttributes.length; i++) {

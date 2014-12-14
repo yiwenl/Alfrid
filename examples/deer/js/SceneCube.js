@@ -3,8 +3,8 @@ define(["alfrid/GLTool", "alfrid/Scene", "alfrid/GLTexture", "alfrid/ViewCopy", 
 	var SceneCube = function() {
 		Scene.call(this);
 
-		GLTool.gl.disable(GLTool.gl.DEPTH_TEST);
-		GLTool.gl.disable(GLTool.gl.CULL_FACE);
+		GLTool.gl.enable(GLTool.gl.DEPTH_TEST);
+		GLTool.gl.enable(GLTool.gl.CULL_FACE);
 		this._initTextures();
 		this._initViews();
 	}
@@ -19,7 +19,6 @@ define(["alfrid/GLTool", "alfrid/Scene", "alfrid/GLTexture", "alfrid/ViewCopy", 
 
 
 	p._initViews = function() {
-		console.log("Init views");
 		this._vDeer = new ViewDeer();
 	};
 
