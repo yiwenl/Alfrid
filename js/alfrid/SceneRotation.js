@@ -16,6 +16,7 @@ define(["glMatrix"], function(glMatrix) {
 		this._isMouseDown   = false;
 		this._rotation      = glMatrix.quat.clone([0, 0, 1, 0]);
 		this.tempRotation   = glMatrix.quat.clone([0, 0, 0, 0]);
+		this.invertRotation = glMatrix.quat.create();
 		this._rotateZMargin = 0;
 		this.diffX          = 0;
 		this.diffY          = 0;
@@ -124,6 +125,7 @@ define(["glMatrix"], function(glMatrix) {
 
 	p.update = function() {
 		glMatrix.mat4.identity(this.m);
+		glMatrix.mat4.identity(this.matrix);
 
 		if(this._targetQuat == undefined) { 
 			glMatrix.quat.set(this.tempRotation, this._rotation[0], this._rotation[1], this._rotation[2], this._rotation[3]);
@@ -132,7 +134,6 @@ define(["glMatrix"], function(glMatrix) {
 			this._slerp += (0 - this._slerp) * .1;
 
 			if(this._slerp < .001) {
-				// glMatrix.quat.set(this._targetQuat, this._rotation);
 				glMatrix.quat.set(this._rotation, this._targetQuat[0], this._targetQuat[1], this._targetQuat[2], this._targetQuat[3]);
 				this._targetQuat = undefined;
 				this._slerp = -1;
@@ -142,38 +143,16 @@ define(["glMatrix"], function(glMatrix) {
 			}
 		}
 
-
-		// glMatrix.vec3.set([0, 0, this._z], this._vZaxis[0], this._vZaxis[1], this._vZaxis[2]);
 		glMatrix.vec3.set(this._vZaxis, 0, 0, this._z);
-		glMatrix.vec3.transformQuat(this._vZaxis, this._vZaxis, this.tempRotation);
+		this.invertRotation = glMatrix.quat.create();
+		glMatrix.quat.invert(this.invertRotation, this.tempRotation);
+		glMatrix.vec3.transformQuat(this._vZaxis, this._vZaxis, this.invertRotation);
 
 		glMatrix.mat4.translate(this.m, this.m, this._vZaxis);
-		var toTrace = Math.random() > .95;
-
-
 		glMatrix.mat4.fromQuat(this.matrix, this.tempRotation);
-		// if(toTrace) console.log(glMatrix.mat4.str(this.matrix)); 
 		glMatrix.mat4.multiply(this.matrix, this.matrix, this.m);
-		// if(toTrace) console.log(glMatrix.mat4.str(this.matrix) + "\n\n");
 	};
 
-	var multiplyVec3 = function(out, quat, vec) {
-		var x = vec[0], y = vec[1], z = vec[2];
-		var qx = quat[0], qy = quat[1], qz = quat[2], qw = quat[3];
-
-		// calculate quat * vec
-		var ix = qw*x + qy*z - qz*y;
-		var iy = qw*y + qz*x - qx*z;
-		var iz = qw*z + qx*y - qy*x;
-		var iw = -qx*x - qy*y - qz*z;
-		
-		// calculate result * inverse quat
-		out[0] = ix*qw + iw*-qx + iy*-qz - iz*-qy;
-		out[1] = iy*qw + iw*-qy + iz*-qx - ix*-qz;
-		out[2] = iz*qw + iw*-qz + ix*-qy - iy*-qx;
-		
-		return out;
-	};
 
 	p._updateRotation = function(aTempRotation) {
 		if(this._isMouseDown && !this._isLocked) {
