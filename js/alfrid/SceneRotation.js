@@ -185,7 +185,7 @@ define(["glMatrix"], function(glMatrix) {
 			glMatrix.vec3.normalize(axis, axis);
 			var angle = glMatrix.vec3.length(v) * this._offset;
 			var quat = glMatrix.quat.clone( [Math.sin(angle) * axis[0], Math.sin(angle) * axis[1], Math.sin(angle) * axis[2], Math.cos(angle) ] );
-			glMatrix.quat.multiply(aTempRotation, aTempRotation, quat);
+			glMatrix.quat.multiply(aTempRotation, quat, aTempRotation);
 		}
 		
 		this._z += (this._preZ - this._z) * this._easing;
