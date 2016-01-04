@@ -1,29 +1,39 @@
+# OS specific files
 .DS_Store
+*.DS_Store
 .settings
 .project
 _notes
+._*
+Thumbs.db
+desktop.ini
 
+# Sublime Text 2/3
 *.sublime-project
 *.sublime-workspace
 
-# Global Ignores
+# Ruby
+/vendor
+
+# Node
+npm-debug.log
+node_modules
+
+# Sass
+.sass-cache
+
+# Keep
+!.gitignore
+!.gitkeep
+
+# global ignores
 *.tmproj
 *.svn
 .svn
-.pyc
 *.pyc
-deploy/gaesessions/__init__.pyc
-.svn
-*.swp
 
 # fileMerge
 *.orig
-
-# OS specific files
-
-# OS X
-
-*.DS_Store
 
 # Files that might appear on external disk
 .Spotlight-V100
@@ -37,3 +47,22 @@ Desktop.ini
 .sass-cache
 compass.txt
 note.txt
+
+# Incase we store any server assets or details locally but do not want to push.
+/server_assets
+
+Gemfile.lock
+
+# Any vagrant server info.
+.vagrant
+
+
+# Ignore the buildout files for dev and production.
+dev/
+build/
+dist/
+
+
+src/images/contentAssets/movie
+src/images/contentAssets/tv-show
+src/video
