@@ -1,0 +1,36 @@
+{
+    "rules": {
+        "indent": [
+            2,2
+        ],
+        "quotes": [
+            2,
+            "single"
+        ],
+        "linebreak-style": [
+            2,
+            "unix"
+        ],
+        "semi": [
+            2,
+            "always"
+        ],
+        "no-console": 0
+    },
+    "env": {
+        "browser": true
+    },
+    "extends": "eslint:recommended",
+    "ecmaFeatures": {
+        "jsx": true,
+        "experimentalObjectRestSpread": true,
+        "modules": true,
+        "arrowFunctions": true,
+        "blockBindings": true,
+        "classes": true,
+        "templateStrings": true
+    },
+    "plugins": [
+        "react"
+    ]
+}
