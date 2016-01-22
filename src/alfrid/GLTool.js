@@ -3,18 +3,22 @@
 import glm from 'gl-matrix';
 
 class GLTool {
+
 	constructor() {
 		this.canvas;
-		this._viewport              = [0, 0, 0, 0];
-		this.enabledVertexAttribute = [];
-		this.identityMatrix         = glm.mat4.create();
-		this._normalMatrix          = glm.mat3.create();
-		this._inverseViewMatrix     = glm.mat4.create();
+		this._viewport               = [0, 0, 0, 0];
+		this._enabledVertexAttribute = [];
+		this.identityMatrix          = glm.mat4.create();
+		this._normalMatrix           = glm.mat3.create();
+		this._inverseViewMatrix      = glm.mat4.create();
+		this._matrix                 = glm.mat4.create();
 		glm.mat4.identity(this.identityMatrix, this.identityMatrix);
 	}
 
+	//	INITIALIZE
 
 	init(mCanvas, mParameters = {}) {
+		
 		if(this.canvas !== undefined) {
 			this.destroy();
 		}
@@ -33,12 +37,13 @@ class GLTool {
 		
 
 		//	Copy gl Attributes
-		let gl = this.gl;
+		let gl               = this.gl;
 		this.VERTEX_SHADER   = gl.VERTEX_SHADER;
 		this.FRAGMENT_SHADER = gl.FRAGMENT_SHADER;
 		this.COMPILE_STATUS  = gl.COMPILE_STATUS;
 		this.DEPTH_TEST      = gl.DEPTH_TEST;
 		this.CULL_FACE       = gl.CULL_FACE;
+		this.BLEND           = gl.BLEND;
 
 		this.enable(this.DEPTH_TEST);
 		this.enable(this.CULL_FACE);
@@ -70,6 +75,7 @@ class GLTool {
 
 	setMatrices(mCamera) {
 		this.camera = mCamera;
+		this.rotate(this.identityMatrix);
 	}
 
 
@@ -80,14 +86,14 @@ class GLTool {
 
 
 	rotate(mRotation) {
-		glm.mat4.copy(this.matrix, mRotation);
+		glm.mat4.copy(this._matrix, mRotation);
 
-		glm.mat4.multiply(this.matrix, this.camera.matrix, this.matrix);
-		glm.mat3.fromMat4(this._normalMatrix, this.matrix);
+		glm.mat4.multiply(this._matrix, this.camera.matrix, this._matrix);
+		glm.mat3.fromMat4(this._normalMatrix, this._matrix);
 		glm.mat3.invert(this._normalMatrix, this._normalMatrix);
 		glm.mat3.transpose(this._normalMatrix, this._normalMatrix);
 
-		glm.mat3.fromMat4(this._inverseViewMatrix, this.matrix);
+		glm.mat3.fromMat4(this._inverseViewMatrix, this._matrix);
 		glm.mat3.invert(this._inverseViewMatrix, this._inverseViewMatrix);
 	}
 
@@ -110,9 +116,9 @@ class GLTool {
 			let attrPosition = getAttribLoc(this.gl, this.shaderProgram, attribute.name);
 			this.gl.vertexAttribPointer(attrPosition, attribute.itemSize, this.gl.FLOAT, false, 0, 0);
 			
-			if(this.enabledVertexAttribute.indexOf(attrPosition) === -1) {
+			if(this._enabledVertexAttribute.indexOf(attrPosition) === -1) {
 				this.gl.enableVertexAttribArray(attrPosition);
-				this.enabledVertexAttribute.push(attrPosition);
+				this._enabledVertexAttribute.push(attrPosition);
 			}
 			
 		}
@@ -170,12 +176,16 @@ class GLTool {
 
 	disable(mParameter) {	this.gl.disable(mParameter);	}
 
+	viewport(x, y, w, h) {	this.setViewport(x, y, w, h);	}
+
 
 	//	GETTER AND SETTERS
 
 	get width() {	return this._width;		}
 
 	get height() {	return this._height;	}
+
+	get aspectRatio() {	return this._aspectRatio;	}
 
 	//	DESTROY
 

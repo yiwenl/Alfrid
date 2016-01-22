@@ -27,8 +27,7 @@ class Mesh {
 
 
 	bufferIndices(mArrayIndices, isDynamic=false) {
-		
-		this.indexSize        = mArrayIndices.length;
+
 		var drawType          = isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW;
 		this._indices         = mArrayIndices;
 		this.iBuffer          = gl.createBuffer();
@@ -36,7 +35,7 @@ class Mesh {
 		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(mArrayIndices), drawType);
 		this.iBuffer.itemSize = 1;
 		this.iBuffer.numItems = mArrayIndices.length;
-		
+
 	}
 
 
@@ -46,7 +45,7 @@ class Mesh {
 		let bufferData = [];
 		let buffer, dataArray;
 
-		//	Check for exist attributes
+		//	Check for existing attributes
 		for(i=0; i<this._attributes.length; i++) {
 			if(this._attributes[i].name === mName) {
 				this._attributes[i].data = mData;

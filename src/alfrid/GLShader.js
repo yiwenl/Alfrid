@@ -3,6 +3,7 @@
 'use strict';
 
 import GL from './GLTool';
+var glslify = require('glslify');
 
 let addLineNumbers = function ( string ) {
 	let lines = string.split( '\n' );
@@ -13,10 +14,11 @@ let addLineNumbers = function ( string ) {
 };
 
 let gl;
-
+let defaultVertexShader = glslify('./shaders/basic.vert');
+let defaultFragmentShader = glslify('./shaders/basic.frag');
 
 class GLShader {
-	constructor(strVertexShader, strFragmentShader) {
+	constructor(strVertexShader=defaultVertexShader, strFragmentShader=defaultFragmentShader) {
 		gl = GL.gl;
 		this.parameters      = [];
 		this.uniformValues   = {};

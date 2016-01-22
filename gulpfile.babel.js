@@ -12,11 +12,13 @@ import uglify       from 'gulp-uglify';
 import jshint       from 'gulp-jshint';
 import derequire    from 'gulp-derequire';
 import watchify     from 'watchify';
+import gutil        from 'gulp-util';
 
 
 let logError = function(msg) {
     console.log('Error', msg.toString());   
 }
+
 
 
 let bundler = watchify(browserify({
@@ -36,11 +38,13 @@ let lint = function() {
 
 
 let bundle = function() {
-    console.log('Bundle');
     bundler.transform(babelify);
 
     bundler.bundle()
-        .on('error', logError)
+        .on('error', function(err) {
+            gutil.log('Browserify error:', err);
+            this.emit('end');
+        })
         .pipe(source('alfrid.js'))
         .pipe(buffer())
         .pipe(derequire())
@@ -52,6 +56,7 @@ let bundle = function() {
 }
 
 bundler.on('update', bundle);
+bundler.on('log', gutil.log);
 
 
 
@@ -81,4 +86,4 @@ gulp.task('lint', lint);
 gulp.task('bundle', bundle);
 gulp.task('release', release);
 gulp.task('build', ['jshint', 'bundle', 'release']);
-gulp.task('default', ['jshint', 'bundle', 'watch']);
+gulp.task('default', ['jshint', 'bundle']);

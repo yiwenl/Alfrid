@@ -13,7 +13,8 @@ var cnt = 0;
 var GL = alfrid.GL;
 var mesh = undefined,
     shader = undefined,
-    camera = undefined;
+    camera = undefined,
+    cameraPersp = undefined;
 
 function _init() {
 	alfrid.log();
@@ -30,10 +31,19 @@ function _init() {
 
 	//	CREATE CAMERA
 	camera = new alfrid.CameraOrtho();
-	GL.setMatrices(camera);
+
+	cameraPersp = new alfrid.CameraPerspective();
+	cameraPersp.setPerspective(45 * Math.PI / 180, GL.aspectRatio, 1, 1000);
+	var eye = vec3.clone([0, 0, 5]);
+	var center = vec3.create();
+	var up = vec3.clone([0, -1, 0]);
+	cameraPersp.lookAt(eye, center, up);
+
+	GL.setMatrices(cameraPersp);
 
 	//	CREATE SHADER
-	shader = new alfrid.GLShader("#define GLSLIFY 1\n// basic.vert\n\n#define SHADER_NAME BASIC_VERTEX\n\nprecision highp float;\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvarying vec2 vTextureCoord;\n\nvoid main(void) {\n    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);\n    vTextureCoord = aTextureCoord;\n}", "#define GLSLIFY 1\n// basic.frag\n\n#define SHADER_NAME BASIC_FRAGMENT\n\nprecision highp float;\nvarying vec2 vTextureCoord;\n// uniform sampler2D texture;\n\nvoid main(void) {\n    gl_FragColor = vec4(vTextureCoord, 0.0, 1.0);\n}");
+	// shader = new alfrid.GLShader(glslify('../shaders/basic.vert'), glslify('../shaders/basic.frag'))
+	shader = new alfrid.GLShader();
 	shader.bind();
 
 	//	CREATE GEOMETRY
@@ -41,10 +51,11 @@ function _init() {
 	var coords = [];
 	var indices = [0, 1, 2, 0, 2, 3];
 
-	positions.push([-1, -1, 0]);
-	positions.push([1, -1, 0]);
-	positions.push([1, 1, 0]);
-	positions.push([-1, 1, 0]);
+	var size = 1;
+	positions.push([-size, -size, 0]);
+	positions.push([size, -size, 0]);
+	positions.push([size, size, 0]);
+	positions.push([-size, size, 0]);
 
 	coords.push([0, 0]);
 	coords.push([1, 0]);
@@ -55,8 +66,6 @@ function _init() {
 	mesh.bufferVertex(positions);
 	mesh.bufferTexCoords(coords);
 	mesh.bufferIndices(indices);
-
-	//	RENDER
 }
 
 function loop() {

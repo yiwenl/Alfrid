@@ -6,7 +6,7 @@ var glslify = require("glslify");
 window.addEventListener('load', ()=>_init());
 let cnt = 0;
 let GL = alfrid.GL;
-let mesh, shader, camera;
+let mesh, shader, camera, cameraPersp;
 
 function _init() {
 	alfrid.log();
@@ -25,11 +25,20 @@ function _init() {
 
 	//	CREATE CAMERA
 	camera = new alfrid.CameraOrtho();
-	GL.setMatrices(camera);
+
+	cameraPersp = new alfrid.CameraPerspective();
+	cameraPersp.setPerspective(45*Math.PI/180, GL.aspectRatio, 1, 1000);
+	var eye                = vec3.clone([0, 0, 5]  );
+	var center             = vec3.create( );
+	var up                 = vec3.clone( [0,-1,0] );
+	cameraPersp.lookAt(eye, center, up);
+
+	GL.setMatrices(cameraPersp);
 
 
 	//	CREATE SHADER
-	shader = new alfrid.GLShader(glslify('../shaders/basic.vert'), glslify('../shaders/basic.frag'))
+	// shader = new alfrid.GLShader(glslify('../shaders/basic.vert'), glslify('../shaders/basic.frag'))
+	shader = new alfrid.GLShader();
 	shader.bind();
 
 	//	CREATE GEOMETRY
@@ -37,10 +46,11 @@ function _init() {
 	var coords = [];
 	var indices = [0, 1, 2, 0, 2, 3];
 
-	positions.push([-1, -1, 0]);
-	positions.push([ 1, -1, 0]);
-	positions.push([ 1,  1, 0]);
-	positions.push([-1,  1, 0]);
+	var size = 1;
+	positions.push([-size, -size, 0]);
+	positions.push([ size, -size, 0]);
+	positions.push([ size,  size, 0]);
+	positions.push([-size,  size, 0]);
 
 	coords.push([0, 0]);
 	coords.push([1, 0]);
@@ -51,9 +61,6 @@ function _init() {
 	mesh.bufferVertex(positions);
 	mesh.bufferTexCoords(coords);
 	mesh.bufferIndices(indices);
-	
-
-	//	RENDER
 	
 }
 

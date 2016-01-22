@@ -4898,7 +4898,15 @@ module.exports = vec4;
 },{"./common.js":2}],11:[function(_dereq_,module,exports){
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // alfrid.js
+var _createClass = function () {
+	function defineProperties(target, props) {
+		for (var i = 0; i < props.length; i++) {
+			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+		}
+	}return function (Constructor, protoProps, staticProps) {
+		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+	};
+}(); // alfrid.js
 
 //	TOOLS
 
@@ -4940,9 +4948,19 @@ var _CameraOrtho = _dereq_('./alfrid/cameras/CameraOrtho');
 
 var _CameraOrtho2 = _interopRequireDefault(_CameraOrtho);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _CameraPerspective = _dereq_('./alfrid/cameras/CameraPerspective');
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var _CameraPerspective2 = _interopRequireDefault(_CameraPerspective);
+
+function _interopRequireDefault(obj) {
+	return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError("Cannot call a class as a function");
+	}
+}
 
 var VERSION = '1.0.0';
 
@@ -4960,6 +4978,7 @@ var alfrid = function () {
 		this.EaseNumber = _EaseNumber2.default;
 		this.Camera = _Camera2.default;
 		this.CameraOrtho = _CameraOrtho2.default;
+		this.CameraPerspective = _CameraPerspective2.default;
 
 		//	NOT SUPER SURE I'VE DONE THIS IS A GOOD WAY
 
@@ -4997,7 +5016,7 @@ var b = new alfrid();
 
 module.exports = b;
 
-},{"./alfrid/GLShader":12,"./alfrid/GLTool":13,"./alfrid/Mesh":14,"./alfrid/cameras/Camera":15,"./alfrid/cameras/CameraOrtho":16,"./alfrid/tools/EaseNumber":17,"./alfrid/tools/EventDispatcher":18,"./alfrid/tools/Scheduler":19,"gl-matrix":1}],12:[function(_dereq_,module,exports){
+},{"./alfrid/GLShader":12,"./alfrid/GLTool":13,"./alfrid/Mesh":14,"./alfrid/cameras/Camera":15,"./alfrid/cameras/CameraOrtho":16,"./alfrid/cameras/CameraPerspective":17,"./alfrid/tools/EaseNumber":18,"./alfrid/tools/EventDispatcher":19,"./alfrid/tools/Scheduler":20,"gl-matrix":1}],12:[function(_dereq_,module,exports){
 // GLShader.js
 
 'use strict';
@@ -5016,6 +5035,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+
+
 var addLineNumbers = function addLineNumbers(string) {
 	var lines = string.split('\n');
 	for (var i = 0; i < lines.length; i++) {
@@ -5025,9 +5046,14 @@ var addLineNumbers = function addLineNumbers(string) {
 };
 
 var gl = undefined;
+var defaultVertexShader = "#define GLSLIFY 1\n// basic.vert\n\n#define SHADER_NAME BASIC_VERTEX\n\nprecision highp float;\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvarying vec2 vTextureCoord;\n\nvoid main(void) {\n    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);\n    vTextureCoord = aTextureCoord;\n}";
+var defaultFragmentShader = "#define GLSLIFY 1\n// basic.frag\n\n#define SHADER_NAME BASIC_FRAGMENT\n\nprecision highp float;\nvarying vec2 vTextureCoord;\n// uniform sampler2D texture;\n\nvoid main(void) {\n    gl_FragColor = vec4(vTextureCoord, 0.0, 1.0);\n}";
 
 var GLShader = function () {
-	function GLShader(strVertexShader, strFragmentShader) {
+	function GLShader() {
+		var strVertexShader = arguments.length <= 0 || arguments[0] === undefined ? defaultVertexShader : arguments[0];
+		var strFragmentShader = arguments.length <= 1 || arguments[1] === undefined ? defaultFragmentShader : arguments[1];
+
 		_classCallCheck(this, GLShader);
 
 		gl = _GLTool2.default.gl;
@@ -5121,15 +5147,7 @@ exports.default = GLShader;
 },{"./GLTool":13}],13:[function(_dereq_,module,exports){
 'use strict';
 
-var _createClass = function () {
-	function defineProperties(target, props) {
-		for (var i = 0; i < props.length; i++) {
-			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-		}
-	}return function (Constructor, protoProps, staticProps) {
-		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-	};
-}(); // GLTool.js
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // GLTool.js
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
@@ -5139,15 +5157,9 @@ var _glMatrix = _dereq_('gl-matrix');
 
 var _glMatrix2 = _interopRequireDefault(_glMatrix);
 
-function _interopRequireDefault(obj) {
-	return obj && obj.__esModule ? obj : { default: obj };
-}
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) {
-	if (!(instance instanceof Constructor)) {
-		throw new TypeError("Cannot call a class as a function");
-	}
-}
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var GLTool = function () {
 	function GLTool() {
@@ -5155,12 +5167,15 @@ var GLTool = function () {
 
 		this.canvas;
 		this._viewport = [0, 0, 0, 0];
-		this.enabledVertexAttribute = [];
+		this._enabledVertexAttribute = [];
 		this.identityMatrix = _glMatrix2.default.mat4.create();
 		this._normalMatrix = _glMatrix2.default.mat3.create();
 		this._inverseViewMatrix = _glMatrix2.default.mat4.create();
+		this._matrix = _glMatrix2.default.mat4.create();
 		_glMatrix2.default.mat4.identity(this.identityMatrix, this.identityMatrix);
 	}
+
+	//	INITIALIZE
 
 	_createClass(GLTool, [{
 		key: 'init',
@@ -5189,6 +5204,7 @@ var GLTool = function () {
 			this.COMPILE_STATUS = gl.COMPILE_STATUS;
 			this.DEPTH_TEST = gl.DEPTH_TEST;
 			this.CULL_FACE = gl.CULL_FACE;
+			this.BLEND = gl.BLEND;
 
 			this.enable(this.DEPTH_TEST);
 			this.enable(this.CULL_FACE);
@@ -5229,6 +5245,7 @@ var GLTool = function () {
 		key: 'setMatrices',
 		value: function setMatrices(mCamera) {
 			this.camera = mCamera;
+			this.rotate(this.identityMatrix);
 		}
 	}, {
 		key: 'useShader',
@@ -5239,14 +5256,14 @@ var GLTool = function () {
 	}, {
 		key: 'rotate',
 		value: function rotate(mRotation) {
-			_glMatrix2.default.mat4.copy(this.matrix, mRotation);
+			_glMatrix2.default.mat4.copy(this._matrix, mRotation);
 
-			_glMatrix2.default.mat4.multiply(this.matrix, this.camera.matrix, this.matrix);
-			_glMatrix2.default.mat3.fromMat4(this._normalMatrix, this.matrix);
+			_glMatrix2.default.mat4.multiply(this._matrix, this.camera.matrix, this._matrix);
+			_glMatrix2.default.mat3.fromMat4(this._normalMatrix, this._matrix);
 			_glMatrix2.default.mat3.invert(this._normalMatrix, this._normalMatrix);
 			_glMatrix2.default.mat3.transpose(this._normalMatrix, this._normalMatrix);
 
-			_glMatrix2.default.mat3.fromMat4(this._inverseViewMatrix, this.matrix);
+			_glMatrix2.default.mat3.fromMat4(this._inverseViewMatrix, this._matrix);
 			_glMatrix2.default.mat3.invert(this._inverseViewMatrix, this._inverseViewMatrix);
 		}
 	}, {
@@ -5271,9 +5288,9 @@ var GLTool = function () {
 				var attrPosition = getAttribLoc(this.gl, this.shaderProgram, attribute.name);
 				this.gl.vertexAttribPointer(attrPosition, attribute.itemSize, this.gl.FLOAT, false, 0, 0);
 
-				if (this.enabledVertexAttribute.indexOf(attrPosition) === -1) {
+				if (this._enabledVertexAttribute.indexOf(attrPosition) === -1) {
 					this.gl.enableVertexAttribArray(attrPosition);
-					this.enabledVertexAttribute.push(attrPosition);
+					this._enabledVertexAttribute.push(attrPosition);
 				}
 			}
 
@@ -5336,6 +5353,11 @@ var GLTool = function () {
 		value: function disable(mParameter) {
 			this.gl.disable(mParameter);
 		}
+	}, {
+		key: 'viewport',
+		value: function viewport(x, y, w, h) {
+			this.setViewport(x, y, w, h);
+		}
 
 		//	GETTER AND SETTERS
 
@@ -5364,6 +5386,11 @@ var GLTool = function () {
 		get: function get() {
 			return this._height;
 		}
+	}, {
+		key: 'aspectRatio',
+		get: function get() {
+			return this._aspectRatio;
+		}
 	}]);
 
 	return GLTool;
@@ -5376,15 +5403,7 @@ exports.default = GL;
 },{"gl-matrix":1}],14:[function(_dereq_,module,exports){
 'use strict';
 
-var _createClass = function () {
-	function defineProperties(target, props) {
-		for (var i = 0; i < props.length; i++) {
-			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-		}
-	}return function (Constructor, protoProps, staticProps) {
-		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-	};
-}(); // Mesh.js
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // Mesh.js
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
@@ -5394,15 +5413,9 @@ var _GLTool = _dereq_('./GLTool');
 
 var _GLTool2 = _interopRequireDefault(_GLTool);
 
-function _interopRequireDefault(obj) {
-	return obj && obj.__esModule ? obj : { default: obj };
-}
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) {
-	if (!(instance instanceof Constructor)) {
-		throw new TypeError("Cannot call a class as a function");
-	}
-}
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var gl = undefined;
 
@@ -5436,7 +5449,6 @@ var Mesh = function () {
 		value: function bufferIndices(mArrayIndices) {
 			var isDynamic = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
 
-			this.indexSize = mArrayIndices.length;
 			var drawType = isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW;
 			this._indices = mArrayIndices;
 			this.iBuffer = gl.createBuffer();
@@ -5457,7 +5469,7 @@ var Mesh = function () {
 			var buffer = undefined,
 			    dataArray = undefined;
 
-			//	Check for exist attributes
+			//	Check for existing attributes
 			for (i = 0; i < this._attributes.length; i++) {
 				if (this._attributes[i].name === mName) {
 					this._attributes[i].data = mData;
@@ -5630,6 +5642,63 @@ exports.default = CameraOrtho;
 },{"./Camera":15,"gl-matrix":1}],17:[function(_dereq_,module,exports){
 'use strict';
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _Camera2 = _dereq_('./Camera');
+
+var _Camera3 = _interopRequireDefault(_Camera2);
+
+var _glMatrix = _dereq_('gl-matrix');
+
+var _glMatrix2 = _interopRequireDefault(_glMatrix);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // CameraPerspective.js
+
+var CameraPerspective = function (_Camera) {
+	_inherits(CameraPerspective, _Camera);
+
+	function CameraPerspective() {
+		_classCallCheck(this, CameraPerspective);
+
+		return _possibleConstructorReturn(this, Object.getPrototypeOf(CameraPerspective).call(this));
+	}
+
+	_createClass(CameraPerspective, [{
+		key: 'setPerspective',
+		value: function setPerspective(mFov, mAspectRatio, mNear, mFar) {
+
+			this._fov = mFov;
+			this._near = mNear;
+			this._far = mFar;
+			this._aspectRatio = mAspectRatio;
+			_glMatrix2.default.mat4.perspective(this._projection, mFov, mAspectRatio, mNear, mFar);
+		}
+	}, {
+		key: 'setAspectRatio',
+		value: function setAspectRatio(mAspectRatio) {
+			this._aspectRatio = mAspectRatio;
+			_glMatrix2.default.mat4.perspective(this.projection, this._fov, mAspectRatio, this._near, this._far);
+		}
+	}]);
+
+	return CameraPerspective;
+}(_Camera3.default);
+
+exports.default = CameraPerspective;
+
+},{"./Camera":15,"gl-matrix":1}],18:[function(_dereq_,module,exports){
+'use strict';
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // EaseNumber.js
 
 Object.defineProperty(exports, "__esModule", {
@@ -5721,7 +5790,7 @@ var EaseNumber = function () {
 
 exports.default = EaseNumber;
 
-},{"./Scheduler":19}],18:[function(_dereq_,module,exports){
+},{"./Scheduler":20}],19:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -5859,7 +5928,7 @@ var EventDispatcher = function () {
 
 exports.default = EventDispatcher;
 
-},{}],19:[function(_dereq_,module,exports){
+},{}],20:[function(_dereq_,module,exports){
 // Scheduler.js
 
 'use strict';

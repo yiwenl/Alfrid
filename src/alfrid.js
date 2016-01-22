@@ -1,18 +1,19 @@
 // alfrid.js
 
-import GLM 				from 'gl-matrix';
-import GLTool 			from './alfrid/GLTool';
-import GLShader 		from './alfrid/GLShader';
-import Mesh 			from './alfrid/Mesh';
+import GLM 					from 'gl-matrix';
+import GLTool 				from './alfrid/GLTool';
+import GLShader 			from './alfrid/GLShader';
+import Mesh 				from './alfrid/Mesh';
 
 //	TOOLS
-import Scheduler 		from './alfrid/tools/Scheduler';
-import EventDispatcher 	from './alfrid/tools/EventDispatcher';
-import EaseNumber 		from './alfrid/tools/EaseNumber';
+import Scheduler 			from './alfrid/tools/Scheduler';
+import EventDispatcher 		from './alfrid/tools/EventDispatcher';
+import EaseNumber 			from './alfrid/tools/EaseNumber';
 
 //	CAMERAS
-import Camera 			from './alfrid/cameras/Camera';
-import CameraOrtho 		from './alfrid/cameras/CameraOrtho';
+import Camera 				from './alfrid/cameras/Camera';
+import CameraOrtho 			from './alfrid/cameras/CameraOrtho';
+import CameraPerspective	from './alfrid/cameras/CameraPerspective';
 
 
 const VERSION = '1.0.0';
@@ -21,16 +22,17 @@ class alfrid {
 
 	constructor() {
 		
-		this.glm             = GLM;
-		this.GL              = GLTool;
-		this.GLTool          = GLTool;
-		this.GLShader 		 = GLShader;
-		this.Mesh 			 = Mesh;
-		this.Scheduler       = Scheduler;
-		this.EventDispatcher = EventDispatcher;
-		this.EaseNumber      = EaseNumber;
-		this.Camera          = Camera;
-		this.CameraOrtho     = CameraOrtho;
+		this.glm               = GLM;
+		this.GL                = GLTool;
+		this.GLTool            = GLTool;
+		this.GLShader          = GLShader;
+		this.Mesh              = Mesh;
+		this.Scheduler         = Scheduler;
+		this.EventDispatcher   = EventDispatcher;
+		this.EaseNumber        = EaseNumber;
+		this.Camera            = Camera;
+		this.CameraOrtho       = CameraOrtho;
+		this.CameraPerspective = CameraPerspective;
 
 
 		//	NOT SUPER SURE I'VE DONE THIS IS A GOOD WAY
