@@ -2,6 +2,10 @@
 .settings
 .project
 _notes
+node_modules
+cinder/xcode/build
+*.scssc
+npm-debug.log
 
 *.sublime-project
 *.sublime-workspace
