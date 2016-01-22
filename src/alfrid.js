@@ -3,6 +3,7 @@
 import GLM 				from 'gl-matrix';
 import GLTool 			from './alfrid/GLTool';
 import GLShader 		from './alfrid/GLShader';
+import Mesh 			from './alfrid/Mesh';
 
 //	TOOLS
 import Scheduler 		from './alfrid/tools/Scheduler';
@@ -24,6 +25,7 @@ class alfrid {
 		this.GL              = GLTool;
 		this.GLTool          = GLTool;
 		this.GLShader 		 = GLShader;
+		this.Mesh 			 = Mesh;
 		this.scheduler       = Scheduler;
 		this.EventDispatcher = EventDispatcher;
 		this.EaseNumber      = EaseNumber;

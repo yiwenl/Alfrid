@@ -4924,6 +4924,10 @@ var _GLShader = _dereq_('./alfrid/GLShader');
 
 var _GLShader2 = _interopRequireDefault(_GLShader);
 
+var _Mesh = _dereq_('./alfrid/Mesh');
+
+var _Mesh2 = _interopRequireDefault(_Mesh);
+
 var _Scheduler = _dereq_('./alfrid/tools/Scheduler');
 
 var _Scheduler2 = _interopRequireDefault(_Scheduler);
@@ -5006,7 +5010,7 @@ var b = new alfrid();
 
 module.exports = b;
 
-},{"./alfrid/GLShader":12,"./alfrid/GLTool":13,"./alfrid/cameras/Camera":14,"./alfrid/cameras/CameraOrtho":15,"./alfrid/tools/EaseNumber":16,"./alfrid/tools/EventDispatcher":17,"./alfrid/tools/Scheduler":18,"gl-matrix":1}],12:[function(_dereq_,module,exports){
+},{"./alfrid/GLShader":12,"./alfrid/GLTool":13,"./alfrid/Mesh":14,"./alfrid/cameras/Camera":15,"./alfrid/cameras/CameraOrtho":16,"./alfrid/tools/EaseNumber":17,"./alfrid/tools/EventDispatcher":18,"./alfrid/tools/Scheduler":19,"gl-matrix":1}],12:[function(_dereq_,module,exports){
 // GLShader.js
 
 'use strict';
@@ -5270,11 +5274,11 @@ var GLTool = function () {
 		value: function draw() {
 
 			//	DEFAULT MATRICES
-			this.shader.uniform("uProjectionMatrix", "uniformMatrix4fv", this.camera.projection);
-			this.shader.uniform("uModelMatrix", "uniformMatrix4fv", this.identityMatrix);
-			this.shader.uniform("uViewMatrix", "uniformMatrix4fv", this.camera.matrix);
-			this.shader.uniform("uNormalMatrix", "uniformMatrix3fv", this._normalMatrix);
-			this.shader.uniform("uViewMatrixInverse", "uniformMatrix4fv", this._inverseViewMatrix);
+			this.shader.uniform('uProjectionMatrix', 'uniformMatrix4fv', this.camera.projection);
+			this.shader.uniform('uModelMatrix', 'uniformMatrix4fv', this.identityMatrix);
+			this.shader.uniform('uViewMatrix', 'uniformMatrix4fv', this.camera.matrix);
+			this.shader.uniform('uNormalMatrix', 'uniformMatrix3fv', this._normalMatrix);
+			this.shader.uniform('uViewMatrixInverse', 'uniformMatrix4fv', this._inverseViewMatrix);
 		}
 	}, {
 		key: 'setSize',
@@ -5358,6 +5362,105 @@ exports.default = GL;
 },{"gl-matrix":1}],14:[function(_dereq_,module,exports){
 'use strict';
 
+var _createClass = function () {
+	function defineProperties(target, props) {
+		for (var i = 0; i < props.length; i++) {
+			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+		}
+	}return function (Constructor, protoProps, staticProps) {
+		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+	};
+}(); // Mesh.js
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _GLTool = _dereq_('./GLTool');
+
+var _GLTool2 = _interopRequireDefault(_GLTool);
+
+var _glMatrix = _dereq_('gl-matrix');
+
+var _glMatrix2 = _interopRequireDefault(_glMatrix);
+
+function _interopRequireDefault(obj) {
+	return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError("Cannot call a class as a function");
+	}
+}
+
+var Mesh = function () {
+	function Mesh() {
+		var mDrawType = arguments.length <= 0 || arguments[0] === undefined ? _GLTool2.default.gl.TRIANGLES : arguments[0];
+
+		_classCallCheck(this, Mesh);
+
+		this.drawType = mDrawType;
+		console.log('Drawing type :', this.drawType === _GLTool2.default.gl.TRIANGLES);
+		this._attributes = [];
+	}
+
+	_createClass(Mesh, [{
+		key: 'bufferVertex',
+		value: function bufferVertex(mArrayVertices, isDynamic) {
+			this.bufferData(mArrayVertices, 'aVertexPosition', 3, isDynamic);
+		}
+	}, {
+		key: 'bufferData',
+		value: function bufferData(mData, mName, mItemSize, isDynamic) {
+			var index = -1;
+			var drawType = isDynamic ? this.gl.DYNAMIC_DRAW : this.gl.STATIC_DRAW;
+			var i = 0;
+
+			for (i = 0; i < this._attributes.length; i++) {
+				if (this._attributes[i].name === mName) {
+					this._attributes[i].data = mData;
+					index = i;
+					break;
+				}
+			}
+
+			var bufferData = [];
+			for (i = 0; i < mData.length; i++) {
+				for (var j = 0; j < mData[i].length; j++) {
+					bufferData.push(mData[i][j]);
+				}
+			}
+
+			var buffer = undefined,
+			    floatArray = undefined;
+			if (index === -1) {
+				buffer = this.gl.createBuffer();
+				this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
+				floatArray = new Float32Array(bufferData);
+				this.gl.bufferData(this.gl.ARRAY_BUFFER, floatArray, drawType);
+				this._attributes.push({ name: mName, data: mData, itemSize: mItemSize, buffer: buffer, floatArray: floatArray });
+			} else {
+				buffer = this._attributes[index].buffer;
+				// console.debug("Buffer exist", buffer);
+				this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
+				floatArray = this._attributes[index].floatArray;
+				for (i = 0; i < bufferData.length; i++) {
+					floatArray[i] = bufferData[i];
+				}
+				this.gl.bufferData(this.gl.ARRAY_BUFFER, floatArray, drawType);
+			}
+		}
+	}]);
+
+	return Mesh;
+}();
+
+exports.default = Mesh;
+
+},{"./GLTool":13,"gl-matrix":1}],15:[function(_dereq_,module,exports){
+'use strict';
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // Camera.js
 
 Object.defineProperty(exports, "__esModule", {
@@ -5413,7 +5516,7 @@ var Camera = function () {
 
 exports.default = Camera;
 
-},{"gl-matrix":1}],15:[function(_dereq_,module,exports){
+},{"gl-matrix":1}],16:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -5476,7 +5579,7 @@ var CameraOrtho = function (_Camera) {
 
 exports.default = CameraOrtho;
 
-},{"./Camera":14,"gl-matrix":1}],16:[function(_dereq_,module,exports){
+},{"./Camera":15,"gl-matrix":1}],17:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // EaseNumber.js
@@ -5570,7 +5673,7 @@ var EaseNumber = function () {
 
 exports.default = EaseNumber;
 
-},{"./Scheduler":18}],17:[function(_dereq_,module,exports){
+},{"./Scheduler":19}],18:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -5708,7 +5811,7 @@ var EventDispatcher = function () {
 
 exports.default = EventDispatcher;
 
-},{}],18:[function(_dereq_,module,exports){
+},{}],19:[function(_dereq_,module,exports){
 // Scheduler.js
 
 'use strict';

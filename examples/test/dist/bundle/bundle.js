@@ -9,7 +9,6 @@
 window.addEventListener('load', function () {
 	return _init();
 });
-var number = new alfrid.EaseNumber(0, .01);
 var cnt = 0;
 var GL = alfrid.GL;
 
@@ -18,15 +17,13 @@ function _init() {
 
 	var canvas = document.createElement("canvas");
 	canvas.className = 'Main-Canvas';
-
 	document.body.appendChild(canvas);
 
 	GL.init(canvas);
 	// alfrid.GL.displayExtensions();
 
+	//	LOOPING
 	alfrid.scheduler.addEF(loop);
-
-	number.value = 1;
 
 	//	CREATE CAMERA
 	var camera = new alfrid.CameraOrtho();
@@ -37,6 +34,7 @@ function _init() {
 	shader.bind();
 
 	//	CREATE GEOMETRY
+	var mesh = new alfrid.Mesh();
 
 	//	RENDER
 	GL.draw();

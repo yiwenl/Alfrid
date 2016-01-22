@@ -4,25 +4,22 @@
 var glslify = require("glslify");
 
 window.addEventListener('load', ()=>_init());
-let number = new alfrid.EaseNumber(0, .01);
 let cnt = 0;
 let GL = alfrid.GL;
 
 function _init() {
 	alfrid.log();
-	
 
 	let canvas = document.createElement("canvas");
 	canvas.className = 'Main-Canvas';
-
 	document.body.appendChild(canvas);
 
 	GL.init(canvas);
 	// alfrid.GL.displayExtensions();
 
+	//	LOOPING
 	alfrid.scheduler.addEF(loop);
 
-	number.value = 1;
 
 
 	//	CREATE CAMERA
@@ -35,6 +32,7 @@ function _init() {
 	shader.bind();
 
 	//	CREATE GEOMETRY
+	let mesh = new alfrid.Mesh();
 	
 
 	//	RENDER

@@ -84,11 +84,11 @@ class GLTool {
 	draw() {
 
 		//	DEFAULT MATRICES
-		this.shader.uniform("uProjectionMatrix", "uniformMatrix4fv", this.camera.projection);
-		this.shader.uniform("uModelMatrix", "uniformMatrix4fv", this.identityMatrix);
-		this.shader.uniform("uViewMatrix", "uniformMatrix4fv", this.camera.matrix);
-		this.shader.uniform("uNormalMatrix", "uniformMatrix3fv", this._normalMatrix);
-		this.shader.uniform("uViewMatrixInverse", "uniformMatrix4fv", this._inverseViewMatrix);
+		this.shader.uniform('uProjectionMatrix', 'uniformMatrix4fv', this.camera.projection);
+		this.shader.uniform('uModelMatrix', 'uniformMatrix4fv', this.identityMatrix);
+		this.shader.uniform('uViewMatrix', 'uniformMatrix4fv', this.camera.matrix);
+		this.shader.uniform('uNormalMatrix', 'uniformMatrix3fv', this._normalMatrix);
+		this.shader.uniform('uViewMatrixInverse', 'uniformMatrix4fv', this._inverseViewMatrix);
 		
 	}
 
