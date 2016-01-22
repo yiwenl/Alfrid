@@ -5,10 +5,11 @@ import glm from 'gl-matrix';
 class GLTool {
 	constructor() {
 		this.canvas;
-		this._viewport          = [0, 0, 0, 0];
-		this.identityMatrix     = glm.mat4.create();
-		this._normalMatrix      = glm.mat3.create();
-		this._inverseViewMatrix = glm.mat4.create();
+		this._viewport              = [0, 0, 0, 0];
+		this.enabledVertexAttribute = [];
+		this.identityMatrix         = glm.mat4.create();
+		this._normalMatrix          = glm.mat3.create();
+		this._inverseViewMatrix     = glm.mat4.create();
 		glm.mat4.identity(this.identityMatrix, this.identityMatrix);
 	}
 
@@ -21,6 +22,7 @@ class GLTool {
 		this.canvas = mCanvas;
 		this.setSize(window.innerWidth, window.innerHeight);
 		this.gl          = this.canvas.getContext('webgl', mParameters) || this.canvas.getContext('experimental-webgl', mParameters);
+		
 
 		//	extensions
 		const extensions = ['EXT_shader_texture_lod', 'GL_EXT_shader_texture_lod', 'EXT_sRGB', 'WEBKIT_WEBGL_depth_texture', 'EXT_frag_depth', 'OES_texture_float', 'OES_texture_half_float', 'OES_texture_float_linear', 'OES_texture_half_float_linear', 'OES_standard_derivatives'];
@@ -28,19 +30,26 @@ class GLTool {
 		for(let i=0; i<extensions.length; i++) {
 			this.extensions[extensions[i]] = this.gl.getExtension(extensions[i]);
 		}
+		
 
 		//	Copy gl Attributes
 		let gl = this.gl;
 		this.VERTEX_SHADER   = gl.VERTEX_SHADER;
 		this.FRAGMENT_SHADER = gl.FRAGMENT_SHADER;
 		this.COMPILE_STATUS  = gl.COMPILE_STATUS;
+		this.DEPTH_TEST      = gl.DEPTH_TEST;
+		this.CULL_FACE       = gl.CULL_FACE;
+
+		this.enable(this.DEPTH_TEST);
+		this.enable(this.CULL_FACE);
+		this.enable(this.BLEND);
 	}
 
 
 	//	PUBLIC METHODS
 
 	setViewport(x, y, w, h) {
-		var hasChanged = false;
+		let hasChanged = false;
 		if(x!==this._viewport[0]) {hasChanged = true;}
 		if(y!==this._viewport[1]) {hasChanged = true;}
 		if(w!==this._viewport[2]) {hasChanged = true;}
@@ -52,10 +61,12 @@ class GLTool {
 		}
 	}
 
+
 	clear(r, g, b, a) {
 		this.gl.clearColor( r, g, b, a );
 		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 	}
+
 
 	setMatrices(mCamera) {
 		this.camera = mCamera;
@@ -81,7 +92,31 @@ class GLTool {
 	}
 
 
-	draw() {
+	draw(mMesh) {
+		function getAttribLoc(gl, shaderProgram, name) {
+			if(shaderProgram.cacheAttribLoc === undefined) {	shaderProgram.cacheAttribLoc = {};	}
+			if(shaderProgram.cacheAttribLoc[name] === undefined) {
+				shaderProgram.cacheAttribLoc[name] = gl.getAttribLocation(shaderProgram, name);
+			}
+
+			return shaderProgram.cacheAttribLoc[name];
+		}
+
+		//	ATTRIBUTES
+		for(let i=0; i<mMesh.attributes.length; i++) {
+
+			let attribute = mMesh.attributes[i];
+			this.gl.bindBuffer(this.gl.ARRAY_BUFFER, attribute.buffer);
+			let attrPosition = getAttribLoc(this.gl, this.shaderProgram, attribute.name);
+			this.gl.vertexAttribPointer(attrPosition, attribute.itemSize, this.gl.FLOAT, false, 0, 0);
+			
+			if(this.enabledVertexAttribute.indexOf(attrPosition) === -1) {
+				this.gl.enableVertexAttribArray(attrPosition);
+				this.enabledVertexAttribute.push(attrPosition);
+			}
+			
+		}
+
 
 		//	DEFAULT MATRICES
 		this.shader.uniform('uProjectionMatrix', 'uniformMatrix4fv', this.camera.projection);
@@ -90,6 +125,13 @@ class GLTool {
 		this.shader.uniform('uNormalMatrix', 'uniformMatrix3fv', this._normalMatrix);
 		this.shader.uniform('uViewMatrixInverse', 'uniformMatrix4fv', this._inverseViewMatrix);
 		
+		//	DRAWING
+		if(mMesh.drawType === this.gl.POINTS ) {
+			this.gl.drawArrays(mMesh.drawType, 0, mMesh.vertexSize);	
+		} else {
+			this.gl.drawElements(mMesh.drawType, mMesh.iBuffer.numItems, this.gl.UNSIGNED_SHORT, 0);	
+		}
+
 	}
 
 
@@ -135,7 +177,7 @@ class GLTool {
 
 	get height() {	return this._height;	}
 
-
+	//	DESTROY
 
 	destroy() {
 		this.canvas = null;

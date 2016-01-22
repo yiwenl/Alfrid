@@ -26,7 +26,7 @@ class alfrid {
 		this.GLTool          = GLTool;
 		this.GLShader 		 = GLShader;
 		this.Mesh 			 = Mesh;
-		this.scheduler       = Scheduler;
+		this.Scheduler       = Scheduler;
 		this.EventDispatcher = EventDispatcher;
 		this.EaseNumber      = EaseNumber;
 		this.Camera          = Camera;
@@ -56,7 +56,7 @@ class alfrid {
 
 		for(let s in this) {
 			if(this[s]) {
-				console.log('%c'+s, 'color: #3E606F');
+				console.log('%c - '+s, 'color: #3E606F');
 			}
 		}
 	}

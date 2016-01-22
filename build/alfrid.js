@@ -4898,15 +4898,7 @@ module.exports = vec4;
 },{"./common.js":2}],11:[function(_dereq_,module,exports){
 'use strict';
 
-var _createClass = function () {
-	function defineProperties(target, props) {
-		for (var i = 0; i < props.length; i++) {
-			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-		}
-	}return function (Constructor, protoProps, staticProps) {
-		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-	};
-}(); // alfrid.js
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // alfrid.js
 
 //	TOOLS
 
@@ -4948,15 +4940,9 @@ var _CameraOrtho = _dereq_('./alfrid/cameras/CameraOrtho');
 
 var _CameraOrtho2 = _interopRequireDefault(_CameraOrtho);
 
-function _interopRequireDefault(obj) {
-	return obj && obj.__esModule ? obj : { default: obj };
-}
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) {
-	if (!(instance instanceof Constructor)) {
-		throw new TypeError("Cannot call a class as a function");
-	}
-}
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var VERSION = '1.0.0';
 
@@ -4968,7 +4954,8 @@ var alfrid = function () {
 		this.GL = _GLTool2.default;
 		this.GLTool = _GLTool2.default;
 		this.GLShader = _GLShader2.default;
-		this.scheduler = _Scheduler2.default;
+		this.Mesh = _Mesh2.default;
+		this.Scheduler = _Scheduler2.default;
 		this.EventDispatcher = _EventDispatcher2.default;
 		this.EaseNumber = _EaseNumber2.default;
 		this.Camera = _Camera2.default;
@@ -4997,7 +4984,7 @@ var alfrid = function () {
 
 			for (var s in this) {
 				if (this[s]) {
-					console.log('%c' + s, 'color: #3E606F');
+					console.log('%c - ' + s, 'color: #3E606F');
 				}
 			}
 		}
@@ -5015,15 +5002,7 @@ module.exports = b;
 
 'use strict';
 
-var _createClass = function () {
-	function defineProperties(target, props) {
-		for (var i = 0; i < props.length; i++) {
-			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-		}
-	}return function (Constructor, protoProps, staticProps) {
-		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-	};
-}();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
@@ -5033,15 +5012,9 @@ var _GLTool = _dereq_('./GLTool');
 
 var _GLTool2 = _interopRequireDefault(_GLTool);
 
-function _interopRequireDefault(obj) {
-	return obj && obj.__esModule ? obj : { default: obj };
-}
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) {
-	if (!(instance instanceof Constructor)) {
-		throw new TypeError("Cannot call a class as a function");
-	}
-}
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var addLineNumbers = function addLineNumbers(string) {
 	var lines = string.split('\n');
@@ -5182,6 +5155,7 @@ var GLTool = function () {
 
 		this.canvas;
 		this._viewport = [0, 0, 0, 0];
+		this.enabledVertexAttribute = [];
 		this.identityMatrix = _glMatrix2.default.mat4.create();
 		this._normalMatrix = _glMatrix2.default.mat3.create();
 		this._inverseViewMatrix = _glMatrix2.default.mat4.create();
@@ -5213,6 +5187,12 @@ var GLTool = function () {
 			this.VERTEX_SHADER = gl.VERTEX_SHADER;
 			this.FRAGMENT_SHADER = gl.FRAGMENT_SHADER;
 			this.COMPILE_STATUS = gl.COMPILE_STATUS;
+			this.DEPTH_TEST = gl.DEPTH_TEST;
+			this.CULL_FACE = gl.CULL_FACE;
+
+			this.enable(this.DEPTH_TEST);
+			this.enable(this.CULL_FACE);
+			this.enable(this.BLEND);
 		}
 
 		//	PUBLIC METHODS
@@ -5271,7 +5251,31 @@ var GLTool = function () {
 		}
 	}, {
 		key: 'draw',
-		value: function draw() {
+		value: function draw(mMesh) {
+			function getAttribLoc(gl, shaderProgram, name) {
+				if (shaderProgram.cacheAttribLoc === undefined) {
+					shaderProgram.cacheAttribLoc = {};
+				}
+				if (shaderProgram.cacheAttribLoc[name] === undefined) {
+					shaderProgram.cacheAttribLoc[name] = gl.getAttribLocation(shaderProgram, name);
+				}
+
+				return shaderProgram.cacheAttribLoc[name];
+			}
+
+			//	ATTRIBUTES
+			for (var i = 0; i < mMesh.attributes.length; i++) {
+
+				var attribute = mMesh.attributes[i];
+				this.gl.bindBuffer(this.gl.ARRAY_BUFFER, attribute.buffer);
+				var attrPosition = getAttribLoc(this.gl, this.shaderProgram, attribute.name);
+				this.gl.vertexAttribPointer(attrPosition, attribute.itemSize, this.gl.FLOAT, false, 0, 0);
+
+				if (this.enabledVertexAttribute.indexOf(attrPosition) === -1) {
+					this.gl.enableVertexAttribArray(attrPosition);
+					this.enabledVertexAttribute.push(attrPosition);
+				}
+			}
 
 			//	DEFAULT MATRICES
 			this.shader.uniform('uProjectionMatrix', 'uniformMatrix4fv', this.camera.projection);
@@ -5279,6 +5283,13 @@ var GLTool = function () {
 			this.shader.uniform('uViewMatrix', 'uniformMatrix4fv', this.camera.matrix);
 			this.shader.uniform('uNormalMatrix', 'uniformMatrix3fv', this._normalMatrix);
 			this.shader.uniform('uViewMatrixInverse', 'uniformMatrix4fv', this._inverseViewMatrix);
+
+			//	DRAWING
+			if (mMesh.drawType === this.gl.POINTS) {
+				this.gl.drawArrays(mMesh.drawType, 0, mMesh.vertexSize);
+			} else {
+				this.gl.drawElements(mMesh.drawType, mMesh.iBuffer.numItems, this.gl.UNSIGNED_SHORT, 0);
+			}
 		}
 	}, {
 		key: 'setSize',
@@ -5330,6 +5341,9 @@ var GLTool = function () {
 
 	}, {
 		key: 'destroy',
+
+		//	DESTROY
+
 		value: function destroy() {
 			this.canvas = null;
 			if (this.canvas.parentNode) {
@@ -5380,10 +5394,6 @@ var _GLTool = _dereq_('./GLTool');
 
 var _GLTool2 = _interopRequireDefault(_GLTool);
 
-var _glMatrix = _dereq_('gl-matrix');
-
-var _glMatrix2 = _interopRequireDefault(_glMatrix);
-
 function _interopRequireDefault(obj) {
 	return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -5394,29 +5404,60 @@ function _classCallCheck(instance, Constructor) {
 	}
 }
 
+var gl = undefined;
+
 var Mesh = function () {
 	function Mesh() {
 		var mDrawType = arguments.length <= 0 || arguments[0] === undefined ? _GLTool2.default.gl.TRIANGLES : arguments[0];
 
 		_classCallCheck(this, Mesh);
 
+		gl = _GLTool2.default.gl;
 		this.drawType = mDrawType;
-		console.log('Drawing type :', this.drawType === _GLTool2.default.gl.TRIANGLES);
 		this._attributes = [];
 	}
 
 	_createClass(Mesh, [{
 		key: 'bufferVertex',
-		value: function bufferVertex(mArrayVertices, isDynamic) {
+		value: function bufferVertex(mArrayVertices) {
+			var isDynamic = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+
 			this.bufferData(mArrayVertices, 'aVertexPosition', 3, isDynamic);
 		}
 	}, {
-		key: 'bufferData',
-		value: function bufferData(mData, mName, mItemSize, isDynamic) {
-			var index = -1;
-			var drawType = isDynamic ? this.gl.DYNAMIC_DRAW : this.gl.STATIC_DRAW;
-			var i = 0;
+		key: 'bufferTexCoords',
+		value: function bufferTexCoords(mArrayTexCoords) {
+			var isDynamic = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
 
+			this.bufferData(mArrayTexCoords, 'aTextureCoord', 2, isDynamic);
+		}
+	}, {
+		key: 'bufferIndices',
+		value: function bufferIndices(mArrayIndices) {
+			var isDynamic = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+
+			this.indexSize = mArrayIndices.length;
+			var drawType = isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW;
+			this._indices = mArrayIndices;
+			this.iBuffer = gl.createBuffer();
+			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.iBuffer);
+			gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(mArrayIndices), drawType);
+			this.iBuffer.itemSize = 1;
+			this.iBuffer.numItems = mArrayIndices.length;
+		}
+	}, {
+		key: 'bufferData',
+		value: function bufferData(mData, mName, mItemSize) {
+			var isDynamic = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
+
+			var index = -1,
+			    i = 0;
+			var drawType = isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW;
+			var bufferData = [];
+			var buffer = undefined,
+			    dataArray = undefined;
+
+			//	Check for exist attributes
 			for (i = 0; i < this._attributes.length; i++) {
 				if (this._attributes[i].name === mName) {
 					this._attributes[i].data = mData;
@@ -5425,31 +5466,38 @@ var Mesh = function () {
 				}
 			}
 
-			var bufferData = [];
+			//	flatten buffer data		
 			for (i = 0; i < mData.length; i++) {
 				for (var j = 0; j < mData[i].length; j++) {
 					bufferData.push(mData[i][j]);
 				}
 			}
 
-			var buffer = undefined,
-			    floatArray = undefined;
 			if (index === -1) {
-				buffer = this.gl.createBuffer();
-				this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
-				floatArray = new Float32Array(bufferData);
-				this.gl.bufferData(this.gl.ARRAY_BUFFER, floatArray, drawType);
-				this._attributes.push({ name: mName, data: mData, itemSize: mItemSize, buffer: buffer, floatArray: floatArray });
+
+				//	attribute not exist yet, create new buffer
+				buffer = gl.createBuffer();
+				gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+
+				dataArray = new Float32Array(bufferData);
+				gl.bufferData(gl.ARRAY_BUFFER, dataArray, drawType);
+				this._attributes.push({ name: mName, data: mData, itemSize: mItemSize, buffer: buffer, dataArray: dataArray });
 			} else {
+
+				//	attribute existed, replace with new data
 				buffer = this._attributes[index].buffer;
-				// console.debug("Buffer exist", buffer);
-				this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
-				floatArray = this._attributes[index].floatArray;
+				gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+				dataArray = this._attributes[index].dataArray;
 				for (i = 0; i < bufferData.length; i++) {
-					floatArray[i] = bufferData[i];
+					dataArray[i] = bufferData[i];
 				}
-				this.gl.bufferData(this.gl.ARRAY_BUFFER, floatArray, drawType);
+				gl.bufferData(gl.ARRAY_BUFFER, dataArray, drawType);
 			}
+		}
+	}, {
+		key: 'attributes',
+		get: function get() {
+			return this._attributes;
 		}
 	}]);
 
@@ -5458,7 +5506,7 @@ var Mesh = function () {
 
 exports.default = Mesh;
 
-},{"./GLTool":13,"gl-matrix":1}],15:[function(_dereq_,module,exports){
+},{"./GLTool":13}],15:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // Camera.js

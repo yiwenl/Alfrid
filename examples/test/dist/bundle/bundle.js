@@ -11,6 +11,9 @@ window.addEventListener('load', function () {
 });
 var cnt = 0;
 var GL = alfrid.GL;
+var mesh = undefined,
+    shader = undefined,
+    camera = undefined;
 
 function _init() {
 	alfrid.log();
@@ -23,30 +26,48 @@ function _init() {
 	// alfrid.GL.displayExtensions();
 
 	//	LOOPING
-	alfrid.scheduler.addEF(loop);
+	alfrid.Scheduler.addEF(loop);
 
 	//	CREATE CAMERA
-	var camera = new alfrid.CameraOrtho();
+	camera = new alfrid.CameraOrtho();
 	GL.setMatrices(camera);
 
 	//	CREATE SHADER
-	var shader = new alfrid.GLShader("#define GLSLIFY 1\n// basic.vert\n\n#define SHADER_NAME BASIC_VERTEX\n\nprecision highp float;\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat4 uMVMatrix;\nuniform mat4 uPMatrix;\n\nvarying vec2 vTextureCoord;\n\nvoid main(void) {\n    gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);\n    vTextureCoord = aTextureCoord;\n}", "#define GLSLIFY 1\n// basic.frag\n\n#define SHADER_NAME BASIC_FRAGMENT\n\nprecision highp float;\nvarying vec2 vTextureCoord;\n// uniform sampler2D texture;\n\nvoid main(void) {\n    gl_FragColor = vec4(1.0);\n}");
+	shader = new alfrid.GLShader("#define GLSLIFY 1\n// basic.vert\n\n#define SHADER_NAME BASIC_VERTEX\n\nprecision highp float;\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvarying vec2 vTextureCoord;\n\nvoid main(void) {\n    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);\n    vTextureCoord = aTextureCoord;\n}", "#define GLSLIFY 1\n// basic.frag\n\n#define SHADER_NAME BASIC_FRAGMENT\n\nprecision highp float;\nvarying vec2 vTextureCoord;\n// uniform sampler2D texture;\n\nvoid main(void) {\n    gl_FragColor = vec4(vTextureCoord, 0.0, 1.0);\n}");
 	shader.bind();
 
 	//	CREATE GEOMETRY
-	var mesh = new alfrid.Mesh();
+	var positions = [];
+	var coords = [];
+	var indices = [0, 1, 2, 0, 2, 3];
+
+	positions.push([-1, -1, 0]);
+	positions.push([1, -1, 0]);
+	positions.push([1, 1, 0]);
+	positions.push([-1, 1, 0]);
+
+	coords.push([0, 0]);
+	coords.push([1, 0]);
+	coords.push([1, 1]);
+	coords.push([0, 1]);
+
+	mesh = new alfrid.Mesh();
+	mesh.bufferVertex(positions);
+	mesh.bufferTexCoords(coords);
+	mesh.bufferIndices(indices);
 
 	//	RENDER
-	GL.draw();
 }
 
 function loop() {
 	var max = 60 * 5;
-	var gray = cnt / max;
+	var gray = 0;
 	GL.clear(gray, gray, gray, 1);
 
+	GL.draw(mesh);
+
 	if (cnt++ > max) {
-		window.location.href = './';
+		// window.location.href = './';
 	}
 }
 
