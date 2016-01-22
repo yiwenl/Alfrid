@@ -39,7 +39,7 @@ function _init() {
 	var up = vec3.clone([0, 1, 0]);
 	cameraPersp.lookAt(eye, center, up);
 
-	var orbitalControl = new alfrid.OrbitalControl(cameraPersp);
+	var orbitalControl = new alfrid.OrbitalControl(cameraPersp, window, 15);
 	orbitalControl.radius.value = 5;
 
 	GL.setMatrices(cameraPersp);

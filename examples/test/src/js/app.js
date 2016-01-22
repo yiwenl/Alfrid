@@ -34,7 +34,7 @@ function _init() {
 	cameraPersp.lookAt(eye, center, up);
 
 
-	let orbitalControl = new alfrid.OrbitalControl(cameraPersp);
+	let orbitalControl = new alfrid.OrbitalControl(cameraPersp, window, 15);
 	orbitalControl.radius.value = 5;
 
 	GL.setMatrices(cameraPersp);
@@ -66,7 +66,6 @@ function _init() {
 	mesh.bufferIndices(indices);
 	
 }
-
 
 
 function loop() {

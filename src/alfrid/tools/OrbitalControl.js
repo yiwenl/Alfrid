@@ -6,7 +6,7 @@ import Scheduler from './Scheduler';
 import glm from 'gl-matrix';
 
 const getMouse = function(mEvent, mTarget) {
-	
+
 	let o = mTarget || {};
 	if(mEvent.touches) {
 		o.x = mEvent.touches[0].pageX;
@@ -21,7 +21,7 @@ const getMouse = function(mEvent, mTarget) {
 
 class OrbitalControl {
 
-	constructor(mTarget, mListenerTarget=window) {
+	constructor(mTarget, mListenerTarget=window, mRadius=500) {
 
 		this._target         = mTarget;
 		this._listenerTarget = mListenerTarget;
@@ -29,7 +29,7 @@ class OrbitalControl {
 		this._preMouse       = {};
 		this.center          = glm.vec3.create();
 		this._up             = glm.vec3.fromValues( 0, 1, 0 );
-		this.radius          = new EaseNumber(500);
+		this.radius          = new EaseNumber(mRadius);
 		this.position        = glm.vec3.fromValues(0, 0, this.radius.value);
 		this.positionOffset  = glm.vec3.create();
 		this._rx             = new EaseNumber(0);
@@ -42,16 +42,15 @@ class OrbitalControl {
 		this._isLockRotation = false;
 		this._isInvert       = false;
 
-		this._listenerTarget.addEventListener("mousewheel", (e) => this._onWheel(e));
-		this._listenerTarget.addEventListener("DOMMouseScroll", (e) => this._onWheel(e));
+		this._listenerTarget.addEventListener('mousewheel', (e) => this._onWheel(e));
+		this._listenerTarget.addEventListener('DOMMouseScroll', (e) => this._onWheel(e));
 
 		this._listenerTarget.addEventListener('mousedown', (e) => this._onDown(e) );
-		this._listenerTarget.addEventListener('mousemove', (e) => this._onMove(e) );
-		window.addEventListener('mouseup', () => this._onUp() );
-
 		this._listenerTarget.addEventListener('touchstart', (e) => this._onDown(e) );
+		this._listenerTarget.addEventListener('mousemove', (e) => this._onMove(e) );
 		this._listenerTarget.addEventListener('touchmove', (e) => this._onMove(e) );
 		window.addEventListener('touchend', () => this._onUp() );
+		window.addEventListener('mouseup', () => this._onUp() );
 
 		Scheduler.addEF( () => this._loop());
 	}

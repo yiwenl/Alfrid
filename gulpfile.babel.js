@@ -26,7 +26,7 @@ let bundler = watchify(browserify({
     standalone: 'alfrid',
     debug: true
 }, watchify.args));
-
+bundler.transform(babelify);
 
 let lint = function() {
     return gulp.src([
@@ -38,8 +38,6 @@ let lint = function() {
 
 
 let bundle = function() {
-    bundler.transform(babelify);
-
     bundler.bundle()
         .on('error', function(err) {
             gutil.log('Browserify error:', err);

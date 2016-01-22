@@ -3,6 +3,7 @@
 import GLM 					from 'gl-matrix';
 import GLTool 				from './alfrid/GLTool';
 import GLShader 			from './alfrid/GLShader';
+import GLTexture 			from './alfrid/GLTexture';
 import Mesh 				from './alfrid/Mesh';
 
 //	TOOLS
@@ -16,6 +17,10 @@ import Camera 				from './alfrid/cameras/Camera';
 import CameraOrtho 			from './alfrid/cameras/CameraOrtho';
 import CameraPerspective	from './alfrid/cameras/CameraPerspective';
 
+//	LOADERS
+import BinaryLoader			from './alfrid/loaders/BinaryLoader';
+import ObjLoader			from './alfrid/loaders/ObjLoader';
+
 
 const VERSION = '1.0.0';
 
@@ -27,6 +32,7 @@ class alfrid {
 		this.GL                = GLTool;
 		this.GLTool            = GLTool;
 		this.GLShader          = GLShader;
+		this.GLTexture         = GLTexture;
 		this.Mesh              = Mesh;
 		this.Scheduler         = Scheduler;
 		this.EventDispatcher   = EventDispatcher;
@@ -35,6 +41,8 @@ class alfrid {
 		this.CameraOrtho       = CameraOrtho;
 		this.CameraPerspective = CameraPerspective;
 		this.OrbitalControl    = OrbitalControl;
+		this.BinaryLoader      = BinaryLoader;
+		this.ObjLoader         = ObjLoader;
 
 
 		//	NOT SUPER SURE I'VE DONE THIS IS A GOOD WAY
