@@ -3,7 +3,7 @@
 import Scheduler from './Scheduler';
 
 class EaseNumber {
-	constructor(mValue, mEasing) {
+	constructor(mValue, mEasing=0.1) {
 		this.easing       = mEasing;
 		this._value       = mValue;
 		this._targetValue = mValue;

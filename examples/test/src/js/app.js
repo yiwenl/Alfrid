@@ -28,16 +28,19 @@ function _init() {
 
 	cameraPersp = new alfrid.CameraPerspective();
 	cameraPersp.setPerspective(45*Math.PI/180, GL.aspectRatio, 1, 1000);
-	var eye                = vec3.clone([0, 0, 5]  );
+	var eye                = vec3.clone( [0, 0, 5]  );
 	var center             = vec3.create( );
-	var up                 = vec3.clone( [0,-1,0] );
+	var up                 = vec3.clone( [0, 1, 0] );
 	cameraPersp.lookAt(eye, center, up);
+
+
+	let orbitalControl = new alfrid.OrbitalControl(cameraPersp);
+	orbitalControl.radius.value = 5;
 
 	GL.setMatrices(cameraPersp);
 
 
 	//	CREATE SHADER
-	// shader = new alfrid.GLShader(glslify('../shaders/basic.vert'), glslify('../shaders/basic.frag'))
 	shader = new alfrid.GLShader();
 	shader.bind();
 
@@ -70,6 +73,7 @@ function loop() {
 	const max = 60 * 5;
 	let gray = 0;
 	GL.clear(gray, gray, gray, 1);
+	shader.uniform("time", "uniform1f", cnt*.1);
 
 	GL.draw(mesh);
 

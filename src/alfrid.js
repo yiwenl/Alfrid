@@ -9,6 +9,7 @@ import Mesh 				from './alfrid/Mesh';
 import Scheduler 			from './alfrid/tools/Scheduler';
 import EventDispatcher 		from './alfrid/tools/EventDispatcher';
 import EaseNumber 			from './alfrid/tools/EaseNumber';
+import OrbitalControl		from './alfrid/tools/OrbitalControl';
 
 //	CAMERAS
 import Camera 				from './alfrid/cameras/Camera';
@@ -33,6 +34,7 @@ class alfrid {
 		this.Camera            = Camera;
 		this.CameraOrtho       = CameraOrtho;
 		this.CameraPerspective = CameraPerspective;
+		this.OrbitalControl    = OrbitalControl;
 
 
 		//	NOT SUPER SURE I'VE DONE THIS IS A GOOD WAY

@@ -71,8 +71,7 @@ let release = function() {
         .pipe(sourcemaps.init({ loadMaps: true }))
         .pipe(uglify()) // Use any gulp plugins you want now
         .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('build'))
-        .pipe(gulp.dest('examples/test/dist/bundle'));
+        .pipe(gulp.dest('build'));
 }
 
 //  Tasks
