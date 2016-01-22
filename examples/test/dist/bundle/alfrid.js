@@ -5159,6 +5159,10 @@ exports.default = GLShader;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
 var _GLTool = _dereq_('./GLTool');
 
 var _GLTool2 = _interopRequireDefault(_GLTool);
@@ -5168,10 +5172,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var isPowerOfTwo = function isPowerOfTwo(x) {
-	return check = x !== 0 && !(x & x - 1);
+	return x !== 0 && !(x & x - 1);
 };
 
-var ismSourcePowerOfTwo = function ismSourcePowerOfTwo(obj) {
+var isSourcePowerOfTwo = function isSourcePowerOfTwo(obj) {
 	var w = obj.width || obj.videoWidth;
 	var h = obj.height || obj.videoHeight;
 
@@ -5198,7 +5202,7 @@ var GLTexture = function () {
 		} else {
 			this._mSource = mSource;
 			this.texture = gl.createTexture();
-			this._isVideo = mSource.tagName === "VIDEO";
+			this._isVideo = mSource.tagName === 'VIDEO';
 			this.magFilter = options.magFilter || gl.LINEAR;
 			this.minFilter = options.minFilter || gl.LINEAR_MIPMAP_NEAREST;
 
@@ -5207,7 +5211,7 @@ var GLTexture = function () {
 			var width = mSource.width || mSource.videoWidth;
 
 			if (width) {
-				if (!isPowerOfTwo(mSource)) {
+				if (!isSourcePowerOfTwo(mSource)) {
 					this.wrapS = this.wrapT = gl.CLAMP_TO_EDGE;
 					if (this.minFilter === gl.LINEAR_MIPMAP_NEAREST) {
 						this.minFilter = gl.LINEAR;
@@ -5280,6 +5284,8 @@ var GLTexture = function () {
 	return GLTexture;
 }();
 
+exports.default = GLTexture;
+
 },{"./GLTool":14}],14:[function(_dereq_,module,exports){
 'use strict';
 
@@ -5341,6 +5347,12 @@ var GLTool = function () {
 			this.DEPTH_TEST = gl.DEPTH_TEST;
 			this.CULL_FACE = gl.CULL_FACE;
 			this.BLEND = gl.BLEND;
+
+			this.LINEAR = gl.LINEAR;
+			this.NEAREST = gl.NEAREST;
+			this.LINEAR_MIPMAP_NEAREST = gl.LINEAR_MIPMAP_NEAREST;
+			this.MIRRORED_REPEAT = gl.MIRRORED_REPEAT;
+			this.CLAMP_TO_EDGE = gl.CLAMP_TO_EDGE;
 
 			this.enable(this.DEPTH_TEST);
 			this.enable(this.CULL_FACE);

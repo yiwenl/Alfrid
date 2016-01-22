@@ -37,13 +37,21 @@ class GLTool {
 		
 
 		//	Copy gl Attributes
-		let gl               = this.gl;
-		this.VERTEX_SHADER   = gl.VERTEX_SHADER;
-		this.FRAGMENT_SHADER = gl.FRAGMENT_SHADER;
-		this.COMPILE_STATUS  = gl.COMPILE_STATUS;
-		this.DEPTH_TEST      = gl.DEPTH_TEST;
-		this.CULL_FACE       = gl.CULL_FACE;
-		this.BLEND           = gl.BLEND;
+		let gl                     = this.gl;
+		this.VERTEX_SHADER         = gl.VERTEX_SHADER;
+		this.FRAGMENT_SHADER       = gl.FRAGMENT_SHADER;
+		this.COMPILE_STATUS        = gl.COMPILE_STATUS;
+		this.DEPTH_TEST            = gl.DEPTH_TEST;
+		this.CULL_FACE             = gl.CULL_FACE;
+		this.BLEND                 = gl.BLEND;
+		
+		this.LINEAR                = gl.LINEAR;
+		this.NEAREST               = gl.NEAREST;
+		this.LINEAR_MIPMAP_NEAREST = gl.LINEAR_MIPMAP_NEAREST;
+		this.MIRRORED_REPEAT       = gl.MIRRORED_REPEAT;
+		this.CLAMP_TO_EDGE         = gl.CLAMP_TO_EDGE;
+		
+
 
 		this.enable(this.DEPTH_TEST);
 		this.enable(this.CULL_FACE);

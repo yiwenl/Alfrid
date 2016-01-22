@@ -5,22 +5,22 @@
 import GL from './GLTool';
 
 const isPowerOfTwo = function(x) {	
-	return check = (x !== 0) && (!(x & (x - 1)));
-}
+	return (x !== 0) && (!(x & (x - 1)));
+};
 
-const ismSourcePowerOfTwo = function(obj) {	
+const isSourcePowerOfTwo = function(obj) {	
 	let w = obj.width || obj.videoWidth;
 	let h = obj.height || obj.videoHeight;
 
 	if(!w || !h) {return false;}
 
 	return isPowerOfTwo(w) && isPowerOfTwo(h);
-}
+};
 
 let gl;
 
 class GLTexture {
-	
+
 	constructor(mSource, isTexture=false, options={}) {
 		gl = GL.gl;
 
@@ -29,7 +29,7 @@ class GLTexture {
 		} else {
 			this._mSource  = mSource;
 			this.texture   = gl.createTexture();
-			this._isVideo  = (mSource.tagName === "VIDEO");
+			this._isVideo  = (mSource.tagName === 'VIDEO');
 			this.magFilter = options.magFilter || gl.LINEAR;
 			this.minFilter = options.minFilter || gl.LINEAR_MIPMAP_NEAREST;
 			
@@ -38,7 +38,7 @@ class GLTexture {
 			let width      = mSource.width || mSource.videoWidth;
 
 			if(width) {
-				if(!isPowerOfTwo(mSource)) {
+				if(!isSourcePowerOfTwo(mSource)) {
 					this.wrapS = this.wrapT = gl.CLAMP_TO_EDGE;
 					if(this.minFilter === gl.LINEAR_MIPMAP_NEAREST) {
 						this.minFilter = gl.LINEAR;
@@ -101,3 +101,5 @@ class GLTexture {
 	}
 
 }
+
+export default GLTexture;

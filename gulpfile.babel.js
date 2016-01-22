@@ -59,8 +59,6 @@ bundler.on('log', gutil.log);
 
 
 let release = function() {
-    bundler.transform(babelify);
-
     bundler.bundle()
         .on('error', logError)
         .pipe(source('alfrid.min.js'))
