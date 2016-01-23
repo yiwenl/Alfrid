@@ -5069,6 +5069,13 @@ var GLShader = function () {
 		this.uniformValues = {};
 		this.uniformTextures = [];
 
+		if (!strVertexShader) {
+			strVertexShader = defaultVertexShader;
+		}
+		if (!strFragmentShader) {
+			strFragmentShader = defaultVertexShader;
+		}
+
 		var vsShader = this._createShaderProgram(strVertexShader, true);
 		var fsShader = this._createShaderProgram(strFragmentShader, false);
 		this._attachShaderProgram(vsShader, fsShader);
@@ -5077,26 +5084,18 @@ var GLShader = function () {
 	_createClass(GLShader, [{
 		key: 'bind',
 		value: function bind() {
+
 			gl.useProgram(this.shaderProgram);
-
-			//	DEFAULT MATRICES
-			/*
-   if(this.shaderProgram.pMatrixUniform === undefined) {	this.shaderProgram.pMatrixUniform = gl.getUniformLocation(this.shaderProgram, 'uPMatrix');}
-   if(this.shaderProgram.mvMatrixUniform === undefined) {	this.shaderProgram.mvMatrixUniform = gl.getUniformLocation(this.shaderProgram, 'uMVMatrix');}
-   if(this.shaderProgram.normalMatrixUniform === undefined) {	this.shaderProgram.normalMatrixUniform = gl.getUniformLocation(this.shaderProgram, 'uNormalMatrix');}
-   if(this.shaderProgram.invertMVMatrixUniform === undefined) {	this.shaderProgram.invertMVMatrixUniform = gl.getUniformLocation(this.shaderProgram, 'uInvertMVMatrix');}
-   */
-
 			_GLTool2.default.useShader(this);
-			// GL.setShaderProgram(this.shaderProgram);
-
 			this.uniformTextures = [];
 		}
 	}, {
 		key: 'uniform',
 		value: function uniform(mName, mType, mValue) {
+
 			var hasUniform = false;
 			var oUniform = undefined;
+
 			for (var i = 0; i < this.parameters.length; i++) {
 				oUniform = this.parameters[i];
 				if (oUniform.name === mName) {
@@ -5123,6 +5122,7 @@ var GLShader = function () {
 	}, {
 		key: '_createShaderProgram',
 		value: function _createShaderProgram(mShaderStr, isVertexShader) {
+
 			var shaderType = isVertexShader ? _GLTool2.default.VERTEX_SHADER : _GLTool2.default.FRAGMENT_SHADER;
 			var shader = gl.createShader(shaderType);
 
@@ -5140,6 +5140,7 @@ var GLShader = function () {
 	}, {
 		key: '_attachShaderProgram',
 		value: function _attachShaderProgram(mVertexShader, mFragmentShader) {
+
 			this.shaderProgram = gl.createProgram();
 			gl.attachShader(this.shaderProgram, mVertexShader);
 			gl.attachShader(this.shaderProgram, mFragmentShader);
@@ -5228,7 +5229,6 @@ var GLTexture = function () {
 			gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 
 			if (mSource.exposure) {
-				// console.debug('Is HDR', mSource, typeof(mSource.data));
 				gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, mSource.shape[0], mSource.shape[1], 0, gl.RGBA, gl.FLOAT, mSource.data);
 			} else {
 				gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, mSource);
@@ -5247,7 +5247,51 @@ var GLTexture = function () {
 		}
 	}
 
+	//	MIPMAP FILTER
+
 	_createClass(GLTexture, [{
+		key: 'minFilter',
+		value: function minFilter(mValue) {
+			if (mValue != gl.LINEAR && mValue != gl.NEAREST && mValue != gl.LINEAR_MIPMAP_NEAREST) {
+				return this;
+			}
+			this.minFilter = mValue;
+			return this;
+		}
+	}, {
+		key: 'magFilter',
+		value: function magFilter(mValue) {
+			if (mValue != gl.LINEAR && mValue != gl.NEAREST && mValue != gl.LINEAR_MIPMAP_NEAREST) {
+				return this;
+			}
+			this.magFilter = mValue;
+			return this;
+		}
+
+		//	WRAP
+
+	}, {
+		key: 'wrapS',
+		value: function wrapS(mValue) {
+			if (mValue != gl.CLAMP_TO_EDGE && mValue != gl.REPEAT && mValue != gl.MIRRORED_REPEAT) {
+				return this;
+			}
+			this.wrapS = mValue;
+			return this;
+		}
+	}, {
+		key: 'wrapT',
+		value: function wrapT(mValue) {
+			if (mValue != gl.CLAMP_TO_EDGE && mValue != gl.REPEAT && mValue != gl.MIRRORED_REPEAT) {
+				return this;
+			}
+			this.wrapT = mValue;
+			return this;
+		}
+
+		//	UPDATE TEXTURE
+
+	}, {
 		key: 'updateTexture',
 		value: function updateTexture(mSource) {
 			if (mSource) {

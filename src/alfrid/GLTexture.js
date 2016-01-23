@@ -55,7 +55,6 @@ class GLTexture {
 			gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 
 			if(mSource.exposure) {
-				// console.debug('Is HDR', mSource, typeof(mSource.data));
 				gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, mSource.shape[0], mSource.shape[1], 0, gl.RGBA, gl.FLOAT, mSource.data);
 			} else {
 				gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, mSource);	
@@ -74,6 +73,38 @@ class GLTexture {
 		}
 	}
 
+
+	//	MIPMAP FILTER
+
+	minFilter(mValue) {
+		if(mValue != gl.LINEAR && mValue != gl.NEAREST && mValue != gl.LINEAR_MIPMAP_NEAREST) { return this; }
+		this.minFilter = mValue;
+		return this;
+	}
+
+	magFilter(mValue) {
+		if(mValue != gl.LINEAR && mValue != gl.NEAREST && mValue != gl.LINEAR_MIPMAP_NEAREST) { return this; }
+		this.magFilter = mValue;
+		return this;
+	}
+
+
+	//	WRAP
+
+	wrapS(mValue) {
+		if(mValue != gl.CLAMP_TO_EDGE && mValue != gl.REPEAT && mValue != gl.MIRRORED_REPEAT) { return this; }
+		this.wrapS = mValue;
+		return this;
+	}
+
+	wrapT(mValue) {
+		if(mValue != gl.CLAMP_TO_EDGE && mValue != gl.REPEAT && mValue != gl.MIRRORED_REPEAT) { return this; }
+		this.wrapT = mValue;
+		return this;
+	}
+
+
+	//	UPDATE TEXTURE
 
 	updateTexture(mSource) {
 		if(mSource){ this._mSource = mSource; }

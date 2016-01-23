@@ -19,38 +19,36 @@ let defaultFragmentShader = glslify('./shaders/basic.frag');
 
 class GLShader {
 	constructor(strVertexShader=defaultVertexShader, strFragmentShader=defaultFragmentShader) {
-		gl = GL.gl;
+
+		gl                   = GL.gl;
 		this.parameters      = [];
 		this.uniformValues   = {};
 		this.uniformTextures = [];
 
+		if(!strVertexShader) { strVertexShader = defaultVertexShader; }
+		if(!strFragmentShader) { strFragmentShader = defaultVertexShader; }
+
 		let vsShader = this._createShaderProgram(strVertexShader, true);
 		let fsShader = this._createShaderProgram(strFragmentShader, false);
 		this._attachShaderProgram(vsShader, fsShader);
+
 	}
 
 
 	bind() {
+
 		gl.useProgram(this.shaderProgram);
-
-		//	DEFAULT MATRICES
-		/*
-		if(this.shaderProgram.pMatrixUniform === undefined) {	this.shaderProgram.pMatrixUniform = gl.getUniformLocation(this.shaderProgram, 'uPMatrix');}
-		if(this.shaderProgram.mvMatrixUniform === undefined) {	this.shaderProgram.mvMatrixUniform = gl.getUniformLocation(this.shaderProgram, 'uMVMatrix');}
-		if(this.shaderProgram.normalMatrixUniform === undefined) {	this.shaderProgram.normalMatrixUniform = gl.getUniformLocation(this.shaderProgram, 'uNormalMatrix');}
-		if(this.shaderProgram.invertMVMatrixUniform === undefined) {	this.shaderProgram.invertMVMatrixUniform = gl.getUniformLocation(this.shaderProgram, 'uInvertMVMatrix');}
-		*/
-
 		GL.useShader(this);
-		// GL.setShaderProgram(this.shaderProgram);
-
 		this.uniformTextures = [];
+
 	}
 
 
 	uniform(mName, mType, mValue) {
+
 		let hasUniform = false;
 		let oUniform;
+
 		for(let i=0; i<this.parameters.length; i++) {
 			oUniform = this.parameters[i];
 			if(oUniform.name === mName) {
@@ -74,10 +72,12 @@ class GLShader {
 			gl[mType](this.shaderProgram[mName], false, mValue);
 			this.uniformValues[mName] = mValue;
 		}
+
 	}
 
 
 	_createShaderProgram(mShaderStr, isVertexShader) {
+		
 		let shaderType = isVertexShader ? GL.VERTEX_SHADER : GL.FRAGMENT_SHADER;
 		let shader = gl.createShader(shaderType);
 
@@ -94,10 +94,12 @@ class GLShader {
 	}
 
 	_attachShaderProgram(mVertexShader, mFragmentShader) {
+
 		this.shaderProgram = gl.createProgram();
 		gl.attachShader(this.shaderProgram, mVertexShader);
 		gl.attachShader(this.shaderProgram, mFragmentShader);
 		gl.linkProgram(this.shaderProgram);
+
 	}
 
 }

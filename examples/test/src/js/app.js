@@ -3,10 +3,21 @@
 // import glslify from 'glslify';
 var glslify = require("glslify");
 
-window.addEventListener('load', ()=>_init());
+
 let cnt = 0;
 let GL = alfrid.GL;
 let mesh, shader, camera, cameraPersp;
+let texture;
+
+let img = new Image();
+img.onload = function() {
+	if(window.body) {
+		_init();
+	} else {
+		window.addEventListener('load', ()=>_init());
+	}
+}
+img.src ='./assets/image.jpg';
 
 function _init() {
 	alfrid.log();
@@ -39,10 +50,14 @@ function _init() {
 
 	GL.setMatrices(cameraPersp);
 
+	//	CREATE TEXTURE
+	texture = new alfrid.GLTexture(img);
 
 	//	CREATE SHADER
-	shader = new alfrid.GLShader();
+	shader = new alfrid.GLShader(null, glslify('../shaders/basic.frag'));
 	shader.bind();
+	shader.uniform("texture", "uniform1i", 0);
+	texture.bind(0);
 
 	//	CREATE GEOMETRY
 	var positions = [];
