@@ -26,6 +26,13 @@ class Mesh {
 	}
 
 
+	bufferNormal(mNormals, isDynamic=false) {
+
+		this.bufferData(mNormals, 'aNormal', 3, isDynamic);
+
+	}
+
+
 	bufferIndices(mArrayIndices, isDynamic=false) {
 
 		var drawType          = isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW;
