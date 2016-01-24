@@ -5,6 +5,9 @@ import GLTool 				from './alfrid/GLTool';
 import GLShader 			from './alfrid/GLShader';
 import GLTexture 			from './alfrid/GLTexture';
 import Mesh 				from './alfrid/Mesh';
+import Geom					from './alfrid/Geom';
+import Batch				from './alfrid/Batch';
+import FrameBuffer			from './alfrid/FrameBuffer';
 
 //	TOOLS
 import Scheduler 			from './alfrid/tools/Scheduler';
@@ -21,6 +24,9 @@ import CameraPerspective	from './alfrid/cameras/CameraPerspective';
 import BinaryLoader			from './alfrid/loaders/BinaryLoader';
 import ObjLoader			from './alfrid/loaders/ObjLoader';
 
+//	HELPERS
+import BatchCopy			from './alfrid/helpers/BatchCopy';
+
 
 const VERSION = '1.0.0';
 
@@ -34,6 +40,9 @@ class alfrid {
 		this.GLShader          = GLShader;
 		this.GLTexture         = GLTexture;
 		this.Mesh              = Mesh;
+		this.Geom              = Geom;
+		this.Batch             = Batch;
+		this.FrameBuffer       = FrameBuffer;
 		this.Scheduler         = Scheduler;
 		this.EventDispatcher   = EventDispatcher;
 		this.EaseNumber        = EaseNumber;
@@ -43,6 +52,7 @@ class alfrid {
 		this.OrbitalControl    = OrbitalControl;
 		this.BinaryLoader      = BinaryLoader;
 		this.ObjLoader         = ObjLoader;
+		this.BatchCopy         = BatchCopy;
 
 
 		//	NOT SUPER SURE I'VE DONE THIS IS A GOOD WAY

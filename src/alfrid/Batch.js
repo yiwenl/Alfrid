@@ -1,6 +1,5 @@
 // Batch.js
 
-
 import GL from './GLTool';
 
 class Batch {
