@@ -10,9 +10,12 @@ var cnt = 0;
 var GL = alfrid.GL;
 var mesh = undefined,
     shader = undefined,
-    camera = undefined,
-    cameraPersp = undefined;
+    cameraOrtho = undefined,
+    cameraPersp = undefined,
+    batch = undefined,
+    meshPlane = undefined;
 var texture = undefined;
+var batchCopy = undefined;
 
 var img = new Image();
 img.onload = function () {
@@ -34,13 +37,13 @@ function _init() {
 	document.body.appendChild(canvas);
 
 	GL.init(canvas);
-	// alfrid.GL.displayExtensions();
+	// alfrid.GL.showExtensions();
 
 	//	LOOPING
 	alfrid.Scheduler.addEF(loop);
 
 	//	CREATE CAMERA
-	camera = new alfrid.CameraOrtho();
+	cameraOrtho = new alfrid.CameraOrtho();
 
 	cameraPersp = new alfrid.CameraPerspective();
 	cameraPersp.setPerspective(45 * Math.PI / 180, GL.aspectRatio, 1, 1000);
@@ -69,7 +72,7 @@ function _init() {
 	var indices = [0, 1, 2, 0, 2, 3];
 
 	var size = 1;
-	positions.push([-size, -size, 0]);
+	var z = positions.push([-size, -size, 0]);
 	positions.push([size, -size, 0]);
 	positions.push([size, size, 0]);
 	positions.push([-size, size, 0]);
@@ -83,15 +86,28 @@ function _init() {
 	mesh.bufferVertex(positions);
 	mesh.bufferTexCoords(coords);
 	mesh.bufferIndices(indices);
+
+	meshPlane = alfrid.Geom.plane(2, 2 * 983 / 736, 1);
+
+	batch = new alfrid.Batch(meshPlane, shader);
+	batchCopy = new alfrid.BatchCopy();
 }
 
 function loop() {
 	var max = 60 * 5;
 	var gray = 0;
-	GL.clear(gray, gray, gray, 1);
+
+	GL.viewport(0, 0, GL.width, GL.height);
+	GL.setMatrices(cameraPersp);
+	GL.clear(gray, gray, gray, 0);
 	shader.uniform("time", "uniform1f", cnt * .1);
 
-	GL.draw(mesh);
+	// GL.draw(mesh);
+	batch.draw();
+
+	GL.viewport(0, 0, 100, 100 * 983 / 736);
+	GL.setMatrices(cameraOrtho);
+	batchCopy.draw(texture);
 
 	if (cnt++ > max) {
 		// window.location.href = './';
