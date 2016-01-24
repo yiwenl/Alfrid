@@ -29,7 +29,7 @@ class GLTool {
 		
 
 		//	extensions
-		const extensions = ['EXT_shader_texture_lod', 'GL_EXT_shader_texture_lod', 'EXT_sRGB', 'WEBKIT_WEBGL_depth_texture', 'EXT_frag_depth', 'OES_texture_float', 'OES_texture_half_float', 'OES_texture_float_linear', 'OES_texture_half_float_linear', 'OES_standard_derivatives'];
+		const extensions = ['EXT_shader_texture_lod', 'EXT_shader_texture_lod', 'EXT_sRGB', 'WEBKIT_WEBGL_depth_texture', 'EXT_frag_depth', 'OES_texture_float', 'OES_texture_half_float', 'OES_texture_float_linear', 'OES_texture_half_float_linear', 'OES_standard_derivatives'];
 		this.extensions = {};
 		for(let i=0; i<extensions.length; i++) {
 			this.extensions[extensions[i]] = this.gl.getExtension(extensions[i]);
@@ -150,15 +150,15 @@ class GLTool {
 
 
 	setSize(mWidth, mHeight) {
-		this._width = mWidth;
-		this._height = mHeight;
-		this.canvas.width = this._width;
+		this._width        = mWidth;
+		this._height       = mHeight;
+		this.canvas.width  = this._width;
 		this.canvas.height = this._height;
-		this._aspectRatio = this._width / this._height;
+		this._aspectRatio  = this._width / this._height;
 	}
 
 
-	displayExtensions() {
+	showExtensions() {
 		console.log('Extensions : ' , this.extensions);
 		for(let ext in this.extensions) {
 			if(this.extensions[ext]) {
