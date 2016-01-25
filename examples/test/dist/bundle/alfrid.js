@@ -6049,6 +6049,353 @@ Geom.sphere = function (size, numSegments) {
 	return mesh;
 };
 
+Geom.cube = function (w, h, d) {
+	var withNormals = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
+	var drawType = arguments.length <= 4 || arguments[4] === undefined ? 4 : arguments[4];
+
+	h = h || w;
+	d = d || w;
+
+	var x = w / 2;
+	var y = h / 2;
+	var z = d / 2;
+
+	var positions = [];
+	var coords = [];
+	var indices = [];
+	var normals = [];
+	var count = 0;
+
+	// BACK
+	positions.push([-x, y, -z]);
+	positions.push([x, y, -z]);
+	positions.push([x, -y, -z]);
+	positions.push([-x, -y, -z]);
+
+	normals.push([0, 0, -1]);
+	normals.push([0, 0, -1]);
+	normals.push([0, 0, -1]);
+	normals.push([0, 0, -1]);
+
+	coords.push([0, 0]);
+	coords.push([1, 0]);
+	coords.push([1, 1]);
+	coords.push([0, 1]);
+
+	indices.push(count * 4 + 0);
+	indices.push(count * 4 + 1);
+	indices.push(count * 4 + 2);
+	indices.push(count * 4 + 0);
+	indices.push(count * 4 + 2);
+	indices.push(count * 4 + 3);
+
+	count++;
+
+	// RIGHT
+	positions.push([x, y, -z]);
+	positions.push([x, y, z]);
+	positions.push([x, -y, z]);
+	positions.push([x, -y, -z]);
+
+	normals.push([1, 0, 0]);
+	normals.push([1, 0, 0]);
+	normals.push([1, 0, 0]);
+	normals.push([1, 0, 0]);
+
+	coords.push([0, 0]);
+	coords.push([1, 0]);
+	coords.push([1, 1]);
+	coords.push([0, 1]);
+
+	indices.push(count * 4 + 0);
+	indices.push(count * 4 + 1);
+	indices.push(count * 4 + 2);
+	indices.push(count * 4 + 0);
+	indices.push(count * 4 + 2);
+	indices.push(count * 4 + 3);
+
+	count++;
+
+	// FRONT
+	positions.push([x, y, z]);
+	positions.push([-x, y, z]);
+	positions.push([-x, -y, z]);
+	positions.push([x, -y, z]);
+
+	normals.push([0, 0, 1]);
+	normals.push([0, 0, 1]);
+	normals.push([0, 0, 1]);
+	normals.push([0, 0, 1]);
+
+	coords.push([0, 0]);
+	coords.push([1, 0]);
+	coords.push([1, 1]);
+	coords.push([0, 1]);
+
+	indices.push(count * 4 + 0);
+	indices.push(count * 4 + 1);
+	indices.push(count * 4 + 2);
+	indices.push(count * 4 + 0);
+	indices.push(count * 4 + 2);
+	indices.push(count * 4 + 3);
+
+	count++;
+
+	// LEFT
+	positions.push([-x, y, z]);
+	positions.push([-x, y, -z]);
+	positions.push([-x, -y, -z]);
+	positions.push([-x, -y, z]);
+
+	normals.push([-1, 0, 0]);
+	normals.push([-1, 0, 0]);
+	normals.push([-1, 0, 0]);
+	normals.push([-1, 0, 0]);
+
+	coords.push([0, 0]);
+	coords.push([1, 0]);
+	coords.push([1, 1]);
+	coords.push([0, 1]);
+
+	indices.push(count * 4 + 0);
+	indices.push(count * 4 + 1);
+	indices.push(count * 4 + 2);
+	indices.push(count * 4 + 0);
+	indices.push(count * 4 + 2);
+	indices.push(count * 4 + 3);
+
+	count++;
+
+	// TOP
+	positions.push([-x, y, z]);
+	positions.push([x, y, z]);
+	positions.push([x, y, -z]);
+	positions.push([-x, y, -z]);
+
+	normals.push([0, 1, 0]);
+	normals.push([0, 1, 0]);
+	normals.push([0, 1, 0]);
+	normals.push([0, 1, 0]);
+
+	coords.push([0, 0]);
+	coords.push([1, 0]);
+	coords.push([1, 1]);
+	coords.push([0, 1]);
+
+	indices.push(count * 4 + 0);
+	indices.push(count * 4 + 1);
+	indices.push(count * 4 + 2);
+	indices.push(count * 4 + 0);
+	indices.push(count * 4 + 2);
+	indices.push(count * 4 + 3);
+
+	count++;
+
+	// BOTTOM
+	positions.push([-x, -y, -z]);
+	positions.push([x, -y, -z]);
+	positions.push([x, -y, z]);
+	positions.push([-x, -y, z]);
+
+	normals.push([0, -1, 0]);
+	normals.push([0, -1, 0]);
+	normals.push([0, -1, 0]);
+	normals.push([0, -1, 0]);
+
+	coords.push([0, 0]);
+	coords.push([1, 0]);
+	coords.push([1, 1]);
+	coords.push([0, 1]);
+
+	indices.push(count * 4 + 0);
+	indices.push(count * 4 + 1);
+	indices.push(count * 4 + 2);
+	indices.push(count * 4 + 0);
+	indices.push(count * 4 + 2);
+	indices.push(count * 4 + 3);
+
+	count++;
+
+	var mesh = new _Mesh2.default(drawType);
+	mesh.bufferVertex(positions);
+	mesh.bufferTexCoords(coords);
+	mesh.bufferIndices(indices);
+	if (withNormals) {
+		mesh.bufferNormal(normals);
+	}
+
+	return mesh;
+};
+
+Geom.skybox = function (size) {
+	var withNormals = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+	var drawType = arguments.length <= 2 || arguments[2] === undefined ? 4 : arguments[2];
+
+	var positions = [];
+	var coords = [];
+	var indices = [];
+	var normals = [];
+	var count = 0;
+
+	// BACK
+	positions.push([size, size, -size]);
+	positions.push([-size, size, -size]);
+	positions.push([-size, -size, -size]);
+	positions.push([size, -size, -size]);
+
+	normals.push([0, 0, -1]);
+	normals.push([0, 0, -1]);
+	normals.push([0, 0, -1]);
+	normals.push([0, 0, -1]);
+
+	coords.push([0, 0]);
+	coords.push([1, 0]);
+	coords.push([1, 1]);
+	coords.push([0, 1]);
+
+	indices.push(count * 4 + 0);
+	indices.push(count * 4 + 1);
+	indices.push(count * 4 + 2);
+	indices.push(count * 4 + 0);
+	indices.push(count * 4 + 2);
+	indices.push(count * 4 + 3);
+
+	count++;
+
+	// RIGHT
+	positions.push([size, -size, -size]);
+	positions.push([size, -size, size]);
+	positions.push([size, size, size]);
+	positions.push([size, size, -size]);
+
+	normals.push([1, 0, 0]);
+	normals.push([1, 0, 0]);
+	normals.push([1, 0, 0]);
+	normals.push([1, 0, 0]);
+
+	coords.push([0, 0]);
+	coords.push([1, 0]);
+	coords.push([1, 1]);
+	coords.push([0, 1]);
+
+	indices.push(count * 4 + 0);
+	indices.push(count * 4 + 1);
+	indices.push(count * 4 + 2);
+	indices.push(count * 4 + 0);
+	indices.push(count * 4 + 2);
+	indices.push(count * 4 + 3);
+
+	count++;
+
+	// FRONT
+	positions.push([-size, size, size]);
+	positions.push([size, size, size]);
+	positions.push([size, -size, size]);
+	positions.push([-size, -size, size]);
+
+	normals.push([0, 0, 1]);
+	normals.push([0, 0, 1]);
+	normals.push([0, 0, 1]);
+	normals.push([0, 0, 1]);
+
+	coords.push([0, 0]);
+	coords.push([1, 0]);
+	coords.push([1, 1]);
+	coords.push([0, 1]);
+
+	indices.push(count * 4 + 0);
+	indices.push(count * 4 + 1);
+	indices.push(count * 4 + 2);
+	indices.push(count * 4 + 0);
+	indices.push(count * 4 + 2);
+	indices.push(count * 4 + 3);
+
+	count++;
+
+	// LEFT
+	positions.push([-size, -size, size]);
+	positions.push([-size, -size, -size]);
+	positions.push([-size, size, -size]);
+	positions.push([-size, size, size]);
+
+	normals.push([-1, 0, 0]);
+	normals.push([-1, 0, 0]);
+	normals.push([-1, 0, 0]);
+	normals.push([-1, 0, 0]);
+
+	coords.push([0, 0]);
+	coords.push([1, 0]);
+	coords.push([1, 1]);
+	coords.push([0, 1]);
+
+	indices.push(count * 4 + 0);
+	indices.push(count * 4 + 1);
+	indices.push(count * 4 + 2);
+	indices.push(count * 4 + 0);
+	indices.push(count * 4 + 2);
+	indices.push(count * 4 + 3);
+
+	count++;
+
+	// TOP
+	positions.push([size, size, size]);
+	positions.push([-size, size, size]);
+	positions.push([-size, size, -size]);
+	positions.push([size, size, -size]);
+
+	normals.push([0, 1, 0]);
+	normals.push([0, 1, 0]);
+	normals.push([0, 1, 0]);
+	normals.push([0, 1, 0]);
+
+	coords.push([0, 0]);
+	coords.push([1, 0]);
+	coords.push([1, 1]);
+	coords.push([0, 1]);
+
+	indices.push(count * 4 + 0);
+	indices.push(count * 4 + 1);
+	indices.push(count * 4 + 2);
+	indices.push(count * 4 + 0);
+	indices.push(count * 4 + 2);
+	indices.push(count * 4 + 3);
+
+	count++;
+
+	// BOTTOM
+	positions.push([size, -size, -size]);
+	positions.push([-size, -size, -size]);
+	positions.push([-size, -size, size]);
+	positions.push([size, -size, size]);
+
+	normals.push([0, -1, 0]);
+	normals.push([0, -1, 0]);
+	normals.push([0, -1, 0]);
+	normals.push([0, -1, 0]);
+
+	coords.push([0, 0]);
+	coords.push([1, 0]);
+	coords.push([1, 1]);
+	coords.push([0, 1]);
+
+	indices.push(count * 4 + 0);
+	indices.push(count * 4 + 1);
+	indices.push(count * 4 + 2);
+	indices.push(count * 4 + 0);
+	indices.push(count * 4 + 2);
+	indices.push(count * 4 + 3);
+
+	var mesh = new _Mesh2.default(drawType);
+	mesh.bufferVertex(positions);
+	mesh.bufferTexCoords(coords);
+	mesh.bufferIndices(indices);
+	if (withNormals) {
+		mesh.bufferNormal(normals);
+	}
+
+	return mesh;
+};
+
 exports.default = Geom;
 
 },{"./Mesh":18}],18:[function(_dereq_,module,exports){
