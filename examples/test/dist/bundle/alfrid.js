@@ -5114,17 +5114,20 @@ var _GLTool = _dereq_('./GLTool');
 
 var _GLTool2 = _interopRequireDefault(_GLTool);
 
+var _GLTexture = _dereq_('./GLTexture');
+
+var _GLTexture2 = _interopRequireDefault(_GLTexture);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-// import GLTexture from './GLTexture';
 
 var isPowerOfTwo = function isPowerOfTwo(x) {
 	return x !== 0 && !(x & x - 1);
 };
 
 var gl = undefined;
+var WEBGL_depth_texture = undefined;
 
 var FrameBuffer = function () {
 	function FrameBuffer(mWidth, mHeight) {
@@ -5133,6 +5136,8 @@ var FrameBuffer = function () {
 		_classCallCheck(this, FrameBuffer);
 
 		gl = _GLTool2.default.gl;
+		WEBGL_depth_texture = _GLTool2.default.checkExtension('WEBGL_depth_texture');
+		var ext = _GLTool2.default.getExtension('WEBGL_depth_texture');
 
 		this.width = mWidth;
 		this.height = mHeight;
@@ -5140,6 +5145,8 @@ var FrameBuffer = function () {
 		this.minFilter = mParameters.minFilter || gl.LINEAR;
 		this.wrapS = mParameters.wrapS || gl.MIRRORED_REPEAT;
 		this.wrapT = mParameters.wrapT || gl.MIRRORED_REPEAT;
+		this.useDepth = mParameters.useDepth || true;
+		this.useStencil = mParameters.useStencil || false;
 
 		if (!isPowerOfTwo(this.width) || !isPowerOfTwo(this.height)) {
 			this.wrapS = this.wrapT = gl.CLAMP_TO_EDGE;
@@ -5154,16 +5161,80 @@ var FrameBuffer = function () {
 
 	_createClass(FrameBuffer, [{
 		key: '_init',
-		value: function _init() {}
+		value: function _init() {
+			this.texture = gl.createTexture();
+			this.glTexture = new _GLTexture2.default(this.texture, true);
+
+			this.depthTexture = gl.createTexture();
+			this.glDepthTexture = new _GLTexture2.default(this.depthTexture, true);
+
+			this.frameBuffer = gl.createFramebuffer();
+			gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer);
+
+			//	SETUP TEXTURE MIPMAP, WRAP
+
+			gl.bindTexture(gl.TEXTURE_2D, this.texture);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, this.magFilter);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, this.minFilter);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, this.wrapS);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, this.wrapT);
+			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.width, this.height, 0, gl.RGBA, gl.FLOAT, null);
+
+			if (WEBGL_depth_texture) {
+				gl.bindTexture(gl.TEXTURE_2D, this.depthTexture);
+				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, this.magFilter);
+				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, this.minFilter);
+				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, this.wrapS);
+				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, this.wrapT);
+				gl.texImage2D(gl.TEXTURE_2D, 0, gl.DEPTH_COMPONENT, this.width, this.height, 0, gl.DEPTH_COMPONENT, gl.UNSIGNED_SHORT, null);
+			}
+
+			//	GET COLOUR
+
+			gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.texture, 0);
+
+			//	GET DEPTH
+
+			gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, this.depthTexture, 0);
+
+			if (this.minFilter === gl.LINEAR_MIPMAP_NEAREST) {
+				gl.bindTexture(gl.TEXTURE_2D, this.texture);
+				gl.generateMipmap(gl.TEXTURE_2D);
+			}
+
+			//	UNBIND
+
+			gl.bindTexture(gl.TEXTURE_2D, null);
+			gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+			gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+		}
 
 		//	PUBLIC METHODS
 
 	}, {
 		key: 'bind',
-		value: function bind() {}
+		value: function bind() {
+			_GLTool2.default.viewport(0, 0, this.width, this.height);
+			gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer);
+		}
 	}, {
 		key: 'unbind',
-		value: function unbind() {}
+		value: function unbind() {
+			gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+		}
+
+		//	TEXTURES
+
+	}, {
+		key: 'getTexture',
+		value: function getTexture() {
+			return this.glTexture;
+		}
+	}, {
+		key: 'getDepthTexture',
+		value: function getDepthTexture() {
+			return this.glDepthTexture;
+		}
 
 		//	MIPMAP FILTER
 
@@ -5206,19 +5277,6 @@ var FrameBuffer = function () {
 			this.wrapT = mValue;
 			return this;
 		}
-
-		//	TEXTURES
-
-	}, {
-		key: 'getTexture',
-		value: function getTexture() {
-			return this.glTexture;
-		}
-	}, {
-		key: 'getDepthTexture',
-		value: function getDepthTexture() {
-			return this.glDepthTexture;
-		}
 	}]);
 
 	return FrameBuffer;
@@ -5226,7 +5284,7 @@ var FrameBuffer = function () {
 
 exports.default = FrameBuffer;
 
-},{"./GLTool":16}],14:[function(_dereq_,module,exports){
+},{"./GLTexture":15,"./GLTool":16}],14:[function(_dereq_,module,exports){
 // GLShader.js
 
 'use strict';
@@ -5394,7 +5452,7 @@ var gl = undefined;
 var GLTexture = function () {
 	function GLTexture(mSource) {
 		var isTexture = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
-		var options = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+		var mParameters = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
 
 		_classCallCheck(this, GLTexture);
 
@@ -5406,11 +5464,11 @@ var GLTexture = function () {
 			this._mSource = mSource;
 			this.texture = gl.createTexture();
 			this._isVideo = mSource.tagName === 'VIDEO';
-			this.magFilter = options.magFilter || gl.LINEAR;
-			this.minFilter = options.minFilter || gl.LINEAR_MIPMAP_NEAREST;
+			this.magFilter = mParameters.magFilter || gl.LINEAR;
+			this.minFilter = mParameters.minFilter || gl.LINEAR_MIPMAP_NEAREST;
 
-			this.wrapS = options.wrapS || gl.MIRRORED_REPEAT;
-			this.wrapT = options.wrapT || gl.MIRRORED_REPEAT;
+			this.wrapS = mParameters.wrapS || gl.MIRRORED_REPEAT;
+			this.wrapT = mParameters.wrapT || gl.MIRRORED_REPEAT;
 			var width = mSource.width || mSource.videoWidth;
 
 			if (width) {
@@ -5579,7 +5637,7 @@ var GLTool = function () {
 			this.gl = this.canvas.getContext('webgl', mParameters) || this.canvas.getContext('experimental-webgl', mParameters);
 
 			//	extensions
-			var extensions = ['EXT_shader_texture_lod', 'EXT_shader_texture_lod', 'EXT_sRGB', 'WEBKIT_WEBGL_depth_texture', 'EXT_frag_depth', 'OES_texture_float', 'OES_texture_half_float', 'OES_texture_float_linear', 'OES_texture_half_float_linear', 'OES_standard_derivatives'];
+			var extensions = ['EXT_shader_texture_lod', 'EXT_shader_texture_lod', 'EXT_sRGB', 'EXT_frag_depth', 'OES_texture_float', 'OES_texture_half_float', 'OES_texture_float_linear', 'OES_texture_half_float_linear', 'OES_standard_derivatives', 'WEBGL_depth_texture'];
 			this.extensions = {};
 			for (var i = 0; i < extensions.length; i++) {
 				this.extensions[extensions[i]] = this.gl.getExtension(extensions[i]);
@@ -5728,6 +5786,16 @@ var GLTool = function () {
 				}
 			}
 		}
+	}, {
+		key: 'checkExtension',
+		value: function checkExtension(mExtension) {
+			return !!this.extensions[mExtension];
+		}
+	}, {
+		key: 'getExtension',
+		value: function getExtension(mExtension) {
+			return this.extensions[mExtension];
+		}
 
 		//	BLEND MODES
 
@@ -5841,10 +5909,10 @@ Geom.plane = function (width, height, numSegments) {
 			var ty = gapY * j + sy;
 
 			if (axis === 'xz') {
-				positions.push([tx, 0, ty + gapY]);
-				positions.push([tx + gapX, 0, ty + gapY]);
-				positions.push([tx + gapX, 0, ty]);
-				positions.push([tx, 0, ty]);
+				positions.push([tx, 0, -ty + gapY]);
+				positions.push([tx + gapX, 0, -ty + gapY]);
+				positions.push([tx + gapX, 0, -ty]);
+				positions.push([tx, 0, -ty]);
 
 				normals.push([0, 1, 0]);
 				normals.push([0, 1, 0]);

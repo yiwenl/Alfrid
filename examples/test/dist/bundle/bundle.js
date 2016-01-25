@@ -21,6 +21,7 @@ var texture = undefined;
 var batchCopy = undefined,
     batch = undefined,
     batch2 = undefined;
+var fbo = undefined;
 
 var img = new Image();
 img.onload = function () {
@@ -33,6 +34,10 @@ img.onload = function () {
 	}
 };
 img.src = './assets/image.jpg';
+
+window.addEventListener('resize', function () {
+	return resize();
+});
 
 function _init() {
 	alfrid.log();
@@ -52,10 +57,10 @@ function _init() {
 
 	cameraPersp = new alfrid.CameraPerspective();
 	cameraPersp.setPerspective(45 * Math.PI / 180, GL.aspectRatio, 1, 1000);
-	var eye = vec3.clone([0, 0, 5]);
-	var center = vec3.create();
-	var up = vec3.clone([0, 1, 0]);
-	cameraPersp.lookAt(eye, center, up);
+	// var eye                = vec3.clone( [0, 0, 5]  );
+	// var center             = vec3.create( );
+	// var up                 = vec3.clone( [0, 1, 0] );
+	// cameraPersp.lookAt(eye, center, up);
 
 	var orbitalControl = new alfrid.OrbitalControl(cameraPersp, window, 15);
 	orbitalControl.radius.value = 10;
@@ -106,48 +111,67 @@ function _init() {
 
 	//	MESH VIA GEOM
 
-	meshPlane = alfrid.Geom.plane(2, 2 * 983 / 736, 12, false, 'xz', GL.LINES);
+	meshPlane = alfrid.Geom.plane(7, 7 * 983 / 736, 12, false, 'xz');
 	meshPlane2 = alfrid.Geom.plane(2, 2 * 983 / 736, 1);
-	meshSphere = alfrid.Geom.sphere(1, 20);
+	meshSphere = alfrid.Geom.sphere(1.5, 20);
 
 	//	BATCH
 
-	batch = new alfrid.Batch(meshPlane, shaderUV);
+	batch = new alfrid.Batch(meshPlane, shader);
 	batch2 = new alfrid.Batch(meshPlane2, shader);
 	batchSphere = new alfrid.Batch(meshSphere, shaderUV);
 	batchCopy = new alfrid.BatchCopy();
+
+	//	FRAME BUFFER
+	var fboSize = 1024;
+	fbo = new alfrid.FrameBuffer(fboSize, fboSize);
 }
 
 function loop() {
 	var max = 60 * 5;
 	var gray = 0;
 
+	GL.enable(GL.DEPTH_TEST);
 	GL.viewport(0, 0, GL.width, GL.height);
+	fbo.bind();
 	GL.setMatrices(cameraPersp);
-	GL.clear(gray, gray, gray, 0);
-
+	GL.clear(0, 0, 0, 0);
 	//	WITHOUT BATCH : BIND SHADER THEN DRAW MESH
 
 	// shader.bind();
 	// GL.draw(mesh);
 
 	batch.draw();
-	shaderUV.uniform("time", "uniform1f", cnt * .1);
 
 	batch2.draw();
 	shader.uniform("time", "uniform1f", cnt * .1);
 
 	shaderUV.bind();
+	shaderUV.uniform("time", "uniform1f", cnt * .1);
 
 	batchSphere.draw();
+	fbo.unbind();
 
-	GL.viewport(0, 0, 100, 100 * 983 / 736);
 	GL.setMatrices(cameraOrtho);
+	GL.disable(GL.DEPTH_TEST);
+
+	GL.viewport(0, 0, GL.width, GL.height);
+	batchCopy.draw(fbo.getTexture());
+
+	GL.viewport(0, 0, 100, 100 / GL.aspectRatio);
+	batchCopy.draw(fbo.getDepthTexture());
+
+	GL.viewport(100, 0, 100, 100 * 983 / 736);
 	batchCopy.draw(texture);
 
 	if (cnt++ > max) {
 		// window.location.href = './';
 	}
+}
+
+function resize() {
+	GL.setSize(window.innerWidth, window.innerHeight);
+	cameraPersp.setAspectRatio(GL.aspectRatio);
 }
 
 },{}]},{},[1]);
