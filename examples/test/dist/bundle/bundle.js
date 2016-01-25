@@ -12,10 +12,15 @@ var mesh = undefined,
     shader = undefined,
     cameraOrtho = undefined,
     cameraPersp = undefined,
-    batch = undefined,
-    meshPlane = undefined;
+    meshPlane = undefined,
+    meshSphere = undefined,
+    batchSphere = undefined,
+    shaderUV = undefined,
+    meshPlane2 = undefined;
 var texture = undefined;
-var batchCopy = undefined;
+var batchCopy = undefined,
+    batch = undefined,
+    batch2 = undefined;
 
 var img = new Image();
 img.onload = function () {
@@ -61,7 +66,8 @@ function _init() {
 	texture = new alfrid.GLTexture(img);
 
 	//	CREATE SHADER
-	shader = new alfrid.GLShader(null, "#define GLSLIFY 1\n// basic.frag\n\n#define SHADER_NAME BASIC_FRAGMENT\n\nprecision highp float;\nvarying vec2 vTextureCoord;\nuniform sampler2D texture;\n\nvoid main(void) {\n    gl_FragColor = texture2D(texture, vTextureCoord);\n}");
+	shader = new alfrid.GLShader(null, "#define GLSLIFY 1\n// basic.frag\n\n#define SHADER_NAME BASIC_FRAGMENT\n\nprecision highp float;\nvarying vec2 vTextureCoord;\nuniform sampler2D texture;\nuniform float time;\n\nvoid main(void) {\n    gl_FragColor = texture2D(texture, vTextureCoord);\n    // gl_FragColor = vec4(vTextureCoord, sin(time) * .5 + .5, 1.0);\n}");
+	shaderUV = new alfrid.GLShader(null, "#define GLSLIFY 1\n// basic.frag\n\n#define SHADER_NAME BASIC_FRAGMENT\n\nprecision highp float;\nvarying vec2 vTextureCoord;\n// uniform sampler2D texture;\nuniform float time;\n\nvoid main(void) {\n    // gl_FragColor = texture2D(texture, vTextureCoord);\n    gl_FragColor = vec4(vTextureCoord, sin(time) * .5 + .5, 1.0);\n}");
 	shader.bind();
 	shader.uniform("texture", "uniform1i", 0);
 	texture.bind(0);
@@ -69,13 +75,24 @@ function _init() {
 	//	CREATE GEOMETRY
 	var positions = [];
 	var coords = [];
-	var indices = [0, 1, 2, 0, 2, 3];
+	var indices = [0, 1, 2, 0, 2, 3, 4, 5, 6, 4, 6, 7];
 
 	var size = 1;
-	var z = positions.push([-size, -size, 0]);
-	positions.push([size, -size, 0]);
-	positions.push([size, size, 0]);
-	positions.push([-size, size, 0]);
+	var xOffset = .5;
+	positions.push([-size - xOffset, -size, -0.5]);
+	positions.push([size - xOffset, -size, -0.5]);
+	positions.push([size - xOffset, size, -0.5]);
+	positions.push([-size - xOffset, size, -0.5]);
+
+	coords.push([0, 0]);
+	coords.push([1, 0]);
+	coords.push([1, 1]);
+	coords.push([0, 1]);
+
+	positions.push([-size + xOffset, -size, 0.5]);
+	positions.push([size + xOffset, -size, 0.5]);
+	positions.push([size + xOffset, size, 0.5]);
+	positions.push([-size + xOffset, size, 0.5]);
 
 	coords.push([0, 0]);
 	coords.push([1, 0]);
@@ -87,9 +104,17 @@ function _init() {
 	mesh.bufferTexCoords(coords);
 	mesh.bufferIndices(indices);
 
-	meshPlane = alfrid.Geom.plane(2, 2 * 983 / 736, 1);
+	meshPlane = alfrid.Geom.plane(2, 2 * 983 / 736, 12, false, 'xz', GL.LINES);
 
-	batch = new alfrid.Batch(meshPlane, shader);
+	meshPlane2 = alfrid.Geom.plane(2, 2 * 983 / 736, 1);
+	// let meshPlane3 = alfrid.Geom.plane(2, 2, 4, false, 'yz', GL.LINES);
+
+	// console.log(meshPlane.id, meshPlane2.id, meshPlane3.id);
+	meshSphere = alfrid.Geom.sphere(1, 20);
+
+	batch = new alfrid.Batch(meshPlane, shaderUV);
+	batch2 = new alfrid.Batch(meshPlane2, shader);
+	batchSphere = new alfrid.Batch(meshSphere, shaderUV);
 	batchCopy = new alfrid.BatchCopy();
 }
 
@@ -100,10 +125,21 @@ function loop() {
 	GL.viewport(0, 0, GL.width, GL.height);
 	GL.setMatrices(cameraPersp);
 	GL.clear(gray, gray, gray, 0);
-	shader.uniform("time", "uniform1f", cnt * .1);
+
+	// shader.bind();
 
 	// GL.draw(mesh);
+	// console.log(batch.mesh.id);
+
 	batch.draw();
+	shaderUV.uniform("time", "uniform1f", cnt * .1);
+
+	batch2.draw();
+	shader.uniform("time", "uniform1f", cnt * .1);
+
+	shaderUV.bind();
+
+	batchSphere.draw();
 
 	GL.viewport(0, 0, 100, 100 * 983 / 736);
 	GL.setMatrices(cameraOrtho);

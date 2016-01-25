@@ -5114,27 +5114,14 @@ var _GLTool = _dereq_('./GLTool');
 
 var _GLTool2 = _interopRequireDefault(_GLTool);
 
-var _GLTexture = _dereq_('./GLTexture');
-
-var _GLTexture2 = _interopRequireDefault(_GLTexture);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+// import GLTexture from './GLTexture';
+
 var isPowerOfTwo = function isPowerOfTwo(x) {
 	return x !== 0 && !(x & x - 1);
-};
-
-var isSourcePowerOfTwo = function isSourcePowerOfTwo(obj) {
-	var w = obj.width || obj.videoWidth;
-	var h = obj.height || obj.videoHeight;
-
-	if (!w || !h) {
-		return false;
-	}
-
-	return isPowerOfTwo(w) && isPowerOfTwo(h);
 };
 
 var gl = undefined;
@@ -5147,14 +5134,14 @@ var FrameBuffer = function () {
 
 		gl = _GLTool2.default.gl;
 
-		this.width = width;
-		this.height = height;
-		this.magFilter = options.magFilter || gl.LINEAR;
-		this.minFilter = options.minFilter || gl.LINEAR;
-		this.wrapS = options.wrapS || gl.MIRRORED_REPEAT;
-		this.wrapT = options.wrapT || gl.MIRRORED_REPEAT;
+		this.width = mWidth;
+		this.height = mHeight;
+		this.magFilter = mParameters.magFilter || gl.LINEAR;
+		this.minFilter = mParameters.minFilter || gl.LINEAR;
+		this.wrapS = mParameters.wrapS || gl.MIRRORED_REPEAT;
+		this.wrapT = mParameters.wrapT || gl.MIRRORED_REPEAT;
 
-		if (!isPowerOfTwo(width) || !isPowerOfTwo(height)) {
+		if (!isPowerOfTwo(this.width) || !isPowerOfTwo(this.height)) {
 			this.wrapS = this.wrapT = gl.CLAMP_TO_EDGE;
 
 			if (this.minFilter === gl.LINEAR_MIPMAP_NEAREST) {
@@ -5183,7 +5170,7 @@ var FrameBuffer = function () {
 	}, {
 		key: 'minFilter',
 		value: function minFilter(mValue) {
-			if (mValue != gl.LINEAR && mValue != gl.NEAREST && mValue != gl.LINEAR_MIPMAP_NEAREST) {
+			if (mValue !== gl.LINEAR && mValue !== gl.NEAREST && mValue !== gl.LINEAR_MIPMAP_NEAREST) {
 				return this;
 			}
 			this.minFilter = mValue;
@@ -5192,7 +5179,7 @@ var FrameBuffer = function () {
 	}, {
 		key: 'magFilter',
 		value: function magFilter(mValue) {
-			if (mValue != gl.LINEAR && mValue != gl.NEAREST && mValue != gl.LINEAR_MIPMAP_NEAREST) {
+			if (mValue !== gl.LINEAR && mValue !== gl.NEAREST && mValue !== gl.LINEAR_MIPMAP_NEAREST) {
 				return this;
 			}
 			this.magFilter = mValue;
@@ -5204,7 +5191,7 @@ var FrameBuffer = function () {
 	}, {
 		key: 'wrapS',
 		value: function wrapS(mValue) {
-			if (mValue != gl.CLAMP_TO_EDGE && mValue != gl.REPEAT && mValue != gl.MIRRORED_REPEAT) {
+			if (mValue !== gl.CLAMP_TO_EDGE && mValue !== gl.REPEAT && mValue !== gl.MIRRORED_REPEAT) {
 				return this;
 			}
 			this.wrapS = mValue;
@@ -5213,7 +5200,7 @@ var FrameBuffer = function () {
 	}, {
 		key: 'wrapT',
 		value: function wrapT(mValue) {
-			if (mValue != gl.CLAMP_TO_EDGE && mValue != gl.REPEAT && mValue != gl.MIRRORED_REPEAT) {
+			if (mValue !== gl.CLAMP_TO_EDGE && mValue !== gl.REPEAT && mValue !== gl.MIRRORED_REPEAT) {
 				return this;
 			}
 			this.wrapT = mValue;
@@ -5239,7 +5226,7 @@ var FrameBuffer = function () {
 
 exports.default = FrameBuffer;
 
-},{"./GLTexture":15,"./GLTool":16}],14:[function(_dereq_,module,exports){
+},{"./GLTool":16}],14:[function(_dereq_,module,exports){
 // GLShader.js
 
 'use strict';
@@ -5467,7 +5454,7 @@ var GLTexture = function () {
 	_createClass(GLTexture, [{
 		key: 'minFilter',
 		value: function minFilter(mValue) {
-			if (mValue != gl.LINEAR && mValue != gl.NEAREST && mValue != gl.LINEAR_MIPMAP_NEAREST) {
+			if (mValue !== gl.LINEAR && mValue !== gl.NEAREST && mValue !== gl.LINEAR_MIPMAP_NEAREST) {
 				return this;
 			}
 			this.minFilter = mValue;
@@ -5476,7 +5463,7 @@ var GLTexture = function () {
 	}, {
 		key: 'magFilter',
 		value: function magFilter(mValue) {
-			if (mValue != gl.LINEAR && mValue != gl.NEAREST && mValue != gl.LINEAR_MIPMAP_NEAREST) {
+			if (mValue !== gl.LINEAR && mValue !== gl.NEAREST && mValue !== gl.LINEAR_MIPMAP_NEAREST) {
 				return this;
 			}
 			this.magFilter = mValue;
@@ -5488,7 +5475,7 @@ var GLTexture = function () {
 	}, {
 		key: 'wrapS',
 		value: function wrapS(mValue) {
-			if (mValue != gl.CLAMP_TO_EDGE && mValue != gl.REPEAT && mValue != gl.MIRRORED_REPEAT) {
+			if (mValue !== gl.CLAMP_TO_EDGE && mValue !== gl.REPEAT && mValue !== gl.MIRRORED_REPEAT) {
 				return this;
 			}
 			this.wrapS = mValue;
@@ -5497,7 +5484,7 @@ var GLTexture = function () {
 	}, {
 		key: 'wrapT',
 		value: function wrapT(mValue) {
-			if (mValue != gl.CLAMP_TO_EDGE && mValue != gl.REPEAT && mValue != gl.MIRRORED_REPEAT) {
+			if (mValue !== gl.CLAMP_TO_EDGE && mValue !== gl.REPEAT && mValue !== gl.MIRRORED_REPEAT) {
 				return this;
 			}
 			this.wrapT = mValue;
@@ -5606,6 +5593,9 @@ var GLTool = function () {
 			this.DEPTH_TEST = gl.DEPTH_TEST;
 			this.CULL_FACE = gl.CULL_FACE;
 			this.BLEND = gl.BLEND;
+			this.POINTS = gl.POINTS;
+			this.LINES = gl.LINES;
+			this.TRIANGLES = gl.TRIANGLES;
 
 			this.LINEAR = gl.LINEAR;
 			this.NEAREST = gl.NEAREST;
@@ -5700,6 +5690,10 @@ var GLTool = function () {
 					this._enabledVertexAttribute.push(attrPosition);
 				}
 			}
+
+			//	BIND INDEX BUFFER
+
+			this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, mMesh.iBuffer);
 
 			//	DEFAULT MATRICES
 			this.shader.uniform('uProjectionMatrix', 'uniformMatrix4fv', this.camera.projection);
@@ -5831,6 +5825,7 @@ var Geom = {};
 Geom.plane = function (width, height, numSegments) {
 	var withNormals = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
 	var axis = arguments.length <= 4 || arguments[4] === undefined ? 'xy' : arguments[4];
+	var drawType = arguments.length <= 5 || arguments[5] === undefined ? 4 : arguments[5];
 
 	var positions = [];
 	var coords = [];
@@ -5883,6 +5878,7 @@ Geom.plane = function (width, height, numSegments) {
 
 			var u = i / numSegments;
 			var v = j / numSegments;
+
 			coords.push([u, v]);
 			coords.push([u + gapUV, v]);
 			coords.push([u + gapUV, v + gapUV]);
@@ -5899,7 +5895,87 @@ Geom.plane = function (width, height, numSegments) {
 		}
 	}
 
-	var mesh = new _Mesh2.default(_GLTool2.default.gl.TRIANGLES);
+	var mesh = new _Mesh2.default(drawType);
+	mesh.bufferVertex(positions);
+	mesh.bufferTexCoords(coords);
+	mesh.bufferIndices(indices);
+	if (withNormals) {
+		mesh.bufferNormal(normals);
+	}
+
+	return mesh;
+};
+
+Geom.sphere = function (size, numSegments) {
+	var withNormals = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+	var isInvert = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
+	var drawType = arguments.length <= 4 || arguments[4] === undefined ? 4 : arguments[4];
+
+	var positions = [];
+	var coords = [];
+	var indices = [];
+	var normals = [];
+	var index = 0;
+	var gapUV = 1 / numSegments;
+
+	var getPosition = function getPosition(i, j) {
+		var isNormal = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+		//	rx : -90 ~ 90 , ry : 0 ~ 360
+		var rx = i / numSegments * Math.PI - Math.PI * 0.5;
+		var ry = j / numSegments * Math.PI * 2;
+		var r = isNormal ? 1 : size;
+		var pos = [];
+		pos[1] = Math.sin(rx) * r;
+		var t = Math.cos(rx) * r;
+		pos[0] = Math.cos(ry) * t;
+		pos[2] = Math.sin(ry) * t;
+
+		var precision = 10000;
+		pos[0] = Math.floor(pos[0] * precision) / precision;
+		pos[1] = Math.floor(pos[1] * precision) / precision;
+		pos[2] = Math.floor(pos[2] * precision) / precision;
+
+		return pos;
+	};
+
+	for (var i = 0; i < numSegments; i++) {
+		for (var j = 0; j < numSegments; j++) {
+			positions.push(getPosition(i, j));
+			positions.push(getPosition(i + 1, j));
+			positions.push(getPosition(i + 1, j + 1));
+			positions.push(getPosition(i, j + 1));
+
+			if (withNormals) {
+				normals.push(getPosition(i, j, true));
+				normals.push(getPosition(i + 1, j, true));
+				normals.push(getPosition(i + 1, j + 1, true));
+				normals.push(getPosition(i, j + 1, true));
+			}
+
+			var u = j / numSegments;
+			var v = i / numSegments;
+
+			coords.push([1.0 - u, v]);
+			coords.push([1.0 - u, v + gapUV]);
+			coords.push([1.0 - u - gapUV, v + gapUV]);
+			coords.push([1.0 - u - gapUV, v]);
+
+			indices.push(index * 4 + 0);
+			indices.push(index * 4 + 1);
+			indices.push(index * 4 + 2);
+			indices.push(index * 4 + 0);
+			indices.push(index * 4 + 2);
+			indices.push(index * 4 + 3);
+
+			index++;
+		}
+	}
+
+	if (isInvert) {
+		indices.reverse();
+	}
+
+	var mesh = new _Mesh2.default(drawType);
 	mesh.bufferVertex(positions);
 	mesh.bufferTexCoords(coords);
 	mesh.bufferIndices(indices);
@@ -6230,10 +6306,6 @@ var _Geom = _dereq_('../Geom');
 
 var _Geom2 = _interopRequireDefault(_Geom);
 
-var _GLTool = _dereq_('../GLTool');
-
-var _GLTool2 = _interopRequireDefault(_GLTool);
-
 var _GLShader = _dereq_('../GLShader');
 
 var _GLShader2 = _interopRequireDefault(_GLShader);
@@ -6250,6 +6322,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // BatchCopy.js
 
+// import GL from '../GLTool';
+
 
 
 var BatchCopy = function (_Batch) {
@@ -6264,7 +6338,7 @@ var BatchCopy = function (_Batch) {
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(BatchCopy).call(this, mesh, shader));
 
 		shader.bind();
-		shader.uniform("texture", "uniform1i", 0);
+		shader.uniform('texture', 'uniform1i', 0);
 		return _this;
 	}
 
@@ -6282,7 +6356,7 @@ var BatchCopy = function (_Batch) {
 
 exports.default = BatchCopy;
 
-},{"../Batch":12,"../GLShader":14,"../GLTool":16,"../Geom":17}],23:[function(_dereq_,module,exports){
+},{"../Batch":12,"../GLShader":14,"../Geom":17}],23:[function(_dereq_,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
