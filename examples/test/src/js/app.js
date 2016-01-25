@@ -112,7 +112,10 @@ function _init() {
 
 	//	FRAME BUFFER
 	let fboSize = 1024;
-	fbo = new alfrid.FrameBuffer(fboSize, fboSize);
+	fbo = new alfrid.FrameBuffer(fboSize, fboSize, {
+		minFilter:GL.LINEAR_MIPMAP_LINEAR,
+		magFilter:GL.LINEAR
+	});
 }
 
 
