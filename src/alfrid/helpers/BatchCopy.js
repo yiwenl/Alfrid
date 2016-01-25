@@ -1,10 +1,11 @@
 // BatchCopy.js
 
+// import GL from '../GLTool';
 import Geom from '../Geom';
-import GL from '../GLTool';
 import GLShader from '../GLShader';
 import Batch from '../Batch';
-var glslify = require("glslify");
+
+var glslify = require('glslify');
 
 class BatchCopy extends Batch {
 
@@ -14,7 +15,7 @@ class BatchCopy extends Batch {
 		super(mesh, shader);
 
 		shader.bind();
-		shader.uniform("texture", "uniform1i", 0);
+		shader.uniform('texture', 'uniform1i', 0);
 	}
 
 

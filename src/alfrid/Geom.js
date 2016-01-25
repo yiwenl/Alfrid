@@ -85,6 +85,6 @@ Geom.plane = function(width, height, numSegments, withNormals=false, axis='xy') 
 	}
 
 	return mesh;
-}
+};
 
 export default Geom;

@@ -77,13 +77,13 @@ class GLTexture {
 	//	MIPMAP FILTER
 
 	minFilter(mValue) {
-		if(mValue != gl.LINEAR && mValue != gl.NEAREST && mValue != gl.LINEAR_MIPMAP_NEAREST) { return this; }
+		if(mValue !== gl.LINEAR && mValue !== gl.NEAREST && mValue !== gl.LINEAR_MIPMAP_NEAREST) { return this; }
 		this.minFilter = mValue;
 		return this;
 	}
 
 	magFilter(mValue) {
-		if(mValue != gl.LINEAR && mValue != gl.NEAREST && mValue != gl.LINEAR_MIPMAP_NEAREST) { return this; }
+		if(mValue !== gl.LINEAR && mValue !== gl.NEAREST && mValue !== gl.LINEAR_MIPMAP_NEAREST) { return this; }
 		this.magFilter = mValue;
 		return this;
 	}
@@ -92,13 +92,13 @@ class GLTexture {
 	//	WRAP
 
 	wrapS(mValue) {
-		if(mValue != gl.CLAMP_TO_EDGE && mValue != gl.REPEAT && mValue != gl.MIRRORED_REPEAT) { return this; }
+		if(mValue !== gl.CLAMP_TO_EDGE && mValue !== gl.REPEAT && mValue !== gl.MIRRORED_REPEAT) { return this; }
 		this.wrapS = mValue;
 		return this;
 	}
 
 	wrapT(mValue) {
-		if(mValue != gl.CLAMP_TO_EDGE && mValue != gl.REPEAT && mValue != gl.MIRRORED_REPEAT) { return this; }
+		if(mValue !== gl.CLAMP_TO_EDGE && mValue !== gl.REPEAT && mValue !== gl.MIRRORED_REPEAT) { return this; }
 		this.wrapT = mValue;
 		return this;
 	}
