@@ -44,6 +44,9 @@ class GLTool {
 		this.DEPTH_TEST            = gl.DEPTH_TEST;
 		this.CULL_FACE             = gl.CULL_FACE;
 		this.BLEND                 = gl.BLEND;
+		this.POINTS                = gl.POINTS;
+		this.LINES                 = gl.LINES;
+		this.TRIANGLES             = gl.TRIANGLES;
 		
 		this.LINEAR                = gl.LINEAR;
 		this.NEAREST               = gl.NEAREST;
@@ -130,6 +133,11 @@ class GLTool {
 			}
 			
 		}
+
+
+		//	BIND INDEX BUFFER
+
+		this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, mMesh.iBuffer);
 
 
 		//	DEFAULT MATRICES
