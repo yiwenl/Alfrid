@@ -1,4 +1,4 @@
-import alfrid from '../../../../build/alfrid.js';
+import alfrid from '../../../../build/alfrid.min.js';
 var glslify = require("glslify");
 
 
