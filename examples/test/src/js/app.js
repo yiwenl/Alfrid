@@ -100,8 +100,8 @@ function _init() {
 	//	MESH VIA GEOM
 
 	meshPlane  = alfrid.Geom.plane(7, 7*983/736, 12, false, 'xz');
-	meshPlane2 = alfrid.Geom.plane(2, 2*983/736, 1);
-	meshSphere = alfrid.Geom.sphere(1.5, 20);
+	meshPlane2 = alfrid.Geom.plane(1.5, 1.5*983/736, 1);
+	meshSphere = alfrid.Geom.sphere(1, 48);
 
 	//	BATCH
 
@@ -126,14 +126,17 @@ function loop() {
 	fbo.bind();
 	GL.setMatrices(cameraPersp);
 	GL.clear(0, 0, 0, 0);
+
+
 	//	WITHOUT BATCH : BIND SHADER THEN DRAW MESH
 
-	// shader.bind();
-	// GL.draw(mesh);
+	shader.bind();
+	GL.draw(mesh);
+
+
+	//	DRAWING USING BATCH
 
 	batch.draw();
-	
-
 	batch2.draw();
 	shader.uniform("time", "uniform1f", cnt*.1);
 	
@@ -151,10 +154,10 @@ function loop() {
 	GL.viewport(0, 0, GL.width, GL.height);
 	batchCopy.draw(fbo.getTexture());
 
-	GL.viewport(0, 0, 100, 100/GL.aspectRatio);
+	GL.viewport(0, 0, 200, 200/GL.aspectRatio);
 	batchCopy.draw(fbo.getDepthTexture());
 
-	GL.viewport(100, 0, 100, 100 *983/736);
+	GL.viewport(200, 0, 100, 100 *983/736);
 	batchCopy.draw(texture);
 
 

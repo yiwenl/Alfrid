@@ -5137,7 +5137,6 @@ var FrameBuffer = function () {
 
 		gl = _GLTool2.default.gl;
 		WEBGL_depth_texture = _GLTool2.default.checkExtension('WEBGL_depth_texture');
-		var ext = _GLTool2.default.getExtension('WEBGL_depth_texture');
 
 		this.width = mWidth;
 		this.height = mHeight;

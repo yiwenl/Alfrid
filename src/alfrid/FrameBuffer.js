@@ -17,7 +17,6 @@ class FrameBuffer {
 	constructor(mWidth, mHeight, mParameters={}) {
 		gl = GL.gl;
 		WEBGL_depth_texture = GL.checkExtension('WEBGL_depth_texture');
-		let ext = GL.getExtension('WEBGL_depth_texture');
 
 		this.width      = mWidth;
 		this.height     = mHeight;
