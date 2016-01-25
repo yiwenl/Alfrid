@@ -3,25 +3,30 @@
 'use strict';
 
 import GL from './GLTool';
-// import GLTexture from './GLTexture';
+import GLTexture from './GLTexture';
 
 const isPowerOfTwo = function(x) {	
 	return (x !== 0) && (!(x & (x - 1)));
 };
 
 let gl;
+let WEBGL_depth_texture;
 
 class FrameBuffer {
 
 	constructor(mWidth, mHeight, mParameters={}) {
 		gl = GL.gl;
+		WEBGL_depth_texture = GL.checkExtension('WEBGL_depth_texture');
+		let ext = GL.getExtension('WEBGL_depth_texture');
 
-		this.width     = mWidth;
-		this.height    = mHeight;
-		this.magFilter = mParameters.magFilter || gl.LINEAR;
-		this.minFilter = mParameters.minFilter || gl.LINEAR;
-		this.wrapS     = mParameters.wrapS || gl.MIRRORED_REPEAT;
-		this.wrapT     = mParameters.wrapT || gl.MIRRORED_REPEAT;
+		this.width      = mWidth;
+		this.height     = mHeight;
+		this.magFilter  = mParameters.magFilter 	|| gl.LINEAR;
+		this.minFilter  = mParameters.minFilter 	|| gl.LINEAR;
+		this.wrapS      = mParameters.wrapS 		|| gl.MIRRORED_REPEAT;
+		this.wrapT      = mParameters.wrapT 		|| gl.MIRRORED_REPEAT;
+		this.useDepth   = mParameters.useDepth 		|| true;
+		this.useStencil = mParameters.useStencil 	|| false;
 
 		if(!isPowerOfTwo(this.width) || !isPowerOfTwo(this.height)) {
 			this.wrapS = this.wrapT = gl.CLAMP_TO_EDGE;
@@ -34,7 +39,56 @@ class FrameBuffer {
 		this._init();
 	}
 
+
 	_init() {
+		this.texture            = gl.createTexture();
+		this.glTexture			= new GLTexture(this.texture, true);
+
+		this.depthTexture       = gl.createTexture();
+		this.glDepthTexture		= new GLTexture(this.depthTexture, true);
+		
+		this.frameBuffer        = gl.createFramebuffer();		
+		gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer);
+
+
+		//	SETUP TEXTURE MIPMAP, WRAP
+
+		gl.bindTexture(gl.TEXTURE_2D, this.texture);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, this.magFilter);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, this.minFilter);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, this.wrapS);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, this.wrapT);
+		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.width, this.height, 0, gl.RGBA, gl.FLOAT, null);
+
+		if(WEBGL_depth_texture) {
+			gl.bindTexture(gl.TEXTURE_2D, this.depthTexture);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, this.magFilter);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, this.minFilter);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, this.wrapS);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, this.wrapT);
+			gl.texImage2D(gl.TEXTURE_2D, 0, gl.DEPTH_COMPONENT, this.width, this.height, 0, gl.DEPTH_COMPONENT, gl.UNSIGNED_SHORT, null);	
+		}
+		
+
+		//	GET COLOUR
+
+		gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.texture, 0);
+
+		//	GET DEPTH
+
+		gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, this.depthTexture, 0);
+
+
+		if(this.minFilter === gl.LINEAR_MIPMAP_NEAREST)	{
+			gl.bindTexture(gl.TEXTURE_2D, this.texture);
+			gl.generateMipmap(gl.TEXTURE_2D);
+		}
+
+		//	UNBIND
+
+		gl.bindTexture(gl.TEXTURE_2D, null);
+		gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
 	}
 
@@ -42,12 +96,24 @@ class FrameBuffer {
 	//	PUBLIC METHODS
 
 	bind() {
-
+		GL.viewport(0, 0, this.width, this.height);
+		gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer);
 	}
 
 
 	unbind() {
+		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+	}
 
+
+	//	TEXTURES
+
+	getTexture() {
+		return this.glTexture;
+	}
+
+	getDepthTexture() {
+		return this.glDepthTexture;
 	}
 
 
@@ -80,16 +146,6 @@ class FrameBuffer {
 		return this;
 	}
 
-
-	//	TEXTURES
-
-	getTexture() {
-		return this.glTexture;
-	}
-
-	getDepthTexture() {
-		return this.glDepthTexture;
-	}
 
 }
 

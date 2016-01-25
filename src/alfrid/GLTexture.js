@@ -21,7 +21,7 @@ let gl;
 
 class GLTexture {
 
-	constructor(mSource, isTexture=false, options={}) {
+	constructor(mSource, isTexture=false, mParameters={}) {
 		gl = GL.gl;
 
 		if(isTexture) {
@@ -30,11 +30,11 @@ class GLTexture {
 			this._mSource  = mSource;
 			this.texture   = gl.createTexture();
 			this._isVideo  = (mSource.tagName === 'VIDEO');
-			this.magFilter = options.magFilter || gl.LINEAR;
-			this.minFilter = options.minFilter || gl.LINEAR_MIPMAP_NEAREST;
+			this.magFilter = mParameters.magFilter || gl.LINEAR;
+			this.minFilter = mParameters.minFilter || gl.LINEAR_MIPMAP_NEAREST;
 			
-			this.wrapS     = options.wrapS || gl.MIRRORED_REPEAT;
-			this.wrapT     = options.wrapT || gl.MIRRORED_REPEAT;
+			this.wrapS     = mParameters.wrapS || gl.MIRRORED_REPEAT;
+			this.wrapT     = mParameters.wrapT || gl.MIRRORED_REPEAT;
 			let width      = mSource.width || mSource.videoWidth;
 
 			if(width) {
