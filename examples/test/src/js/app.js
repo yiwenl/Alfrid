@@ -47,7 +47,7 @@ function _init() {
 
 
 	let orbitalControl = new alfrid.OrbitalControl(cameraPersp, window, 15);
-	orbitalControl.radius.value = 5;
+	orbitalControl.radius.value = 10;
 
 	GL.setMatrices(cameraPersp);
 
@@ -92,21 +92,21 @@ function _init() {
 	mesh.bufferVertex(positions);
 	mesh.bufferTexCoords(coords);
 	mesh.bufferIndices(indices);
-	
+
 
 	
-	meshPlane = alfrid.Geom.plane(2, 2*983/736, 12, false, 'xz', GL.LINES);
+	//	MESH VIA GEOM
 
+	meshPlane  = alfrid.Geom.plane(2, 2*983/736, 12, false, 'xz', GL.LINES);
 	meshPlane2 = alfrid.Geom.plane(2, 2*983/736, 1);
-	// let meshPlane3 = alfrid.Geom.plane(2, 2, 4, false, 'yz', GL.LINES);
-
-	// console.log(meshPlane.id, meshPlane2.id, meshPlane3.id);
 	meshSphere = alfrid.Geom.sphere(1, 20);
 
-	batch = new alfrid.Batch(meshPlane, shaderUV);
-	batch2 = new alfrid.Batch(meshPlane2, shader);
+	//	BATCH
+
+	batch       = new alfrid.Batch(meshPlane, shaderUV);
+	batch2      = new alfrid.Batch(meshPlane2, shader);
 	batchSphere = new alfrid.Batch(meshSphere, shaderUV);
-	batchCopy = new alfrid.BatchCopy();
+	batchCopy   = new alfrid.BatchCopy();
 }
 
 
@@ -118,11 +118,10 @@ function loop() {
 	GL.setMatrices(cameraPersp);
 	GL.clear(gray, gray, gray, 0);
 	
-	
+	//	WITHOUT BATCH : BIND SHADER THEN DRAW MESH
+		
 	// shader.bind();
-	
 	// GL.draw(mesh);
-	// console.log(batch.mesh.id);
 
 	batch.draw();
 	shaderUV.uniform("time", "uniform1f", cnt*.1);

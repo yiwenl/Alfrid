@@ -3,7 +3,6 @@
 'use strict';
 
 import Mesh from './Mesh';
-import GL from './GLTool';
 
 let Geom = {};
 
