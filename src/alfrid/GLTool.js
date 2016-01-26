@@ -11,6 +11,7 @@ class GLTool {
 		this.identityMatrix          = glm.mat4.create();
 		this._normalMatrix           = glm.mat3.create();
 		this._inverseViewMatrix      = glm.mat4.create();
+		this._modelMatrix			 = glm.mat4.create();
 		this._matrix                 = glm.mat4.create();
 		glm.mat4.identity(this.identityMatrix, this.identityMatrix);
 	}
@@ -97,9 +98,8 @@ class GLTool {
 
 
 	rotate(mRotation) {
-		glm.mat4.copy(this._matrix, mRotation);
-
-		glm.mat4.multiply(this._matrix, this.camera.matrix, this._matrix);
+		glm.mat4.copy(this._modelMatrix, mRotation);
+		glm.mat4.multiply(this._matrix, this.camera.matrix, this._modelMatrix);
 		glm.mat3.fromMat4(this._normalMatrix, this._matrix);
 		glm.mat3.invert(this._normalMatrix, this._normalMatrix);
 		glm.mat3.transpose(this._normalMatrix, this._normalMatrix);
@@ -142,7 +142,7 @@ class GLTool {
 
 		//	DEFAULT MATRICES
 		this.shader.uniform('uProjectionMatrix', 'uniformMatrix4fv', this.camera.projection);
-		this.shader.uniform('uModelMatrix', 'uniformMatrix4fv', this.identityMatrix);
+		this.shader.uniform('uModelMatrix', 'uniformMatrix4fv', this._modelMatrix);
 		this.shader.uniform('uViewMatrix', 'uniformMatrix4fv', this.camera.matrix);
 		this.shader.uniform('uNormalMatrix', 'uniformMatrix3fv', this._normalMatrix);
 		this.shader.uniform('uViewMatrixInverse', 'uniformMatrix4fv', this._inverseViewMatrix);

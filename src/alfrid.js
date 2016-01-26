@@ -14,6 +14,7 @@ import Scheduler 			from './alfrid/tools/Scheduler';
 import EventDispatcher 		from './alfrid/tools/EventDispatcher';
 import EaseNumber 			from './alfrid/tools/EaseNumber';
 import OrbitalControl		from './alfrid/tools/OrbitalControl';
+import QuatRotation			from './alfrid/tools/QuatRotation';
 
 //	CAMERAS
 import Camera 				from './alfrid/cameras/Camera';
@@ -50,6 +51,7 @@ class alfrid {
 		this.CameraOrtho       = CameraOrtho;
 		this.CameraPerspective = CameraPerspective;
 		this.OrbitalControl    = OrbitalControl;
+		this.QuatRotation      = QuatRotation;
 		this.BinaryLoader      = BinaryLoader;
 		this.ObjLoader         = ObjLoader;
 		this.BatchCopy         = BatchCopy;
