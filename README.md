@@ -13,5 +13,5 @@ A WebGL tool set
 - uViewMatrix
 - uProjectionMatrix
 - uNormalMatrix
-- uViewMatrixInverse
+- uModelViewMatrixInverse
 
