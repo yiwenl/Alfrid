@@ -4924,10 +4924,6 @@ var _GLTexture = _dereq_('./alfrid/GLTexture');
 
 var _GLTexture2 = _interopRequireDefault(_GLTexture);
 
-var _GLCubeTexture = _dereq_('./alfrid/GLCubeTexture');
-
-var _GLCubeTexture2 = _interopRequireDefault(_GLCubeTexture);
-
 var _Mesh = _dereq_('./alfrid/Mesh');
 
 var _Mesh2 = _interopRequireDefault(_Mesh);
@@ -4959,10 +4955,6 @@ var _EaseNumber2 = _interopRequireDefault(_EaseNumber);
 var _OrbitalControl = _dereq_('./alfrid/tools/OrbitalControl');
 
 var _OrbitalControl2 = _interopRequireDefault(_OrbitalControl);
-
-var _QuatRotation = _dereq_('./alfrid/tools/QuatRotation');
-
-var _QuatRotation2 = _interopRequireDefault(_QuatRotation);
 
 var _Camera = _dereq_('./alfrid/cameras/Camera');
 
@@ -5003,7 +4995,6 @@ var alfrid = function () {
 		this.GLTool = _GLTool2.default;
 		this.GLShader = _GLShader2.default;
 		this.GLTexture = _GLTexture2.default;
-		this.GLCubeTexture = _GLCubeTexture2.default;
 		this.Mesh = _Mesh2.default;
 		this.Geom = _Geom2.default;
 		this.Batch = _Batch2.default;
@@ -5015,7 +5006,6 @@ var alfrid = function () {
 		this.CameraOrtho = _CameraOrtho2.default;
 		this.CameraPerspective = _CameraPerspective2.default;
 		this.OrbitalControl = _OrbitalControl2.default;
-		this.QuatRotation = _QuatRotation2.default;
 		this.BinaryLoader = _BinaryLoader2.default;
 		this.ObjLoader = _ObjLoader2.default;
 		this.BatchCopy = _BatchCopy2.default;
@@ -5056,7 +5046,7 @@ var b = new alfrid();
 
 module.exports = b;
 
-},{"./alfrid/Batch":12,"./alfrid/FrameBuffer":13,"./alfrid/GLCubeTexture":14,"./alfrid/GLShader":15,"./alfrid/GLTexture":16,"./alfrid/GLTool":17,"./alfrid/Geom":18,"./alfrid/Mesh":19,"./alfrid/cameras/Camera":20,"./alfrid/cameras/CameraOrtho":21,"./alfrid/cameras/CameraPerspective":22,"./alfrid/helpers/BatchCopy":23,"./alfrid/loaders/BinaryLoader":24,"./alfrid/loaders/ObjLoader":25,"./alfrid/tools/EaseNumber":26,"./alfrid/tools/EventDispatcher":27,"./alfrid/tools/OrbitalControl":28,"./alfrid/tools/QuatRotation":29,"./alfrid/tools/Scheduler":30,"gl-matrix":1}],12:[function(_dereq_,module,exports){
+},{"./alfrid/Batch":12,"./alfrid/FrameBuffer":13,"./alfrid/GLShader":14,"./alfrid/GLTexture":15,"./alfrid/GLTool":16,"./alfrid/Geom":17,"./alfrid/Mesh":18,"./alfrid/cameras/Camera":19,"./alfrid/cameras/CameraOrtho":20,"./alfrid/cameras/CameraPerspective":21,"./alfrid/helpers/BatchCopy":22,"./alfrid/loaders/BinaryLoader":23,"./alfrid/loaders/ObjLoader":24,"./alfrid/tools/EaseNumber":25,"./alfrid/tools/EventDispatcher":26,"./alfrid/tools/OrbitalControl":27,"./alfrid/tools/Scheduler":28,"gl-matrix":1}],12:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // Batch.js
@@ -5109,7 +5099,7 @@ var Batch = function () {
 
 exports.default = Batch;
 
-},{"./GLTool":17}],13:[function(_dereq_,module,exports){
+},{"./GLTool":16}],13:[function(_dereq_,module,exports){
 // FrameBuffer.js
 
 'use strict';
@@ -5293,89 +5283,7 @@ var FrameBuffer = function () {
 
 exports.default = FrameBuffer;
 
-},{"./GLTexture":16,"./GLTool":17}],14:[function(_dereq_,module,exports){
-// GLCubeTexture.js
-
-'use strict';
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _GLTool = _dereq_('./GLTool');
-
-var _GLTool2 = _interopRequireDefault(_GLTool);
-
-var _GLTexture = _dereq_('./GLTexture');
-
-var _GLTexture2 = _interopRequireDefault(_GLTexture);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var gl = undefined;
-
-var GLCubeTexture = function () {
-	function GLCubeTexture(mSource) {
-		var mParameters = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-
-		_classCallCheck(this, GLCubeTexture);
-
-		gl = _GLTool2.default.gl;
-
-		this.texture = gl.createTexture();
-		this.magFilter = mParameters.magFilter || gl.LINEAR;
-		this.minFilter = mParameters.minFilter || gl.LINEAR_MIPMAP_NEAREST;
-		this.wrapS = mParameters.wrapS || gl.MIRRORED_REPEAT;
-		this.wrapT = mParameters.wrapT || gl.MIRRORED_REPEAT;
-
-		gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.texture);
-		var targets = [gl.TEXTURE_CUBE_MAP_POSITIVE_X, gl.TEXTURE_CUBE_MAP_NEGATIVE_X, gl.TEXTURE_CUBE_MAP_POSITIVE_Y, gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, gl.TEXTURE_CUBE_MAP_POSITIVE_Z, gl.TEXTURE_CUBE_MAP_NEGATIVE_Z];
-
-		for (var j = 0; j < 6; j++) {
-			gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
-			gl.texImage2D(targets[j], 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, mSource[j]);
-			gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, this.wrapS);
-			gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, this.wrapT);
-			gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, this.magFilter);
-			gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, this.minFilter);
-		}
-
-		gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
-		gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
-	}
-
-	//	PUBLIC METHOD
-
-	_createClass(GLCubeTexture, [{
-		key: 'bind',
-		value: function bind() {
-			var index = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
-
-			if (!_GLTool2.default.shader) {
-				return;
-			}
-
-			gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.texture);
-			gl.uniform1i(_GLTool2.default.shader.uniformTextures[index], index);
-			this._bindIndex = index;
-		}
-	}, {
-		key: 'unbind',
-		value: function unbind() {
-			gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
-		}
-	}]);
-
-	return GLCubeTexture;
-}();
-
-exports.default = GLCubeTexture;
-
-},{"./GLTexture":16,"./GLTool":17}],15:[function(_dereq_,module,exports){
+},{"./GLTexture":15,"./GLTool":16}],14:[function(_dereq_,module,exports){
 // GLShader.js
 
 'use strict';
@@ -5504,7 +5412,7 @@ var GLShader = function () {
 
 exports.default = GLShader;
 
-},{"./GLTool":17}],16:[function(_dereq_,module,exports){
+},{"./GLTool":16}],15:[function(_dereq_,module,exports){
 // GLTexture.js
 
 'use strict';
@@ -5681,7 +5589,7 @@ var GLTexture = function () {
 
 exports.default = GLTexture;
 
-},{"./GLTool":17}],17:[function(_dereq_,module,exports){
+},{"./GLTool":16}],16:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // GLTool.js
@@ -5707,8 +5615,7 @@ var GLTool = function () {
 		this._enabledVertexAttribute = [];
 		this.identityMatrix = _glMatrix2.default.mat4.create();
 		this._normalMatrix = _glMatrix2.default.mat3.create();
-		this._inverseModelViewMatrix = _glMatrix2.default.mat3.create();
-		this._modelMatrix = _glMatrix2.default.mat4.create();
+		this._inverseViewMatrix = _glMatrix2.default.mat4.create();
 		this._matrix = _glMatrix2.default.mat4.create();
 		_glMatrix2.default.mat4.identity(this.identityMatrix, this.identityMatrix);
 	}
@@ -5803,14 +5710,15 @@ var GLTool = function () {
 	}, {
 		key: 'rotate',
 		value: function rotate(mRotation) {
-			_glMatrix2.default.mat4.copy(this._modelMatrix, mRotation);
-			_glMatrix2.default.mat4.multiply(this._matrix, this.camera.matrix, this._modelMatrix);
+			_glMatrix2.default.mat4.copy(this._matrix, mRotation);
+
+			_glMatrix2.default.mat4.multiply(this._matrix, this.camera.matrix, this._matrix);
 			_glMatrix2.default.mat3.fromMat4(this._normalMatrix, this._matrix);
 			_glMatrix2.default.mat3.invert(this._normalMatrix, this._normalMatrix);
 			_glMatrix2.default.mat3.transpose(this._normalMatrix, this._normalMatrix);
 
-			_glMatrix2.default.mat3.fromMat4(this._inverseModelViewMatrix, this._matrix);
-			_glMatrix2.default.mat3.invert(this._inverseModelViewMatrix, this._inverseModelViewMatrix);
+			_glMatrix2.default.mat3.fromMat4(this._inverseViewMatrix, this._matrix);
+			_glMatrix2.default.mat3.invert(this._inverseViewMatrix, this._inverseViewMatrix);
 		}
 	}, {
 		key: 'draw',
@@ -5846,10 +5754,10 @@ var GLTool = function () {
 
 			//	DEFAULT MATRICES
 			this.shader.uniform('uProjectionMatrix', 'uniformMatrix4fv', this.camera.projection);
-			this.shader.uniform('uModelMatrix', 'uniformMatrix4fv', this._modelMatrix);
+			this.shader.uniform('uModelMatrix', 'uniformMatrix4fv', this.identityMatrix);
 			this.shader.uniform('uViewMatrix', 'uniformMatrix4fv', this.camera.matrix);
 			this.shader.uniform('uNormalMatrix', 'uniformMatrix3fv', this._normalMatrix);
-			this.shader.uniform('uModelViewMatrixInverse', 'uniformMatrix3fv', this._inverseModelViewMatrix);
+			this.shader.uniform('uViewMatrixInverse', 'uniformMatrix4fv', this._inverseViewMatrix);
 
 			//	DRAWING
 			if (mMesh.drawType === this.gl.POINTS) {
@@ -5960,7 +5868,7 @@ var GL = new GLTool();
 
 exports.default = GL;
 
-},{"gl-matrix":1}],18:[function(_dereq_,module,exports){
+},{"gl-matrix":1}],17:[function(_dereq_,module,exports){
 // Geom.js
 
 'use strict';
@@ -6141,367 +6049,9 @@ Geom.sphere = function (size, numSegments) {
 	return mesh;
 };
 
-Geom.cube = function (w, h, d) {
-	var withNormals = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
-	var drawType = arguments.length <= 4 || arguments[4] === undefined ? 4 : arguments[4];
-
-	h = h || w;
-	d = d || w;
-
-	var x = w / 2;
-	var y = h / 2;
-	var z = d / 2;
-
-	var positions = [];
-	var coords = [];
-	var indices = [];
-	var normals = [];
-	var count = 0;
-
-	// BACK
-	positions.push([-x, y, -z]);
-	positions.push([x, y, -z]);
-	positions.push([x, -y, -z]);
-	positions.push([-x, -y, -z]);
-
-	normals.push([0, 0, -1]);
-	normals.push([0, 0, -1]);
-	normals.push([0, 0, -1]);
-	normals.push([0, 0, -1]);
-
-	coords.push([0, 0]);
-	coords.push([1, 0]);
-	coords.push([1, 1]);
-	coords.push([0, 1]);
-
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 1);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 3);
-
-	count++;
-
-	// RIGHT
-	positions.push([x, y, -z]);
-	positions.push([x, y, z]);
-	positions.push([x, -y, z]);
-	positions.push([x, -y, -z]);
-
-	normals.push([1, 0, 0]);
-	normals.push([1, 0, 0]);
-	normals.push([1, 0, 0]);
-	normals.push([1, 0, 0]);
-
-	coords.push([0, 0]);
-	coords.push([1, 0]);
-	coords.push([1, 1]);
-	coords.push([0, 1]);
-
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 1);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 3);
-
-	count++;
-
-	// FRONT
-	positions.push([x, y, z]);
-	positions.push([-x, y, z]);
-	positions.push([-x, -y, z]);
-	positions.push([x, -y, z]);
-
-	normals.push([0, 0, 1]);
-	normals.push([0, 0, 1]);
-	normals.push([0, 0, 1]);
-	normals.push([0, 0, 1]);
-
-	coords.push([0, 0]);
-	coords.push([1, 0]);
-	coords.push([1, 1]);
-	coords.push([0, 1]);
-
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 1);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 3);
-
-	count++;
-
-	// LEFT
-	positions.push([-x, y, z]);
-	positions.push([-x, y, -z]);
-	positions.push([-x, -y, -z]);
-	positions.push([-x, -y, z]);
-
-	normals.push([-1, 0, 0]);
-	normals.push([-1, 0, 0]);
-	normals.push([-1, 0, 0]);
-	normals.push([-1, 0, 0]);
-
-	coords.push([0, 0]);
-	coords.push([1, 0]);
-	coords.push([1, 1]);
-	coords.push([0, 1]);
-
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 1);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 3);
-
-	count++;
-
-	// TOP
-	positions.push([-x, y, z]);
-	positions.push([x, y, z]);
-	positions.push([x, y, -z]);
-	positions.push([-x, y, -z]);
-
-	normals.push([0, 1, 0]);
-	normals.push([0, 1, 0]);
-	normals.push([0, 1, 0]);
-	normals.push([0, 1, 0]);
-
-	coords.push([0, 0]);
-	coords.push([1, 0]);
-	coords.push([1, 1]);
-	coords.push([0, 1]);
-
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 1);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 3);
-
-	count++;
-
-	// BOTTOM
-	positions.push([-x, -y, -z]);
-	positions.push([x, -y, -z]);
-	positions.push([x, -y, z]);
-	positions.push([-x, -y, z]);
-
-	normals.push([0, -1, 0]);
-	normals.push([0, -1, 0]);
-	normals.push([0, -1, 0]);
-	normals.push([0, -1, 0]);
-
-	coords.push([0, 0]);
-	coords.push([1, 0]);
-	coords.push([1, 1]);
-	coords.push([0, 1]);
-
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 1);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 3);
-
-	count++;
-
-	var mesh = new _Mesh2.default(drawType);
-	mesh.bufferVertex(positions);
-	mesh.bufferTexCoords(coords);
-	mesh.bufferIndices(indices);
-	if (withNormals) {
-		mesh.bufferNormal(normals);
-	}
-
-	return mesh;
-};
-
-Geom.skybox = function (size) {
-	var withNormals = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
-	var drawType = arguments.length <= 2 || arguments[2] === undefined ? 4 : arguments[2];
-
-	var positions = [];
-	var coords = [];
-	var indices = [];
-	var normals = [];
-	var count = 0;
-
-	// BACK
-	positions.push([size, size, -size]);
-	positions.push([-size, size, -size]);
-	positions.push([-size, -size, -size]);
-	positions.push([size, -size, -size]);
-
-	normals.push([0, 0, -1]);
-	normals.push([0, 0, -1]);
-	normals.push([0, 0, -1]);
-	normals.push([0, 0, -1]);
-
-	coords.push([0, 0]);
-	coords.push([1, 0]);
-	coords.push([1, 1]);
-	coords.push([0, 1]);
-
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 1);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 3);
-
-	count++;
-
-	// RIGHT
-	positions.push([size, -size, -size]);
-	positions.push([size, -size, size]);
-	positions.push([size, size, size]);
-	positions.push([size, size, -size]);
-
-	normals.push([1, 0, 0]);
-	normals.push([1, 0, 0]);
-	normals.push([1, 0, 0]);
-	normals.push([1, 0, 0]);
-
-	coords.push([0, 0]);
-	coords.push([1, 0]);
-	coords.push([1, 1]);
-	coords.push([0, 1]);
-
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 1);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 3);
-
-	count++;
-
-	// FRONT
-	positions.push([-size, size, size]);
-	positions.push([size, size, size]);
-	positions.push([size, -size, size]);
-	positions.push([-size, -size, size]);
-
-	normals.push([0, 0, 1]);
-	normals.push([0, 0, 1]);
-	normals.push([0, 0, 1]);
-	normals.push([0, 0, 1]);
-
-	coords.push([0, 0]);
-	coords.push([1, 0]);
-	coords.push([1, 1]);
-	coords.push([0, 1]);
-
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 1);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 3);
-
-	count++;
-
-	// LEFT
-	positions.push([-size, -size, size]);
-	positions.push([-size, -size, -size]);
-	positions.push([-size, size, -size]);
-	positions.push([-size, size, size]);
-
-	normals.push([-1, 0, 0]);
-	normals.push([-1, 0, 0]);
-	normals.push([-1, 0, 0]);
-	normals.push([-1, 0, 0]);
-
-	coords.push([0, 0]);
-	coords.push([1, 0]);
-	coords.push([1, 1]);
-	coords.push([0, 1]);
-
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 1);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 3);
-
-	count++;
-
-	// TOP
-	positions.push([size, size, size]);
-	positions.push([-size, size, size]);
-	positions.push([-size, size, -size]);
-	positions.push([size, size, -size]);
-
-	normals.push([0, 1, 0]);
-	normals.push([0, 1, 0]);
-	normals.push([0, 1, 0]);
-	normals.push([0, 1, 0]);
-
-	coords.push([0, 0]);
-	coords.push([1, 0]);
-	coords.push([1, 1]);
-	coords.push([0, 1]);
-
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 1);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 3);
-
-	count++;
-
-	// BOTTOM
-	positions.push([size, -size, -size]);
-	positions.push([-size, -size, -size]);
-	positions.push([-size, -size, size]);
-	positions.push([size, -size, size]);
-
-	normals.push([0, -1, 0]);
-	normals.push([0, -1, 0]);
-	normals.push([0, -1, 0]);
-	normals.push([0, -1, 0]);
-
-	coords.push([0, 0]);
-	coords.push([1, 0]);
-	coords.push([1, 1]);
-	coords.push([0, 1]);
-
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 1);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 3);
-
-	var mesh = new _Mesh2.default(drawType);
-	mesh.bufferVertex(positions);
-	mesh.bufferTexCoords(coords);
-	mesh.bufferIndices(indices);
-	if (withNormals) {
-		mesh.bufferNormal(normals);
-	}
-
-	return mesh;
-};
-
-Geom.bigTriangle = function () {
-	var indices = [2, 1, 0];
-	var positions = [[-1, -1], [-1, 4], [4, -1]];
-
-	var mesh = new _Mesh2.default();
-	mesh.bufferData(positions, 'aPosition', 2);
-	mesh.bufferIndices(indices);
-
-	return mesh;
-};
-
 exports.default = Geom;
 
-},{"./Mesh":19}],19:[function(_dereq_,module,exports){
+},{"./Mesh":18}],18:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // Mesh.js
@@ -6626,7 +6176,7 @@ var Mesh = function () {
 
 exports.default = Mesh;
 
-},{"./GLTool":17}],20:[function(_dereq_,module,exports){
+},{"./GLTool":16}],19:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // Camera.js
@@ -6684,7 +6234,7 @@ var Camera = function () {
 
 exports.default = Camera;
 
-},{"gl-matrix":1}],21:[function(_dereq_,module,exports){
+},{"gl-matrix":1}],20:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -6747,7 +6297,7 @@ var CameraOrtho = function (_Camera) {
 
 exports.default = CameraOrtho;
 
-},{"./Camera":20,"gl-matrix":1}],22:[function(_dereq_,module,exports){
+},{"./Camera":19,"gl-matrix":1}],21:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -6804,7 +6354,7 @@ var CameraPerspective = function (_Camera) {
 
 exports.default = CameraPerspective;
 
-},{"./Camera":20,"gl-matrix":1}],23:[function(_dereq_,module,exports){
+},{"./Camera":19,"gl-matrix":1}],22:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -6835,6 +6385,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // BatchCopy.js
 
+// import GL from '../GLTool';
+
 
 
 var BatchCopy = function (_Batch) {
@@ -6843,8 +6395,8 @@ var BatchCopy = function (_Batch) {
 	function BatchCopy() {
 		_classCallCheck(this, BatchCopy);
 
-		var mesh = _Geom2.default.bigTriangle();
-		var shader = new _GLShader2.default("#define GLSLIFY 1\n// bigTriangle.vert\n\n#define SHADER_NAME BIG_TRIANGLE_VERTEX\n\nprecision highp float;\nattribute vec2 aPosition;\nvarying vec2 vTextureCoord;\n\nvoid main(void) {\n    gl_Position = vec4(aPosition, 0.0, 1.0);\n    vTextureCoord = aPosition * .5 + .5;\n}", "#define GLSLIFY 1\n// copy.frag\n\n#define SHADER_NAME COPY_FRAGMENT\n\nprecision highp float;\n\nvarying vec2 vTextureCoord;\nuniform sampler2D texture;\n\nvoid main(void) {\n    gl_FragColor = texture2D(texture, vTextureCoord);\n}");
+		var mesh = _Geom2.default.plane(2, 2, 1);
+		var shader = new _GLShader2.default(null, "#define GLSLIFY 1\n// copy.frag\n\n#define SHADER_NAME COPY_FRAGMENT\n\nprecision highp float;\n\nvarying vec2 vTextureCoord;\nuniform sampler2D texture;\n\nvoid main(void) {\n    gl_FragColor = texture2D(texture, vTextureCoord);\n}");
 
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(BatchCopy).call(this, mesh, shader));
 
@@ -6867,10 +6419,8 @@ var BatchCopy = function (_Batch) {
 
 exports.default = BatchCopy;
 
-},{"../Batch":12,"../GLShader":15,"../Geom":18}],24:[function(_dereq_,module,exports){
-'use strict';
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+},{"../Batch":12,"../GLShader":14,"../Geom":17}],23:[function(_dereq_,module,exports){
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
@@ -6880,56 +6430,14 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 // BinaryLoader.js
 
-var BinaryLoader = function () {
-	function BinaryLoader() {
-		var _this = this;
-
-		_classCallCheck(this, BinaryLoader);
-
-		this._req = new XMLHttpRequest();
-		this._req.addEventListener('load', function (e) {
-			return _this._onLoaded(e);
-		});
-		this._req.addEventListener('progress', function (e) {
-			return _this._onProgress(e);
-		});
-		// this._req.responseType = 'arraybuffer';
-	}
-
-	_createClass(BinaryLoader, [{
-		key: 'load',
-		value: function load(url, callback) {
-			console.log('Loading : ', url);
-			this._callback = callback;
-
-			this._req.open('GET', url);
-			this._req.send();
-		}
-	}, {
-		key: '_onLoaded',
-		value: function _onLoaded(e) {
-			this._callback(this._req.response);
-		}
-	}, {
-		key: '_onProgress',
-		value: function _onProgress(e) {
-			console.log('on Progress:', (e.loaded / e.total * 100).toFixed(2));
-		}
-	}]);
-
-	return BinaryLoader;
-}();
+var BinaryLoader = function BinaryLoader() {
+	_classCallCheck(this, BinaryLoader);
+};
 
 exports.default = BinaryLoader;
 
-},{}],25:[function(_dereq_,module,exports){
-// ObjLoader.js
-
+},{}],24:[function(_dereq_,module,exports){
 'use strict';
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
@@ -6939,17 +6447,13 @@ var _BinaryLoader2 = _dereq_('./BinaryLoader');
 
 var _BinaryLoader3 = _interopRequireDefault(_BinaryLoader2);
 
-var _Mesh = _dereq_('../Mesh');
-
-var _Mesh2 = _interopRequireDefault(_Mesh);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // ObjLoader.js
 
 var ObjLoader = function (_BinaryLoader) {
 	_inherits(ObjLoader, _BinaryLoader);
@@ -6960,211 +6464,12 @@ var ObjLoader = function (_BinaryLoader) {
 		return _possibleConstructorReturn(this, Object.getPrototypeOf(ObjLoader).call(this));
 	}
 
-	_createClass(ObjLoader, [{
-		key: 'load',
-		value: function load(url, callback) {
-			var ignoreNormals = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
-			var drawType = arguments.length <= 3 || arguments[3] === undefined ? 4 : arguments[3];
-
-			this._ignoreNormals = ignoreNormals;
-			this._drawType = drawType;
-			_get(Object.getPrototypeOf(ObjLoader.prototype), 'load', this).call(this, url, callback);
-		}
-	}, {
-		key: '_onLoaded',
-		value: function _onLoaded(e) {
-			this._parseObj(this._req.response);
-		}
-	}, {
-		key: '_parseObj',
-		value: function _parseObj(objStr) {
-			var lines = objStr.split('\n');
-
-			var positions = [];
-			var coords = [];
-			var finalNormals = [];
-			var vertices = [];
-			var normals = [];
-			var uvs = [];
-			var indices = [];
-			var count = 0;
-			var result;
-
-			// v float float float
-			var vertex_pattern = /v( +[\d|\.|\+|\-|e|E]+)( +[\d|\.|\+|\-|e|E]+)( +[\d|\.|\+|\-|e|E]+)/;
-
-			// vn float float float
-			var normal_pattern = /vn( +[\d|\.|\+|\-|e|E]+)( +[\d|\.|\+|\-|e|E]+)( +[\d|\.|\+|\-|e|E]+)/;
-
-			// vt float float
-			var uv_pattern = /vt( +[\d|\.|\+|\-|e|E]+)( +[\d|\.|\+|\-|e|E]+)/;
-
-			// f vertex vertex vertex ...
-			var face_pattern1 = /f( +-?\d+)( +-?\d+)( +-?\d+)( +-?\d+)?/;
-
-			// f vertex/uv vertex/uv vertex/uv ...
-			var face_pattern2 = /f( +(-?\d+)\/(-?\d+))( +(-?\d+)\/(-?\d+))( +(-?\d+)\/(-?\d+))( +(-?\d+)\/(-?\d+))?/;
-
-			// f vertex/uv/normal vertex/uv/normal vertex/uv/normal ...
-			var face_pattern3 = /f( +(-?\d+)\/(-?\d+)\/(-?\d+))( +(-?\d+)\/(-?\d+)\/(-?\d+))( +(-?\d+)\/(-?\d+)\/(-?\d+))( +(-?\d+)\/(-?\d+)\/(-?\d+))?/;
-
-			// f vertex//normal vertex//normal vertex//normal ...
-			var face_pattern4 = /f( +(-?\d+)\/\/(-?\d+))( +(-?\d+)\/\/(-?\d+))( +(-?\d+)\/\/(-?\d+))( +(-?\d+)\/\/(-?\d+))?/;
-
-			function parseVertexIndex(value) {
-				var index = parseInt(value);
-				return (index >= 0 ? index - 1 : index + vertices.length / 3) * 3;
-			}
-
-			function parseNormalIndex(value) {
-				var index = parseInt(value);
-				return (index >= 0 ? index - 1 : index + normals.length / 3) * 3;
-			}
-
-			function parseUVIndex(value) {
-				var index = parseInt(value);
-				return (index >= 0 ? index - 1 : index + uvs.length / 2) * 2;
-			}
-
-			function addVertex(a, b, c) {
-				positions.push([vertices[a], vertices[a + 1], vertices[a + 2]]);
-				positions.push([vertices[b], vertices[b + 1], vertices[b + 2]]);
-				positions.push([vertices[c], vertices[c + 1], vertices[c + 2]]);
-
-				indices.push(count * 3 + 0);
-				indices.push(count * 3 + 1);
-				indices.push(count * 3 + 2);
-
-				count++;
-			}
-
-			function addUV(a, b, c) {
-				coords.push([uvs[a], uvs[a + 1]]);
-				coords.push([uvs[b], uvs[b + 1]]);
-				coords.push([uvs[c], uvs[c + 1]]);
-			}
-
-			function addNormal(a, b, c) {
-				finalNormals.push([normals[a], normals[a + 1], normals[a + 2]]);
-				finalNormals.push([normals[b], normals[b + 1], normals[b + 2]]);
-				finalNormals.push([normals[c], normals[c + 1], normals[c + 2]]);
-			}
-
-			function addFace(a, b, c, d, ua, ub, uc, ud, na, nb, nc, nd) {
-				var ia = parseVertexIndex(a);
-				var ib = parseVertexIndex(b);
-				var ic = parseVertexIndex(c);
-				var id;
-
-				if (d === undefined) {
-
-					addVertex(ia, ib, ic);
-				} else {
-
-					id = parseVertexIndex(d);
-
-					addVertex(ia, ib, id);
-					addVertex(ib, ic, id);
-				}
-
-				if (ua !== undefined) {
-
-					ia = parseUVIndex(ua);
-					ib = parseUVIndex(ub);
-					ic = parseUVIndex(uc);
-
-					if (d === undefined) {
-
-						addUV(ia, ib, ic);
-					} else {
-
-						id = parseUVIndex(ud);
-
-						addUV(ia, ib, id);
-						addUV(ib, ic, id);
-					}
-				}
-
-				if (na !== undefined) {
-
-					ia = parseNormalIndex(na);
-					ib = parseNormalIndex(nb);
-					ic = parseNormalIndex(nc);
-
-					if (d === undefined) {
-
-						addNormal(ia, ib, ic);
-					} else {
-
-						id = parseNormalIndex(nd);
-
-						addNormal(ia, ib, id);
-						addNormal(ib, ic, id);
-					}
-				}
-			}
-
-			for (var i = 0; i < lines.length; i++) {
-				var line = lines[i];
-				line = line.trim();
-
-				if (line.length === 0 || line.charAt(0) === '#') {
-
-					continue;
-				} else if ((result = vertex_pattern.exec(line)) !== null) {
-
-					vertices.push(parseFloat(result[1]), parseFloat(result[2]), parseFloat(result[3]));
-				} else if ((result = normal_pattern.exec(line)) !== null) {
-
-					normals.push(parseFloat(result[1]), parseFloat(result[2]), parseFloat(result[3]));
-				} else if ((result = uv_pattern.exec(line)) !== null) {
-
-					uvs.push(parseFloat(result[1]), parseFloat(result[2]));
-				} else if ((result = face_pattern1.exec(line)) !== null) {
-
-					addFace(result[1], result[2], result[3], result[4]);
-				} else if ((result = face_pattern2.exec(line)) !== null) {
-
-					addFace(result[2], result[5], result[8], result[11], result[3], result[6], result[9], result[12]);
-				} else if ((result = face_pattern3.exec(line)) !== null) {
-					addFace(result[2], result[6], result[10], result[14], result[3], result[7], result[11], result[15], result[4], result[8], result[12], result[16]);
-				} else if ((result = face_pattern4.exec(line)) !== null) {
-					addFace(result[2], result[5], result[8], result[11], undefined, undefined, undefined, undefined, result[3], result[6], result[9], result[12]);
-				}
-			}
-
-			this._generateMeshes({
-				positions: positions,
-				coords: coords,
-				normals: finalNormals,
-				indices: indices
-			});
-		}
-	}, {
-		key: '_generateMeshes',
-		value: function _generateMeshes(o) {
-
-			var mesh = new _Mesh2.default(this._drawType);
-			mesh.bufferVertex(o.positions);
-			mesh.bufferTexCoords(o.coords);
-			mesh.bufferIndices(o.indices);
-			console.log(o.normals.length);
-			if (!this._ignoreNormals) {
-				mesh.bufferNormal(o.normals);
-			}
-
-			if (this._callback) {
-				this._callback(mesh, o);
-			}
-		}
-	}]);
-
 	return ObjLoader;
 }(_BinaryLoader3.default);
 
 exports.default = ObjLoader;
 
-},{"../Mesh":19,"./BinaryLoader":24}],26:[function(_dereq_,module,exports){
+},{"./BinaryLoader":23}],25:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // EaseNumber.js
@@ -7260,7 +6565,7 @@ var EaseNumber = function () {
 
 exports.default = EaseNumber;
 
-},{"./Scheduler":30}],27:[function(_dereq_,module,exports){
+},{"./Scheduler":28}],26:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -7398,7 +6703,7 @@ var EventDispatcher = function () {
 
 exports.default = EventDispatcher;
 
-},{}],28:[function(_dereq_,module,exports){
+},{}],27:[function(_dereq_,module,exports){
 // OrbitalControl.js
 'use strict';
 
@@ -7588,7 +6893,7 @@ var OrbitalControl = function () {
 					value = w / 120;
 				}
 
-			this.radius.add(-value * 2);
+			this.radius.add(-value * 5);
 		}
 
 		//	PRIVATE METHODS
@@ -7624,276 +6929,7 @@ var OrbitalControl = function () {
 
 exports.default = OrbitalControl;
 
-},{"./EaseNumber":26,"./Scheduler":30,"gl-matrix":1}],29:[function(_dereq_,module,exports){
-// QuatRotation.js
-
-'use strict';
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _glMatrix = _dereq_('gl-matrix');
-
-var _glMatrix2 = _interopRequireDefault(_glMatrix);
-
-var _EaseNumber = _dereq_('./EaseNumber');
-
-var _EaseNumber2 = _interopRequireDefault(_EaseNumber);
-
-var _Scheduler = _dereq_('./Scheduler');
-
-var _Scheduler2 = _interopRequireDefault(_Scheduler);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var getMouse = function getMouse(mEvent, mTarget) {
-
-	var o = mTarget || {};
-	if (mEvent.touches) {
-		o.x = mEvent.touches[0].pageX;
-		o.y = mEvent.touches[0].pageY;
-	} else {
-		o.x = mEvent.clientX;
-		o.y = mEvent.clientY;
-	}
-
-	return o;
-};
-
-var QuatRotation = function () {
-	function QuatRotation(mTarget) {
-		var _this = this;
-
-		var mListenerTarget = arguments.length <= 1 || arguments[1] === undefined ? window : arguments[1];
-		var mEasing = arguments.length <= 2 || arguments[2] === undefined ? 0.1 : arguments[2];
-
-		_classCallCheck(this, QuatRotation);
-
-		this._target = mTarget;
-		this._listenerTarget = mListenerTarget;
-
-		this.matrix = _glMatrix2.default.mat4.create();
-		this.m = _glMatrix2.default.mat4.create();
-		this._vZaxis = _glMatrix2.default.vec3.clone([0, 0, 0]);
-		this._zAxis = _glMatrix2.default.vec3.clone([0, 0, -1]);
-		this.preMouse = { x: 0, y: 0 };
-		this.mouse = { x: 0, y: 0 };
-		this._isMouseDown = false;
-		this._rotation = _glMatrix2.default.quat.clone([0, 0, 1, 0]);
-		this.tempRotation = _glMatrix2.default.quat.clone([0, 0, 0, 0]);
-		this._rotateZMargin = 0;
-		this._offset = 0.004;
-		this._slerp = -1;
-		this._isLocked = false;
-
-		this._diffX = new _EaseNumber2.default(0, mEasing);
-		this._diffY = new _EaseNumber2.default(0, mEasing);
-
-		this._listenerTarget.addEventListener('mousedown', function (e) {
-			return _this._onDown(e);
-		});
-		this._listenerTarget.addEventListener('touchstart', function (e) {
-			return _this._onDown(e);
-		});
-		this._listenerTarget.addEventListener('mousemove', function (e) {
-			return _this._onMove(e);
-		});
-		this._listenerTarget.addEventListener('touchmove', function (e) {
-			return _this._onMove(e);
-		});
-		window.addEventListener('touchend', function () {
-			return _this._onUp();
-		});
-		window.addEventListener('mouseup', function () {
-			return _this._onUp();
-		});
-
-		_Scheduler2.default.addEF(function () {
-			return _this._loop();
-		});
-	}
-
-	// 	PUBLIC METHODS
-
-	_createClass(QuatRotation, [{
-		key: 'inverseControl',
-		value: function inverseControl() {
-			var isInvert = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
-
-			this._isInvert = isInvert;
-		}
-	}, {
-		key: 'lock',
-		value: function lock() {
-			var mValue = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
-
-			this._isLocked = mValue;
-		}
-	}, {
-		key: 'setCameraPos',
-		value: function setCameraPos(mQuat) {
-			var speed = arguments.length <= 1 || arguments[1] === undefined ? 0.1 : arguments[1];
-
-			this.easing = speed;
-			if (this._slerp > 0) {
-				return;
-			}
-
-			var tempRotation = _glMatrix2.default.quat.clone(this._rotation);
-			this._updateRotation(tempRotation);
-			this._rotation = _glMatrix2.default.quat.clone(tempRotation);
-			this._currDiffX = this.diffX = 0;
-			this._currDiffY = this.diffY = 0;
-
-			this._isMouseDown = false;
-			this._isRotateZ = 0;
-
-			this._targetQuat = _glMatrix2.default.quat.clone(mQuat);
-			this._slerp = 1;
-		}
-	}, {
-		key: 'resetQuat',
-		value: function resetQuat() {
-			this._rotation = _glMatrix2.default.quat.clone([0, 0, 1, 0]);
-			this.tempRotation = _glMatrix2.default.quat.clone([0, 0, 0, 0]);
-			this._targetQuat = undefined;
-			this._slerp = -1;
-		}
-
-		//	EVENT HANDLER
-
-	}, {
-		key: '_onDown',
-		value: function _onDown(mEvent) {
-			if (this._isLocked) {
-				return;
-			}
-
-			var mouse = getMouse(mEvent);
-			var tempRotation = _glMatrix2.default.quat.clone(this._rotation);
-			this._updateRotation(tempRotation);
-			this._rotation = tempRotation;
-
-			this._isMouseDown = true;
-			this._isRotateZ = 0;
-			this.preMouse = { x: mouse.x, y: mouse.y };
-
-			if (mouse.y < this._rotateZMargin || mouse.y > window.innerHeight - this._rotateZMargin) {
-				this._isRotateZ = 1;
-			} else if (mouse.x < this._rotateZMargin || mouse.x > window.innerWidth - this._rotateZMargin) {
-				this._isRotateZ = 2;
-			}
-
-			this._diffX.setTo(0);
-			this._diffY.setTo(0);
-		}
-	}, {
-		key: '_onMove',
-		value: function _onMove(mEvent) {
-			if (this._isLocked) {
-				return;
-			}
-			getMouse(mEvent, this.mouse);
-		}
-	}, {
-		key: '_onUp',
-		value: function _onUp() {
-			if (this._isLocked) {
-				return;
-			}
-			this._isMouseDown = false;
-		}
-
-		//	PRIVATE METHODS
-
-	}, {
-		key: '_updateRotation',
-		value: function _updateRotation(mTempRotation) {
-			if (this._isMouseDown && !this._isLocked) {
-				this._diffX.value = this.mouse.x - this.preMouse.x;
-				this._diffY.value = -(this.mouse.y - this.preMouse.y);
-
-				if (this._isInvert) {
-					this._diffX.value = -this._diffX.targetValue;
-					this._diffY.value = -this._diffY.targetValue;
-				}
-			}
-
-			var angle = undefined,
-			    _quat = undefined;
-
-			if (this._isRotateZ > 0) {
-				if (this._isRotateZ === 1) {
-					angle = -this._diffX.value * this._offset;
-					angle *= this.preMouse.y < this._rotateZMargin ? -1 : 1;
-					_quat = _glMatrix2.default.quat.clone([0, 0, Math.sin(angle), Math.cos(angle)]);
-					_glMatrix2.default.quat.multiply(_quat, mTempRotation, _quat);
-				} else {
-					angle = -this._diffY.value * this._offset;
-					angle *= this.preMouse.x < this._rotateZMargin ? 1 : -1;
-					_quat = _glMatrix2.default.quat.clone([0, 0, Math.sin(angle), Math.cos(angle)]);
-					_glMatrix2.default.quat.multiply(_quat, mTempRotation, _quat);
-				}
-			} else {
-				var v = _glMatrix2.default.vec3.clone([this._diffX.value, this._diffY.value, 0]);
-				var axis = _glMatrix2.default.vec3.create();
-				_glMatrix2.default.vec3.cross(axis, v, this._zAxis);
-				_glMatrix2.default.vec3.normalize(axis, axis);
-				angle = _glMatrix2.default.vec3.length(v) * this._offset;
-				_quat = _glMatrix2.default.quat.clone([Math.sin(angle) * axis[0], Math.sin(angle) * axis[1], Math.sin(angle) * axis[2], Math.cos(angle)]);
-				_glMatrix2.default.quat.multiply(mTempRotation, _quat, mTempRotation);
-			}
-		}
-	}, {
-		key: '_loop',
-		value: function _loop() {
-			_glMatrix2.default.mat4.identity(this.m);
-
-			if (this._targetQuat === undefined) {
-				_glMatrix2.default.quat.set(this.tempRotation, this._rotation[0], this._rotation[1], this._rotation[2], this._rotation[3]);
-				this._updateRotation(this.tempRotation);
-			} else {
-				this._slerp += (0 - this._slerp) * 0.1;
-
-				if (this._slerp < 0.001) {
-					_glMatrix2.default.quat.set(this._rotation, this._targetQuat[0], this._targetQuat[1], this._targetQuat[2], this._targetQuat[3]);
-					this._targetQuat = undefined;
-					this._slerp = -1;
-				} else {
-					_glMatrix2.default.quat.set(this.tempRotation, 0, 0, 0, 0);
-					_glMatrix2.default.quat.slerp(this.tempRotation, this._targetQuat, this._rotation, this._slerp);
-				}
-			}
-
-			_glMatrix2.default.vec3.transformQuat(this._vZaxis, this._vZaxis, this.tempRotation);
-
-			_glMatrix2.default.mat4.fromQuat(this.matrix, this.tempRotation);
-		}
-
-		//	GETTER AND SETTER
-
-	}, {
-		key: 'easing',
-		set: function set(mValue) {
-			this._diffX.easing = mValue;
-			this._diffY.easing = mValue;
-		},
-		get: function get() {
-			return this._diffX.easing;
-		}
-	}]);
-
-	return QuatRotation;
-}();
-
-exports.default = QuatRotation;
-
-},{"./EaseNumber":26,"./Scheduler":30,"gl-matrix":1}],30:[function(_dereq_,module,exports){
+},{"./EaseNumber":25,"./Scheduler":28,"gl-matrix":1}],28:[function(_dereq_,module,exports){
 // Scheduler.js
 
 'use strict';
