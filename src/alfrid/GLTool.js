@@ -10,8 +10,8 @@ class GLTool {
 		this._enabledVertexAttribute = [];
 		this.identityMatrix          = glm.mat4.create();
 		this._normalMatrix           = glm.mat3.create();
-		this._inverseViewMatrix      = glm.mat4.create();
-		this._modelMatrix			 = glm.mat4.create();
+		this._inverseModelViewMatrix = glm.mat3.create();
+		this._modelMatrix            = glm.mat4.create();
 		this._matrix                 = glm.mat4.create();
 		glm.mat4.identity(this.identityMatrix, this.identityMatrix);
 	}
@@ -104,8 +104,8 @@ class GLTool {
 		glm.mat3.invert(this._normalMatrix, this._normalMatrix);
 		glm.mat3.transpose(this._normalMatrix, this._normalMatrix);
 
-		glm.mat3.fromMat4(this._inverseViewMatrix, this._matrix);
-		glm.mat3.invert(this._inverseViewMatrix, this._inverseViewMatrix);
+		glm.mat3.fromMat4(this._inverseModelViewMatrix, this._matrix);
+		glm.mat3.invert(this._inverseModelViewMatrix, this._inverseModelViewMatrix);
 	}
 
 
@@ -145,7 +145,7 @@ class GLTool {
 		this.shader.uniform('uModelMatrix', 'uniformMatrix4fv', this._modelMatrix);
 		this.shader.uniform('uViewMatrix', 'uniformMatrix4fv', this.camera.matrix);
 		this.shader.uniform('uNormalMatrix', 'uniformMatrix3fv', this._normalMatrix);
-		this.shader.uniform('uViewMatrixInverse', 'uniformMatrix4fv', this._inverseViewMatrix);
+		this.shader.uniform('uModelViewMatrixInverse', 'uniformMatrix3fv', this._inverseModelViewMatrix);
 		
 		//	DRAWING
 		if(mMesh.drawType === this.gl.POINTS ) {
