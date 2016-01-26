@@ -7336,7 +7336,7 @@ var QuatRotation = function () {
 		var _this = this;
 
 		var mListenerTarget = arguments.length <= 1 || arguments[1] === undefined ? window : arguments[1];
-		var mEasing = arguments.length <= 2 || arguments[2] === undefined ? .1 : arguments[2];
+		var mEasing = arguments.length <= 2 || arguments[2] === undefined ? 0.1 : arguments[2];
 
 		_classCallCheck(this, QuatRotation);
 
@@ -7548,6 +7548,9 @@ var QuatRotation = function () {
 		set: function set(mValue) {
 			this._diffX.easing = mValue;
 			this._diffY.easing = mValue;
+		},
+		get: function get() {
+			return this._diffX.easing;
 		}
 	}]);
 

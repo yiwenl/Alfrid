@@ -21,7 +21,7 @@ const getMouse = function(mEvent, mTarget) {
 };
 
 class QuatRotation {
-	constructor(mTarget, mListenerTarget=window, mEasing=.1) {
+	constructor(mTarget, mListenerTarget=window, mEasing=0.1) {
 
 		this._target         = mTarget;
 		this._listenerTarget = mListenerTarget;
@@ -189,6 +189,10 @@ class QuatRotation {
 	set easing(mValue) {
 		this._diffX.easing = mValue;
 		this._diffY.easing = mValue;
+	}
+
+	get easing() {
+		return this._diffX.easing;
 	}
 }
 
