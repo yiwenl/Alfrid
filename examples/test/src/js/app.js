@@ -111,7 +111,7 @@ function _init() {
 	batchCopy   = new alfrid.BatchCopy();
 
 	//	FRAME BUFFER
-	let fboSize = 1024;
+	let fboSize = 1024 * 2;
 	fbo = new alfrid.FrameBuffer(fboSize, fboSize, {
 		minFilter:GL.LINEAR_MIPMAP_LINEAR,
 		magFilter:GL.LINEAR
