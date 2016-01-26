@@ -6401,7 +6401,6 @@ Geom.bigTriangle = function () {
 	var positions = [[-1, -1], [-1, 4], [4, -1]];
 
 	var mesh = new _Mesh2.default();
-	// mesh.bufferVertex(positions);
 	mesh.bufferData(positions, 'aPosition', 2);
 	mesh.bufferIndices(indices);
 

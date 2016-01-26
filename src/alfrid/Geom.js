@@ -517,11 +517,10 @@ Geom.bigTriangle = function() {
 	];
 	
 	let mesh = new Mesh();
-	// mesh.bufferVertex(positions);
 	mesh.bufferData(positions, 'aPosition', 2);
 	mesh.bufferIndices(indices);
 
 	return mesh;
-}
+};
 
 export default Geom;
