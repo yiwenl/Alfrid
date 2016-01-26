@@ -6396,6 +6396,18 @@ Geom.skybox = function (size) {
 	return mesh;
 };
 
+Geom.bigTriangle = function () {
+	var indices = [2, 1, 0];
+	var positions = [[-1, -1], [-1, 4], [4, -1]];
+
+	var mesh = new _Mesh2.default();
+	// mesh.bufferVertex(positions);
+	mesh.bufferData(positions, 'aPosition', 2);
+	mesh.bufferIndices(indices);
+
+	return mesh;
+};
+
 exports.default = Geom;
 
 },{"./Mesh":18}],18:[function(_dereq_,module,exports){
@@ -6732,8 +6744,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // BatchCopy.js
 
-// import GL from '../GLTool';
-
 
 
 var BatchCopy = function (_Batch) {
@@ -6742,8 +6752,8 @@ var BatchCopy = function (_Batch) {
 	function BatchCopy() {
 		_classCallCheck(this, BatchCopy);
 
-		var mesh = _Geom2.default.plane(2, 2, 1);
-		var shader = new _GLShader2.default(null, "#define GLSLIFY 1\n// copy.frag\n\n#define SHADER_NAME COPY_FRAGMENT\n\nprecision highp float;\n\nvarying vec2 vTextureCoord;\nuniform sampler2D texture;\n\nvoid main(void) {\n    gl_FragColor = texture2D(texture, vTextureCoord);\n}");
+		var mesh = _Geom2.default.bigTriangle();
+		var shader = new _GLShader2.default("#define GLSLIFY 1\n// bigTriangle.vert\n\n#define SHADER_NAME BIG_TRIANGLE_VERTEX\n\nprecision highp float;\nattribute vec2 aPosition;\nvarying vec2 vTextureCoord;\n\nvoid main(void) {\n    gl_Position = vec4(aPosition, 0.0, 1.0);\n    vTextureCoord = aPosition * .5 + .5;\n}", "#define GLSLIFY 1\n// copy.frag\n\n#define SHADER_NAME COPY_FRAGMENT\n\nprecision highp float;\n\nvarying vec2 vTextureCoord;\nuniform sampler2D texture;\n\nvoid main(void) {\n    gl_FragColor = texture2D(texture, vTextureCoord);\n}");
 
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(BatchCopy).call(this, mesh, shader));
 
