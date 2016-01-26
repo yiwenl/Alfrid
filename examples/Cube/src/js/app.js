@@ -5,6 +5,7 @@ var glslify = require("glslify");
 window.addEventListener('resize', ()=>resize());
 
 let canvas, camera, batch, mesh, shader, GL, img, texture;
+let time = 0;
 
 
 img = new Image();
@@ -42,7 +43,8 @@ function _init() {
 	orbitalControl.radius.value = 10;
 
 	//	CREATE MESH
-	mesh = alfrid.Geom.cube(1, 1, 1, true);
+	let size = 2;
+	mesh = alfrid.Geom.cube(size, size, size, true);
 
 	//	CREATE TEXTURE
 	texture = new alfrid.GLTexture(img);
@@ -63,8 +65,10 @@ function _loop() {
 	GL.clear(0, 0, 0, 0);
 	GL.setMatrices(camera);
 
+	time += .02;
 	shader.bind();
 	shader.uniform('texture', 'uniform1i', 0);
+	shader.uniform('time', 'uniform1f', time);
 	texture.bind(0);
 
 	batch.draw();

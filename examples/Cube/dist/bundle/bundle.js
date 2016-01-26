@@ -225,12 +225,12 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             c = r[0],
             p = r[1],
             d = r[2],
-            m = r[3],
-            v = r[4],
+            v = r[3],
+            m = r[4],
             _ = r[5],
             g = r[6],
             E = r[7],
-            T = r[8];return t[0] = c * n + p * u + d * h, t[1] = c * i + p * s + d * f, t[2] = c * a + p * o + d * l, t[3] = m * n + v * u + _ * h, t[4] = m * i + v * s + _ * f, t[5] = m * a + v * o + _ * l, t[6] = g * n + E * u + T * h, t[7] = g * i + E * s + T * f, t[8] = g * a + E * o + T * l, t;
+            T = r[8];return t[0] = c * n + p * u + d * h, t[1] = c * i + p * s + d * f, t[2] = c * a + p * o + d * l, t[3] = v * n + m * u + _ * h, t[4] = v * i + m * s + _ * f, t[5] = v * a + m * o + _ * l, t[6] = g * n + E * u + T * h, t[7] = g * i + E * s + T * f, t[8] = g * a + E * o + T * l, t;
       }, i.mul = i.multiply, i.translate = function (t, e, r) {
         var n = e[0],
             i = e[1],
@@ -281,9 +281,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             c = i * u,
             p = i * s,
             d = i * o,
-            m = a * u,
-            v = a * s,
-            _ = a * o;return t[0] = 1 - l - d, t[3] = f - _, t[6] = c + v, t[1] = f + _, t[4] = 1 - h - d, t[7] = p - m, t[2] = c - v, t[5] = p + m, t[8] = 1 - h - l, t;
+            v = a * u,
+            m = a * s,
+            _ = a * o;return t[0] = 1 - l - d, t[3] = f - _, t[6] = c + m, t[1] = f + _, t[4] = 1 - h - d, t[7] = p - v, t[2] = c - m, t[5] = p + v, t[8] = 1 - h - l, t;
       }, i.normalFromMat4 = function (t, e) {
         var r = e[0],
             n = e[1],
@@ -298,8 +298,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             c = e[10],
             p = e[11],
             d = e[12],
-            m = e[13],
-            v = e[14],
+            v = e[13],
+            m = e[14],
             _ = e[15],
             g = r * s - n * u,
             E = r * o - i * u,
@@ -307,13 +307,13 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             M = n * o - i * s,
             y = n * h - a * s,
             R = i * h - a * o,
-            b = f * m - l * d,
-            w = f * v - c * d,
-            A = f * _ - p * d,
-            x = l * v - c * m,
-            P = l * _ - p * m,
-            L = c * _ - p * v,
-            k = g * L - E * P + T * x + M * A - y * w + R * b;return k ? (k = 1 / k, t[0] = (s * L - o * P + h * x) * k, t[1] = (o * A - u * L - h * w) * k, t[2] = (u * P - s * A + h * b) * k, t[3] = (i * P - n * L - a * x) * k, t[4] = (r * L - i * A + a * w) * k, t[5] = (n * A - r * P - a * b) * k, t[6] = (m * R - v * y + _ * M) * k, t[7] = (v * T - d * R - _ * E) * k, t[8] = (d * y - m * T + _ * g) * k, t) : null;
+            b = f * v - l * d,
+            A = f * m - c * d,
+            w = f * _ - p * d,
+            x = l * m - c * v,
+            P = l * _ - p * v,
+            L = c * _ - p * m,
+            k = g * L - E * P + T * x + M * w - y * A + R * b;return k ? (k = 1 / k, t[0] = (s * L - o * P + h * x) * k, t[1] = (o * w - u * L - h * A) * k, t[2] = (u * P - s * w + h * b) * k, t[3] = (i * P - n * L - a * x) * k, t[4] = (r * L - i * w + a * A) * k, t[5] = (n * w - r * P - a * b) * k, t[6] = (v * R - m * y + _ * M) * k, t[7] = (m * T - d * R - _ * E) * k, t[8] = (d * y - v * T + _ * g) * k, t) : null;
       }, i.str = function (t) {
         return "mat3(" + t[0] + ", " + t[1] + ", " + t[2] + ", " + t[3] + ", " + t[4] + ", " + t[5] + ", " + t[6] + ", " + t[7] + ", " + t[8] + ")";
       }, i.frob = function (t) {
@@ -352,8 +352,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             c = e[10],
             p = e[11],
             d = e[12],
-            m = e[13],
-            v = e[14],
+            v = e[13],
+            m = e[14],
             _ = e[15],
             g = r * s - n * u,
             E = r * o - i * u,
@@ -361,13 +361,13 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             M = n * o - i * s,
             y = n * h - a * s,
             R = i * h - a * o,
-            b = f * m - l * d,
-            w = f * v - c * d,
-            A = f * _ - p * d,
-            x = l * v - c * m,
-            P = l * _ - p * m,
-            L = c * _ - p * v,
-            k = g * L - E * P + T * x + M * A - y * w + R * b;return k ? (k = 1 / k, t[0] = (s * L - o * P + h * x) * k, t[1] = (i * P - n * L - a * x) * k, t[2] = (m * R - v * y + _ * M) * k, t[3] = (c * y - l * R - p * M) * k, t[4] = (o * A - u * L - h * w) * k, t[5] = (r * L - i * A + a * w) * k, t[6] = (v * T - d * R - _ * E) * k, t[7] = (f * R - c * T + p * E) * k, t[8] = (u * P - s * A + h * b) * k, t[9] = (n * A - r * P - a * b) * k, t[10] = (d * y - m * T + _ * g) * k, t[11] = (l * T - f * y - p * g) * k, t[12] = (s * w - u * x - o * b) * k, t[13] = (r * x - n * w + i * b) * k, t[14] = (m * E - d * M - v * g) * k, t[15] = (f * M - l * E + c * g) * k, t) : null;
+            b = f * v - l * d,
+            A = f * m - c * d,
+            w = f * _ - p * d,
+            x = l * m - c * v,
+            P = l * _ - p * v,
+            L = c * _ - p * m,
+            k = g * L - E * P + T * x + M * w - y * A + R * b;return k ? (k = 1 / k, t[0] = (s * L - o * P + h * x) * k, t[1] = (i * P - n * L - a * x) * k, t[2] = (v * R - m * y + _ * M) * k, t[3] = (c * y - l * R - p * M) * k, t[4] = (o * w - u * L - h * A) * k, t[5] = (r * L - i * w + a * A) * k, t[6] = (m * T - d * R - _ * E) * k, t[7] = (f * R - c * T + p * E) * k, t[8] = (u * P - s * w + h * b) * k, t[9] = (n * w - r * P - a * b) * k, t[10] = (d * y - v * T + _ * g) * k, t[11] = (l * T - f * y - p * g) * k, t[12] = (s * A - u * x - o * b) * k, t[13] = (r * x - n * A + i * b) * k, t[14] = (v * E - d * M - m * g) * k, t[15] = (f * M - l * E + c * g) * k, t) : null;
       }, i.adjoint = function (t, e) {
         var r = e[0],
             n = e[1],
@@ -382,9 +382,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             c = e[10],
             p = e[11],
             d = e[12],
-            m = e[13],
-            v = e[14],
-            _ = e[15];return t[0] = s * (c * _ - p * v) - l * (o * _ - h * v) + m * (o * p - h * c), t[1] = -(n * (c * _ - p * v) - l * (i * _ - a * v) + m * (i * p - a * c)), t[2] = n * (o * _ - h * v) - s * (i * _ - a * v) + m * (i * h - a * o), t[3] = -(n * (o * p - h * c) - s * (i * p - a * c) + l * (i * h - a * o)), t[4] = -(u * (c * _ - p * v) - f * (o * _ - h * v) + d * (o * p - h * c)), t[5] = r * (c * _ - p * v) - f * (i * _ - a * v) + d * (i * p - a * c), t[6] = -(r * (o * _ - h * v) - u * (i * _ - a * v) + d * (i * h - a * o)), t[7] = r * (o * p - h * c) - u * (i * p - a * c) + f * (i * h - a * o), t[8] = u * (l * _ - p * m) - f * (s * _ - h * m) + d * (s * p - h * l), t[9] = -(r * (l * _ - p * m) - f * (n * _ - a * m) + d * (n * p - a * l)), t[10] = r * (s * _ - h * m) - u * (n * _ - a * m) + d * (n * h - a * s), t[11] = -(r * (s * p - h * l) - u * (n * p - a * l) + f * (n * h - a * s)), t[12] = -(u * (l * v - c * m) - f * (s * v - o * m) + d * (s * c - o * l)), t[13] = r * (l * v - c * m) - f * (n * v - i * m) + d * (n * c - i * l), t[14] = -(r * (s * v - o * m) - u * (n * v - i * m) + d * (n * o - i * s)), t[15] = r * (s * c - o * l) - u * (n * c - i * l) + f * (n * o - i * s), t;
+            v = e[13],
+            m = e[14],
+            _ = e[15];return t[0] = s * (c * _ - p * m) - l * (o * _ - h * m) + v * (o * p - h * c), t[1] = -(n * (c * _ - p * m) - l * (i * _ - a * m) + v * (i * p - a * c)), t[2] = n * (o * _ - h * m) - s * (i * _ - a * m) + v * (i * h - a * o), t[3] = -(n * (o * p - h * c) - s * (i * p - a * c) + l * (i * h - a * o)), t[4] = -(u * (c * _ - p * m) - f * (o * _ - h * m) + d * (o * p - h * c)), t[5] = r * (c * _ - p * m) - f * (i * _ - a * m) + d * (i * p - a * c), t[6] = -(r * (o * _ - h * m) - u * (i * _ - a * m) + d * (i * h - a * o)), t[7] = r * (o * p - h * c) - u * (i * p - a * c) + f * (i * h - a * o), t[8] = u * (l * _ - p * v) - f * (s * _ - h * v) + d * (s * p - h * l), t[9] = -(r * (l * _ - p * v) - f * (n * _ - a * v) + d * (n * p - a * l)), t[10] = r * (s * _ - h * v) - u * (n * _ - a * v) + d * (n * h - a * s), t[11] = -(r * (s * p - h * l) - u * (n * p - a * l) + f * (n * h - a * s)), t[12] = -(u * (l * m - c * v) - f * (s * m - o * v) + d * (s * c - o * l)), t[13] = r * (l * m - c * v) - f * (n * m - i * v) + d * (n * c - i * l), t[14] = -(r * (s * m - o * v) - u * (n * m - i * v) + d * (n * o - i * s)), t[15] = r * (s * c - o * l) - u * (n * c - i * l) + f * (n * o - i * s), t;
       }, i.determinant = function (t) {
         var e = t[0],
             r = t[1],
@@ -400,8 +400,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             c = t[11],
             p = t[12],
             d = t[13],
-            m = t[14],
-            v = t[15],
+            v = t[14],
+            m = t[15],
             _ = e * u - r * a,
             g = e * s - n * a,
             E = e * o - i * a,
@@ -409,11 +409,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             M = r * o - i * u,
             y = n * o - i * s,
             R = h * d - f * p,
-            b = h * m - l * p,
-            w = h * v - c * p,
-            A = f * m - l * d,
-            x = f * v - c * d,
-            P = l * v - c * m;return _ * P - g * x + E * A + T * w - M * b + y * R;
+            b = h * v - l * p,
+            A = h * m - c * p,
+            w = f * v - l * d,
+            x = f * m - c * d,
+            P = l * m - c * v;return _ * P - g * x + E * w + T * A - M * b + y * R;
       }, i.multiply = function (t, e, r) {
         var n = e[0],
             i = e[1],
@@ -427,14 +427,14 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             c = e[9],
             p = e[10],
             d = e[11],
-            m = e[12],
-            v = e[13],
+            v = e[12],
+            m = e[13],
             _ = e[14],
             g = e[15],
             E = r[0],
             T = r[1],
             M = r[2],
-            y = r[3];return t[0] = E * n + T * s + M * l + y * m, t[1] = E * i + T * o + M * c + y * v, t[2] = E * a + T * h + M * p + y * _, t[3] = E * u + T * f + M * d + y * g, E = r[4], T = r[5], M = r[6], y = r[7], t[4] = E * n + T * s + M * l + y * m, t[5] = E * i + T * o + M * c + y * v, t[6] = E * a + T * h + M * p + y * _, t[7] = E * u + T * f + M * d + y * g, E = r[8], T = r[9], M = r[10], y = r[11], t[8] = E * n + T * s + M * l + y * m, t[9] = E * i + T * o + M * c + y * v, t[10] = E * a + T * h + M * p + y * _, t[11] = E * u + T * f + M * d + y * g, E = r[12], T = r[13], M = r[14], y = r[15], t[12] = E * n + T * s + M * l + y * m, t[13] = E * i + T * o + M * c + y * v, t[14] = E * a + T * h + M * p + y * _, t[15] = E * u + T * f + M * d + y * g, t;
+            y = r[3];return t[0] = E * n + T * s + M * l + y * v, t[1] = E * i + T * o + M * c + y * m, t[2] = E * a + T * h + M * p + y * _, t[3] = E * u + T * f + M * d + y * g, E = r[4], T = r[5], M = r[6], y = r[7], t[4] = E * n + T * s + M * l + y * v, t[5] = E * i + T * o + M * c + y * m, t[6] = E * a + T * h + M * p + y * _, t[7] = E * u + T * f + M * d + y * g, E = r[8], T = r[9], M = r[10], y = r[11], t[8] = E * n + T * s + M * l + y * v, t[9] = E * i + T * o + M * c + y * m, t[10] = E * a + T * h + M * p + y * _, t[11] = E * u + T * f + M * d + y * g, E = r[12], T = r[13], M = r[14], y = r[15], t[12] = E * n + T * s + M * l + y * v, t[13] = E * i + T * o + M * c + y * m, t[14] = E * a + T * h + M * p + y * _, t[15] = E * u + T * f + M * d + y * g, t;
       }, i.mul = i.multiply, i.translate = function (t, e, r) {
         var n,
             i,
@@ -448,9 +448,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             c,
             p,
             d,
-            m = r[0],
-            v = r[1],
-            _ = r[2];return e === t ? (t[12] = e[0] * m + e[4] * v + e[8] * _ + e[12], t[13] = e[1] * m + e[5] * v + e[9] * _ + e[13], t[14] = e[2] * m + e[6] * v + e[10] * _ + e[14], t[15] = e[3] * m + e[7] * v + e[11] * _ + e[15]) : (n = e[0], i = e[1], a = e[2], u = e[3], s = e[4], o = e[5], h = e[6], f = e[7], l = e[8], c = e[9], p = e[10], d = e[11], t[0] = n, t[1] = i, t[2] = a, t[3] = u, t[4] = s, t[5] = o, t[6] = h, t[7] = f, t[8] = l, t[9] = c, t[10] = p, t[11] = d, t[12] = n * m + s * v + l * _ + e[12], t[13] = i * m + o * v + c * _ + e[13], t[14] = a * m + h * v + p * _ + e[14], t[15] = u * m + f * v + d * _ + e[15]), t;
+            v = r[0],
+            m = r[1],
+            _ = r[2];return e === t ? (t[12] = e[0] * v + e[4] * m + e[8] * _ + e[12], t[13] = e[1] * v + e[5] * m + e[9] * _ + e[13], t[14] = e[2] * v + e[6] * m + e[10] * _ + e[14], t[15] = e[3] * v + e[7] * m + e[11] * _ + e[15]) : (n = e[0], i = e[1], a = e[2], u = e[3], s = e[4], o = e[5], h = e[6], f = e[7], l = e[8], c = e[9], p = e[10], d = e[11], t[0] = n, t[1] = i, t[2] = a, t[3] = u, t[4] = s, t[5] = o, t[6] = h, t[7] = f, t[8] = l, t[9] = c, t[10] = p, t[11] = d, t[12] = n * v + s * m + l * _ + e[12], t[13] = i * v + o * m + c * _ + e[13], t[14] = a * v + h * m + p * _ + e[14], t[15] = u * v + f * m + d * _ + e[15]), t;
       }, i.scale = function (t, e, r) {
         var n = r[0],
             i = r[1],
@@ -466,8 +466,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             c,
             p,
             d,
-            m,
             v,
+            m,
             _,
             g,
             E,
@@ -476,14 +476,14 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             y,
             R,
             b,
-            w,
             A,
+            w,
             x,
             P,
             L = i[0],
             k = i[1],
             O = i[2],
-            D = Math.sqrt(L * L + k * k + O * O);return Math.abs(D) < n.EPSILON ? null : (D = 1 / D, L *= D, k *= D, O *= D, a = Math.sin(r), u = Math.cos(r), s = 1 - u, o = e[0], h = e[1], f = e[2], l = e[3], c = e[4], p = e[5], d = e[6], m = e[7], v = e[8], _ = e[9], g = e[10], E = e[11], T = L * L * s + u, M = k * L * s + O * a, y = O * L * s - k * a, R = L * k * s - O * a, b = k * k * s + u, w = O * k * s + L * a, A = L * O * s + k * a, x = k * O * s - L * a, P = O * O * s + u, t[0] = o * T + c * M + v * y, t[1] = h * T + p * M + _ * y, t[2] = f * T + d * M + g * y, t[3] = l * T + m * M + E * y, t[4] = o * R + c * b + v * w, t[5] = h * R + p * b + _ * w, t[6] = f * R + d * b + g * w, t[7] = l * R + m * b + E * w, t[8] = o * A + c * x + v * P, t[9] = h * A + p * x + _ * P, t[10] = f * A + d * x + g * P, t[11] = l * A + m * x + E * P, e !== t && (t[12] = e[12], t[13] = e[13], t[14] = e[14], t[15] = e[15]), t);
+            D = Math.sqrt(L * L + k * k + O * O);return Math.abs(D) < n.EPSILON ? null : (D = 1 / D, L *= D, k *= D, O *= D, a = Math.sin(r), u = Math.cos(r), s = 1 - u, o = e[0], h = e[1], f = e[2], l = e[3], c = e[4], p = e[5], d = e[6], v = e[7], m = e[8], _ = e[9], g = e[10], E = e[11], T = L * L * s + u, M = k * L * s + O * a, y = O * L * s - k * a, R = L * k * s - O * a, b = k * k * s + u, A = O * k * s + L * a, w = L * O * s + k * a, x = k * O * s - L * a, P = O * O * s + u, t[0] = o * T + c * M + m * y, t[1] = h * T + p * M + _ * y, t[2] = f * T + d * M + g * y, t[3] = l * T + v * M + E * y, t[4] = o * R + c * b + m * A, t[5] = h * R + p * b + _ * A, t[6] = f * R + d * b + g * A, t[7] = l * R + v * b + E * A, t[8] = o * w + c * x + m * P, t[9] = h * w + p * x + _ * P, t[10] = f * w + d * x + g * P, t[11] = l * w + v * x + E * P, e !== t && (t[12] = e[12], t[13] = e[13], t[14] = e[14], t[15] = e[15]), t);
       }, i.rotateX = function (t, e, r) {
         var n = Math.sin(r),
             i = Math.cos(r),
@@ -551,10 +551,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             c = n * h,
             p = i * o,
             d = i * h,
-            m = a * h,
-            v = u * s,
+            v = a * h,
+            m = u * s,
             _ = u * o,
-            g = u * h;return t[0] = 1 - (p + m), t[1] = l + g, t[2] = c - _, t[3] = 0, t[4] = l - g, t[5] = 1 - (f + m), t[6] = d + v, t[7] = 0, t[8] = c + _, t[9] = d - v, t[10] = 1 - (f + p), t[11] = 0, t[12] = r[0], t[13] = r[1], t[14] = r[2], t[15] = 1, t;
+            g = u * h;return t[0] = 1 - (p + v), t[1] = l + g, t[2] = c - _, t[3] = 0, t[4] = l - g, t[5] = 1 - (f + v), t[6] = d + m, t[7] = 0, t[8] = c + _, t[9] = d - m, t[10] = 1 - (f + p), t[11] = 0, t[12] = r[0], t[13] = r[1], t[14] = r[2], t[15] = 1, t;
       }, i.fromRotationTranslationScale = function (t, e, r, n) {
         var i = e[0],
             a = e[1],
@@ -567,14 +567,14 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             c = i * h,
             p = i * f,
             d = a * h,
-            m = a * f,
-            v = u * f,
+            v = a * f,
+            m = u * f,
             _ = s * o,
             g = s * h,
             E = s * f,
             T = n[0],
             M = n[1],
-            y = n[2];return t[0] = (1 - (d + v)) * T, t[1] = (c + E) * T, t[2] = (p - g) * T, t[3] = 0, t[4] = (c - E) * M, t[5] = (1 - (l + v)) * M, t[6] = (m + _) * M, t[7] = 0, t[8] = (p + g) * y, t[9] = (m - _) * y, t[10] = (1 - (l + d)) * y, t[11] = 0, t[12] = r[0], t[13] = r[1], t[14] = r[2], t[15] = 1, t;
+            y = n[2];return t[0] = (1 - (d + m)) * T, t[1] = (c + E) * T, t[2] = (p - g) * T, t[3] = 0, t[4] = (c - E) * M, t[5] = (1 - (l + m)) * M, t[6] = (v + _) * M, t[7] = 0, t[8] = (p + g) * y, t[9] = (v - _) * y, t[10] = (1 - (l + d)) * y, t[11] = 0, t[12] = r[0], t[13] = r[1], t[14] = r[2], t[15] = 1, t;
       }, i.fromRotationTranslationScaleOrigin = function (t, e, r, n, i) {
         var a = e[0],
             u = e[1],
@@ -586,8 +586,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             c = a * h,
             p = a * f,
             d = a * l,
-            m = u * f,
-            v = u * l,
+            v = u * f,
+            m = u * l,
             _ = s * l,
             g = o * h,
             E = o * f,
@@ -596,8 +596,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             y = n[1],
             R = n[2],
             b = i[0],
-            w = i[1],
-            A = i[2];return t[0] = (1 - (m + _)) * M, t[1] = (p + T) * M, t[2] = (d - E) * M, t[3] = 0, t[4] = (p - T) * y, t[5] = (1 - (c + _)) * y, t[6] = (v + g) * y, t[7] = 0, t[8] = (d + E) * R, t[9] = (v - g) * R, t[10] = (1 - (c + m)) * R, t[11] = 0, t[12] = r[0] + b - (t[0] * b + t[4] * w + t[8] * A), t[13] = r[1] + w - (t[1] * b + t[5] * w + t[9] * A), t[14] = r[2] + A - (t[2] * b + t[6] * w + t[10] * A), t[15] = 1, t;
+            A = i[1],
+            w = i[2];return t[0] = (1 - (v + _)) * M, t[1] = (p + T) * M, t[2] = (d - E) * M, t[3] = 0, t[4] = (p - T) * y, t[5] = (1 - (c + _)) * y, t[6] = (m + g) * y, t[7] = 0, t[8] = (d + E) * R, t[9] = (m - g) * R, t[10] = (1 - (c + v)) * R, t[11] = 0, t[12] = r[0] + b - (t[0] * b + t[4] * A + t[8] * w), t[13] = r[1] + A - (t[1] * b + t[5] * A + t[9] * w), t[14] = r[2] + w - (t[2] * b + t[6] * A + t[10] * w), t[15] = 1, t;
       }, i.fromQuat = function (t, e) {
         var r = e[0],
             n = e[1],
@@ -612,9 +612,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             c = i * u,
             p = i * s,
             d = i * o,
-            m = a * u,
-            v = a * s,
-            _ = a * o;return t[0] = 1 - l - d, t[1] = f + _, t[2] = c - v, t[3] = 0, t[4] = f - _, t[5] = 1 - h - d, t[6] = p + m, t[7] = 0, t[8] = c + v, t[9] = p - m, t[10] = 1 - h - l, t[11] = 0, t[12] = 0, t[13] = 0, t[14] = 0, t[15] = 1, t;
+            v = a * u,
+            m = a * s,
+            _ = a * o;return t[0] = 1 - l - d, t[1] = f + _, t[2] = c - m, t[3] = 0, t[4] = f - _, t[5] = 1 - h - d, t[6] = p + v, t[7] = 0, t[8] = c + m, t[9] = p - v, t[10] = 1 - h - l, t[11] = 0, t[12] = 0, t[13] = 0, t[14] = 0, t[15] = 1, t;
       }, i.frustum = function (t, e, r, n, i, a, u) {
         var s = 1 / (r - e),
             o = 1 / (i - n),
@@ -643,8 +643,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             c,
             p,
             d,
-            m,
-            v = e[0],
+            v,
+            m = e[0],
             _ = e[1],
             g = e[2],
             E = a[0],
@@ -652,7 +652,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             M = a[2],
             y = r[0],
             R = r[1],
-            b = r[2];return Math.abs(v - y) < n.EPSILON && Math.abs(_ - R) < n.EPSILON && Math.abs(g - b) < n.EPSILON ? i.identity(t) : (c = v - y, p = _ - R, d = g - b, m = 1 / Math.sqrt(c * c + p * p + d * d), c *= m, p *= m, d *= m, u = T * d - M * p, s = M * c - E * d, o = E * p - T * c, m = Math.sqrt(u * u + s * s + o * o), m ? (m = 1 / m, u *= m, s *= m, o *= m) : (u = 0, s = 0, o = 0), h = p * o - d * s, f = d * u - c * o, l = c * s - p * u, m = Math.sqrt(h * h + f * f + l * l), m ? (m = 1 / m, h *= m, f *= m, l *= m) : (h = 0, f = 0, l = 0), t[0] = u, t[1] = h, t[2] = c, t[3] = 0, t[4] = s, t[5] = f, t[6] = p, t[7] = 0, t[8] = o, t[9] = l, t[10] = d, t[11] = 0, t[12] = -(u * v + s * _ + o * g), t[13] = -(h * v + f * _ + l * g), t[14] = -(c * v + p * _ + d * g), t[15] = 1, t);
+            b = r[2];return Math.abs(m - y) < n.EPSILON && Math.abs(_ - R) < n.EPSILON && Math.abs(g - b) < n.EPSILON ? i.identity(t) : (c = m - y, p = _ - R, d = g - b, v = 1 / Math.sqrt(c * c + p * p + d * d), c *= v, p *= v, d *= v, u = T * d - M * p, s = M * c - E * d, o = E * p - T * c, v = Math.sqrt(u * u + s * s + o * o), v ? (v = 1 / v, u *= v, s *= v, o *= v) : (u = 0, s = 0, o = 0), h = p * o - d * s, f = d * u - c * o, l = c * s - p * u, v = Math.sqrt(h * h + f * f + l * l), v ? (v = 1 / v, h *= v, f *= v, l *= v) : (h = 0, f = 0, l = 0), t[0] = u, t[1] = h, t[2] = c, t[3] = 0, t[4] = s, t[5] = f, t[6] = p, t[7] = 0, t[8] = o, t[9] = l, t[10] = d, t[11] = 0, t[12] = -(u * m + s * _ + o * g), t[13] = -(h * m + f * _ + l * g), t[14] = -(c * m + p * _ + d * g), t[15] = 1, t);
       }, i.str = function (t) {
         return "mat4(" + t[0] + ", " + t[1] + ", " + t[2] + ", " + t[3] + ", " + t[4] + ", " + t[5] + ", " + t[6] + ", " + t[7] + ", " + t[8] + ", " + t[9] + ", " + t[10] + ", " + t[11] + ", " + t[12] + ", " + t[13] + ", " + t[14] + ", " + t[15] + ")";
       }, i.frob = function (t) {
@@ -725,8 +725,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             c = e[3],
             p = r[0],
             d = r[1],
-            m = r[2],
-            v = r[3];return a = h * p + f * d + l * m + c * v, 0 > a && (a = -a, p = -p, d = -d, m = -m, v = -v), 1 - a > 1e-6 ? (i = Math.acos(a), u = Math.sin(i), s = Math.sin((1 - n) * i) / u, o = Math.sin(n * i) / u) : (s = 1 - n, o = n), t[0] = s * h + o * p, t[1] = s * f + o * d, t[2] = s * l + o * m, t[3] = s * c + o * v, t;
+            v = r[2],
+            m = r[3];return a = h * p + f * d + l * v + c * m, 0 > a && (a = -a, p = -p, d = -d, v = -v, m = -m), 1 - a > 1e-6 ? (i = Math.acos(a), u = Math.sin(i), s = Math.sin((1 - n) * i) / u, o = Math.sin(n * i) / u) : (s = 1 - n, o = n), t[0] = s * h + o * p, t[1] = s * f + o * d, t[2] = s * l + o * v, t[3] = s * c + o * m, t;
       }, s.sqlerp = function () {
         var t = s.create(),
             e = s.create();return function (r, n, i, a, u, o) {
@@ -1072,9 +1072,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
           c = t("./alfrid/GLTexture"),
           p = n(c),
           d = t("./alfrid/Mesh"),
-          m = n(d),
-          v = t("./alfrid/Geom"),
-          _ = n(v),
+          v = n(d),
+          m = t("./alfrid/Geom"),
+          _ = n(m),
           g = t("./alfrid/Batch"),
           E = n(g),
           T = t("./alfrid/FrameBuffer"),
@@ -1082,9 +1082,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
           y = t("./alfrid/tools/Scheduler"),
           R = n(y),
           b = t("./alfrid/tools/EventDispatcher"),
-          w = n(b),
-          A = t("./alfrid/tools/EaseNumber"),
-          x = n(A),
+          A = n(b),
+          w = t("./alfrid/tools/EaseNumber"),
+          x = n(w),
           P = t("./alfrid/tools/OrbitalControl"),
           L = n(P),
           k = t("./alfrid/cameras/Camera"),
@@ -1102,7 +1102,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
           Y = "1.0.0",
           X = function () {
         function t() {
-          i(this, t), this.glm = s["default"], this.GL = h["default"], this.GLTool = h["default"], this.GLShader = l["default"], this.GLTexture = p["default"], this.Mesh = m["default"], this.Geom = _["default"], this.Batch = E["default"], this.FrameBuffer = M["default"], this.Scheduler = R["default"], this.EventDispatcher = w["default"], this.EaseNumber = x["default"], this.Camera = O["default"], this.CameraOrtho = S["default"], this.CameraPerspective = I["default"], this.OrbitalControl = L["default"], this.BinaryLoader = j["default"], this.ObjLoader = U["default"], this.BatchCopy = G["default"];for (var e in s["default"]) {
+          i(this, t), this.glm = s["default"], this.GL = h["default"], this.GLTool = h["default"], this.GLShader = l["default"], this.GLTexture = p["default"], this.Mesh = v["default"], this.Geom = _["default"], this.Batch = E["default"], this.FrameBuffer = M["default"], this.Scheduler = R["default"], this.EventDispatcher = A["default"], this.EaseNumber = x["default"], this.Camera = O["default"], this.CameraOrtho = S["default"], this.CameraPerspective = I["default"], this.OrbitalControl = L["default"], this.BinaryLoader = j["default"], this.ObjLoader = U["default"], this.BatchCopy = G["default"];for (var e in s["default"]) {
             s["default"][e] && (window[e] = s["default"][e]);
           }
         }return a(t, [{ key: "log", value: function value() {
@@ -1111,7 +1111,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             }
           } }]), t;
       }(),
-          q = new X();e.exports = q;
+          V = new X();e.exports = V;
     }, { "./alfrid/Batch": 12, "./alfrid/FrameBuffer": 13, "./alfrid/GLShader": 14, "./alfrid/GLTexture": 15, "./alfrid/GLTool": 16, "./alfrid/Geom": 17, "./alfrid/Mesh": 18, "./alfrid/cameras/Camera": 19, "./alfrid/cameras/CameraOrtho": 20, "./alfrid/cameras/CameraPerspective": 21, "./alfrid/helpers/BatchCopy": 22, "./alfrid/loaders/BinaryLoader": 23, "./alfrid/loaders/ObjLoader": 24, "./alfrid/tools/EaseNumber": 25, "./alfrid/tools/EventDispatcher": 26, "./alfrid/tools/OrbitalControl": 27, "./alfrid/tools/Scheduler": 28, "gl-matrix": 1 }], 12: [function (t, e, r) {
       "use strict";
       function n(t) {
@@ -1354,10 +1354,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
       }Object.defineProperty(r, "__esModule", { value: !0 });var i = t("./Mesh"),
           a = n(i),
           u = {};u.plane = function (t, e, r) {
-        for (var n = arguments.length <= 3 || void 0 === arguments[3] ? !1 : arguments[3], i = arguments.length <= 4 || void 0 === arguments[4] ? "xy" : arguments[4], u = arguments.length <= 5 || void 0 === arguments[5] ? 4 : arguments[5], s = [], o = [], h = [], f = [], l = t / r, c = e / r, p = 1 / r, d = 0, m = .5 * -t, v = .5 * -e, _ = 0; r > _; _++) {
+        for (var n = arguments.length <= 3 || void 0 === arguments[3] ? !1 : arguments[3], i = arguments.length <= 4 || void 0 === arguments[4] ? "xy" : arguments[4], u = arguments.length <= 5 || void 0 === arguments[5] ? 4 : arguments[5], s = [], o = [], h = [], f = [], l = t / r, c = e / r, p = 1 / r, d = 0, v = .5 * -t, m = .5 * -e, _ = 0; r > _; _++) {
           for (var g = 0; r > g; g++) {
-            var E = l * _ + m,
-                T = c * g + v;"xz" === i ? (s.push([E, 0, -T + c]), s.push([E + l, 0, -T + c]), s.push([E + l, 0, -T]), s.push([E, 0, -T]), f.push([0, 1, 0]), f.push([0, 1, 0]), f.push([0, 1, 0]), f.push([0, 1, 0])) : "yz" === i ? (s.push([0, E, T]), s.push([0, E + l, T]), s.push([0, E + l, T + c]), s.push([0, E, T + c]), f.push([1, 0, 0]), f.push([1, 0, 0]), f.push([1, 0, 0]), f.push([1, 0, 0])) : (s.push([E, T, 0]), s.push([E + l, T, 0]), s.push([E + l, T + c, 0]), s.push([E, T + c, 0]), f.push([0, 0, 1]), f.push([0, 0, 1]), f.push([0, 0, 1]), f.push([0, 0, 1]));var M = _ / r,
+            var E = l * _ + v,
+                T = c * g + m;"xz" === i ? (s.push([E, 0, -T + c]), s.push([E + l, 0, -T + c]), s.push([E + l, 0, -T]), s.push([E, 0, -T]), f.push([0, 1, 0]), f.push([0, 1, 0]), f.push([0, 1, 0]), f.push([0, 1, 0])) : "yz" === i ? (s.push([0, E, T]), s.push([0, E + l, T]), s.push([0, E + l, T + c]), s.push([0, E, T + c]), f.push([1, 0, 0]), f.push([1, 0, 0]), f.push([1, 0, 0]), f.push([1, 0, 0])) : (s.push([E, T, 0]), s.push([E + l, T, 0]), s.push([E + l, T + c, 0]), s.push([E, T + c, 0]), f.push([0, 0, 1]), f.push([0, 0, 1]), f.push([0, 0, 1]), f.push([0, 0, 1]));var M = _ / r,
                 y = g / r;o.push([M, y]), o.push([M + p, y]), o.push([M + p, y + p]), o.push([M, y + p]), h.push(4 * d + 0), h.push(4 * d + 1), h.push(4 * d + 2), h.push(4 * d + 0), h.push(4 * d + 2), h.push(4 * d + 3), d++;
           }
         }var R = new a["default"](u);return R.bufferVertex(s), R.bufferTexCoords(o), R.bufferIndices(h), n && R.bufferNormal(f), R;
@@ -1370,8 +1370,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
               o = [];o[1] = Math.sin(a) * s;var h = Math.cos(a) * s;o[0] = Math.cos(u) * h, o[2] = Math.sin(u) * h;var f = 1e4;return o[0] = Math.floor(o[0] * f) / f, o[1] = Math.floor(o[1] * f) / f, o[2] = Math.floor(o[2] * f) / f, o;
         }, p = 0; e > p; p++) {
           for (var d = 0; e > d; d++) {
-            u.push(c(p, d)), u.push(c(p + 1, d)), u.push(c(p + 1, d + 1)), u.push(c(p, d + 1)), r && (h.push(c(p, d, !0)), h.push(c(p + 1, d, !0)), h.push(c(p + 1, d + 1, !0)), h.push(c(p, d + 1, !0)));var m = d / e,
-                v = p / e;s.push([1 - m, v]), s.push([1 - m, v + l]), s.push([1 - m - l, v + l]), s.push([1 - m - l, v]), o.push(4 * f + 0), o.push(4 * f + 1), o.push(4 * f + 2), o.push(4 * f + 0), o.push(4 * f + 2), o.push(4 * f + 3), f++;
+            u.push(c(p, d)), u.push(c(p + 1, d)), u.push(c(p + 1, d + 1)), u.push(c(p, d + 1)), r && (h.push(c(p, d, !0)), h.push(c(p + 1, d, !0)), h.push(c(p + 1, d + 1, !0)), h.push(c(p, d + 1, !0)));var v = d / e,
+                m = p / e;s.push([1 - v, m]), s.push([1 - v, m + l]), s.push([1 - v - l, m + l]), s.push([1 - v - l, m]), o.push(4 * f + 0), o.push(4 * f + 1), o.push(4 * f + 2), o.push(4 * f + 0), o.push(4 * f + 2), o.push(4 * f + 3), f++;
           }
         }n && o.reverse();var _ = new a["default"](i);return _.bufferVertex(u), _.bufferTexCoords(s), _.bufferIndices(o), r && _.bufferNormal(h), _;
       }, u.cube = function (t, e, r) {
@@ -1392,6 +1392,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             u = [],
             s = [],
             o = 0;n.push([t, t, -t]), n.push([-t, t, -t]), n.push([-t, -t, -t]), n.push([t, -t, -t]), s.push([0, 0, -1]), s.push([0, 0, -1]), s.push([0, 0, -1]), s.push([0, 0, -1]), i.push([0, 0]), i.push([1, 0]), i.push([1, 1]), i.push([0, 1]), u.push(4 * o + 0), u.push(4 * o + 1), u.push(4 * o + 2), u.push(4 * o + 0), u.push(4 * o + 2), u.push(4 * o + 3), o++, n.push([t, -t, -t]), n.push([t, -t, t]), n.push([t, t, t]), n.push([t, t, -t]), s.push([1, 0, 0]), s.push([1, 0, 0]), s.push([1, 0, 0]), s.push([1, 0, 0]), i.push([0, 0]), i.push([1, 0]), i.push([1, 1]), i.push([0, 1]), u.push(4 * o + 0), u.push(4 * o + 1), u.push(4 * o + 2), u.push(4 * o + 0), u.push(4 * o + 2), u.push(4 * o + 3), o++, n.push([-t, t, t]), n.push([t, t, t]), n.push([t, -t, t]), n.push([-t, -t, t]), s.push([0, 0, 1]), s.push([0, 0, 1]), s.push([0, 0, 1]), s.push([0, 0, 1]), i.push([0, 0]), i.push([1, 0]), i.push([1, 1]), i.push([0, 1]), u.push(4 * o + 0), u.push(4 * o + 1), u.push(4 * o + 2), u.push(4 * o + 0), u.push(4 * o + 2), u.push(4 * o + 3), o++, n.push([-t, -t, t]), n.push([-t, -t, -t]), n.push([-t, t, -t]), n.push([-t, t, t]), s.push([-1, 0, 0]), s.push([-1, 0, 0]), s.push([-1, 0, 0]), s.push([-1, 0, 0]), i.push([0, 0]), i.push([1, 0]), i.push([1, 1]), i.push([0, 1]), u.push(4 * o + 0), u.push(4 * o + 1), u.push(4 * o + 2), u.push(4 * o + 0), u.push(4 * o + 2), u.push(4 * o + 3), o++, n.push([t, t, t]), n.push([-t, t, t]), n.push([-t, t, -t]), n.push([t, t, -t]), s.push([0, 1, 0]), s.push([0, 1, 0]), s.push([0, 1, 0]), s.push([0, 1, 0]), i.push([0, 0]), i.push([1, 0]), i.push([1, 1]), i.push([0, 1]), u.push(4 * o + 0), u.push(4 * o + 1), u.push(4 * o + 2), u.push(4 * o + 0), u.push(4 * o + 2), u.push(4 * o + 3), o++, n.push([t, -t, -t]), n.push([-t, -t, -t]), n.push([-t, -t, t]), n.push([t, -t, t]), s.push([0, -1, 0]), s.push([0, -1, 0]), s.push([0, -1, 0]), s.push([0, -1, 0]), i.push([0, 0]), i.push([1, 0]), i.push([1, 1]), i.push([0, 1]), u.push(4 * o + 0), u.push(4 * o + 1), u.push(4 * o + 2), u.push(4 * o + 0), u.push(4 * o + 2), u.push(4 * o + 3);var h = new a["default"](r);return h.bufferVertex(n), h.bufferTexCoords(i), h.bufferIndices(u), e && h.bufferNormal(s), h;
+      }, u.bigTriangle = function () {
+        var t = [0, 1, 2],
+            e = [-1, -1, 0, -1, 4, 0, 4, -1, 0],
+            r = new alfrid.Mesh();return r.bufferVertex(e), r.bufferIndices(t), r;
       }, r["default"] = u;
     }, { "./Mesh": 18 }], 18: [function (t, e, r) {
       "use strict";
@@ -1557,9 +1561,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
           return r && t(e.prototype, r), n && t(e, n), e;
         };
       }(),
-          o = function v(t, e, r) {
+          o = function m(t, e, r) {
         null === t && (t = Function.prototype);var n = Object.getOwnPropertyDescriptor(t, e);if (void 0 === n) {
-          var i = Object.getPrototypeOf(t);return null === i ? void 0 : v(i, e, r);
+          var i = Object.getPrototypeOf(t);return null === i ? void 0 : m(i, e, r);
         }if ("value" in n) return n.value;var a = n.get;if (void 0 !== a) return a.call(r);
       };Object.defineProperty(r, "__esModule", { value: !0 });var h = t("../Geom"),
           f = n(h),
@@ -1567,15 +1571,15 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
           c = n(l),
           p = t("../Batch"),
           d = n(p),
-          m = function (t) {
+          v = function (t) {
         function e() {
           i(this, e);var t = f["default"].plane(2, 2, 1),
-              r = new c["default"](null, "#define GLSLIFY 1\n// copy.frag\n\n#define SHADER_NAME COPY_FRAGMENT\n\nprecision highp float;\n\nvarying vec2 vTextureCoord;\nuniform sampler2D texture;\n\nvoid main(void) {\n    gl_FragColor = texture2D(texture, vTextureCoord);\n}"),
+              r = new c["default"]("#define GLSLIFY 1\n// bigTriangle.vert\n\n#define SHADER_NAME BASIC_VERTEX\n\nprecision highp float;\nattribute vec3 aVertexPosition;\nvarying vec2 vTextureCoord;\n\nvoid main(void) {\n    // gl_Position = vec4(aPosition, 1.0, 1.0);\n    gl_Position = vec4(aVertexPosition, 1.0);\n    vTextureCoord = aVertexPosition.xy;\n}", "#define GLSLIFY 1\n// copy.frag\n\n#define SHADER_NAME COPY_FRAGMENT\n\nprecision highp float;\n\nvarying vec2 vTextureCoord;\nuniform sampler2D texture;\n\nvoid main(void) {\n    gl_FragColor = texture2D(texture, vTextureCoord);\n}"),
               n = a(this, Object.getPrototypeOf(e).call(this, t, r));return r.bind(), r.uniform("texture", "uniform1i", 0), n;
         }return u(e, t), s(e, [{ key: "draw", value: function value(t) {
             this.shader.bind(), t.bind(0), o(Object.getPrototypeOf(e.prototype), "draw", this).call(this);
           } }]), e;
-      }(d["default"]);r["default"] = m;
+      }(d["default"]);r["default"] = v;
     }, { "../Batch": 12, "../GLShader": 14, "../Geom": 17 }], 23: [function (t, e, r) {
       "use strict";
       function n(t, e) {
@@ -1850,6 +1854,7 @@ var canvas = undefined,
     GL = undefined,
     img = undefined,
     texture = undefined;
+var time = 0;
 
 img = new Image();
 img.addEventListener('load', function () {
@@ -1888,13 +1893,14 @@ function _init() {
 	orbitalControl.radius.value = 10;
 
 	//	CREATE MESH
-	mesh = _alfridMin2.default.Geom.cube(1, 1, 1, true);
+	var size = 2;
+	mesh = _alfridMin2.default.Geom.cube(size, size, size, true);
 
 	//	CREATE TEXTURE
 	texture = new _alfridMin2.default.GLTexture(img);
 
 	//	CREATE SHADER
-	shader = new _alfridMin2.default.GLShader("#define GLSLIFY 1\n// basic.vert\n\n#define SHADER_NAME BASIC_VERTEX\n\nprecision highp float;\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec3 aNormal;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\nuniform mat3 uNormalMatrix;\n\nvarying vec2 vTextureCoord;\nvarying vec3 vNormal;\n\nvoid main(void) {\n    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);\n    vTextureCoord = aTextureCoord;\n\n    vNormal = normalize(uNormalMatrix * aNormal);\n}", "#define GLSLIFY 1\n// basic.frag\n\n#define SHADER_NAME BASIC_FRAGMENT\n\nprecision highp float;\nuniform sampler2D texture;\nvarying vec2 vTextureCoord;\nvarying vec3 vNormal;\n\nconst vec3 light = vec3(1.0, 1.0, 1.0);\n\nfloat diffuse(vec3 N, vec3 L) {\n\treturn max(dot(N, normalize(L)), 0.0);\n}\n\nvoid main(void) {\n\tvec4 color = texture2D(texture, vTextureCoord);\n    float _diffuse = mix(diffuse(vNormal, light), 1.0, .2);\n    gl_FragColor = color * _diffuse;;\n}");
+	shader = new _alfridMin2.default.GLShader("#define GLSLIFY 1\n// basic.vert\n\n#define SHADER_NAME BASIC_VERTEX\n\nprecision highp float;\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec3 aNormal;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\nuniform mat3 uNormalMatrix;\n\nuniform float time;\n\nvarying vec2 vTextureCoord;\nvarying vec3 vNormal;\n\nvoid main(void) {\n\tvec3 position = aVertexPosition;\n\tfloat scale = 1.0 + sin(time) * .5;\n\tposition *= scale;\n    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(position, 1.0);\n    vTextureCoord = aTextureCoord;\n\n    vNormal = normalize(uNormalMatrix * aNormal);\n}", "#define GLSLIFY 1\n// basic.frag\n\n#define SHADER_NAME BASIC_FRAGMENT\n\nprecision highp float;\nuniform sampler2D texture;\nvarying vec2 vTextureCoord;\nvarying vec3 vNormal;\n\nconst vec3 light = vec3(1.0, 1.0, 1.0);\n\nfloat diffuse(vec3 N, vec3 L) {\n\treturn max(dot(N, normalize(L)), 0.0);\n}\n\nvoid main(void) {\n\tvec4 color = texture2D(texture, vTextureCoord);\n    float _diffuse = mix(diffuse(vNormal, light), 1.0, .2);\n    gl_FragColor = color * _diffuse;;\n}");
 
 	//	CREATE BATCH
 	batch = new _alfridMin2.default.Batch(mesh, shader);
@@ -1909,8 +1915,10 @@ function _loop() {
 	GL.clear(0, 0, 0, 0);
 	GL.setMatrices(camera);
 
+	time += .02;
 	shader.bind();
 	shader.uniform('texture', 'uniform1i', 0);
+	shader.uniform('time', 'uniform1f', time);
 	texture.bind(0);
 
 	batch.draw();

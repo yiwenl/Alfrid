@@ -12,11 +12,16 @@ uniform mat4 uViewMatrix;
 uniform mat4 uProjectionMatrix;
 uniform mat3 uNormalMatrix;
 
+uniform float time;
+
 varying vec2 vTextureCoord;
 varying vec3 vNormal;
 
 void main(void) {
-    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);
+	vec3 position = aVertexPosition;
+	float scale = 1.0 + sin(time) * .5;
+	position *= scale;
+    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(position, 1.0);
     vTextureCoord = aTextureCoord;
 
     vNormal = normalize(uNormalMatrix * aNormal);
