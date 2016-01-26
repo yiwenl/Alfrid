@@ -3,7 +3,6 @@
 'use strict';
 
 import GL from './GLTool';
-import GLTexture from './GLTexture';
 
 let gl;
 

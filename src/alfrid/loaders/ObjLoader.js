@@ -16,7 +16,7 @@ class ObjLoader extends BinaryLoader {
 		super.load(url, callback);
 	}
 
-	_onLoaded(e) {
+	_onLoaded() {
 		this._parseObj(this._req.response);
 	}
 
@@ -236,7 +236,6 @@ class ObjLoader extends BinaryLoader {
 		mesh.bufferVertex(o.positions);
 		mesh.bufferTexCoords(o.coords);
 		mesh.bufferIndices(o.indices);
-		console.log(o.normals.length);
 		if(!this._ignoreNormals) {
 			mesh.bufferNormal(o.normals);
 		}

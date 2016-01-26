@@ -5308,10 +5308,6 @@ var _GLTool = _dereq_('./GLTool');
 
 var _GLTool2 = _interopRequireDefault(_GLTool);
 
-var _GLTexture = _dereq_('./GLTexture');
-
-var _GLTexture2 = _interopRequireDefault(_GLTexture);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -5375,7 +5371,7 @@ var GLCubeTexture = function () {
 
 exports.default = GLCubeTexture;
 
-},{"./GLTexture":16,"./GLTool":17}],15:[function(_dereq_,module,exports){
+},{"./GLTool":17}],15:[function(_dereq_,module,exports){
 // GLShader.js
 
 'use strict';
@@ -6884,6 +6880,8 @@ var BinaryLoader = function () {
 	function BinaryLoader() {
 		var _this = this;
 
+		var isArrayBuffer = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+
 		_classCallCheck(this, BinaryLoader);
 
 		this._req = new XMLHttpRequest();
@@ -6893,7 +6891,9 @@ var BinaryLoader = function () {
 		this._req.addEventListener('progress', function (e) {
 			return _this._onProgress(e);
 		});
-		// this._req.responseType = 'arraybuffer';
+		if (isArrayBuffer) {
+			this._req.responseType = 'arraybuffer';
+		}
 	}
 
 	_createClass(BinaryLoader, [{
@@ -6907,13 +6907,13 @@ var BinaryLoader = function () {
 		}
 	}, {
 		key: '_onLoaded',
-		value: function _onLoaded(e) {
+		value: function _onLoaded() {
 			this._callback(this._req.response);
 		}
 	}, {
 		key: '_onProgress',
 		value: function _onProgress(e) {
-			console.log('on Progress:', (e.loaded / e.total * 100).toFixed(2));
+			// console.log('on Progress:', (e.loaded/e.total*100).toFixed(2));
 		}
 	}]);
 
@@ -6972,7 +6972,7 @@ var ObjLoader = function (_BinaryLoader) {
 		}
 	}, {
 		key: '_onLoaded',
-		value: function _onLoaded(e) {
+		value: function _onLoaded() {
 			this._parseObj(this._req.response);
 		}
 	}, {
@@ -7148,7 +7148,6 @@ var ObjLoader = function (_BinaryLoader) {
 			mesh.bufferVertex(o.positions);
 			mesh.bufferTexCoords(o.coords);
 			mesh.bufferIndices(o.indices);
-			console.log(o.normals.length);
 			if (!this._ignoreNormals) {
 				mesh.bufferNormal(o.normals);
 			}
