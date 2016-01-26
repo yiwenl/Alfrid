@@ -123,7 +123,7 @@ class OrbitalControl {
 			value = w/120; 
 		}
 
-		this.radius.add( -value * 5);
+		this.radius.add( -value * 2);
 	}
 
 
