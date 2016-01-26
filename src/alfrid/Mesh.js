@@ -35,7 +35,7 @@ class Mesh {
 
 	bufferIndices(mArrayIndices, isDynamic=false) {
 
-		var drawType          = isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW;
+		let drawType          = isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW;
 		this._indices         = mArrayIndices;
 		this.iBuffer          = gl.createBuffer();
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.iBuffer);

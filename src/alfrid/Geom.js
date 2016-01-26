@@ -508,4 +508,20 @@ Geom.skybox = function(size, withNormals=false, drawType=4) {
 	return mesh;
 };
 
+Geom.bigTriangle = function() {
+	let indices = [2, 1, 0];
+	let positions = [
+		[-1, -1], 
+		[-1, 4], 
+		[4, -1]
+	];
+	
+	let mesh = new Mesh();
+	// mesh.bufferVertex(positions);
+	mesh.bufferData(positions, 'aPosition', 2);
+	mesh.bufferIndices(indices);
+
+	return mesh;
+}
+
 export default Geom;
