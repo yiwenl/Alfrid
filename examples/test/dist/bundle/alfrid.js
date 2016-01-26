@@ -4924,6 +4924,10 @@ var _GLTexture = _dereq_('./alfrid/GLTexture');
 
 var _GLTexture2 = _interopRequireDefault(_GLTexture);
 
+var _GLCubeTexture = _dereq_('./alfrid/GLCubeTexture');
+
+var _GLCubeTexture2 = _interopRequireDefault(_GLCubeTexture);
+
 var _Mesh = _dereq_('./alfrid/Mesh');
 
 var _Mesh2 = _interopRequireDefault(_Mesh);
@@ -4999,6 +5003,7 @@ var alfrid = function () {
 		this.GLTool = _GLTool2.default;
 		this.GLShader = _GLShader2.default;
 		this.GLTexture = _GLTexture2.default;
+		this.GLCubeTexture = _GLCubeTexture2.default;
 		this.Mesh = _Mesh2.default;
 		this.Geom = _Geom2.default;
 		this.Batch = _Batch2.default;
@@ -5051,7 +5056,7 @@ var b = new alfrid();
 
 module.exports = b;
 
-},{"./alfrid/Batch":12,"./alfrid/FrameBuffer":13,"./alfrid/GLShader":14,"./alfrid/GLTexture":15,"./alfrid/GLTool":16,"./alfrid/Geom":17,"./alfrid/Mesh":18,"./alfrid/cameras/Camera":19,"./alfrid/cameras/CameraOrtho":20,"./alfrid/cameras/CameraPerspective":21,"./alfrid/helpers/BatchCopy":22,"./alfrid/loaders/BinaryLoader":23,"./alfrid/loaders/ObjLoader":24,"./alfrid/tools/EaseNumber":25,"./alfrid/tools/EventDispatcher":26,"./alfrid/tools/OrbitalControl":27,"./alfrid/tools/QuatRotation":28,"./alfrid/tools/Scheduler":29,"gl-matrix":1}],12:[function(_dereq_,module,exports){
+},{"./alfrid/Batch":12,"./alfrid/FrameBuffer":13,"./alfrid/GLCubeTexture":14,"./alfrid/GLShader":15,"./alfrid/GLTexture":16,"./alfrid/GLTool":17,"./alfrid/Geom":18,"./alfrid/Mesh":19,"./alfrid/cameras/Camera":20,"./alfrid/cameras/CameraOrtho":21,"./alfrid/cameras/CameraPerspective":22,"./alfrid/helpers/BatchCopy":23,"./alfrid/loaders/BinaryLoader":24,"./alfrid/loaders/ObjLoader":25,"./alfrid/tools/EaseNumber":26,"./alfrid/tools/EventDispatcher":27,"./alfrid/tools/OrbitalControl":28,"./alfrid/tools/QuatRotation":29,"./alfrid/tools/Scheduler":30,"gl-matrix":1}],12:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // Batch.js
@@ -5104,7 +5109,7 @@ var Batch = function () {
 
 exports.default = Batch;
 
-},{"./GLTool":16}],13:[function(_dereq_,module,exports){
+},{"./GLTool":17}],13:[function(_dereq_,module,exports){
 // FrameBuffer.js
 
 'use strict';
@@ -5288,7 +5293,89 @@ var FrameBuffer = function () {
 
 exports.default = FrameBuffer;
 
-},{"./GLTexture":15,"./GLTool":16}],14:[function(_dereq_,module,exports){
+},{"./GLTexture":16,"./GLTool":17}],14:[function(_dereq_,module,exports){
+// GLCubeTexture.js
+
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _GLTool = _dereq_('./GLTool');
+
+var _GLTool2 = _interopRequireDefault(_GLTool);
+
+var _GLTexture = _dereq_('./GLTexture');
+
+var _GLTexture2 = _interopRequireDefault(_GLTexture);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var gl = undefined;
+
+var GLCubeTexture = function () {
+	function GLCubeTexture(mSource) {
+		var mParameters = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+		_classCallCheck(this, GLCubeTexture);
+
+		gl = _GLTool2.default.gl;
+
+		this.texture = gl.createTexture();
+		this.magFilter = mParameters.magFilter || gl.LINEAR;
+		this.minFilter = mParameters.minFilter || gl.LINEAR_MIPMAP_NEAREST;
+		this.wrapS = mParameters.wrapS || gl.MIRRORED_REPEAT;
+		this.wrapT = mParameters.wrapT || gl.MIRRORED_REPEAT;
+
+		gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.texture);
+		var targets = [gl.TEXTURE_CUBE_MAP_POSITIVE_X, gl.TEXTURE_CUBE_MAP_NEGATIVE_X, gl.TEXTURE_CUBE_MAP_POSITIVE_Y, gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, gl.TEXTURE_CUBE_MAP_POSITIVE_Z, gl.TEXTURE_CUBE_MAP_NEGATIVE_Z];
+
+		for (var j = 0; j < 6; j++) {
+			gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+			gl.texImage2D(targets[j], 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, mSource[j]);
+			gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, this.wrapS);
+			gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, this.wrapT);
+			gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, this.magFilter);
+			gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, this.minFilter);
+		}
+
+		gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
+		gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
+	}
+
+	//	PUBLIC METHOD
+
+	_createClass(GLCubeTexture, [{
+		key: 'bind',
+		value: function bind() {
+			var index = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+
+			if (!_GLTool2.default.shader) {
+				return;
+			}
+
+			gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.texture);
+			gl.uniform1i(_GLTool2.default.shader.uniformTextures[index], index);
+			this._bindIndex = index;
+		}
+	}, {
+		key: 'unbind',
+		value: function unbind() {
+			gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
+		}
+	}]);
+
+	return GLCubeTexture;
+}();
+
+exports.default = GLCubeTexture;
+
+},{"./GLTexture":16,"./GLTool":17}],15:[function(_dereq_,module,exports){
 // GLShader.js
 
 'use strict';
@@ -5417,7 +5504,7 @@ var GLShader = function () {
 
 exports.default = GLShader;
 
-},{"./GLTool":16}],15:[function(_dereq_,module,exports){
+},{"./GLTool":17}],16:[function(_dereq_,module,exports){
 // GLTexture.js
 
 'use strict';
@@ -5594,7 +5681,7 @@ var GLTexture = function () {
 
 exports.default = GLTexture;
 
-},{"./GLTool":16}],16:[function(_dereq_,module,exports){
+},{"./GLTool":17}],17:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // GLTool.js
@@ -5620,7 +5707,7 @@ var GLTool = function () {
 		this._enabledVertexAttribute = [];
 		this.identityMatrix = _glMatrix2.default.mat4.create();
 		this._normalMatrix = _glMatrix2.default.mat3.create();
-		this._inverseViewMatrix = _glMatrix2.default.mat4.create();
+		this._inverseModelViewMatrix = _glMatrix2.default.mat3.create();
 		this._modelMatrix = _glMatrix2.default.mat4.create();
 		this._matrix = _glMatrix2.default.mat4.create();
 		_glMatrix2.default.mat4.identity(this.identityMatrix, this.identityMatrix);
@@ -5722,8 +5809,8 @@ var GLTool = function () {
 			_glMatrix2.default.mat3.invert(this._normalMatrix, this._normalMatrix);
 			_glMatrix2.default.mat3.transpose(this._normalMatrix, this._normalMatrix);
 
-			_glMatrix2.default.mat3.fromMat4(this._inverseViewMatrix, this._matrix);
-			_glMatrix2.default.mat3.invert(this._inverseViewMatrix, this._inverseViewMatrix);
+			_glMatrix2.default.mat3.fromMat4(this._inverseModelViewMatrix, this._matrix);
+			_glMatrix2.default.mat3.invert(this._inverseModelViewMatrix, this._inverseModelViewMatrix);
 		}
 	}, {
 		key: 'draw',
@@ -5762,7 +5849,7 @@ var GLTool = function () {
 			this.shader.uniform('uModelMatrix', 'uniformMatrix4fv', this._modelMatrix);
 			this.shader.uniform('uViewMatrix', 'uniformMatrix4fv', this.camera.matrix);
 			this.shader.uniform('uNormalMatrix', 'uniformMatrix3fv', this._normalMatrix);
-			this.shader.uniform('uViewMatrixInverse', 'uniformMatrix4fv', this._inverseViewMatrix);
+			this.shader.uniform('uModelViewMatrixInverse', 'uniformMatrix3fv', this._inverseModelViewMatrix);
 
 			//	DRAWING
 			if (mMesh.drawType === this.gl.POINTS) {
@@ -5873,7 +5960,7 @@ var GL = new GLTool();
 
 exports.default = GL;
 
-},{"gl-matrix":1}],17:[function(_dereq_,module,exports){
+},{"gl-matrix":1}],18:[function(_dereq_,module,exports){
 // Geom.js
 
 'use strict';
@@ -6414,7 +6501,7 @@ Geom.bigTriangle = function () {
 
 exports.default = Geom;
 
-},{"./Mesh":18}],18:[function(_dereq_,module,exports){
+},{"./Mesh":19}],19:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // Mesh.js
@@ -6539,7 +6626,7 @@ var Mesh = function () {
 
 exports.default = Mesh;
 
-},{"./GLTool":16}],19:[function(_dereq_,module,exports){
+},{"./GLTool":17}],20:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // Camera.js
@@ -6597,7 +6684,7 @@ var Camera = function () {
 
 exports.default = Camera;
 
-},{"gl-matrix":1}],20:[function(_dereq_,module,exports){
+},{"gl-matrix":1}],21:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -6660,7 +6747,7 @@ var CameraOrtho = function (_Camera) {
 
 exports.default = CameraOrtho;
 
-},{"./Camera":19,"gl-matrix":1}],21:[function(_dereq_,module,exports){
+},{"./Camera":20,"gl-matrix":1}],22:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -6717,7 +6804,7 @@ var CameraPerspective = function (_Camera) {
 
 exports.default = CameraPerspective;
 
-},{"./Camera":19,"gl-matrix":1}],22:[function(_dereq_,module,exports){
+},{"./Camera":20,"gl-matrix":1}],23:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -6780,7 +6867,7 @@ var BatchCopy = function (_Batch) {
 
 exports.default = BatchCopy;
 
-},{"../Batch":12,"../GLShader":14,"../Geom":17}],23:[function(_dereq_,module,exports){
+},{"../Batch":12,"../GLShader":15,"../Geom":18}],24:[function(_dereq_,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -6797,7 +6884,7 @@ var BinaryLoader = function BinaryLoader() {
 
 exports.default = BinaryLoader;
 
-},{}],24:[function(_dereq_,module,exports){
+},{}],25:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6830,7 +6917,7 @@ var ObjLoader = function (_BinaryLoader) {
 
 exports.default = ObjLoader;
 
-},{"./BinaryLoader":23}],25:[function(_dereq_,module,exports){
+},{"./BinaryLoader":24}],26:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // EaseNumber.js
@@ -6926,7 +7013,7 @@ var EaseNumber = function () {
 
 exports.default = EaseNumber;
 
-},{"./Scheduler":29}],26:[function(_dereq_,module,exports){
+},{"./Scheduler":30}],27:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -7064,7 +7151,7 @@ var EventDispatcher = function () {
 
 exports.default = EventDispatcher;
 
-},{}],27:[function(_dereq_,module,exports){
+},{}],28:[function(_dereq_,module,exports){
 // OrbitalControl.js
 'use strict';
 
@@ -7290,7 +7377,7 @@ var OrbitalControl = function () {
 
 exports.default = OrbitalControl;
 
-},{"./EaseNumber":25,"./Scheduler":29,"gl-matrix":1}],28:[function(_dereq_,module,exports){
+},{"./EaseNumber":26,"./Scheduler":30,"gl-matrix":1}],29:[function(_dereq_,module,exports){
 // QuatRotation.js
 
 'use strict';
@@ -7559,7 +7646,7 @@ var QuatRotation = function () {
 
 exports.default = QuatRotation;
 
-},{"./EaseNumber":25,"./Scheduler":29,"gl-matrix":1}],29:[function(_dereq_,module,exports){
+},{"./EaseNumber":26,"./Scheduler":30,"gl-matrix":1}],30:[function(_dereq_,module,exports){
 // Scheduler.js
 
 'use strict';
