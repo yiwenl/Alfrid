@@ -4,6 +4,7 @@ import GLM 					from 'gl-matrix';
 import GLTool 				from './alfrid/GLTool';
 import GLShader 			from './alfrid/GLShader';
 import GLTexture 			from './alfrid/GLTexture';
+import GLCubeTexture 		from './alfrid/GLCubeTexture';
 import Mesh 				from './alfrid/Mesh';
 import Geom					from './alfrid/Geom';
 import Batch				from './alfrid/Batch';
@@ -40,6 +41,7 @@ class alfrid {
 		this.GLTool            = GLTool;
 		this.GLShader          = GLShader;
 		this.GLTexture         = GLTexture;
+		this.GLCubeTexture     = GLCubeTexture;
 		this.Mesh              = Mesh;
 		this.Geom              = Geom;
 		this.Batch             = Batch;
