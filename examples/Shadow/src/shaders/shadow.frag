@@ -21,5 +21,15 @@ void main(void) {
 	vec3 LightVec		= normalize( lightPos - vPosition.xyz );
 	float NdotL			= max( dot( vNormal, LightVec ), 0.0 );
 
-    gl_FragColor = texture2D(textureDepth, vTextureCoord);
+	vec3 Diffuse		= vec3( NdotL );
+	vec3 Ambient		= vec3( 0.3 );
+	
+	vec4 ShadowCoord	= vShadowCoord / vShadowCoord.w;
+	float Shadow		= 1.0;
+
+	if ( ShadowCoord.z > -1.0 && ShadowCoord.z < 1.0 ) {
+		Shadow = texture2D( textureDepth, ShadowCoord.xy ).r;
+	}
+
+    gl_FragColor = vec4(( Diffuse * Shadow + Ambient ) * color, 1.0);
 }
