@@ -19,6 +19,7 @@ void main(void) {
 
 	vec3 Normal			= normalize( vNormal );
 	vec3 LightVec		= normalize( lightPos - vPosition.xyz );
+	// float NdotL			= max( dot( vNormal, normalize(lightPos) ), 0.0 );
 	float NdotL			= max( dot( vNormal, LightVec ), 0.0 );
 
 	vec3 Diffuse		= vec3( NdotL );
@@ -28,8 +29,19 @@ void main(void) {
 	float Shadow		= 1.0;
 
 	if ( ShadowCoord.z > -1.0 && ShadowCoord.z < 1.0 ) {
-		Shadow = texture2D( textureDepth, ShadowCoord.xy ).r;
+		Shadow = texture2D( textureDepth, ShadowCoord.xy ).r ;
 	}
 
-    gl_FragColor = vec4(( Diffuse * Shadow + Ambient ) * color, 1.0);
+	gl_FragColor = vec4(( Diffuse * Shadow + Ambient ) * color, 1.0);
+
+/*
+	float bias = 0.005*tan(acos(NdotL)); // cosTheta is dot( n,l ), clamped between 0 and 1
+	bias = clamp(bias, 0.0, 0.01);
+	float visibility = 1.0;
+	if ( texture2D( textureDepth, ShadowCoord.xy ).z  <  ShadowCoord.z-bias){
+		visibility = 0.5;
+	}
+
+    gl_FragColor = vec4(( Diffuse * visibility + Ambient ) * color, 1.0);
+*/  
 }

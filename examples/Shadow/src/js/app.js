@@ -41,10 +41,10 @@ function _init() {
 	//	CREATE CAMERA
 	camera = new alfrid.CameraPerspective();
 	let fov = 45*Math.PI/180;
-	camera.setPerspective(fov, GL.aspectRatio, 1, 1000);
+	camera.setPerspective(fov, GL.aspectRatio, 1., 2000);
 
 	cameraLight = new alfrid.CameraPerspective();
-	cameraLight.setPerspective(fov, 1, 1, 1000);
+	cameraLight.setPerspective(fov, 1, 1., 2000);
 	cameraLight.lookAt(lightPosition, vec3.fromValues(0, 0, 0), vec3.fromValues(0, 1, 0));
 
 	cameraOrtho = new alfrid.CameraOrtho();
@@ -54,10 +54,10 @@ function _init() {
 	orbitalControl.radius.value = 10;
 
 	//	CREATE MESH
-	let size = 1;
+	let size = .5;
 	mesh = alfrid.Geom.cube(size, size, size, true);
 
-	size = 8;
+	size = 16;
 	meshFloor = alfrid.Geom.cube(size, .001, size, true);
 
 	meshSphere = alfrid.Geom.sphere(.1, 24, true);
@@ -84,8 +84,12 @@ function _init() {
 
 
 function _loop() {
+	time += .03;
 	GL.clear(0, 0, 0, 0);
 	GL.setMatrices(cameraLight);
+	lightPosition[0] = Math.cos(time) * 2;
+	lightPosition[2] = Math.sin(time) * 2;
+	cameraLight.lookAt(lightPosition, vec3.fromValues(0, 0, 0), vec3.fromValues(0, 1, 0));
 
 
 	fbo.bind();
@@ -94,30 +98,20 @@ function _loop() {
 	shaderColor.uniform("color", "uniform3fv", [1, 1, 1]);
 	shaderColor.uniform("opacity", "uniform1f", 1);
 	shaderColor.uniform("position", "uniform3fv", [0, -1.5, 0]);
+	shaderColor.uniform("rotation", "uniform1f", 0);
 	GL.draw(meshFloor);
 
+	shaderColor.uniform("rotation", "uniform1f", time);
 	shaderColor.uniform("color", "uniform3fv", [1, 1, .5]);
-	shaderColor.uniform("position", "uniform3fv", [0, 1, 0]);
+	shaderColor.uniform("position", "uniform3fv", [0, 1+Math.sin(time) * .35, 0]);
 	GL.draw(mesh);
 
 	fbo.unbind();
 
 	GL.viewport(0, 0, GL.width, GL.height);
-	GL.setMatrices(cameraOrtho);
-
-	GL.disable(GL.DEPTH_TEST);
-
-	let size = 500;
-	GL.viewport(0, 0, size, size);
-	GL.setMatrices(cameraOrtho);
-	batchCopy.draw(fbo.getDepthTexture());
-	GL.enable(GL.DEPTH_TEST);
-
-
-	GL.viewport(0, 0, GL.width, GL.height);
 	GL.setMatrices(camera);
 	shaderColor.bind();
-	shaderColor.uniform("color", "uniform3fv", [1, 0, 0]);
+	shaderColor.uniform("color", "uniform3fv", [1, 1, .79]);
 	shaderColor.uniform("position", "uniform3fv", lightPosition);
 	GL.draw(meshSphere);
 
@@ -127,16 +121,18 @@ function _loop() {
 
 	shaderShadow.bind();
 	shaderShadow.uniform("lightPosition", "uniform3fv", lightPosition);
-	shaderShadow.uniform("shadowMatrix", "uniformMatrix4fv", shadowMatrix);
+	shaderShadow.uniform("uShadowMatrix", "uniformMatrix4fv", shadowMatrix);
 	shaderShadow.uniform("textureDepth", "uniform1i", 0);
 	fbo.getDepthTexture().bind(0);
 
+	shaderShadow.uniform("rotation", "uniform1f", 0);
 	shaderShadow.uniform("color", "uniform3fv", [1, 1, 1]);
 	shaderShadow.uniform("position", "uniform3fv", [0, -1.5, 0]);
 	GL.draw(meshFloor);
 
+	shaderShadow.uniform("rotation", "uniform1f", time);
 	shaderShadow.uniform("color", "uniform3fv", [1, 1, .5]);
-	shaderShadow.uniform("position", "uniform3fv", [0, 1, 0]);
+	shaderShadow.uniform("position", "uniform3fv", [0, 1+Math.sin(time) * .35, 0]);
 	GL.draw(mesh);
 }
 

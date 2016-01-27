@@ -1806,7 +1806,7 @@ for(var s in _glMatrix2.default){if(_glMatrix2.default[s]){window[s]=_glMatrix2.
 Object.defineProperty(exports,"__esModule",{value:true});var _GLTool=_dereq_('./GLTool');var _GLTool2=_interopRequireDefault(_GLTool);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}var Batch=function(){function Batch(mMesh,mShader){_classCallCheck(this,Batch);this._mesh=mMesh;this._shader=mShader;} //	PUBLIC METHODS
 _createClass(Batch,[{key:'draw',value:function draw(){this._shader.bind();_GLTool2.default.draw(this.mesh);} //	GETTER AND SETTER
 },{key:'mesh',get:function get(){return this._mesh;}},{key:'shader',get:function get(){return this._shader;}}]);return Batch;}();exports.default=Batch;},{"./GLTool":17}],13:[function(_dereq_,module,exports){ // FrameBuffer.js
-'use strict';var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||false;descriptor.configurable=true;if("value" in descriptor)descriptor.writable=true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};}();Object.defineProperty(exports,"__esModule",{value:true});var _GLTool=_dereq_('./GLTool');var _GLTool2=_interopRequireDefault(_GLTool);var _GLTexture=_dereq_('./GLTexture');var _GLTexture2=_interopRequireDefault(_GLTexture);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}var isPowerOfTwo=function isPowerOfTwo(x){return x!==0&&!(x&x-1);};var gl=undefined;var WEBGL_depth_texture=undefined;var FrameBuffer=function(){function FrameBuffer(mWidth,mHeight){var mParameters=arguments.length<=2||arguments[2]===undefined?{}:arguments[2];_classCallCheck(this,FrameBuffer);gl=_GLTool2.default.gl;WEBGL_depth_texture=_GLTool2.default.checkExtension('WEBGL_depth_texture');this.width=mWidth;this.height=mHeight;console.log('Framebuffer size : ',this.width,mWidth);this.magFilter=mParameters.magFilter||gl.LINEAR;this.minFilter=mParameters.minFilter||gl.LINEAR;this.wrapS=mParameters.wrapS||gl.MIRRORED_REPEAT;this.wrapT=mParameters.wrapT||gl.MIRRORED_REPEAT;this.useDepth=mParameters.useDepth||true;this.useStencil=mParameters.useStencil||false;if(!isPowerOfTwo(this.width)||!isPowerOfTwo(this.height)){this.wrapS=this.wrapT=gl.CLAMP_TO_EDGE;if(this.minFilter===gl.LINEAR_MIPMAP_NEAREST){this.minFilter=gl.LINEAR;}}this._init();}_createClass(FrameBuffer,[{key:'_init',value:function _init(){this.texture=gl.createTexture();this.glTexture=new _GLTexture2.default(this.texture,true);this.depthTexture=gl.createTexture();this.glDepthTexture=new _GLTexture2.default(this.depthTexture,true);this.frameBuffer=gl.createFramebuffer();gl.bindFramebuffer(gl.FRAMEBUFFER,this.frameBuffer); //	SETUP TEXTURE MIPMAP, WRAP
+'use strict';var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||false;descriptor.configurable=true;if("value" in descriptor)descriptor.writable=true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};}();Object.defineProperty(exports,"__esModule",{value:true});var _GLTool=_dereq_('./GLTool');var _GLTool2=_interopRequireDefault(_GLTool);var _GLTexture=_dereq_('./GLTexture');var _GLTexture2=_interopRequireDefault(_GLTexture);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}var isPowerOfTwo=function isPowerOfTwo(x){return x!==0&&!(x&x-1);};var gl=undefined;var WEBGL_depth_texture=undefined;var FrameBuffer=function(){function FrameBuffer(mWidth,mHeight){var mParameters=arguments.length<=2||arguments[2]===undefined?{}:arguments[2];_classCallCheck(this,FrameBuffer);gl=_GLTool2.default.gl;WEBGL_depth_texture=_GLTool2.default.checkExtension('WEBGL_depth_texture');this.width=mWidth;this.height=mHeight;console.log('Framebuffer size : ',this.width,mWidth);this.magFilter=mParameters.magFilter||gl.LINEAR;this.minFilter=mParameters.minFilter||gl.LINEAR;this.wrapS=mParameters.wrapS||gl.CLAMP_TO_EDGE;this.wrapT=mParameters.wrapT||gl.CLAMP_TO_EDGE;this.useDepth=mParameters.useDepth||true;this.useStencil=mParameters.useStencil||false;if(!isPowerOfTwo(this.width)||!isPowerOfTwo(this.height)){this.wrapS=this.wrapT=gl.CLAMP_TO_EDGE;if(this.minFilter===gl.LINEAR_MIPMAP_NEAREST){this.minFilter=gl.LINEAR;}}this._init();}_createClass(FrameBuffer,[{key:'_init',value:function _init(){this.texture=gl.createTexture();this.glTexture=new _GLTexture2.default(this.texture,true);this.depthTexture=gl.createTexture();this.glDepthTexture=new _GLTexture2.default(this.depthTexture,true);this.frameBuffer=gl.createFramebuffer();gl.bindFramebuffer(gl.FRAMEBUFFER,this.frameBuffer); //	SETUP TEXTURE MIPMAP, WRAP
 gl.bindTexture(gl.TEXTURE_2D,this.texture);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,this.magFilter);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,this.minFilter);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,this.wrapS);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,this.wrapT);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,this.width,this.height,0,gl.RGBA,gl.FLOAT,null);if(WEBGL_depth_texture){gl.bindTexture(gl.TEXTURE_2D,this.depthTexture);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,this.magFilter);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,this.minFilter);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,this.wrapS);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,this.wrapT);gl.texImage2D(gl.TEXTURE_2D,0,gl.DEPTH_COMPONENT,this.width,this.height,0,gl.DEPTH_COMPONENT,gl.UNSIGNED_SHORT,null);} //	GET COLOUR
 gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,this.texture,0); //	GET DEPTH
 gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.DEPTH_ATTACHMENT,gl.TEXTURE_2D,this.depthTexture,0);if(this.minFilter===gl.LINEAR_MIPMAP_NEAREST){gl.bindTexture(gl.TEXTURE_2D,this.texture);gl.generateMipmap(gl.TEXTURE_2D);} //	UNBIND
@@ -1976,10 +1976,10 @@ function _init() {
 	//	CREATE CAMERA
 	camera = new _alfrid2.default.CameraPerspective();
 	var fov = 45 * Math.PI / 180;
-	camera.setPerspective(fov, GL.aspectRatio, 1, 1000);
+	camera.setPerspective(fov, GL.aspectRatio, 1., 2000);
 
 	cameraLight = new _alfrid2.default.CameraPerspective();
-	cameraLight.setPerspective(fov, 1, 1, 1000);
+	cameraLight.setPerspective(fov, 1, 1., 2000);
 	cameraLight.lookAt(lightPosition, vec3.fromValues(0, 0, 0), vec3.fromValues(0, 1, 0));
 
 	cameraOrtho = new _alfrid2.default.CameraOrtho();
@@ -1989,10 +1989,10 @@ function _init() {
 	orbitalControl.radius.value = 10;
 
 	//	CREATE MESH
-	var size = 1;
+	var size = .5;
 	mesh = _alfrid2.default.Geom.cube(size, size, size, true);
 
-	size = 8;
+	size = 16;
 	meshFloor = _alfrid2.default.Geom.cube(size, .001, size, true);
 
 	meshSphere = _alfrid2.default.Geom.sphere(.1, 24, true);
@@ -2001,8 +2001,8 @@ function _init() {
 	texture = new _alfrid2.default.GLTexture(img);
 
 	//	CREATE SHADER
-	shaderColor = new _alfrid2.default.GLShader("#define GLSLIFY 1\n// basic.vert\n\n#define SHADER_NAME BASIC_VERTEX\n\nprecision highp float;\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec3 aNormal;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\nuniform mat3 uNormalMatrix;\n\nuniform vec3 position;\n\nvarying vec2 vTextureCoord;\nvarying vec3 vNormal;\n\nvoid main(void) {\n\tvec3 pos = aVertexPosition + position;\n    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(pos, 1.0);\n    vTextureCoord = aTextureCoord;\n\n    vNormal = normalize(uNormalMatrix * aNormal);\n}", "#define GLSLIFY 1\n#define SHADER_NAME SIMPLE_TEXTURE\n\nprecision highp float;\n// varying vec2 vTextureCoord;\n// uniform sampler2D texture;\n\nuniform vec3 color;\nuniform float opacity;\n\nvoid main(void) {\n    gl_FragColor = vec4(color, opacity);\n}");
-	shaderShadow = new _alfrid2.default.GLShader("#define GLSLIFY 1\n// shadow.vert\n\n#define SHADER_NAME SHADOW_VERTEX\n\nprecision highp float;\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec3 aNormal;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\nuniform mat4 uShadowMatrix;\nuniform mat3 uNormalMatrix;\n\nuniform vec3 position;\n\nvarying vec2 vTextureCoord;\nvarying vec3 vNormal;\nvarying vec4 vShadowCoord;\nvarying vec4 vPosition;\n\nconst mat4 biasMatrix = mat4( 0.5, 0.0, 0.0, 0.0,\n\t\t\t\t\t\t\t  0.0, 0.5, 0.0, 0.0,\n\t\t\t\t\t\t\t  0.0, 0.0, 0.5, 0.0,\n\t\t\t\t\t\t\t  0.5, 0.5, 0.5, 1.0 );\n\nvoid main(void) {\n\tvec3 pos        = aVertexPosition + position;\n\tvec4 mvPosition = uViewMatrix * uModelMatrix * vec4(pos, 1.0);\n\tgl_Position     = uProjectionMatrix * mvPosition;\n\tvPosition       = mvPosition;\n\tvTextureCoord   = aTextureCoord;\n\t\n\tvNormal         = normalize(uNormalMatrix * aNormal);\n\t\n\tvShadowCoord    = ( biasMatrix * uShadowMatrix * uModelMatrix ) * vec4(pos, 1.0);;\n}", "#define GLSLIFY 1\n// shadow.frag\n\n#define SHADER_NAME SIMPLE_TEXTURE\n\nprecision highp float;\nvarying vec2 vTextureCoord;\nvarying vec4 vPosition;\nvarying vec4 vShadowCoord;\nvarying vec3 vNormal;\n\nuniform vec3 color;\nuniform mat4 uViewMatrix;\nuniform mat4 uModelMatrix;\nuniform vec3 lightPosition;\nuniform sampler2D textureDepth;\n\nvoid main(void) {\n\tvec3 lightPos = (uModelMatrix * uViewMatrix * vec4(lightPosition, 1.0)).xyz;\n\n\tvec3 Normal\t\t\t= normalize( vNormal );\n\tvec3 LightVec\t\t= normalize( lightPos - vPosition.xyz );\n\tfloat NdotL\t\t\t= max( dot( vNormal, LightVec ), 0.0 );\n\n\tvec3 Diffuse\t\t= vec3( NdotL );\n\tvec3 Ambient\t\t= vec3( 0.3 );\n\t\n\tvec4 ShadowCoord\t= vShadowCoord / vShadowCoord.w;\n\tfloat Shadow\t\t= 1.0;\n\n\tif ( ShadowCoord.z > -1.0 && ShadowCoord.z < 1.0 ) {\n\t\tShadow = texture2D( textureDepth, ShadowCoord.xy ).r;\n\t}\n\n    gl_FragColor = vec4(( Diffuse * Shadow + Ambient ) * color, 1.0);\n}");
+	shaderColor = new _alfrid2.default.GLShader("#define GLSLIFY 1\n// basic.vert\n\n#define SHADER_NAME BASIC_VERTEX\n\nprecision highp float;\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec3 aNormal;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\nuniform mat3 uNormalMatrix;\n\nuniform vec3 position;\nuniform float rotation;\n\nvarying vec2 vTextureCoord;\nvarying vec3 vNormal;\n\nvec2 rotate(vec2 v, float t) {\n\tfloat c = cos(t);\n\tfloat s = sin(t);\n\tmat2 m = mat2(c, -s, s, c);\n\treturn m*v;\n}\n\nvoid main(void) {\n\tvec3 pos        = aVertexPosition;\n\t// pos.xz \t\t\t= rotate(pos.xz, rotation);\n\tpos \t\t\t+= position;\n    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(pos, 1.0);\n    vTextureCoord = aTextureCoord;\n\tvNormal         = normalize(uNormalMatrix * aNormal);\n}", "#define GLSLIFY 1\n#define SHADER_NAME SIMPLE_TEXTURE\n\nprecision highp float;\n// varying vec2 vTextureCoord;\n// uniform sampler2D texture;\n\nuniform vec3 color;\nuniform float opacity;\n\nvoid main(void) {\n    gl_FragColor = vec4(color, opacity);\n}");
+	shaderShadow = new _alfrid2.default.GLShader("#define GLSLIFY 1\n// shadow.vert\n\n#define SHADER_NAME SHADOW_VERTEX\n\nprecision highp float;\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec3 aNormal;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\nuniform mat4 uShadowMatrix;\nuniform mat3 uNormalMatrix;\nuniform float rotation;\n\nuniform vec3 position;\n\nvarying vec2 vTextureCoord;\nvarying vec3 vNormal;\nvarying vec4 vShadowCoord;\nvarying vec4 vPosition;\n\nconst mat4 biasMatrix = mat4( 0.5, 0.0, 0.0, 0.0,\n\t\t\t\t\t\t\t  0.0, 0.5, 0.0, 0.0,\n\t\t\t\t\t\t\t  0.0, 0.0, 0.5, 0.0,\n\t\t\t\t\t\t\t  0.5, 0.5, 0.5, 1.0 );\n\nvec2 rotate(vec2 v, float t) {\n\tfloat c = cos(t);\n\tfloat s = sin(t);\n\tmat2 m = mat2(c, -s, s, c);\n\treturn m*v;\n}\n\nvoid main(void) {\n\tvec3 pos        = aVertexPosition;\n\t// pos.xz \t\t\t= rotate(pos.xz, rotation);\n\tpos \t\t\t+= position;\n\tvec4 mvPosition = uViewMatrix * uModelMatrix * vec4(pos, 1.0);\n\tgl_Position     = uProjectionMatrix * mvPosition;\n\tvPosition       = mvPosition;\n\tvTextureCoord   = aTextureCoord;\n\tvec3 N \t\t\t= aNormal;\n\tvNormal         = normalize(uNormalMatrix * aNormal);\n\tvShadowCoord    = ( biasMatrix * uShadowMatrix * uModelMatrix ) * vec4(pos, 1.0);;\n}", "#define GLSLIFY 1\n// shadow.frag\n\n#define SHADER_NAME SIMPLE_TEXTURE\n\nprecision highp float;\nvarying vec2 vTextureCoord;\nvarying vec4 vPosition;\nvarying vec4 vShadowCoord;\nvarying vec3 vNormal;\n\nuniform vec3 color;\nuniform mat4 uViewMatrix;\nuniform mat4 uModelMatrix;\nuniform vec3 lightPosition;\nuniform sampler2D textureDepth;\n\nvoid main(void) {\n\tvec3 lightPos = (uModelMatrix * uViewMatrix * vec4(lightPosition, 1.0)).xyz;\n\n\tvec3 Normal\t\t\t= normalize( vNormal );\n\tvec3 LightVec\t\t= normalize( lightPos - vPosition.xyz );\n\t// float NdotL\t\t\t= max( dot( vNormal, normalize(lightPos) ), 0.0 );\n\tfloat NdotL\t\t\t= max( dot( vNormal, LightVec ), 0.0 );\n\n\tvec3 Diffuse\t\t= vec3( NdotL );\n\tvec3 Ambient\t\t= vec3( 0.3 );\n\t\n\tvec4 ShadowCoord\t= vShadowCoord / vShadowCoord.w;\n\tfloat Shadow\t\t= 1.0;\n\n\tif ( ShadowCoord.z > -1.0 && ShadowCoord.z < 1.0 ) {\n\t\tShadow = texture2D( textureDepth, ShadowCoord.xy ).r ;\n\t}\n\n\tgl_FragColor = vec4(( Diffuse * Shadow + Ambient ) * color, 1.0);\n\n/*\n\tfloat bias = 0.005*tan(acos(NdotL)); // cosTheta is dot( n,l ), clamped between 0 and 1\n\tbias = clamp(bias, 0.0, 0.01);\n\tfloat visibility = 1.0;\n\tif ( texture2D( textureDepth, ShadowCoord.xy ).z  <  ShadowCoord.z-bias){\n\t\tvisibility = 0.5;\n\t}\n\n    gl_FragColor = vec4(( Diffuse * visibility + Ambient ) * color, 1.0);\n*/  \n}");
 
 	//	CREATE BATCH
 	batchCopy = new _alfrid2.default.BatchCopy();
@@ -2017,8 +2017,12 @@ function _init() {
 }
 
 function _loop() {
+	time += .03;
 	GL.clear(0, 0, 0, 0);
 	GL.setMatrices(cameraLight);
+	lightPosition[0] = Math.cos(time) * 2;
+	lightPosition[2] = Math.sin(time) * 2;
+	cameraLight.lookAt(lightPosition, vec3.fromValues(0, 0, 0), vec3.fromValues(0, 1, 0));
 
 	fbo.bind();
 	GL.clear(0, 0, 0, 0);
@@ -2026,29 +2030,20 @@ function _loop() {
 	shaderColor.uniform("color", "uniform3fv", [1, 1, 1]);
 	shaderColor.uniform("opacity", "uniform1f", 1);
 	shaderColor.uniform("position", "uniform3fv", [0, -1.5, 0]);
+	shaderColor.uniform("rotation", "uniform1f", 0);
 	GL.draw(meshFloor);
 
+	shaderColor.uniform("rotation", "uniform1f", time);
 	shaderColor.uniform("color", "uniform3fv", [1, 1, .5]);
-	shaderColor.uniform("position", "uniform3fv", [0, 1, 0]);
+	shaderColor.uniform("position", "uniform3fv", [0, 1 + Math.sin(time) * .35, 0]);
 	GL.draw(mesh);
 
 	fbo.unbind();
 
 	GL.viewport(0, 0, GL.width, GL.height);
-	GL.setMatrices(cameraOrtho);
-
-	GL.disable(GL.DEPTH_TEST);
-
-	var size = 500;
-	GL.viewport(0, 0, size, size);
-	GL.setMatrices(cameraOrtho);
-	batchCopy.draw(fbo.getDepthTexture());
-	GL.enable(GL.DEPTH_TEST);
-
-	GL.viewport(0, 0, GL.width, GL.height);
 	GL.setMatrices(camera);
 	shaderColor.bind();
-	shaderColor.uniform("color", "uniform3fv", [1, 0, 0]);
+	shaderColor.uniform("color", "uniform3fv", [1, 1, .79]);
 	shaderColor.uniform("position", "uniform3fv", lightPosition);
 	GL.draw(meshSphere);
 
@@ -2057,16 +2052,18 @@ function _loop() {
 
 	shaderShadow.bind();
 	shaderShadow.uniform("lightPosition", "uniform3fv", lightPosition);
-	shaderShadow.uniform("shadowMatrix", "uniformMatrix4fv", shadowMatrix);
+	shaderShadow.uniform("uShadowMatrix", "uniformMatrix4fv", shadowMatrix);
 	shaderShadow.uniform("textureDepth", "uniform1i", 0);
 	fbo.getDepthTexture().bind(0);
 
+	shaderShadow.uniform("rotation", "uniform1f", 0);
 	shaderShadow.uniform("color", "uniform3fv", [1, 1, 1]);
 	shaderShadow.uniform("position", "uniform3fv", [0, -1.5, 0]);
 	GL.draw(meshFloor);
 
+	shaderShadow.uniform("rotation", "uniform1f", time);
 	shaderShadow.uniform("color", "uniform3fv", [1, 1, .5]);
-	shaderShadow.uniform("position", "uniform3fv", [0, 1, 0]);
+	shaderShadow.uniform("position", "uniform3fv", [0, 1 + Math.sin(time) * .35, 0]);
 	GL.draw(mesh);
 }
 
