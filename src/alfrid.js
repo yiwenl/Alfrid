@@ -25,6 +25,7 @@ import CameraPerspective	from './alfrid/cameras/CameraPerspective';
 //	LOADERS
 import BinaryLoader			from './alfrid/loaders/BinaryLoader';
 import ObjLoader			from './alfrid/loaders/ObjLoader';
+import HDRLoader			from './alfrid/loaders/HDRLoader';
 
 //	HELPERS
 import BatchCopy			from './alfrid/helpers/BatchCopy';
@@ -56,6 +57,7 @@ class alfrid {
 		this.QuatRotation      = QuatRotation;
 		this.BinaryLoader      = BinaryLoader;
 		this.ObjLoader         = ObjLoader;
+		this.HDRLoader         = HDRLoader;
 		this.BatchCopy         = BatchCopy;
 
 

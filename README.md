@@ -15,3 +15,10 @@ A WebGL tool set
 - uNormalMatrix
 - uModelViewMatrixInverse
 
+
+### Installation 
+
+```javascript
+npm install;
+gulp;
+```

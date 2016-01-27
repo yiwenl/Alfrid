@@ -34,7 +34,7 @@ class QuatRotation {
 		this.mouse           = {x:0, y:0};
 		this._isMouseDown    = false;
 		this._rotation       = glm.quat.create();
-		this.tempRotation    = glm.quat.create();;
+		this.tempRotation    = glm.quat.create();
 		this._rotateZMargin  = 0;
 		this._offset         = 0.004;
 		this._slerp          = -1;

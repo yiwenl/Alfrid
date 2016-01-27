@@ -4984,6 +4984,10 @@ var _ObjLoader = _dereq_('./alfrid/loaders/ObjLoader');
 
 var _ObjLoader2 = _interopRequireDefault(_ObjLoader);
 
+var _HDRLoader = _dereq_('./alfrid/loaders/HDRLoader');
+
+var _HDRLoader2 = _interopRequireDefault(_HDRLoader);
+
 var _BatchCopy = _dereq_('./alfrid/helpers/BatchCopy');
 
 var _BatchCopy2 = _interopRequireDefault(_BatchCopy);
@@ -5018,6 +5022,7 @@ var alfrid = function () {
 		this.QuatRotation = _QuatRotation2.default;
 		this.BinaryLoader = _BinaryLoader2.default;
 		this.ObjLoader = _ObjLoader2.default;
+		this.HDRLoader = _HDRLoader2.default;
 		this.BatchCopy = _BatchCopy2.default;
 
 		//	NOT SUPER SURE I'VE DONE THIS IS A GOOD WAY
@@ -5056,7 +5061,7 @@ var b = new alfrid();
 
 module.exports = b;
 
-},{"./alfrid/Batch":12,"./alfrid/FrameBuffer":13,"./alfrid/GLCubeTexture":14,"./alfrid/GLShader":15,"./alfrid/GLTexture":16,"./alfrid/GLTool":17,"./alfrid/Geom":18,"./alfrid/Mesh":19,"./alfrid/cameras/Camera":20,"./alfrid/cameras/CameraOrtho":21,"./alfrid/cameras/CameraPerspective":22,"./alfrid/helpers/BatchCopy":23,"./alfrid/loaders/BinaryLoader":24,"./alfrid/loaders/ObjLoader":25,"./alfrid/tools/EaseNumber":26,"./alfrid/tools/EventDispatcher":27,"./alfrid/tools/OrbitalControl":28,"./alfrid/tools/QuatRotation":29,"./alfrid/tools/Scheduler":30,"gl-matrix":1}],12:[function(_dereq_,module,exports){
+},{"./alfrid/Batch":12,"./alfrid/FrameBuffer":13,"./alfrid/GLCubeTexture":14,"./alfrid/GLShader":15,"./alfrid/GLTexture":16,"./alfrid/GLTool":17,"./alfrid/Geom":18,"./alfrid/Mesh":19,"./alfrid/cameras/Camera":20,"./alfrid/cameras/CameraOrtho":21,"./alfrid/cameras/CameraPerspective":22,"./alfrid/helpers/BatchCopy":23,"./alfrid/loaders/BinaryLoader":24,"./alfrid/loaders/HDRLoader":25,"./alfrid/loaders/ObjLoader":26,"./alfrid/tools/EaseNumber":27,"./alfrid/tools/EventDispatcher":28,"./alfrid/tools/OrbitalControl":30,"./alfrid/tools/QuatRotation":31,"./alfrid/tools/Scheduler":32,"gl-matrix":1}],12:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // Batch.js
@@ -6912,7 +6917,7 @@ var BinaryLoader = function () {
 		}
 	}, {
 		key: '_onProgress',
-		value: function _onProgress(e) {
+		value: function _onProgress() /*e*/{
 			// console.log('on Progress:', (e.loaded/e.total*100).toFixed(2));
 		}
 	}]);
@@ -6923,6 +6928,60 @@ var BinaryLoader = function () {
 exports.default = BinaryLoader;
 
 },{}],25:[function(_dereq_,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _BinaryLoader2 = _dereq_('./BinaryLoader');
+
+var _BinaryLoader3 = _interopRequireDefault(_BinaryLoader2);
+
+var _HDRParser = _dereq_('../tools/HDRParser');
+
+var _HDRParser2 = _interopRequireDefault(_HDRParser);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // HDRLoader.js
+
+var HDRLoader = function (_BinaryLoader) {
+	_inherits(HDRLoader, _BinaryLoader);
+
+	function HDRLoader() {
+		_classCallCheck(this, HDRLoader);
+
+		return _possibleConstructorReturn(this, Object.getPrototypeOf(HDRLoader).call(this, true));
+	}
+
+	_createClass(HDRLoader, [{
+		key: 'parse',
+		value: function parse(mArrayBuffer) {
+			return (0, _HDRParser2.default)(mArrayBuffer);
+		}
+	}, {
+		key: '_onLoaded',
+		value: function _onLoaded() {
+			var o = this.parse(this._req.response);
+			if (this._callback) {
+				this._callback(o);
+			}
+		}
+	}]);
+
+	return HDRLoader;
+}(_BinaryLoader3.default);
+
+exports.default = HDRLoader;
+
+},{"../tools/HDRParser":29,"./BinaryLoader":24}],26:[function(_dereq_,module,exports){
 // ObjLoader.js
 
 'use strict';
@@ -7163,7 +7222,7 @@ var ObjLoader = function (_BinaryLoader) {
 
 exports.default = ObjLoader;
 
-},{"../Mesh":19,"./BinaryLoader":24}],26:[function(_dereq_,module,exports){
+},{"../Mesh":19,"./BinaryLoader":24}],27:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // EaseNumber.js
@@ -7259,7 +7318,7 @@ var EaseNumber = function () {
 
 exports.default = EaseNumber;
 
-},{"./Scheduler":30}],27:[function(_dereq_,module,exports){
+},{"./Scheduler":32}],28:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -7397,7 +7456,219 @@ var EventDispatcher = function () {
 
 exports.default = EventDispatcher;
 
-},{}],28:[function(_dereq_,module,exports){
+},{}],29:[function(_dereq_,module,exports){
+// HDRParser.js
+
+'use strict';
+
+//Code ported by Marcin Ignac (2014)
+//Based on Java implementation from
+//https://code.google.com/r/cys12345-research/source/browse/hdr/image_processor/RGBE.java?r=7d84e9fd866b24079dbe61fa0a966ce8365f5726
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+var radiancePattern = '#\\?RADIANCE';
+var commentPattern = '#.*';
+// let gammaPattern = 'GAMMA=';
+var exposurePattern = 'EXPOSURE=\\s*([0-9]*[.][0-9]*)';
+var formatPattern = 'FORMAT=32-bit_rle_rgbe';
+var widthHeightPattern = '-Y ([0-9]+) \\+X ([0-9]+)';
+
+//http://croquetweak.blogspot.co.uk/2014/08/deconstructing-floats-frexp-and-ldexp.html
+// function ldexp(mantissa, exponent) {
+//     return exponent > 1023 ? mantissa * Math.pow(2, 1023) * Math.pow(2, exponent - 1023) : exponent < -1074 ? mantissa * Math.pow(2, -1074) * Math.pow(2, exponent + 1074) : mantissa * Math.pow(2, exponent);
+// }
+
+function readPixelsRawRLE(buffer, data, offset, fileOffset, scanline_width, num_scanlines) {
+	var rgbe = new Array(4);
+	var scanline_buffer = null;
+	var ptr = undefined;
+	var ptr_end = undefined;
+	var count = undefined;
+	var buf = new Array(2);
+	var bufferLength = buffer.length;
+
+	function readBuf(buf) {
+		var bytesRead = 0;
+		do {
+			buf[bytesRead++] = buffer[fileOffset];
+		} while (++fileOffset < bufferLength && bytesRead < buf.length);
+		return bytesRead;
+	}
+
+	function readBufOffset(buf, offset, length) {
+		var bytesRead = 0;
+		do {
+			buf[offset + bytesRead++] = buffer[fileOffset];
+		} while (++fileOffset < bufferLength && bytesRead < length);
+		return bytesRead;
+	}
+
+	function readPixelsRaw(buffer, data, offset, numpixels) {
+		var numExpected = 4 * numpixels;
+		var numRead = readBufOffset(data, offset, numExpected);
+		if (numRead < numExpected) {
+			throw new Error('Error reading raw pixels: got ' + numRead + ' bytes, expected ' + numExpected);
+		}
+	}
+
+	while (num_scanlines > 0) {
+		if (readBuf(rgbe) < rgbe.length) {
+			throw new Error('Error reading bytes: expected ' + rgbe.length);
+		}
+
+		if (rgbe[0] !== 2 || rgbe[1] !== 2 || (rgbe[2] & 0x80) !== 0) {
+			//this file is not run length encoded
+			data[offset++] = rgbe[0];
+			data[offset++] = rgbe[1];
+			data[offset++] = rgbe[2];
+			data[offset++] = rgbe[3];
+			readPixelsRaw(buffer, data, offset, scanline_width * num_scanlines - 1);
+			return;
+		}
+
+		if (((rgbe[2] & 0xFF) << 8 | rgbe[3] & 0xFF) !== scanline_width) {
+			throw new Error('Wrong scanline width ' + ((rgbe[2] & 0xFF) << 8 | rgbe[3] & 0xFF) + ', expected ' + scanline_width);
+		}
+
+		if (scanline_buffer === null) {
+			scanline_buffer = new Array(4 * scanline_width);
+		}
+
+		ptr = 0;
+		/* read each of the four channels for the scanline into the buffer */
+		for (var i = 0; i < 4; i++) {
+			ptr_end = (i + 1) * scanline_width;
+			while (ptr < ptr_end) {
+				if (readBuf(buf) < buf.length) {
+					throw new Error('Error reading 2-byte buffer');
+				}
+				if ((buf[0] & 0xFF) > 128) {
+					/* a run of the same value */
+					count = (buf[0] & 0xFF) - 128;
+					if (count === 0 || count > ptr_end - ptr) {
+						throw new Error('Bad scanline data');
+					}
+					while (count-- > 0) {
+						scanline_buffer[ptr++] = buf[1];
+					}
+				} else {
+					/* a non-run */
+					count = buf[0] & 0xFF;
+					if (count === 0 || count > ptr_end - ptr) {
+						throw new Error('Bad scanline data');
+					}
+					scanline_buffer[ptr++] = buf[1];
+					if (--count > 0) {
+						if (readBufOffset(scanline_buffer, ptr, count) < count) {
+							throw new Error('Error reading non-run data');
+						}
+						ptr += count;
+					}
+				}
+			}
+		}
+
+		/* copy byte data to output */
+		for (var i = 0; i < scanline_width; i++) {
+			data[offset + 0] = scanline_buffer[i];
+			data[offset + 1] = scanline_buffer[i + scanline_width];
+			data[offset + 2] = scanline_buffer[i + 2 * scanline_width];
+			data[offset + 3] = scanline_buffer[i + 3 * scanline_width];
+			offset += 4;
+		}
+
+		num_scanlines--;
+	}
+}
+
+//Returns data as floats and flipped along Y by default
+function parseHdr(buffer) {
+	if (buffer instanceof ArrayBuffer) {
+		buffer = new Uint8Array(buffer);
+	}
+
+	var fileOffset = 0;
+	var bufferLength = buffer.length;
+
+	var NEW_LINE = 10;
+
+	function readLine() {
+		var buf = '';
+		do {
+			var b = buffer[fileOffset];
+			if (b === NEW_LINE) {
+				++fileOffset;
+				break;
+			}
+			buf += String.fromCharCode(b);
+		} while (++fileOffset < bufferLength);
+		return buf;
+	}
+
+	var width = 0;
+	var height = 0;
+	var exposure = 1;
+	var gamma = 1;
+	var rle = false;
+
+	for (var i = 0; i < 20; i++) {
+		var line = readLine();
+		var match = undefined;
+		if (match = line.match(radiancePattern)) {} else if (match = line.match(formatPattern)) {
+			rle = true;
+		} else if (match = line.match(exposurePattern)) {
+			exposure = Number(match[1]);
+		} else if (match = line.match(commentPattern)) {} else if (match = line.match(widthHeightPattern)) {
+			height = Number(match[1]);
+			width = Number(match[2]);
+			break;
+		}
+	}
+
+	if (!rle) {
+		throw new Error('File is not run length encoded!');
+	}
+
+	var data = new Uint8Array(width * height * 4);
+	var scanline_width = width;
+	var num_scanlines = height;
+
+	readPixelsRawRLE(buffer, data, 0, fileOffset, scanline_width, num_scanlines);
+
+	//TODO: Should be Float16
+	var floatData = new Float32Array(width * height * 4);
+	for (var offset = 0; offset < data.length; offset += 4) {
+		var r = data[offset + 0] / 255;
+		var g = data[offset + 1] / 255;
+		var b = data[offset + 2] / 255;
+		var e = data[offset + 3];
+		var f = Math.pow(2.0, e - 128.0);
+
+		r *= f;
+		g *= f;
+		b *= f;
+
+		var floatOffset = offset;
+
+		floatData[floatOffset + 0] = r;
+		floatData[floatOffset + 1] = g;
+		floatData[floatOffset + 2] = b;
+		floatData[floatOffset + 3] = 1.0;
+	}
+
+	return {
+		shape: [width, height],
+		exposure: exposure,
+		gamma: gamma,
+		data: floatData
+	};
+}
+
+exports.default = parseHdr;
+
+},{}],30:[function(_dereq_,module,exports){
 // OrbitalControl.js
 'use strict';
 
@@ -7623,7 +7894,7 @@ var OrbitalControl = function () {
 
 exports.default = OrbitalControl;
 
-},{"./EaseNumber":26,"./Scheduler":30,"gl-matrix":1}],29:[function(_dereq_,module,exports){
+},{"./EaseNumber":27,"./Scheduler":32,"gl-matrix":1}],31:[function(_dereq_,module,exports){
 // QuatRotation.js
 
 'use strict';
@@ -7684,7 +7955,7 @@ var QuatRotation = function () {
 		this.mouse = { x: 0, y: 0 };
 		this._isMouseDown = false;
 		this._rotation = _glMatrix2.default.quat.create();
-		this.tempRotation = _glMatrix2.default.quat.create();;
+		this.tempRotation = _glMatrix2.default.quat.create();
 		this._rotateZMargin = 0;
 		this._offset = 0.004;
 		this._slerp = -1;
@@ -7892,7 +8163,7 @@ var QuatRotation = function () {
 
 exports.default = QuatRotation;
 
-},{"./EaseNumber":26,"./Scheduler":30,"gl-matrix":1}],30:[function(_dereq_,module,exports){
+},{"./EaseNumber":27,"./Scheduler":32,"gl-matrix":1}],32:[function(_dereq_,module,exports){
 // Scheduler.js
 
 'use strict';
