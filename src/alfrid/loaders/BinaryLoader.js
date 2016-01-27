@@ -25,7 +25,7 @@ class BinaryLoader {
 		this._callback(this._req.response);
 	}
 
-	_onProgress(e) {
+	_onProgress(/*e*/) {
 		// console.log('on Progress:', (e.loaded/e.total*100).toFixed(2));
 	}
 }
