@@ -20,6 +20,8 @@ class FrameBuffer {
 
 		this.width      = mWidth;
 		this.height     = mHeight;
+
+		console.log('Framebuffer size : ', this.width, mWidth);
 		this.magFilter  = mParameters.magFilter 	|| gl.LINEAR;
 		this.minFilter  = mParameters.minFilter 	|| gl.LINEAR;
 		this.wrapS      = mParameters.wrapS 		|| gl.MIRRORED_REPEAT;

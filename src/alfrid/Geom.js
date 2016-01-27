@@ -18,6 +18,7 @@ Geom.plane = function(width, height, numSegments, withNormals=false, axis='xy', 
 	let index = 0;
 	let sx    = -width * 0.5;
 	let sy    = -height * 0.5;
+	console.log(gapX, sx);
 
 	for(let i=0; i<numSegments; i++) {
 		for (let j=0; j<numSegments; j++) {
