@@ -7679,12 +7679,12 @@ var QuatRotation = function () {
 		this.matrix = _glMatrix2.default.mat4.create();
 		this.m = _glMatrix2.default.mat4.create();
 		this._vZaxis = _glMatrix2.default.vec3.clone([0, 0, 0]);
-		this._zAxis = _glMatrix2.default.vec3.clone([0, 0, -1]);
+		this._zAxis = _glMatrix2.default.vec3.clone([0, 0, 1]);
 		this.preMouse = { x: 0, y: 0 };
 		this.mouse = { x: 0, y: 0 };
 		this._isMouseDown = false;
-		this._rotation = _glMatrix2.default.quat.clone([0, 0, 1, 0]);
-		this.tempRotation = _glMatrix2.default.quat.clone([0, 0, 0, 0]);
+		this._rotation = _glMatrix2.default.quat.create();
+		this.tempRotation = _glMatrix2.default.quat.create();;
 		this._rotateZMargin = 0;
 		this._offset = 0.004;
 		this._slerp = -1;
@@ -7814,8 +7814,8 @@ var QuatRotation = function () {
 		key: '_updateRotation',
 		value: function _updateRotation(mTempRotation) {
 			if (this._isMouseDown && !this._isLocked) {
-				this._diffX.value = this.mouse.x - this.preMouse.x;
-				this._diffY.value = -(this.mouse.y - this.preMouse.y);
+				this._diffX.value = -(this.mouse.x - this.preMouse.x);
+				this._diffY.value = this.mouse.y - this.preMouse.y;
 
 				if (this._isInvert) {
 					this._diffX.value = -this._diffX.targetValue;

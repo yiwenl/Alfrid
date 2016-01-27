@@ -29,12 +29,12 @@ class QuatRotation {
 		this.matrix          = glm.mat4.create();
 		this.m               = glm.mat4.create();
 		this._vZaxis         = glm.vec3.clone([0, 0, 0]);
-		this._zAxis          = glm.vec3.clone([0, 0, -1]);
+		this._zAxis          = glm.vec3.clone([0, 0, 1]);
 		this.preMouse        = {x:0, y:0};
 		this.mouse           = {x:0, y:0};
 		this._isMouseDown    = false;
-		this._rotation       = glm.quat.clone([0, 0, 1, 0]);
-		this.tempRotation    = glm.quat.clone([0, 0, 0, 0]);
+		this._rotation       = glm.quat.create();
+		this.tempRotation    = glm.quat.create();;
 		this._rotateZMargin  = 0;
 		this._offset         = 0.004;
 		this._slerp          = -1;
@@ -125,8 +125,8 @@ class QuatRotation {
 
 	_updateRotation(mTempRotation) {
 		if(this._isMouseDown && !this._isLocked) {
-			this._diffX.value =  (this.mouse.x - this.preMouse.x);
-			this._diffY.value = -(this.mouse.y - this.preMouse.y);
+			this._diffX.value = -(this.mouse.x - this.preMouse.x);
+			this._diffY.value =  (this.mouse.y - this.preMouse.y);
 
 			if(this._isInvert) {
 				this._diffX.value = -this._diffX.targetValue;
