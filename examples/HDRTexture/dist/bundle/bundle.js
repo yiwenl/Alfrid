@@ -1969,10 +1969,11 @@ function _init() {
 	//	ORBIAL CAMERA CONTROL
 	var orbitalControl = new _alfrid2.default.OrbitalControl(camera, window, 15);
 	orbitalControl.radius.value = 10;
+	orbitalControl.inverseControl(true);
 
 	//	CREATE MESH
-	var size = 2;
-	mesh = _alfrid2.default.Geom.sphere(size, 48, true);
+	var size = 20;
+	mesh = _alfrid2.default.Geom.sphere(size, 48, true, true);
 
 	//	CREATE TEXTURE
 	texture = new _alfrid2.default.GLTexture(img);

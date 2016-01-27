@@ -41,10 +41,11 @@ function _init() {
 	//	ORBIAL CAMERA CONTROL
 	let orbitalControl = new alfrid.OrbitalControl(camera, window, 15);
 	orbitalControl.radius.value = 10;
+	orbitalControl.inverseControl(true);
 
 	//	CREATE MESH
-	let size = 2;
-	mesh = alfrid.Geom.sphere(size, 48, true);
+	let size = 20;
+	mesh = alfrid.Geom.sphere(size, 48, true, true);
 
 	//	CREATE TEXTURE
 	texture = new alfrid.GLTexture(img);
