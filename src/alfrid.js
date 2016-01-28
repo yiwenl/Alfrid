@@ -29,6 +29,8 @@ import HDRLoader			from './alfrid/loaders/HDRLoader';
 
 //	HELPERS
 import BatchCopy			from './alfrid/helpers/BatchCopy';
+import BatchAxis			from './alfrid/helpers/BatchAxis';
+import BatchDotsPlane		from './alfrid/helpers/BatchDotsPlane';
 import Scene				from './alfrid/helpers/Scene';
 import View					from './alfrid/helpers/View';
 
@@ -61,6 +63,8 @@ class alfrid {
 		this.ObjLoader         = ObjLoader;
 		this.HDRLoader         = HDRLoader;
 		this.BatchCopy         = BatchCopy;
+		this.BatchAxis         = BatchAxis;
+		this.BatchDotsPlane    = BatchDotsPlane;
 		this.Scene             = Scene;
 		this.View              = View;
 

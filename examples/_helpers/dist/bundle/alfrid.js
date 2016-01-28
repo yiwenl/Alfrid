@@ -4924,10 +4924,6 @@ var _GLTexture = _dereq_('./alfrid/GLTexture');
 
 var _GLTexture2 = _interopRequireDefault(_GLTexture);
 
-var _GLCubeTexture = _dereq_('./alfrid/GLCubeTexture');
-
-var _GLCubeTexture2 = _interopRequireDefault(_GLCubeTexture);
-
 var _Mesh = _dereq_('./alfrid/Mesh');
 
 var _Mesh2 = _interopRequireDefault(_Mesh);
@@ -4960,10 +4956,6 @@ var _OrbitalControl = _dereq_('./alfrid/tools/OrbitalControl');
 
 var _OrbitalControl2 = _interopRequireDefault(_OrbitalControl);
 
-var _QuatRotation = _dereq_('./alfrid/tools/QuatRotation');
-
-var _QuatRotation2 = _interopRequireDefault(_QuatRotation);
-
 var _Camera = _dereq_('./alfrid/cameras/Camera');
 
 var _Camera2 = _interopRequireDefault(_Camera);
@@ -4984,29 +4976,9 @@ var _ObjLoader = _dereq_('./alfrid/loaders/ObjLoader');
 
 var _ObjLoader2 = _interopRequireDefault(_ObjLoader);
 
-var _HDRLoader = _dereq_('./alfrid/loaders/HDRLoader');
-
-var _HDRLoader2 = _interopRequireDefault(_HDRLoader);
-
 var _BatchCopy = _dereq_('./alfrid/helpers/BatchCopy');
 
 var _BatchCopy2 = _interopRequireDefault(_BatchCopy);
-
-var _BatchAxis = _dereq_('./alfrid/helpers/BatchAxis');
-
-var _BatchAxis2 = _interopRequireDefault(_BatchAxis);
-
-var _BatchDotsPlane = _dereq_('./alfrid/helpers/BatchDotsPlane');
-
-var _BatchDotsPlane2 = _interopRequireDefault(_BatchDotsPlane);
-
-var _Scene = _dereq_('./alfrid/helpers/Scene');
-
-var _Scene2 = _interopRequireDefault(_Scene);
-
-var _View = _dereq_('./alfrid/helpers/View');
-
-var _View2 = _interopRequireDefault(_View);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5023,7 +4995,6 @@ var alfrid = function () {
 		this.GLTool = _GLTool2.default;
 		this.GLShader = _GLShader2.default;
 		this.GLTexture = _GLTexture2.default;
-		this.GLCubeTexture = _GLCubeTexture2.default;
 		this.Mesh = _Mesh2.default;
 		this.Geom = _Geom2.default;
 		this.Batch = _Batch2.default;
@@ -5035,15 +5006,9 @@ var alfrid = function () {
 		this.CameraOrtho = _CameraOrtho2.default;
 		this.CameraPerspective = _CameraPerspective2.default;
 		this.OrbitalControl = _OrbitalControl2.default;
-		this.QuatRotation = _QuatRotation2.default;
 		this.BinaryLoader = _BinaryLoader2.default;
 		this.ObjLoader = _ObjLoader2.default;
-		this.HDRLoader = _HDRLoader2.default;
 		this.BatchCopy = _BatchCopy2.default;
-		this.BatchAxis = _BatchAxis2.default;
-		this.BatchDotsPlane = _BatchDotsPlane2.default;
-		this.Scene = _Scene2.default;
-		this.View = _View2.default;
 
 		//	NOT SUPER SURE I'VE DONE THIS IS A GOOD WAY
 
@@ -5081,7 +5046,7 @@ var b = new alfrid();
 
 module.exports = b;
 
-},{"./alfrid/Batch":12,"./alfrid/FrameBuffer":13,"./alfrid/GLCubeTexture":14,"./alfrid/GLShader":15,"./alfrid/GLTexture":16,"./alfrid/GLTool":17,"./alfrid/Geom":18,"./alfrid/Mesh":19,"./alfrid/cameras/Camera":20,"./alfrid/cameras/CameraOrtho":21,"./alfrid/cameras/CameraPerspective":22,"./alfrid/helpers/BatchAxis":23,"./alfrid/helpers/BatchCopy":24,"./alfrid/helpers/BatchDotsPlane":25,"./alfrid/helpers/Scene":26,"./alfrid/helpers/View":27,"./alfrid/loaders/BinaryLoader":28,"./alfrid/loaders/HDRLoader":29,"./alfrid/loaders/ObjLoader":30,"./alfrid/tools/EaseNumber":31,"./alfrid/tools/EventDispatcher":32,"./alfrid/tools/OrbitalControl":34,"./alfrid/tools/QuatRotation":35,"./alfrid/tools/Scheduler":36,"gl-matrix":1}],12:[function(_dereq_,module,exports){
+},{"./alfrid/Batch":12,"./alfrid/FrameBuffer":13,"./alfrid/GLShader":14,"./alfrid/GLTexture":15,"./alfrid/GLTool":16,"./alfrid/Geom":17,"./alfrid/Mesh":18,"./alfrid/cameras/Camera":19,"./alfrid/cameras/CameraOrtho":20,"./alfrid/cameras/CameraPerspective":21,"./alfrid/helpers/BatchCopy":22,"./alfrid/loaders/BinaryLoader":23,"./alfrid/loaders/ObjLoader":24,"./alfrid/tools/EaseNumber":25,"./alfrid/tools/EventDispatcher":26,"./alfrid/tools/OrbitalControl":27,"./alfrid/tools/Scheduler":28,"gl-matrix":1}],12:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // Batch.js
@@ -5134,7 +5099,7 @@ var Batch = function () {
 
 exports.default = Batch;
 
-},{"./GLTool":17}],13:[function(_dereq_,module,exports){
+},{"./GLTool":16}],13:[function(_dereq_,module,exports){
 // FrameBuffer.js
 
 'use strict';
@@ -5175,12 +5140,10 @@ var FrameBuffer = function () {
 
 		this.width = mWidth;
 		this.height = mHeight;
-
-		console.log('Framebuffer size : ', this.width, mWidth);
 		this.magFilter = mParameters.magFilter || gl.LINEAR;
 		this.minFilter = mParameters.minFilter || gl.LINEAR;
-		this.wrapS = mParameters.wrapS || gl.CLAMP_TO_EDGE;
-		this.wrapT = mParameters.wrapT || gl.CLAMP_TO_EDGE;
+		this.wrapS = mParameters.wrapS || gl.MIRRORED_REPEAT;
+		this.wrapT = mParameters.wrapT || gl.MIRRORED_REPEAT;
 		this.useDepth = mParameters.useDepth || true;
 		this.useStencil = mParameters.useStencil || false;
 
@@ -5320,85 +5283,7 @@ var FrameBuffer = function () {
 
 exports.default = FrameBuffer;
 
-},{"./GLTexture":16,"./GLTool":17}],14:[function(_dereq_,module,exports){
-// GLCubeTexture.js
-
-'use strict';
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _GLTool = _dereq_('./GLTool');
-
-var _GLTool2 = _interopRequireDefault(_GLTool);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var gl = undefined;
-
-var GLCubeTexture = function () {
-	function GLCubeTexture(mSource) {
-		var mParameters = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-
-		_classCallCheck(this, GLCubeTexture);
-
-		gl = _GLTool2.default.gl;
-
-		this.texture = gl.createTexture();
-		this.magFilter = mParameters.magFilter || gl.LINEAR;
-		this.minFilter = mParameters.minFilter || gl.LINEAR_MIPMAP_NEAREST;
-		this.wrapS = mParameters.wrapS || gl.MIRRORED_REPEAT;
-		this.wrapT = mParameters.wrapT || gl.MIRRORED_REPEAT;
-
-		gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.texture);
-		var targets = [gl.TEXTURE_CUBE_MAP_POSITIVE_X, gl.TEXTURE_CUBE_MAP_NEGATIVE_X, gl.TEXTURE_CUBE_MAP_POSITIVE_Y, gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, gl.TEXTURE_CUBE_MAP_POSITIVE_Z, gl.TEXTURE_CUBE_MAP_NEGATIVE_Z];
-
-		for (var j = 0; j < 6; j++) {
-			gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
-			gl.texImage2D(targets[j], 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, mSource[j]);
-			gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, this.wrapS);
-			gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, this.wrapT);
-			gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, this.magFilter);
-			gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, this.minFilter);
-		}
-
-		gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
-		gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
-	}
-
-	//	PUBLIC METHOD
-
-	_createClass(GLCubeTexture, [{
-		key: 'bind',
-		value: function bind() {
-			var index = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
-
-			if (!_GLTool2.default.shader) {
-				return;
-			}
-
-			gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.texture);
-			gl.uniform1i(_GLTool2.default.shader.uniformTextures[index], index);
-			this._bindIndex = index;
-		}
-	}, {
-		key: 'unbind',
-		value: function unbind() {
-			gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
-		}
-	}]);
-
-	return GLCubeTexture;
-}();
-
-exports.default = GLCubeTexture;
-
-},{"./GLTool":17}],15:[function(_dereq_,module,exports){
+},{"./GLTexture":15,"./GLTool":16}],14:[function(_dereq_,module,exports){
 // GLShader.js
 
 'use strict';
@@ -5527,7 +5412,7 @@ var GLShader = function () {
 
 exports.default = GLShader;
 
-},{"./GLTool":17}],16:[function(_dereq_,module,exports){
+},{"./GLTool":16}],15:[function(_dereq_,module,exports){
 // GLTexture.js
 
 'use strict';
@@ -5704,7 +5589,7 @@ var GLTexture = function () {
 
 exports.default = GLTexture;
 
-},{"./GLTool":17}],17:[function(_dereq_,module,exports){
+},{"./GLTool":16}],16:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // GLTool.js
@@ -5730,8 +5615,7 @@ var GLTool = function () {
 		this._enabledVertexAttribute = [];
 		this.identityMatrix = _glMatrix2.default.mat4.create();
 		this._normalMatrix = _glMatrix2.default.mat3.create();
-		this._inverseModelViewMatrix = _glMatrix2.default.mat3.create();
-		this._modelMatrix = _glMatrix2.default.mat4.create();
+		this._inverseViewMatrix = _glMatrix2.default.mat4.create();
 		this._matrix = _glMatrix2.default.mat4.create();
 		_glMatrix2.default.mat4.identity(this.identityMatrix, this.identityMatrix);
 	}
@@ -5826,14 +5710,15 @@ var GLTool = function () {
 	}, {
 		key: 'rotate',
 		value: function rotate(mRotation) {
-			_glMatrix2.default.mat4.copy(this._modelMatrix, mRotation);
-			_glMatrix2.default.mat4.multiply(this._matrix, this.camera.matrix, this._modelMatrix);
+			_glMatrix2.default.mat4.copy(this._matrix, mRotation);
+
+			_glMatrix2.default.mat4.multiply(this._matrix, this.camera.matrix, this._matrix);
 			_glMatrix2.default.mat3.fromMat4(this._normalMatrix, this._matrix);
 			_glMatrix2.default.mat3.invert(this._normalMatrix, this._normalMatrix);
 			_glMatrix2.default.mat3.transpose(this._normalMatrix, this._normalMatrix);
 
-			_glMatrix2.default.mat3.fromMat4(this._inverseModelViewMatrix, this._matrix);
-			_glMatrix2.default.mat3.invert(this._inverseModelViewMatrix, this._inverseModelViewMatrix);
+			_glMatrix2.default.mat3.fromMat4(this._inverseViewMatrix, this._matrix);
+			_glMatrix2.default.mat3.invert(this._inverseViewMatrix, this._inverseViewMatrix);
 		}
 	}, {
 		key: 'draw',
@@ -5869,10 +5754,10 @@ var GLTool = function () {
 
 			//	DEFAULT MATRICES
 			this.shader.uniform('uProjectionMatrix', 'uniformMatrix4fv', this.camera.projection);
-			this.shader.uniform('uModelMatrix', 'uniformMatrix4fv', this._modelMatrix);
+			this.shader.uniform('uModelMatrix', 'uniformMatrix4fv', this.identityMatrix);
 			this.shader.uniform('uViewMatrix', 'uniformMatrix4fv', this.camera.matrix);
 			this.shader.uniform('uNormalMatrix', 'uniformMatrix3fv', this._normalMatrix);
-			this.shader.uniform('uModelViewMatrixInverse', 'uniformMatrix3fv', this._inverseModelViewMatrix);
+			this.shader.uniform('uViewMatrixInverse', 'uniformMatrix4fv', this._inverseViewMatrix);
 
 			//	DRAWING
 			if (mMesh.drawType === this.gl.POINTS) {
@@ -5983,7 +5868,7 @@ var GL = new GLTool();
 
 exports.default = GL;
 
-},{"gl-matrix":1}],18:[function(_dereq_,module,exports){
+},{"gl-matrix":1}],17:[function(_dereq_,module,exports){
 // Geom.js
 
 'use strict';
@@ -6016,7 +5901,6 @@ Geom.plane = function (width, height, numSegments) {
 	var index = 0;
 	var sx = -width * 0.5;
 	var sy = -height * 0.5;
-	console.log(gapX, sx);
 
 	for (var i = 0; i < numSegments; i++) {
 		for (var j = 0; j < numSegments; j++) {
@@ -6165,367 +6049,9 @@ Geom.sphere = function (size, numSegments) {
 	return mesh;
 };
 
-Geom.cube = function (w, h, d) {
-	var withNormals = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
-	var drawType = arguments.length <= 4 || arguments[4] === undefined ? 4 : arguments[4];
-
-	h = h || w;
-	d = d || w;
-
-	var x = w / 2;
-	var y = h / 2;
-	var z = d / 2;
-
-	var positions = [];
-	var coords = [];
-	var indices = [];
-	var normals = [];
-	var count = 0;
-
-	// BACK
-	positions.push([-x, y, -z]);
-	positions.push([x, y, -z]);
-	positions.push([x, -y, -z]);
-	positions.push([-x, -y, -z]);
-
-	normals.push([0, 0, -1]);
-	normals.push([0, 0, -1]);
-	normals.push([0, 0, -1]);
-	normals.push([0, 0, -1]);
-
-	coords.push([0, 0]);
-	coords.push([1, 0]);
-	coords.push([1, 1]);
-	coords.push([0, 1]);
-
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 1);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 3);
-
-	count++;
-
-	// RIGHT
-	positions.push([x, y, -z]);
-	positions.push([x, y, z]);
-	positions.push([x, -y, z]);
-	positions.push([x, -y, -z]);
-
-	normals.push([1, 0, 0]);
-	normals.push([1, 0, 0]);
-	normals.push([1, 0, 0]);
-	normals.push([1, 0, 0]);
-
-	coords.push([0, 0]);
-	coords.push([1, 0]);
-	coords.push([1, 1]);
-	coords.push([0, 1]);
-
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 1);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 3);
-
-	count++;
-
-	// FRONT
-	positions.push([x, y, z]);
-	positions.push([-x, y, z]);
-	positions.push([-x, -y, z]);
-	positions.push([x, -y, z]);
-
-	normals.push([0, 0, 1]);
-	normals.push([0, 0, 1]);
-	normals.push([0, 0, 1]);
-	normals.push([0, 0, 1]);
-
-	coords.push([0, 0]);
-	coords.push([1, 0]);
-	coords.push([1, 1]);
-	coords.push([0, 1]);
-
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 1);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 3);
-
-	count++;
-
-	// LEFT
-	positions.push([-x, y, z]);
-	positions.push([-x, y, -z]);
-	positions.push([-x, -y, -z]);
-	positions.push([-x, -y, z]);
-
-	normals.push([-1, 0, 0]);
-	normals.push([-1, 0, 0]);
-	normals.push([-1, 0, 0]);
-	normals.push([-1, 0, 0]);
-
-	coords.push([0, 0]);
-	coords.push([1, 0]);
-	coords.push([1, 1]);
-	coords.push([0, 1]);
-
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 1);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 3);
-
-	count++;
-
-	// TOP
-	positions.push([-x, y, z]);
-	positions.push([x, y, z]);
-	positions.push([x, y, -z]);
-	positions.push([-x, y, -z]);
-
-	normals.push([0, 1, 0]);
-	normals.push([0, 1, 0]);
-	normals.push([0, 1, 0]);
-	normals.push([0, 1, 0]);
-
-	coords.push([0, 0]);
-	coords.push([1, 0]);
-	coords.push([1, 1]);
-	coords.push([0, 1]);
-
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 1);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 3);
-
-	count++;
-
-	// BOTTOM
-	positions.push([-x, -y, -z]);
-	positions.push([x, -y, -z]);
-	positions.push([x, -y, z]);
-	positions.push([-x, -y, z]);
-
-	normals.push([0, -1, 0]);
-	normals.push([0, -1, 0]);
-	normals.push([0, -1, 0]);
-	normals.push([0, -1, 0]);
-
-	coords.push([0, 0]);
-	coords.push([1, 0]);
-	coords.push([1, 1]);
-	coords.push([0, 1]);
-
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 1);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 3);
-
-	count++;
-
-	var mesh = new _Mesh2.default(drawType);
-	mesh.bufferVertex(positions);
-	mesh.bufferTexCoords(coords);
-	mesh.bufferIndices(indices);
-	if (withNormals) {
-		mesh.bufferNormal(normals);
-	}
-
-	return mesh;
-};
-
-Geom.skybox = function (size) {
-	var withNormals = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
-	var drawType = arguments.length <= 2 || arguments[2] === undefined ? 4 : arguments[2];
-
-	var positions = [];
-	var coords = [];
-	var indices = [];
-	var normals = [];
-	var count = 0;
-
-	// BACK
-	positions.push([size, size, -size]);
-	positions.push([-size, size, -size]);
-	positions.push([-size, -size, -size]);
-	positions.push([size, -size, -size]);
-
-	normals.push([0, 0, -1]);
-	normals.push([0, 0, -1]);
-	normals.push([0, 0, -1]);
-	normals.push([0, 0, -1]);
-
-	coords.push([0, 0]);
-	coords.push([1, 0]);
-	coords.push([1, 1]);
-	coords.push([0, 1]);
-
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 1);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 3);
-
-	count++;
-
-	// RIGHT
-	positions.push([size, -size, -size]);
-	positions.push([size, -size, size]);
-	positions.push([size, size, size]);
-	positions.push([size, size, -size]);
-
-	normals.push([1, 0, 0]);
-	normals.push([1, 0, 0]);
-	normals.push([1, 0, 0]);
-	normals.push([1, 0, 0]);
-
-	coords.push([0, 0]);
-	coords.push([1, 0]);
-	coords.push([1, 1]);
-	coords.push([0, 1]);
-
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 1);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 3);
-
-	count++;
-
-	// FRONT
-	positions.push([-size, size, size]);
-	positions.push([size, size, size]);
-	positions.push([size, -size, size]);
-	positions.push([-size, -size, size]);
-
-	normals.push([0, 0, 1]);
-	normals.push([0, 0, 1]);
-	normals.push([0, 0, 1]);
-	normals.push([0, 0, 1]);
-
-	coords.push([0, 0]);
-	coords.push([1, 0]);
-	coords.push([1, 1]);
-	coords.push([0, 1]);
-
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 1);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 3);
-
-	count++;
-
-	// LEFT
-	positions.push([-size, -size, size]);
-	positions.push([-size, -size, -size]);
-	positions.push([-size, size, -size]);
-	positions.push([-size, size, size]);
-
-	normals.push([-1, 0, 0]);
-	normals.push([-1, 0, 0]);
-	normals.push([-1, 0, 0]);
-	normals.push([-1, 0, 0]);
-
-	coords.push([0, 0]);
-	coords.push([1, 0]);
-	coords.push([1, 1]);
-	coords.push([0, 1]);
-
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 1);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 3);
-
-	count++;
-
-	// TOP
-	positions.push([size, size, size]);
-	positions.push([-size, size, size]);
-	positions.push([-size, size, -size]);
-	positions.push([size, size, -size]);
-
-	normals.push([0, 1, 0]);
-	normals.push([0, 1, 0]);
-	normals.push([0, 1, 0]);
-	normals.push([0, 1, 0]);
-
-	coords.push([0, 0]);
-	coords.push([1, 0]);
-	coords.push([1, 1]);
-	coords.push([0, 1]);
-
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 1);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 3);
-
-	count++;
-
-	// BOTTOM
-	positions.push([size, -size, -size]);
-	positions.push([-size, -size, -size]);
-	positions.push([-size, -size, size]);
-	positions.push([size, -size, size]);
-
-	normals.push([0, -1, 0]);
-	normals.push([0, -1, 0]);
-	normals.push([0, -1, 0]);
-	normals.push([0, -1, 0]);
-
-	coords.push([0, 0]);
-	coords.push([1, 0]);
-	coords.push([1, 1]);
-	coords.push([0, 1]);
-
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 1);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 0);
-	indices.push(count * 4 + 2);
-	indices.push(count * 4 + 3);
-
-	var mesh = new _Mesh2.default(drawType);
-	mesh.bufferVertex(positions);
-	mesh.bufferTexCoords(coords);
-	mesh.bufferIndices(indices);
-	if (withNormals) {
-		mesh.bufferNormal(normals);
-	}
-
-	return mesh;
-};
-
-Geom.bigTriangle = function () {
-	var indices = [2, 1, 0];
-	var positions = [[-1, -1], [-1, 4], [4, -1]];
-
-	var mesh = new _Mesh2.default();
-	mesh.bufferData(positions, 'aPosition', 2);
-	mesh.bufferIndices(indices);
-
-	return mesh;
-};
-
 exports.default = Geom;
 
-},{"./Mesh":19}],19:[function(_dereq_,module,exports){
+},{"./Mesh":18}],18:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // Mesh.js
@@ -6553,7 +6079,6 @@ var Mesh = function () {
 		gl = _GLTool2.default.gl;
 		this.drawType = mDrawType;
 		this._attributes = [];
-		this._vertexSize = 0;
 	}
 
 	_createClass(Mesh, [{
@@ -6561,7 +6086,6 @@ var Mesh = function () {
 		value: function bufferVertex(mArrayVertices) {
 			var isDynamic = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
 
-			this._vertexSize = mArrayVertices.length;
 			this.bufferData(mArrayVertices, 'aVertexPosition', 3, isDynamic);
 		}
 	}, {
@@ -6645,11 +6169,6 @@ var Mesh = function () {
 		get: function get() {
 			return this._attributes;
 		}
-	}, {
-		key: 'vertexSize',
-		get: function get() {
-			return this._vertexSize;
-		}
 	}]);
 
 	return Mesh;
@@ -6657,7 +6176,7 @@ var Mesh = function () {
 
 exports.default = Mesh;
 
-},{"./GLTool":17}],20:[function(_dereq_,module,exports){
+},{"./GLTool":16}],19:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // Camera.js
@@ -6704,17 +6223,7 @@ var Camera = function () {
 			return this._matrix;
 		}
 	}, {
-		key: 'viewMatrix',
-		get: function get() {
-			return this._matrix;
-		}
-	}, {
 		key: 'projection',
-		get: function get() {
-			return this._projection;
-		}
-	}, {
-		key: 'projectionMatrix',
 		get: function get() {
 			return this._projection;
 		}
@@ -6725,7 +6234,7 @@ var Camera = function () {
 
 exports.default = Camera;
 
-},{"gl-matrix":1}],21:[function(_dereq_,module,exports){
+},{"gl-matrix":1}],20:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -6788,7 +6297,7 @@ var CameraOrtho = function (_Camera) {
 
 exports.default = CameraOrtho;
 
-},{"./Camera":20,"gl-matrix":1}],22:[function(_dereq_,module,exports){
+},{"./Camera":19,"gl-matrix":1}],21:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -6845,80 +6354,7 @@ var CameraPerspective = function (_Camera) {
 
 exports.default = CameraPerspective;
 
-},{"./Camera":20,"gl-matrix":1}],23:[function(_dereq_,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _GLTool = _dereq_('../GLTool');
-
-var _GLTool2 = _interopRequireDefault(_GLTool);
-
-var _Mesh = _dereq_('../Mesh');
-
-var _Mesh2 = _interopRequireDefault(_Mesh);
-
-var _GLShader = _dereq_('../GLShader');
-
-var _GLShader2 = _interopRequireDefault(_GLShader);
-
-var _Batch2 = _dereq_('../Batch');
-
-var _Batch3 = _interopRequireDefault(_Batch2);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // BatchAxis.js
-
-
-
-var BatchAxis = function (_Batch) {
-	_inherits(BatchAxis, _Batch);
-
-	function BatchAxis() {
-		_classCallCheck(this, BatchAxis);
-
-		var positions = [];
-		var colors = [];
-		var indices = [0, 1, 2, 3, 4, 5];
-		var r = 9999;
-
-		positions.push([-r, 0, 0]);
-		positions.push([r, 0, 0]);
-		positions.push([0, -r, 0]);
-		positions.push([0, r, 0]);
-		positions.push([0, 0, -r]);
-		positions.push([0, 0, r]);
-
-		colors.push([1, 0, 0]);
-		colors.push([1, 0, 0]);
-		colors.push([0, 1, 0]);
-		colors.push([0, 1, 0]);
-		colors.push([0, 0, 1]);
-		colors.push([0, 0, 1]);
-
-		var mesh = new _Mesh2.default(_GLTool2.default.LINES);
-		mesh.bufferVertex(positions);
-		mesh.bufferIndices(indices);
-		mesh.bufferData(colors, 'aColor', 3);
-
-		var shader = new _GLShader2.default("#define GLSLIFY 1\n// axis.vert\n\n#define SHADER_NAME BASIC_VERTEX\n\nprecision highp float;\nattribute vec3 aVertexPosition;\nattribute vec3 aColor;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvarying vec3 vColor;\n\nvoid main(void) {\n    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);\n    vColor = aColor;\n}", "#define GLSLIFY 1\n// axis.frag\n\n#define SHADER_NAME SIMPLE_TEXTURE\n\nprecision highp float;\nvarying vec3 vColor;\n\nvoid main(void) {\n    gl_FragColor = vec4(vColor, 1.0);\n}");
-
-		return _possibleConstructorReturn(this, Object.getPrototypeOf(BatchAxis).call(this, mesh, shader));
-	}
-
-	return BatchAxis;
-}(_Batch3.default);
-
-exports.default = BatchAxis;
-
-},{"../Batch":12,"../GLShader":15,"../GLTool":17,"../Mesh":19}],24:[function(_dereq_,module,exports){
+},{"./Camera":19,"gl-matrix":1}],22:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -6949,6 +6385,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // BatchCopy.js
 
+// import GL from '../GLTool';
+
 
 
 var BatchCopy = function (_Batch) {
@@ -6957,8 +6395,8 @@ var BatchCopy = function (_Batch) {
 	function BatchCopy() {
 		_classCallCheck(this, BatchCopy);
 
-		var mesh = _Geom2.default.bigTriangle();
-		var shader = new _GLShader2.default("#define GLSLIFY 1\n// bigTriangle.vert\n\n#define SHADER_NAME BIG_TRIANGLE_VERTEX\n\nprecision highp float;\nattribute vec2 aPosition;\nvarying vec2 vTextureCoord;\n\nvoid main(void) {\n    gl_Position = vec4(aPosition, 0.0, 1.0);\n    vTextureCoord = aPosition * .5 + .5;\n}", "#define GLSLIFY 1\n// copy.frag\n\n#define SHADER_NAME COPY_FRAGMENT\n\nprecision highp float;\n\nvarying vec2 vTextureCoord;\nuniform sampler2D texture;\n\nvoid main(void) {\n    gl_FragColor = texture2D(texture, vTextureCoord);\n}");
+		var mesh = _Geom2.default.plane(2, 2, 1);
+		var shader = new _GLShader2.default(null, "#define GLSLIFY 1\n// copy.frag\n\n#define SHADER_NAME COPY_FRAGMENT\n\nprecision highp float;\n\nvarying vec2 vTextureCoord;\nuniform sampler2D texture;\n\nvoid main(void) {\n    gl_FragColor = texture2D(texture, vTextureCoord);\n}");
 
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(BatchCopy).call(this, mesh, shader));
 
@@ -6981,263 +6419,8 @@ var BatchCopy = function (_Batch) {
 
 exports.default = BatchCopy;
 
-},{"../Batch":12,"../GLShader":15,"../Geom":18}],25:[function(_dereq_,module,exports){
-'use strict';
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _GLTool = _dereq_('../GLTool');
-
-var _GLTool2 = _interopRequireDefault(_GLTool);
-
-var _Mesh = _dereq_('../Mesh');
-
-var _Mesh2 = _interopRequireDefault(_Mesh);
-
-var _GLShader = _dereq_('../GLShader');
-
-var _GLShader2 = _interopRequireDefault(_GLShader);
-
-var _Batch2 = _dereq_('../Batch');
-
-var _Batch3 = _interopRequireDefault(_Batch2);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // BatchDotsPlane.js
-
-
-
-var BatchDotsPlane = function (_Batch) {
-	_inherits(BatchDotsPlane, _Batch);
-
-	function BatchDotsPlane() {
-		_classCallCheck(this, BatchDotsPlane);
-
-		var positions = [];
-		var indices = [];
-		var index = 0;
-
-		var numDots = 100;
-		var size = 50;
-		var gap = size / numDots;
-		var i = undefined,
-		    j = undefined;
-
-		for (i = -size / 2; i < size; i += gap) {
-			for (j = -size / 2; j < size; j += gap) {
-				positions.push([i, j, 0]);
-				indices.push(index);
-				index++;
-
-				positions.push([i, 0, j]);
-				indices.push(index);
-				index++;
-			}
-		}
-
-		var mesh = new _Mesh2.default(_GLTool2.default.POINTS);
-		mesh.bufferVertex(positions);
-		mesh.bufferIndices(indices);
-
-		var shader = new _GLShader2.default("#define GLSLIFY 1\n// basic.vert\n\n#define SHADER_NAME DOTS_PLANE_VERTEX\n\nprecision highp float;\nattribute vec3 aVertexPosition;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvoid main(void) {\n    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);\n}", "#define GLSLIFY 1\n// simpleColor.frag\n\n#define SHADER_NAME SIMPLE_COLOR\n\nprecision highp float;\n\nuniform vec3 color;\nuniform float opacity;\n\nvoid main(void) {\n    gl_FragColor = vec4(color, opacity);\n}");
-
-		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(BatchDotsPlane).call(this, mesh, shader));
-
-		_this.color = [1, 1, 1];
-		_this.opacity = 0.5;
-		return _this;
-	}
-
-	_createClass(BatchDotsPlane, [{
-		key: 'draw',
-		value: function draw() {
-			this.shader.bind();
-			this.shader.uniform('color', 'uniform3fv', this.color);
-			this.shader.uniform('opacity', 'uniform1f', this.opacity);
-			// GL.draw(this.mesh);
-			_get(Object.getPrototypeOf(BatchDotsPlane.prototype), 'draw', this).call(this);
-		}
-	}]);
-
-	return BatchDotsPlane;
-}(_Batch3.default);
-
-exports.default = BatchDotsPlane;
-
-},{"../Batch":12,"../GLShader":15,"../GLTool":17,"../Mesh":19}],26:[function(_dereq_,module,exports){
-'use strict';
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // Scene.js
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _GLTool = _dereq_('../GLTool');
-
-var _GLTool2 = _interopRequireDefault(_GLTool);
-
-var _Scheduler = _dereq_('../tools/Scheduler');
-
-var _Scheduler2 = _interopRequireDefault(_Scheduler);
-
-var _CameraPerspective = _dereq_('../cameras/CameraPerspective');
-
-var _CameraPerspective2 = _interopRequireDefault(_CameraPerspective);
-
-var _CameraOrtho = _dereq_('../cameras/CameraOrtho');
-
-var _CameraOrtho2 = _interopRequireDefault(_CameraOrtho);
-
-var _OrbitalControl = _dereq_('../tools/OrbitalControl');
-
-var _OrbitalControl2 = _interopRequireDefault(_OrbitalControl);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Scene = function () {
-	function Scene() {
-		var _this = this;
-
-		_classCallCheck(this, Scene);
-
-		this._init();
-		this._initTextures();
-		this._initViews();
-
-		this._efIndex = _Scheduler2.default.addEF(function () {
-			return _this._loop();
-		});
-	}
-
-	//	PUBLIC METHODS
-
-	_createClass(Scene, [{
-		key: 'render',
-		value: function render() {}
-	}, {
-		key: 'stop',
-		value: function stop() {
-			if (this._efIndex === -1) {
-				return;
-			}
-			this._efIndex = _Scheduler2.default.removeEF(this._efIndex);
-		}
-	}, {
-		key: 'start',
-		value: function start() {
-			var _this2 = this;
-
-			if (this._efIndex !== -1) {
-				return;
-			}
-
-			this._efIndex = _Scheduler2.default.addEF(function () {
-				return _this2._loop();
-			});
-		}
-
-		//	PROTECTED METHODS TO BE OVERRIDEN BY CHILDREN
-
-	}, {
-		key: '_initTextures',
-		value: function _initTextures() {}
-	}, {
-		key: '_initViews',
-		value: function _initViews() {}
-
-		//	PRIVATE METHODS
-
-	}, {
-		key: '_init',
-		value: function _init() {
-			this.camera = new _CameraPerspective2.default();
-			this.camera.setPerspective(45 * Math.PI / 180, _GLTool2.default.aspectRatio, 0.1, 100);
-			var orbitalControl = new _OrbitalControl2.default(this.camera, window, 15);
-			orbitalControl.radius.value = 10;
-
-			this.cameraOrtho = new _CameraOrtho2.default();
-		}
-	}, {
-		key: '_loop',
-		value: function _loop() {
-
-			//	RESET VIEWPORT
-			_GLTool2.default.viewport(0, 0, _GLTool2.default.width, _GLTool2.default.height);
-
-			//	RESET CAMERA
-			_GLTool2.default.setMatrices(this.camera);
-
-			this.render();
-		}
-	}]);
-
-	return Scene;
-}();
-
-exports.default = Scene;
-
-},{"../GLTool":17,"../cameras/CameraOrtho":21,"../cameras/CameraPerspective":22,"../tools/OrbitalControl":34,"../tools/Scheduler":36}],27:[function(_dereq_,module,exports){
-'use strict';
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // View.js
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _GLShader = _dereq_('../GLShader');
-
-var _GLShader2 = _interopRequireDefault(_GLShader);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var View = function () {
-	function View(mStrVertex, mStrFrag) {
-		_classCallCheck(this, View);
-
-		this.shader = new _GLShader2.default(mStrVertex, mStrFrag);
-
-		this._init();
-	}
-
-	//	PROTECTED METHODS
-
-	_createClass(View, [{
-		key: '_init',
-		value: function _init() {}
-
-		// 	PUBLIC METHODS
-
-	}, {
-		key: 'render',
-		value: function render() {}
-	}]);
-
-	return View;
-}();
-
-exports.default = View;
-
-},{"../GLShader":15}],28:[function(_dereq_,module,exports){
-'use strict';
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+},{"../Batch":12,"../GLShader":14,"../Geom":17}],23:[function(_dereq_,module,exports){
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
@@ -7247,56 +6430,14 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 // BinaryLoader.js
 
-var BinaryLoader = function () {
-	function BinaryLoader() {
-		var _this = this;
-
-		var isArrayBuffer = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
-
-		_classCallCheck(this, BinaryLoader);
-
-		this._req = new XMLHttpRequest();
-		this._req.addEventListener('load', function (e) {
-			return _this._onLoaded(e);
-		});
-		this._req.addEventListener('progress', function (e) {
-			return _this._onProgress(e);
-		});
-		if (isArrayBuffer) {
-			this._req.responseType = 'arraybuffer';
-		}
-	}
-
-	_createClass(BinaryLoader, [{
-		key: 'load',
-		value: function load(url, callback) {
-			console.log('Loading : ', url);
-			this._callback = callback;
-
-			this._req.open('GET', url);
-			this._req.send();
-		}
-	}, {
-		key: '_onLoaded',
-		value: function _onLoaded() {
-			this._callback(this._req.response);
-		}
-	}, {
-		key: '_onProgress',
-		value: function _onProgress() /*e*/{
-			// console.log('on Progress:', (e.loaded/e.total*100).toFixed(2));
-		}
-	}]);
-
-	return BinaryLoader;
-}();
+var BinaryLoader = function BinaryLoader() {
+	_classCallCheck(this, BinaryLoader);
+};
 
 exports.default = BinaryLoader;
 
-},{}],29:[function(_dereq_,module,exports){
+},{}],24:[function(_dereq_,module,exports){
 'use strict';
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
@@ -7306,75 +6447,13 @@ var _BinaryLoader2 = _dereq_('./BinaryLoader');
 
 var _BinaryLoader3 = _interopRequireDefault(_BinaryLoader2);
 
-var _HDRParser = _dereq_('../tools/HDRParser');
-
-var _HDRParser2 = _interopRequireDefault(_HDRParser);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // HDRLoader.js
-
-var HDRLoader = function (_BinaryLoader) {
-	_inherits(HDRLoader, _BinaryLoader);
-
-	function HDRLoader() {
-		_classCallCheck(this, HDRLoader);
-
-		return _possibleConstructorReturn(this, Object.getPrototypeOf(HDRLoader).call(this, true));
-	}
-
-	_createClass(HDRLoader, [{
-		key: 'parse',
-		value: function parse(mArrayBuffer) {
-			return (0, _HDRParser2.default)(mArrayBuffer);
-		}
-	}, {
-		key: '_onLoaded',
-		value: function _onLoaded() {
-			var o = this.parse(this._req.response);
-			if (this._callback) {
-				this._callback(o);
-			}
-		}
-	}]);
-
-	return HDRLoader;
-}(_BinaryLoader3.default);
-
-exports.default = HDRLoader;
-
-},{"../tools/HDRParser":33,"./BinaryLoader":28}],30:[function(_dereq_,module,exports){
-// ObjLoader.js
-
-'use strict';
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _BinaryLoader2 = _dereq_('./BinaryLoader');
-
-var _BinaryLoader3 = _interopRequireDefault(_BinaryLoader2);
-
-var _Mesh = _dereq_('../Mesh');
-
-var _Mesh2 = _interopRequireDefault(_Mesh);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // ObjLoader.js
 
 var ObjLoader = function (_BinaryLoader) {
 	_inherits(ObjLoader, _BinaryLoader);
@@ -7385,210 +6464,12 @@ var ObjLoader = function (_BinaryLoader) {
 		return _possibleConstructorReturn(this, Object.getPrototypeOf(ObjLoader).call(this));
 	}
 
-	_createClass(ObjLoader, [{
-		key: 'load',
-		value: function load(url, callback) {
-			var ignoreNormals = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
-			var drawType = arguments.length <= 3 || arguments[3] === undefined ? 4 : arguments[3];
-
-			this._ignoreNormals = ignoreNormals;
-			this._drawType = drawType;
-			_get(Object.getPrototypeOf(ObjLoader.prototype), 'load', this).call(this, url, callback);
-		}
-	}, {
-		key: '_onLoaded',
-		value: function _onLoaded() {
-			this._parseObj(this._req.response);
-		}
-	}, {
-		key: '_parseObj',
-		value: function _parseObj(objStr) {
-			var lines = objStr.split('\n');
-
-			var positions = [];
-			var coords = [];
-			var finalNormals = [];
-			var vertices = [];
-			var normals = [];
-			var uvs = [];
-			var indices = [];
-			var count = 0;
-			var result;
-
-			// v float float float
-			var vertex_pattern = /v( +[\d|\.|\+|\-|e|E]+)( +[\d|\.|\+|\-|e|E]+)( +[\d|\.|\+|\-|e|E]+)/;
-
-			// vn float float float
-			var normal_pattern = /vn( +[\d|\.|\+|\-|e|E]+)( +[\d|\.|\+|\-|e|E]+)( +[\d|\.|\+|\-|e|E]+)/;
-
-			// vt float float
-			var uv_pattern = /vt( +[\d|\.|\+|\-|e|E]+)( +[\d|\.|\+|\-|e|E]+)/;
-
-			// f vertex vertex vertex ...
-			var face_pattern1 = /f( +-?\d+)( +-?\d+)( +-?\d+)( +-?\d+)?/;
-
-			// f vertex/uv vertex/uv vertex/uv ...
-			var face_pattern2 = /f( +(-?\d+)\/(-?\d+))( +(-?\d+)\/(-?\d+))( +(-?\d+)\/(-?\d+))( +(-?\d+)\/(-?\d+))?/;
-
-			// f vertex/uv/normal vertex/uv/normal vertex/uv/normal ...
-			var face_pattern3 = /f( +(-?\d+)\/(-?\d+)\/(-?\d+))( +(-?\d+)\/(-?\d+)\/(-?\d+))( +(-?\d+)\/(-?\d+)\/(-?\d+))( +(-?\d+)\/(-?\d+)\/(-?\d+))?/;
-
-			// f vertex//normal vertex//normal vertex//normal ...
-			var face_pattern4 = /f( +(-?\d+)\/\/(-?\d+))( +(-?\d+)\/\/(-?\d+))( +(-?\d+)\/\/(-?\d+))( +(-?\d+)\/\/(-?\d+))?/;
-
-			function parseVertexIndex(value) {
-				var index = parseInt(value);
-				return (index >= 0 ? index - 1 : index + vertices.length / 3) * 3;
-			}
-
-			function parseNormalIndex(value) {
-				var index = parseInt(value);
-				return (index >= 0 ? index - 1 : index + normals.length / 3) * 3;
-			}
-
-			function parseUVIndex(value) {
-				var index = parseInt(value);
-				return (index >= 0 ? index - 1 : index + uvs.length / 2) * 2;
-			}
-
-			function addVertex(a, b, c) {
-				positions.push([vertices[a], vertices[a + 1], vertices[a + 2]]);
-				positions.push([vertices[b], vertices[b + 1], vertices[b + 2]]);
-				positions.push([vertices[c], vertices[c + 1], vertices[c + 2]]);
-
-				indices.push(count * 3 + 0);
-				indices.push(count * 3 + 1);
-				indices.push(count * 3 + 2);
-
-				count++;
-			}
-
-			function addUV(a, b, c) {
-				coords.push([uvs[a], uvs[a + 1]]);
-				coords.push([uvs[b], uvs[b + 1]]);
-				coords.push([uvs[c], uvs[c + 1]]);
-			}
-
-			function addNormal(a, b, c) {
-				finalNormals.push([normals[a], normals[a + 1], normals[a + 2]]);
-				finalNormals.push([normals[b], normals[b + 1], normals[b + 2]]);
-				finalNormals.push([normals[c], normals[c + 1], normals[c + 2]]);
-			}
-
-			function addFace(a, b, c, d, ua, ub, uc, ud, na, nb, nc, nd) {
-				var ia = parseVertexIndex(a);
-				var ib = parseVertexIndex(b);
-				var ic = parseVertexIndex(c);
-				var id;
-
-				if (d === undefined) {
-
-					addVertex(ia, ib, ic);
-				} else {
-
-					id = parseVertexIndex(d);
-
-					addVertex(ia, ib, id);
-					addVertex(ib, ic, id);
-				}
-
-				if (ua !== undefined) {
-
-					ia = parseUVIndex(ua);
-					ib = parseUVIndex(ub);
-					ic = parseUVIndex(uc);
-
-					if (d === undefined) {
-
-						addUV(ia, ib, ic);
-					} else {
-
-						id = parseUVIndex(ud);
-
-						addUV(ia, ib, id);
-						addUV(ib, ic, id);
-					}
-				}
-
-				if (na !== undefined) {
-
-					ia = parseNormalIndex(na);
-					ib = parseNormalIndex(nb);
-					ic = parseNormalIndex(nc);
-
-					if (d === undefined) {
-
-						addNormal(ia, ib, ic);
-					} else {
-
-						id = parseNormalIndex(nd);
-
-						addNormal(ia, ib, id);
-						addNormal(ib, ic, id);
-					}
-				}
-			}
-
-			for (var i = 0; i < lines.length; i++) {
-				var line = lines[i];
-				line = line.trim();
-
-				if (line.length === 0 || line.charAt(0) === '#') {
-
-					continue;
-				} else if ((result = vertex_pattern.exec(line)) !== null) {
-
-					vertices.push(parseFloat(result[1]), parseFloat(result[2]), parseFloat(result[3]));
-				} else if ((result = normal_pattern.exec(line)) !== null) {
-
-					normals.push(parseFloat(result[1]), parseFloat(result[2]), parseFloat(result[3]));
-				} else if ((result = uv_pattern.exec(line)) !== null) {
-
-					uvs.push(parseFloat(result[1]), parseFloat(result[2]));
-				} else if ((result = face_pattern1.exec(line)) !== null) {
-
-					addFace(result[1], result[2], result[3], result[4]);
-				} else if ((result = face_pattern2.exec(line)) !== null) {
-
-					addFace(result[2], result[5], result[8], result[11], result[3], result[6], result[9], result[12]);
-				} else if ((result = face_pattern3.exec(line)) !== null) {
-					addFace(result[2], result[6], result[10], result[14], result[3], result[7], result[11], result[15], result[4], result[8], result[12], result[16]);
-				} else if ((result = face_pattern4.exec(line)) !== null) {
-					addFace(result[2], result[5], result[8], result[11], undefined, undefined, undefined, undefined, result[3], result[6], result[9], result[12]);
-				}
-			}
-
-			this._generateMeshes({
-				positions: positions,
-				coords: coords,
-				normals: finalNormals,
-				indices: indices
-			});
-		}
-	}, {
-		key: '_generateMeshes',
-		value: function _generateMeshes(o) {
-
-			var mesh = new _Mesh2.default(this._drawType);
-			mesh.bufferVertex(o.positions);
-			mesh.bufferTexCoords(o.coords);
-			mesh.bufferIndices(o.indices);
-			if (!this._ignoreNormals) {
-				mesh.bufferNormal(o.normals);
-			}
-
-			if (this._callback) {
-				this._callback(mesh, o);
-			}
-		}
-	}]);
-
 	return ObjLoader;
 }(_BinaryLoader3.default);
 
 exports.default = ObjLoader;
 
-},{"../Mesh":19,"./BinaryLoader":28}],31:[function(_dereq_,module,exports){
+},{"./BinaryLoader":23}],25:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // EaseNumber.js
@@ -7684,7 +6565,7 @@ var EaseNumber = function () {
 
 exports.default = EaseNumber;
 
-},{"./Scheduler":36}],32:[function(_dereq_,module,exports){
+},{"./Scheduler":28}],26:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -7822,219 +6703,7 @@ var EventDispatcher = function () {
 
 exports.default = EventDispatcher;
 
-},{}],33:[function(_dereq_,module,exports){
-// HDRParser.js
-
-'use strict';
-
-//Code ported by Marcin Ignac (2014)
-//Based on Java implementation from
-//https://code.google.com/r/cys12345-research/source/browse/hdr/image_processor/RGBE.java?r=7d84e9fd866b24079dbe61fa0a966ce8365f5726
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-var radiancePattern = '#\\?RADIANCE';
-var commentPattern = '#.*';
-// let gammaPattern = 'GAMMA=';
-var exposurePattern = 'EXPOSURE=\\s*([0-9]*[.][0-9]*)';
-var formatPattern = 'FORMAT=32-bit_rle_rgbe';
-var widthHeightPattern = '-Y ([0-9]+) \\+X ([0-9]+)';
-
-//http://croquetweak.blogspot.co.uk/2014/08/deconstructing-floats-frexp-and-ldexp.html
-// function ldexp(mantissa, exponent) {
-//     return exponent > 1023 ? mantissa * Math.pow(2, 1023) * Math.pow(2, exponent - 1023) : exponent < -1074 ? mantissa * Math.pow(2, -1074) * Math.pow(2, exponent + 1074) : mantissa * Math.pow(2, exponent);
-// }
-
-function readPixelsRawRLE(buffer, data, offset, fileOffset, scanline_width, num_scanlines) {
-	var rgbe = new Array(4);
-	var scanline_buffer = null;
-	var ptr = undefined;
-	var ptr_end = undefined;
-	var count = undefined;
-	var buf = new Array(2);
-	var bufferLength = buffer.length;
-
-	function readBuf(buf) {
-		var bytesRead = 0;
-		do {
-			buf[bytesRead++] = buffer[fileOffset];
-		} while (++fileOffset < bufferLength && bytesRead < buf.length);
-		return bytesRead;
-	}
-
-	function readBufOffset(buf, offset, length) {
-		var bytesRead = 0;
-		do {
-			buf[offset + bytesRead++] = buffer[fileOffset];
-		} while (++fileOffset < bufferLength && bytesRead < length);
-		return bytesRead;
-	}
-
-	function readPixelsRaw(buffer, data, offset, numpixels) {
-		var numExpected = 4 * numpixels;
-		var numRead = readBufOffset(data, offset, numExpected);
-		if (numRead < numExpected) {
-			throw new Error('Error reading raw pixels: got ' + numRead + ' bytes, expected ' + numExpected);
-		}
-	}
-
-	while (num_scanlines > 0) {
-		if (readBuf(rgbe) < rgbe.length) {
-			throw new Error('Error reading bytes: expected ' + rgbe.length);
-		}
-
-		if (rgbe[0] !== 2 || rgbe[1] !== 2 || (rgbe[2] & 0x80) !== 0) {
-			//this file is not run length encoded
-			data[offset++] = rgbe[0];
-			data[offset++] = rgbe[1];
-			data[offset++] = rgbe[2];
-			data[offset++] = rgbe[3];
-			readPixelsRaw(buffer, data, offset, scanline_width * num_scanlines - 1);
-			return;
-		}
-
-		if (((rgbe[2] & 0xFF) << 8 | rgbe[3] & 0xFF) !== scanline_width) {
-			throw new Error('Wrong scanline width ' + ((rgbe[2] & 0xFF) << 8 | rgbe[3] & 0xFF) + ', expected ' + scanline_width);
-		}
-
-		if (scanline_buffer === null) {
-			scanline_buffer = new Array(4 * scanline_width);
-		}
-
-		ptr = 0;
-		/* read each of the four channels for the scanline into the buffer */
-		for (var i = 0; i < 4; i++) {
-			ptr_end = (i + 1) * scanline_width;
-			while (ptr < ptr_end) {
-				if (readBuf(buf) < buf.length) {
-					throw new Error('Error reading 2-byte buffer');
-				}
-				if ((buf[0] & 0xFF) > 128) {
-					/* a run of the same value */
-					count = (buf[0] & 0xFF) - 128;
-					if (count === 0 || count > ptr_end - ptr) {
-						throw new Error('Bad scanline data');
-					}
-					while (count-- > 0) {
-						scanline_buffer[ptr++] = buf[1];
-					}
-				} else {
-					/* a non-run */
-					count = buf[0] & 0xFF;
-					if (count === 0 || count > ptr_end - ptr) {
-						throw new Error('Bad scanline data');
-					}
-					scanline_buffer[ptr++] = buf[1];
-					if (--count > 0) {
-						if (readBufOffset(scanline_buffer, ptr, count) < count) {
-							throw new Error('Error reading non-run data');
-						}
-						ptr += count;
-					}
-				}
-			}
-		}
-
-		/* copy byte data to output */
-		for (var i = 0; i < scanline_width; i++) {
-			data[offset + 0] = scanline_buffer[i];
-			data[offset + 1] = scanline_buffer[i + scanline_width];
-			data[offset + 2] = scanline_buffer[i + 2 * scanline_width];
-			data[offset + 3] = scanline_buffer[i + 3 * scanline_width];
-			offset += 4;
-		}
-
-		num_scanlines--;
-	}
-}
-
-//Returns data as floats and flipped along Y by default
-function parseHdr(buffer) {
-	if (buffer instanceof ArrayBuffer) {
-		buffer = new Uint8Array(buffer);
-	}
-
-	var fileOffset = 0;
-	var bufferLength = buffer.length;
-
-	var NEW_LINE = 10;
-
-	function readLine() {
-		var buf = '';
-		do {
-			var b = buffer[fileOffset];
-			if (b === NEW_LINE) {
-				++fileOffset;
-				break;
-			}
-			buf += String.fromCharCode(b);
-		} while (++fileOffset < bufferLength);
-		return buf;
-	}
-
-	var width = 0;
-	var height = 0;
-	var exposure = 1;
-	var gamma = 1;
-	var rle = false;
-
-	for (var i = 0; i < 20; i++) {
-		var line = readLine();
-		var match = undefined;
-		if (match = line.match(radiancePattern)) {} else if (match = line.match(formatPattern)) {
-			rle = true;
-		} else if (match = line.match(exposurePattern)) {
-			exposure = Number(match[1]);
-		} else if (match = line.match(commentPattern)) {} else if (match = line.match(widthHeightPattern)) {
-			height = Number(match[1]);
-			width = Number(match[2]);
-			break;
-		}
-	}
-
-	if (!rle) {
-		throw new Error('File is not run length encoded!');
-	}
-
-	var data = new Uint8Array(width * height * 4);
-	var scanline_width = width;
-	var num_scanlines = height;
-
-	readPixelsRawRLE(buffer, data, 0, fileOffset, scanline_width, num_scanlines);
-
-	//TODO: Should be Float16
-	var floatData = new Float32Array(width * height * 4);
-	for (var offset = 0; offset < data.length; offset += 4) {
-		var r = data[offset + 0] / 255;
-		var g = data[offset + 1] / 255;
-		var b = data[offset + 2] / 255;
-		var e = data[offset + 3];
-		var f = Math.pow(2.0, e - 128.0);
-
-		r *= f;
-		g *= f;
-		b *= f;
-
-		var floatOffset = offset;
-
-		floatData[floatOffset + 0] = r;
-		floatData[floatOffset + 1] = g;
-		floatData[floatOffset + 2] = b;
-		floatData[floatOffset + 3] = 1.0;
-	}
-
-	return {
-		shape: [width, height],
-		exposure: exposure,
-		gamma: gamma,
-		data: floatData
-	};
-}
-
-exports.default = parseHdr;
-
-},{}],34:[function(_dereq_,module,exports){
+},{}],27:[function(_dereq_,module,exports){
 // OrbitalControl.js
 'use strict';
 
@@ -8224,7 +6893,7 @@ var OrbitalControl = function () {
 					value = w / 120;
 				}
 
-			this.radius.add(-value * 2);
+			this.radius.add(-value * 5);
 		}
 
 		//	PRIVATE METHODS
@@ -8260,276 +6929,7 @@ var OrbitalControl = function () {
 
 exports.default = OrbitalControl;
 
-},{"./EaseNumber":31,"./Scheduler":36,"gl-matrix":1}],35:[function(_dereq_,module,exports){
-// QuatRotation.js
-
-'use strict';
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _glMatrix = _dereq_('gl-matrix');
-
-var _glMatrix2 = _interopRequireDefault(_glMatrix);
-
-var _EaseNumber = _dereq_('./EaseNumber');
-
-var _EaseNumber2 = _interopRequireDefault(_EaseNumber);
-
-var _Scheduler = _dereq_('./Scheduler');
-
-var _Scheduler2 = _interopRequireDefault(_Scheduler);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var getMouse = function getMouse(mEvent, mTarget) {
-
-	var o = mTarget || {};
-	if (mEvent.touches) {
-		o.x = mEvent.touches[0].pageX;
-		o.y = mEvent.touches[0].pageY;
-	} else {
-		o.x = mEvent.clientX;
-		o.y = mEvent.clientY;
-	}
-
-	return o;
-};
-
-var QuatRotation = function () {
-	function QuatRotation(mTarget) {
-		var _this = this;
-
-		var mListenerTarget = arguments.length <= 1 || arguments[1] === undefined ? window : arguments[1];
-		var mEasing = arguments.length <= 2 || arguments[2] === undefined ? 0.1 : arguments[2];
-
-		_classCallCheck(this, QuatRotation);
-
-		this._target = mTarget;
-		this._listenerTarget = mListenerTarget;
-
-		this.matrix = _glMatrix2.default.mat4.create();
-		this.m = _glMatrix2.default.mat4.create();
-		this._vZaxis = _glMatrix2.default.vec3.clone([0, 0, 0]);
-		this._zAxis = _glMatrix2.default.vec3.clone([0, 0, 1]);
-		this.preMouse = { x: 0, y: 0 };
-		this.mouse = { x: 0, y: 0 };
-		this._isMouseDown = false;
-		this._rotation = _glMatrix2.default.quat.create();
-		this.tempRotation = _glMatrix2.default.quat.create();
-		this._rotateZMargin = 0;
-		this._offset = 0.004;
-		this._slerp = -1;
-		this._isLocked = false;
-
-		this._diffX = new _EaseNumber2.default(0, mEasing);
-		this._diffY = new _EaseNumber2.default(0, mEasing);
-
-		this._listenerTarget.addEventListener('mousedown', function (e) {
-			return _this._onDown(e);
-		});
-		this._listenerTarget.addEventListener('touchstart', function (e) {
-			return _this._onDown(e);
-		});
-		this._listenerTarget.addEventListener('mousemove', function (e) {
-			return _this._onMove(e);
-		});
-		this._listenerTarget.addEventListener('touchmove', function (e) {
-			return _this._onMove(e);
-		});
-		window.addEventListener('touchend', function () {
-			return _this._onUp();
-		});
-		window.addEventListener('mouseup', function () {
-			return _this._onUp();
-		});
-
-		_Scheduler2.default.addEF(function () {
-			return _this._loop();
-		});
-	}
-
-	// 	PUBLIC METHODS
-
-	_createClass(QuatRotation, [{
-		key: 'inverseControl',
-		value: function inverseControl() {
-			var isInvert = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
-
-			this._isInvert = isInvert;
-		}
-	}, {
-		key: 'lock',
-		value: function lock() {
-			var mValue = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
-
-			this._isLocked = mValue;
-		}
-	}, {
-		key: 'setCameraPos',
-		value: function setCameraPos(mQuat) {
-			var speed = arguments.length <= 1 || arguments[1] === undefined ? 0.1 : arguments[1];
-
-			this.easing = speed;
-			if (this._slerp > 0) {
-				return;
-			}
-
-			var tempRotation = _glMatrix2.default.quat.clone(this._rotation);
-			this._updateRotation(tempRotation);
-			this._rotation = _glMatrix2.default.quat.clone(tempRotation);
-			this._currDiffX = this.diffX = 0;
-			this._currDiffY = this.diffY = 0;
-
-			this._isMouseDown = false;
-			this._isRotateZ = 0;
-
-			this._targetQuat = _glMatrix2.default.quat.clone(mQuat);
-			this._slerp = 1;
-		}
-	}, {
-		key: 'resetQuat',
-		value: function resetQuat() {
-			this._rotation = _glMatrix2.default.quat.clone([0, 0, 1, 0]);
-			this.tempRotation = _glMatrix2.default.quat.clone([0, 0, 0, 0]);
-			this._targetQuat = undefined;
-			this._slerp = -1;
-		}
-
-		//	EVENT HANDLER
-
-	}, {
-		key: '_onDown',
-		value: function _onDown(mEvent) {
-			if (this._isLocked) {
-				return;
-			}
-
-			var mouse = getMouse(mEvent);
-			var tempRotation = _glMatrix2.default.quat.clone(this._rotation);
-			this._updateRotation(tempRotation);
-			this._rotation = tempRotation;
-
-			this._isMouseDown = true;
-			this._isRotateZ = 0;
-			this.preMouse = { x: mouse.x, y: mouse.y };
-
-			if (mouse.y < this._rotateZMargin || mouse.y > window.innerHeight - this._rotateZMargin) {
-				this._isRotateZ = 1;
-			} else if (mouse.x < this._rotateZMargin || mouse.x > window.innerWidth - this._rotateZMargin) {
-				this._isRotateZ = 2;
-			}
-
-			this._diffX.setTo(0);
-			this._diffY.setTo(0);
-		}
-	}, {
-		key: '_onMove',
-		value: function _onMove(mEvent) {
-			if (this._isLocked) {
-				return;
-			}
-			getMouse(mEvent, this.mouse);
-		}
-	}, {
-		key: '_onUp',
-		value: function _onUp() {
-			if (this._isLocked) {
-				return;
-			}
-			this._isMouseDown = false;
-		}
-
-		//	PRIVATE METHODS
-
-	}, {
-		key: '_updateRotation',
-		value: function _updateRotation(mTempRotation) {
-			if (this._isMouseDown && !this._isLocked) {
-				this._diffX.value = -(this.mouse.x - this.preMouse.x);
-				this._diffY.value = this.mouse.y - this.preMouse.y;
-
-				if (this._isInvert) {
-					this._diffX.value = -this._diffX.targetValue;
-					this._diffY.value = -this._diffY.targetValue;
-				}
-			}
-
-			var angle = undefined,
-			    _quat = undefined;
-
-			if (this._isRotateZ > 0) {
-				if (this._isRotateZ === 1) {
-					angle = -this._diffX.value * this._offset;
-					angle *= this.preMouse.y < this._rotateZMargin ? -1 : 1;
-					_quat = _glMatrix2.default.quat.clone([0, 0, Math.sin(angle), Math.cos(angle)]);
-					_glMatrix2.default.quat.multiply(_quat, mTempRotation, _quat);
-				} else {
-					angle = -this._diffY.value * this._offset;
-					angle *= this.preMouse.x < this._rotateZMargin ? 1 : -1;
-					_quat = _glMatrix2.default.quat.clone([0, 0, Math.sin(angle), Math.cos(angle)]);
-					_glMatrix2.default.quat.multiply(_quat, mTempRotation, _quat);
-				}
-			} else {
-				var v = _glMatrix2.default.vec3.clone([this._diffX.value, this._diffY.value, 0]);
-				var axis = _glMatrix2.default.vec3.create();
-				_glMatrix2.default.vec3.cross(axis, v, this._zAxis);
-				_glMatrix2.default.vec3.normalize(axis, axis);
-				angle = _glMatrix2.default.vec3.length(v) * this._offset;
-				_quat = _glMatrix2.default.quat.clone([Math.sin(angle) * axis[0], Math.sin(angle) * axis[1], Math.sin(angle) * axis[2], Math.cos(angle)]);
-				_glMatrix2.default.quat.multiply(mTempRotation, _quat, mTempRotation);
-			}
-		}
-	}, {
-		key: '_loop',
-		value: function _loop() {
-			_glMatrix2.default.mat4.identity(this.m);
-
-			if (this._targetQuat === undefined) {
-				_glMatrix2.default.quat.set(this.tempRotation, this._rotation[0], this._rotation[1], this._rotation[2], this._rotation[3]);
-				this._updateRotation(this.tempRotation);
-			} else {
-				this._slerp += (0 - this._slerp) * 0.1;
-
-				if (this._slerp < 0.001) {
-					_glMatrix2.default.quat.set(this._rotation, this._targetQuat[0], this._targetQuat[1], this._targetQuat[2], this._targetQuat[3]);
-					this._targetQuat = undefined;
-					this._slerp = -1;
-				} else {
-					_glMatrix2.default.quat.set(this.tempRotation, 0, 0, 0, 0);
-					_glMatrix2.default.quat.slerp(this.tempRotation, this._targetQuat, this._rotation, this._slerp);
-				}
-			}
-
-			_glMatrix2.default.vec3.transformQuat(this._vZaxis, this._vZaxis, this.tempRotation);
-
-			_glMatrix2.default.mat4.fromQuat(this.matrix, this.tempRotation);
-		}
-
-		//	GETTER AND SETTER
-
-	}, {
-		key: 'easing',
-		set: function set(mValue) {
-			this._diffX.easing = mValue;
-			this._diffY.easing = mValue;
-		},
-		get: function get() {
-			return this._diffX.easing;
-		}
-	}]);
-
-	return QuatRotation;
-}();
-
-exports.default = QuatRotation;
-
-},{"./EaseNumber":31,"./Scheduler":36,"gl-matrix":1}],36:[function(_dereq_,module,exports){
+},{"./EaseNumber":25,"./Scheduler":28,"gl-matrix":1}],28:[function(_dereq_,module,exports){
 // Scheduler.js
 
 'use strict';
