@@ -1,9 +1,15 @@
-# Cube with simple diffuse light
+# Basic FrameBuffer example
 
 
-Simple example with Cube with uniform setup.
+### FrameBuffer 
 
-Default attributes are :
-- aVertexPosition
-- aTextureCorrd
-- aNormal
+```
+let fbo = new alfrid.FrameBuffer(width, height, parameters);
+```
+
+parameters : 
+- minFilter
+- magFilter
+- wrapS
+- wrapT
+
