@@ -50,7 +50,7 @@ let bundle = function() {
         // .pipe(uglify()) // Use any gulp plugins you want now
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('build'))
-        .pipe(gulp.dest('examples/test/dist/bundle'));
+        .pipe(gulp.dest('examples/_test/dist/bundle'));
 }
 
 bundler.on('update', bundle);
@@ -68,7 +68,7 @@ let release = function() {
         .pipe(uglify()) // Use any gulp plugins you want now
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('build'))
-        .pipe(gulp.dest('examples/test/dist/bundle'));
+        .pipe(gulp.dest('examples/_test/dist/bundle'));
 }
 
 //  Tasks

@@ -4992,6 +4992,14 @@ var _BatchCopy = _dereq_('./alfrid/helpers/BatchCopy');
 
 var _BatchCopy2 = _interopRequireDefault(_BatchCopy);
 
+var _Scene = _dereq_('./alfrid/helpers/Scene');
+
+var _Scene2 = _interopRequireDefault(_Scene);
+
+var _View = _dereq_('./alfrid/helpers/View');
+
+var _View2 = _interopRequireDefault(_View);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -5024,6 +5032,8 @@ var alfrid = function () {
 		this.ObjLoader = _ObjLoader2.default;
 		this.HDRLoader = _HDRLoader2.default;
 		this.BatchCopy = _BatchCopy2.default;
+		this.Scene = _Scene2.default;
+		this.View = _View2.default;
 
 		//	NOT SUPER SURE I'VE DONE THIS IS A GOOD WAY
 
@@ -5061,7 +5071,7 @@ var b = new alfrid();
 
 module.exports = b;
 
-},{"./alfrid/Batch":12,"./alfrid/FrameBuffer":13,"./alfrid/GLCubeTexture":14,"./alfrid/GLShader":15,"./alfrid/GLTexture":16,"./alfrid/GLTool":17,"./alfrid/Geom":18,"./alfrid/Mesh":19,"./alfrid/cameras/Camera":20,"./alfrid/cameras/CameraOrtho":21,"./alfrid/cameras/CameraPerspective":22,"./alfrid/helpers/BatchCopy":23,"./alfrid/loaders/BinaryLoader":24,"./alfrid/loaders/HDRLoader":25,"./alfrid/loaders/ObjLoader":26,"./alfrid/tools/EaseNumber":27,"./alfrid/tools/EventDispatcher":28,"./alfrid/tools/OrbitalControl":30,"./alfrid/tools/QuatRotation":31,"./alfrid/tools/Scheduler":32,"gl-matrix":1}],12:[function(_dereq_,module,exports){
+},{"./alfrid/Batch":12,"./alfrid/FrameBuffer":13,"./alfrid/GLCubeTexture":14,"./alfrid/GLShader":15,"./alfrid/GLTexture":16,"./alfrid/GLTool":17,"./alfrid/Geom":18,"./alfrid/Mesh":19,"./alfrid/cameras/Camera":20,"./alfrid/cameras/CameraOrtho":21,"./alfrid/cameras/CameraPerspective":22,"./alfrid/helpers/BatchCopy":23,"./alfrid/helpers/Scene":24,"./alfrid/helpers/View":25,"./alfrid/loaders/BinaryLoader":26,"./alfrid/loaders/HDRLoader":27,"./alfrid/loaders/ObjLoader":28,"./alfrid/tools/EaseNumber":29,"./alfrid/tools/EventDispatcher":30,"./alfrid/tools/OrbitalControl":32,"./alfrid/tools/QuatRotation":33,"./alfrid/tools/Scheduler":34,"gl-matrix":1}],12:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // Batch.js
@@ -6884,6 +6894,165 @@ exports.default = BatchCopy;
 },{"../Batch":12,"../GLShader":15,"../Geom":18}],24:[function(_dereq_,module,exports){
 'use strict';
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // Scene.js
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _GLTool = _dereq_('../GLTool');
+
+var _GLTool2 = _interopRequireDefault(_GLTool);
+
+var _Scheduler = _dereq_('../tools/Scheduler');
+
+var _Scheduler2 = _interopRequireDefault(_Scheduler);
+
+var _CameraPerspective = _dereq_('../cameras/CameraPerspective');
+
+var _CameraPerspective2 = _interopRequireDefault(_CameraPerspective);
+
+var _CameraOrtho = _dereq_('../cameras/CameraOrtho');
+
+var _CameraOrtho2 = _interopRequireDefault(_CameraOrtho);
+
+var _OrbitalControl = _dereq_('../tools/OrbitalControl');
+
+var _OrbitalControl2 = _interopRequireDefault(_OrbitalControl);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Scene = function () {
+	function Scene() {
+		var _this = this;
+
+		_classCallCheck(this, Scene);
+
+		this._init();
+		this._initTextures();
+		this._initViews();
+
+		this._efIndex = _Scheduler2.default.addEF(function () {
+			return _this._loop();
+		});
+	}
+
+	//	PUBLIC METHODS
+
+	_createClass(Scene, [{
+		key: 'render',
+		value: function render() {}
+	}, {
+		key: 'stop',
+		value: function stop() {
+			if (this._efIndex === -1) {
+				return;
+			}
+			this._efIndex = _Scheduler2.default.removeEF(this._efIndex);
+		}
+	}, {
+		key: 'start',
+		value: function start() {
+			var _this2 = this;
+
+			if (this._efIndex !== -1) {
+				return;
+			}
+
+			this._efIndex = _Scheduler2.default.addEF(function () {
+				return _this2._loop();
+			});
+		}
+
+		//	PROTECTED METHODS TO BE OVERRIDEN BY CHILDREN
+
+	}, {
+		key: '_initTextures',
+		value: function _initTextures() {}
+	}, {
+		key: '_initViews',
+		value: function _initViews() {}
+
+		//	PRIVATE METHODS
+
+	}, {
+		key: '_init',
+		value: function _init() {
+			this.camera = new _CameraPerspective2.default();
+			this.camera.setPerspective(45 * Math.PI / 180, _GLTool2.default.aspectRatio, 0.1, 100);
+			var orbitalControl = new _OrbitalControl2.default(this.camera, window, 15);
+			orbitalControl.radius.value = 10;
+
+			this.cameraOrtho = new _CameraOrtho2.default();
+		}
+	}, {
+		key: '_loop',
+		value: function _loop() {
+
+			//	RESET VIEWPORT
+			_GLTool2.default.viewport(0, 0, _GLTool2.default.width, _GLTool2.default.height);
+
+			//	RESET CAMERA
+			_GLTool2.default.setMatrices(this.camera);
+
+			this.render();
+		}
+	}]);
+
+	return Scene;
+}();
+
+exports.default = Scene;
+
+},{"../GLTool":17,"../cameras/CameraOrtho":21,"../cameras/CameraPerspective":22,"../tools/OrbitalControl":32,"../tools/Scheduler":34}],25:[function(_dereq_,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // View.js
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _GLShader = _dereq_('../GLShader');
+
+var _GLShader2 = _interopRequireDefault(_GLShader);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var View = function () {
+	function View(mStrVertex, mStrFrag) {
+		_classCallCheck(this, View);
+
+		this.shader = new _GLShader2.default(mStrVertex, mStrFrag);
+
+		this._init();
+	}
+
+	//	PROTECTED METHODS
+
+	_createClass(View, [{
+		key: '_init',
+		value: function _init() {}
+
+		// 	PUBLIC METHODS
+
+	}, {
+		key: 'render',
+		value: function render() {}
+	}]);
+
+	return View;
+}();
+
+exports.default = View;
+
+},{"../GLShader":15}],26:[function(_dereq_,module,exports){
+'use strict';
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 Object.defineProperty(exports, "__esModule", {
@@ -6940,7 +7109,7 @@ var BinaryLoader = function () {
 
 exports.default = BinaryLoader;
 
-},{}],25:[function(_dereq_,module,exports){
+},{}],27:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -6994,7 +7163,7 @@ var HDRLoader = function (_BinaryLoader) {
 
 exports.default = HDRLoader;
 
-},{"../tools/HDRParser":29,"./BinaryLoader":24}],26:[function(_dereq_,module,exports){
+},{"../tools/HDRParser":31,"./BinaryLoader":26}],28:[function(_dereq_,module,exports){
 // ObjLoader.js
 
 'use strict';
@@ -7235,7 +7404,7 @@ var ObjLoader = function (_BinaryLoader) {
 
 exports.default = ObjLoader;
 
-},{"../Mesh":19,"./BinaryLoader":24}],27:[function(_dereq_,module,exports){
+},{"../Mesh":19,"./BinaryLoader":26}],29:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // EaseNumber.js
@@ -7331,7 +7500,7 @@ var EaseNumber = function () {
 
 exports.default = EaseNumber;
 
-},{"./Scheduler":32}],28:[function(_dereq_,module,exports){
+},{"./Scheduler":34}],30:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -7469,7 +7638,7 @@ var EventDispatcher = function () {
 
 exports.default = EventDispatcher;
 
-},{}],29:[function(_dereq_,module,exports){
+},{}],31:[function(_dereq_,module,exports){
 // HDRParser.js
 
 'use strict';
@@ -7681,7 +7850,7 @@ function parseHdr(buffer) {
 
 exports.default = parseHdr;
 
-},{}],30:[function(_dereq_,module,exports){
+},{}],32:[function(_dereq_,module,exports){
 // OrbitalControl.js
 'use strict';
 
@@ -7907,7 +8076,7 @@ var OrbitalControl = function () {
 
 exports.default = OrbitalControl;
 
-},{"./EaseNumber":27,"./Scheduler":32,"gl-matrix":1}],31:[function(_dereq_,module,exports){
+},{"./EaseNumber":29,"./Scheduler":34,"gl-matrix":1}],33:[function(_dereq_,module,exports){
 // QuatRotation.js
 
 'use strict';
@@ -8176,7 +8345,7 @@ var QuatRotation = function () {
 
 exports.default = QuatRotation;
 
-},{"./EaseNumber":27,"./Scheduler":32,"gl-matrix":1}],32:[function(_dereq_,module,exports){
+},{"./EaseNumber":29,"./Scheduler":34,"gl-matrix":1}],34:[function(_dereq_,module,exports){
 // Scheduler.js
 
 'use strict';

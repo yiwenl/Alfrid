@@ -29,6 +29,8 @@ import HDRLoader			from './alfrid/loaders/HDRLoader';
 
 //	HELPERS
 import BatchCopy			from './alfrid/helpers/BatchCopy';
+import Scene				from './alfrid/helpers/Scene';
+import View					from './alfrid/helpers/View';
 
 
 const VERSION = '1.0.0';
@@ -59,6 +61,8 @@ class alfrid {
 		this.ObjLoader         = ObjLoader;
 		this.HDRLoader         = HDRLoader;
 		this.BatchCopy         = BatchCopy;
+		this.Scene             = Scene;
+		this.View              = View;
 
 
 		//	NOT SUPER SURE I'VE DONE THIS IS A GOOD WAY
