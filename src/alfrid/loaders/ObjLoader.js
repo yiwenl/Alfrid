@@ -21,52 +21,52 @@ class ObjLoader extends BinaryLoader {
 	}
 
 	_parseObj(objStr) {
-		var lines = objStr.split('\n');
+		let lines = objStr.split('\n');
 
-		var positions    = [];
-		var coords       = [];
-		var finalNormals = [];
-		var vertices     = [];
-		var normals      = [];
-		var uvs          = [];
-		var indices      = [];
-		var count        = 0;
-		var result;
+		let positions    = [];
+		let coords       = [];
+		let finalNormals = [];
+		let vertices     = [];
+		let normals      = [];
+		let uvs          = [];
+		let indices      = [];
+		let count        = 0;
+		let result;
 
 		// v float float float
-		var vertex_pattern = /v( +[\d|\.|\+|\-|e|E]+)( +[\d|\.|\+|\-|e|E]+)( +[\d|\.|\+|\-|e|E]+)/;
+		let vertex_pattern = /v( +[\d|\.|\+|\-|e|E]+)( +[\d|\.|\+|\-|e|E]+)( +[\d|\.|\+|\-|e|E]+)/;
 
 		// vn float float float
-		var normal_pattern = /vn( +[\d|\.|\+|\-|e|E]+)( +[\d|\.|\+|\-|e|E]+)( +[\d|\.|\+|\-|e|E]+)/;
+		let normal_pattern = /vn( +[\d|\.|\+|\-|e|E]+)( +[\d|\.|\+|\-|e|E]+)( +[\d|\.|\+|\-|e|E]+)/;
 
 		// vt float float
-		var uv_pattern = /vt( +[\d|\.|\+|\-|e|E]+)( +[\d|\.|\+|\-|e|E]+)/;
+		let uv_pattern = /vt( +[\d|\.|\+|\-|e|E]+)( +[\d|\.|\+|\-|e|E]+)/;
 
 		// f vertex vertex vertex ...
-		var face_pattern1 = /f( +-?\d+)( +-?\d+)( +-?\d+)( +-?\d+)?/;
+		let face_pattern1 = /f( +-?\d+)( +-?\d+)( +-?\d+)( +-?\d+)?/;
 
 		// f vertex/uv vertex/uv vertex/uv ...
-		var face_pattern2 = /f( +(-?\d+)\/(-?\d+))( +(-?\d+)\/(-?\d+))( +(-?\d+)\/(-?\d+))( +(-?\d+)\/(-?\d+))?/;
+		let face_pattern2 = /f( +(-?\d+)\/(-?\d+))( +(-?\d+)\/(-?\d+))( +(-?\d+)\/(-?\d+))( +(-?\d+)\/(-?\d+))?/;
 
 		// f vertex/uv/normal vertex/uv/normal vertex/uv/normal ...
-		var face_pattern3 = /f( +(-?\d+)\/(-?\d+)\/(-?\d+))( +(-?\d+)\/(-?\d+)\/(-?\d+))( +(-?\d+)\/(-?\d+)\/(-?\d+))( +(-?\d+)\/(-?\d+)\/(-?\d+))?/;
+		let face_pattern3 = /f( +(-?\d+)\/(-?\d+)\/(-?\d+))( +(-?\d+)\/(-?\d+)\/(-?\d+))( +(-?\d+)\/(-?\d+)\/(-?\d+))( +(-?\d+)\/(-?\d+)\/(-?\d+))?/;
 
 		// f vertex//normal vertex//normal vertex//normal ... 
-		var face_pattern4 = /f( +(-?\d+)\/\/(-?\d+))( +(-?\d+)\/\/(-?\d+))( +(-?\d+)\/\/(-?\d+))( +(-?\d+)\/\/(-?\d+))?/;
+		let face_pattern4 = /f( +(-?\d+)\/\/(-?\d+))( +(-?\d+)\/\/(-?\d+))( +(-?\d+)\/\/(-?\d+))( +(-?\d+)\/\/(-?\d+))?/;
 
 
 		function parseVertexIndex( value ) {
-			var index = parseInt( value );
+			let index = parseInt( value );
 			return ( index >= 0 ? index - 1 : index + vertices.length / 3 ) * 3;
 		}
 
 		function parseNormalIndex( value ) {
-			var index = parseInt( value );
+			let index = parseInt( value );
 			return ( index >= 0 ? index - 1 : index + normals.length / 3 ) * 3;
 		}
 
 		function parseUVIndex( value ) {
-			var index = parseInt( value );
+			let index = parseInt( value );
 			return ( index >= 0 ? index - 1 : index + uvs.length / 2 ) * 2;
 		}
 
@@ -98,10 +98,10 @@ class ObjLoader extends BinaryLoader {
 		}
 
 		function addFace( a, b, c, d,  ua, ub, uc, ud,  na, nb, nc, nd ) {
-			var ia = parseVertexIndex( a );
-			var ib = parseVertexIndex( b );
-			var ic = parseVertexIndex( c );
-			var id;
+			let ia = parseVertexIndex( a );
+			let ib = parseVertexIndex( b );
+			let ic = parseVertexIndex( c );
+			let id;
 
 			if ( d === undefined ) {
 
@@ -161,8 +161,8 @@ class ObjLoader extends BinaryLoader {
 		}
 
 
-		for ( var i = 0; i < lines.length; i ++ ) {
-			var line = lines[ i ];
+		for ( let i = 0; i < lines.length; i ++ ) {
+			let line = lines[ i ];
 			line = line.trim();
 
 			if ( line.length === 0 || line.charAt( 0 ) === '#' ) {
