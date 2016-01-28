@@ -21,4 +21,9 @@ class HDRLoader extends BinaryLoader {
 
 }
 
+
+HDRLoader.parse = function(mArrayBuffer) {
+	return HDRParser(mArrayBuffer);
+}
+
 export default HDRLoader;
