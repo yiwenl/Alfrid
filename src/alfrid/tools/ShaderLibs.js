@@ -5,7 +5,9 @@
 var glslify = require('glslify');
 
 const ShaderLibs = {
-	simpleColorFrag:glslify('../shaders/simpleColor.frag')
+	simpleColorFrag:glslify('../shaders/simpleColor.frag'),
+	generalVert:glslify('../shaders/general.vert'),
+	generalNormalVert:glslify('../shaders/generalWithNormal.vert')
 };
 
 

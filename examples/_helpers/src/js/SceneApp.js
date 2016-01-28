@@ -16,6 +16,7 @@ class SceneApp extends alfrid.Scene {
 		console.log('Init textures');
 		this._texture = new alfrid.GLTexture(image);
 	}
+	
 
 	_initViews() {
 		console.log('Init Views');
