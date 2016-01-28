@@ -5894,6 +5894,10 @@ var GLTool = function () {
 			this.canvas.width = this._width;
 			this.canvas.height = this._height;
 			this._aspectRatio = this._width / this._height;
+
+			if (this.gl) {
+				this.viewport(0, 0, this._width, this._height);
+			}
 		}
 	}, {
 		key: 'showExtensions',
