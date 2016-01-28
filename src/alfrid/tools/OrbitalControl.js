@@ -63,6 +63,10 @@ class OrbitalControl {
 		this._isLockRotation = mValue;
 	}
 
+	lockZoom(mValue=true) {
+		this._isLockZoom = mValue;
+	}
+
 
 	lockRotation(mValue=true) {
 		this._isLockRotation = mValue;

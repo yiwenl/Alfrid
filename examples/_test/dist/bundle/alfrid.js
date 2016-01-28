@@ -5365,7 +5365,12 @@ var GLCubeTexture = function () {
 
 		for (var j = 0; j < 6; j++) {
 			gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
-			gl.texImage2D(targets[j], 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, mSource[j]);
+			// gl.texImage2D(targets[j], 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, mSource[j]);	
+			if (mSource[j].exposure) {
+				gl.texImage2D(targets[j], 0, gl.RGBA, mSource[j].shape[0], mSource[j].shape[1], 0, gl.RGBA, gl.FLOAT, mSource[j].data);
+			} else {
+				gl.texImage2D(targets[j], 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, mSource[j]);
+			}
 			gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, this.wrapS);
 			gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, this.wrapT);
 			gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, this.magFilter);
@@ -5387,6 +5392,7 @@ var GLCubeTexture = function () {
 				return;
 			}
 
+			gl.activeTexture(gl.TEXTURE0 + index);
 			gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.texture);
 			gl.uniform1i(_GLTool2.default.shader.uniformTextures[index], index);
 			this._bindIndex = index;
@@ -7312,6 +7318,8 @@ var BinaryLoader = function () {
 exports.default = BinaryLoader;
 
 },{}],29:[function(_dereq_,module,exports){
+// HDRLoader.js
+
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -7334,7 +7342,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // HDRLoader.js
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var HDRLoader = function (_BinaryLoader) {
 	_inherits(HDRLoader, _BinaryLoader);
@@ -7362,6 +7370,10 @@ var HDRLoader = function (_BinaryLoader) {
 
 	return HDRLoader;
 }(_BinaryLoader3.default);
+
+HDRLoader.parse = function (mArrayBuffer) {
+	return (0, _HDRParser2.default)(mArrayBuffer);
+};
 
 exports.default = HDRLoader;
 
@@ -7431,7 +7443,7 @@ var ObjLoader = function (_BinaryLoader) {
 			var uvs = [];
 			var indices = [];
 			var count = 0;
-			var result;
+			var result = undefined;
 
 			// v float float float
 			var vertex_pattern = /v( +[\d|\.|\+|\-|e|E]+)( +[\d|\.|\+|\-|e|E]+)( +[\d|\.|\+|\-|e|E]+)/;
@@ -7497,7 +7509,7 @@ var ObjLoader = function (_BinaryLoader) {
 				var ia = parseVertexIndex(a);
 				var ib = parseVertexIndex(b);
 				var ic = parseVertexIndex(c);
-				var id;
+				var id = undefined;
 
 				if (d === undefined) {
 
@@ -8160,6 +8172,13 @@ var OrbitalControl = function () {
 
 			this._isLockZoom = mValue;
 			this._isLockRotation = mValue;
+		}
+	}, {
+		key: 'lockZoom',
+		value: function lockZoom() {
+			var mValue = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
+
+			this._isLockZoom = mValue;
 		}
 	}, {
 		key: 'lockRotation',
