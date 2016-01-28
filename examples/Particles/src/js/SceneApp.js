@@ -10,7 +10,10 @@ let GL;
 class SceneApp extends alfrid.Scene {
 	constructor() {
 		GL = alfrid.GL;
+		GL.enableAlphaBlending();
 		super();
+
+		this.orbitalControl._rx.value = .3;
 	}
 
 
@@ -69,6 +72,7 @@ class SceneApp extends alfrid.Scene {
 
 
 	render() {
+		this.orbitalControl._ry.value += -.01;
 		this.updateFbo();
 
 		this._bAxis.draw();
@@ -81,7 +85,7 @@ class SceneApp extends alfrid.Scene {
 		let viewSize = this._fboCurrent.width/2;
 		GL.viewport(0, 0, viewSize, viewSize);
 
-		this._bCopy.draw(this._fboCurrent.getTexture());
+		// this._bCopy.draw(this._fboCurrent.getTexture());
 		GL.enable(GL.DEPTH_TEST);
 	}
 }

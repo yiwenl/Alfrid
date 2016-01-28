@@ -4,7 +4,7 @@ import dat from 'dat-gui';
 
 
 window.params = {
-	numParticles:256
+	numParticles:512*1
 };
 
 if(document.body) {

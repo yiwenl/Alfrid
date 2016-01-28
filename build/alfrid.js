@@ -7190,8 +7190,8 @@ var Scene = function () {
 		value: function _init() {
 			this.camera = new _CameraPerspective2.default();
 			this.camera.setPerspective(45 * Math.PI / 180, _GLTool2.default.aspectRatio, 0.1, 100);
-			var orbitalControl = new _OrbitalControl2.default(this.camera, window, 15);
-			orbitalControl.radius.value = 10;
+			this.orbitalControl = new _OrbitalControl2.default(this.camera, window, 15);
+			this.orbitalControl.radius.value = 10;
 
 			this.cameraOrtho = new _CameraOrtho2.default();
 		}
