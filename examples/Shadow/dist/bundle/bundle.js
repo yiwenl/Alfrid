@@ -1926,46 +1926,30 @@ window.addEventListener('resize', function () {
 	return resize();
 });
 
-var canvas = undefined,
-    batch = undefined,
-    GL = undefined,
-    img = undefined,
-    texture = undefined,
-    shaderShadow = undefined,
-    shaderColor = undefined,
-    batchCopy = undefined;
+var GL = undefined;
 var time = 0;
 var fbo = undefined;
 var meshSphere = undefined,
-    mesh = undefined,
+    meshCube = undefined,
     meshFloor = undefined;
+var shaderShadow = undefined,
+    shaderColor = undefined;
 var camera = undefined,
-    cameraOrtho = undefined,
     cameraLight = undefined;
+var lightPosition = vec3.fromValues(0.0, 4.0, .0);
 
-var lightPosition = vec3.fromValues(0.5, 4.0, .0);
-
-img = new Image();
-img.addEventListener('load', function () {
-	return _onImageLoaded();
-});
-img.src = 'assets/texture.jpg';
-
-function _onImageLoaded() {
-	console.log('Image Loaded');
-
-	if (document.body) {
-		_init();
-	} else {
-		window.addEventListener('load', function () {
-			return _init();
-		});
-	}
+if (document.body) {
+	_init();
+} else {
+	window.addEventListener('load', function () {
+		return _init();
+	});
 }
 
 function _init() {
+
 	//	CREATE CANVAS
-	canvas = document.createElement("canvas");
+	var canvas = document.createElement("canvas");
 	canvas.className = 'Main-Canvas';
 	document.body.appendChild(canvas);
 
@@ -1982,31 +1966,22 @@ function _init() {
 	cameraLight.setPerspective(fov, 1, 1., 2000);
 	cameraLight.lookAt(lightPosition, vec3.fromValues(0, 0, 0), vec3.fromValues(0, 1, 0));
 
-	cameraOrtho = new _alfrid2.default.CameraOrtho();
-
 	//	ORBIAL CAMERA CONTROL
 	var orbitalControl = new _alfrid2.default.OrbitalControl(camera, window, 15);
 	orbitalControl.radius.value = 10;
 
 	//	CREATE MESH
 	var size = .5;
-	mesh = _alfrid2.default.Geom.cube(size, size, size, true);
-
+	meshCube = _alfrid2.default.Geom.cube(size, size, size, true);
 	size = 16;
 	meshFloor = _alfrid2.default.Geom.cube(size, .001, size, true);
-
 	meshSphere = _alfrid2.default.Geom.sphere(.1, 24, true);
-
-	//	CREATE TEXTURE
-	texture = new _alfrid2.default.GLTexture(img);
 
 	//	CREATE SHADER
 	shaderColor = new _alfrid2.default.GLShader("#define GLSLIFY 1\n// basic.vert\n\n#define SHADER_NAME BASIC_VERTEX\n\nprecision highp float;\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec3 aNormal;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\nuniform mat3 uNormalMatrix;\n\nuniform vec3 position;\nuniform float rotation;\n\nvarying vec2 vTextureCoord;\nvarying vec3 vNormal;\n\nvec2 rotate(vec2 v, float t) {\n\tfloat c = cos(t);\n\tfloat s = sin(t);\n\tmat2 m = mat2(c, -s, s, c);\n\treturn m*v;\n}\n\nvoid main(void) {\n\tvec3 pos        = aVertexPosition;\n\t// pos.xz \t\t\t= rotate(pos.xz, rotation);\n\tpos \t\t\t+= position;\n    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(pos, 1.0);\n    vTextureCoord = aTextureCoord;\n\tvNormal         = normalize(uNormalMatrix * aNormal);\n}", "#define GLSLIFY 1\n#define SHADER_NAME SIMPLE_TEXTURE\n\nprecision highp float;\n// varying vec2 vTextureCoord;\n// uniform sampler2D texture;\n\nuniform vec3 color;\nuniform float opacity;\n\nvoid main(void) {\n    gl_FragColor = vec4(color, opacity);\n}");
 	shaderShadow = new _alfrid2.default.GLShader("#define GLSLIFY 1\n// shadow.vert\n\n#define SHADER_NAME SHADOW_VERTEX\n\nprecision highp float;\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec3 aNormal;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\nuniform mat4 uShadowMatrix;\nuniform mat3 uNormalMatrix;\nuniform float rotation;\n\nuniform vec3 position;\n\nvarying vec2 vTextureCoord;\nvarying vec3 vNormal;\nvarying vec4 vShadowCoord;\nvarying vec4 vPosition;\n\nconst mat4 biasMatrix = mat4( 0.5, 0.0, 0.0, 0.0,\n\t\t\t\t\t\t\t  0.0, 0.5, 0.0, 0.0,\n\t\t\t\t\t\t\t  0.0, 0.0, 0.5, 0.0,\n\t\t\t\t\t\t\t  0.5, 0.5, 0.5, 1.0 );\n\nvec2 rotate(vec2 v, float t) {\n\tfloat c = cos(t);\n\tfloat s = sin(t);\n\tmat2 m = mat2(c, -s, s, c);\n\treturn m*v;\n}\n\nvoid main(void) {\n\tvec3 pos        = aVertexPosition;\n\t// pos.xz \t\t\t= rotate(pos.xz, rotation);\n\tpos \t\t\t+= position;\n\tvec4 mvPosition = uViewMatrix * uModelMatrix * vec4(pos, 1.0);\n\tgl_Position     = uProjectionMatrix * mvPosition;\n\tvPosition       = mvPosition;\n\tvTextureCoord   = aTextureCoord;\n\tvec3 N \t\t\t= aNormal;\n\tvNormal         = normalize(uNormalMatrix * aNormal);\n\tvShadowCoord    = ( biasMatrix * uShadowMatrix * uModelMatrix ) * vec4(pos, 1.0);;\n}", "#define GLSLIFY 1\n// shadow.frag\n\n#define SHADER_NAME SIMPLE_TEXTURE\n\nprecision highp float;\nvarying vec2 vTextureCoord;\nvarying vec4 vPosition;\nvarying vec4 vShadowCoord;\nvarying vec3 vNormal;\n\nuniform vec3 color;\nuniform mat4 uViewMatrix;\nuniform mat4 uModelMatrix;\nuniform vec3 lightPosition;\nuniform sampler2D textureDepth;\n\nvoid main(void) {\n\tvec3 lightPos = (uModelMatrix * uViewMatrix * vec4(lightPosition, 1.0)).xyz;\n\n\tvec3 Normal\t\t\t= normalize( vNormal );\n\tvec3 LightVec\t\t= normalize( lightPos - vPosition.xyz );\n\t// float NdotL\t\t\t= max( dot( vNormal, normalize(lightPos) ), 0.0 );\n\tfloat NdotL\t\t\t= max( dot( vNormal, LightVec ), 0.0 );\n\n\tvec3 Diffuse\t\t= vec3( NdotL );\n\tvec3 Ambient\t\t= vec3( 0.3 );\n\t\n\tvec4 ShadowCoord\t= vShadowCoord / vShadowCoord.w;\n\tfloat Shadow\t\t= 1.0;\n\n\tif ( ShadowCoord.z > -1.0 && ShadowCoord.z < 1.0 ) {\n\t\tShadow = texture2D( textureDepth, ShadowCoord.xy ).r ;\n\t}\n\n\tgl_FragColor = vec4(( Diffuse * Shadow + Ambient ) * color, 1.0);\n\n/*\n\tfloat bias = 0.005*tan(acos(NdotL)); // cosTheta is dot( n,l ), clamped between 0 and 1\n\tbias = clamp(bias, 0.0, 0.01);\n\tfloat visibility = 1.0;\n\tif ( texture2D( textureDepth, ShadowCoord.xy ).z  <  ShadowCoord.z-bias){\n\t\tvisibility = 0.5;\n\t}\n\n    gl_FragColor = vec4(( Diffuse * visibility + Ambient ) * color, 1.0);\n*/  \n}");
 
-	//	CREATE BATCH
-	batchCopy = new _alfrid2.default.BatchCopy();
-
+	//	CREATE FRAMEBUFFER
 	var fboSize = 1024;
 	fbo = new _alfrid2.default.FrameBuffer(fboSize, fboSize);
 
@@ -2027,17 +2002,7 @@ function _loop() {
 	fbo.bind();
 	GL.clear(0, 0, 0, 0);
 	shaderColor.bind();
-	shaderColor.uniform("color", "uniform3fv", [1, 1, 1]);
-	shaderColor.uniform("opacity", "uniform1f", 1);
-	shaderColor.uniform("position", "uniform3fv", [0, -1.5, 0]);
-	shaderColor.uniform("rotation", "uniform1f", 0);
-	GL.draw(meshFloor);
-
-	shaderColor.uniform("rotation", "uniform1f", time);
-	shaderColor.uniform("color", "uniform3fv", [1, 1, .5]);
-	shaderColor.uniform("position", "uniform3fv", [0, 1 + Math.sin(time) * .35, 0]);
-	GL.draw(mesh);
-
+	drawScene(shaderColor);
 	fbo.unbind();
 
 	GL.viewport(0, 0, GL.width, GL.height);
@@ -2051,20 +2016,26 @@ function _loop() {
 	mat4.multiply(shadowMatrix, cameraLight.projection, cameraLight.viewMatrix);
 
 	shaderShadow.bind();
+	drawScene(shaderShadow);
 	shaderShadow.uniform("lightPosition", "uniform3fv", lightPosition);
 	shaderShadow.uniform("uShadowMatrix", "uniformMatrix4fv", shadowMatrix);
 	shaderShadow.uniform("textureDepth", "uniform1i", 0);
 	fbo.getDepthTexture().bind(0);
 
-	shaderShadow.uniform("rotation", "uniform1f", 0);
-	shaderShadow.uniform("color", "uniform3fv", [1, 1, 1]);
-	shaderShadow.uniform("position", "uniform3fv", [0, -1.5, 0]);
+	drawScene(shaderShadow);
+}
+
+function drawScene(shader) {
+	shader.uniform("color", "uniform3fv", [1, 1, 1]);
+	shader.uniform("opacity", "uniform1f", 1);
+	shader.uniform("position", "uniform3fv", [0, -1.5, 0]);
+	shader.uniform("rotation", "uniform1f", 0);
 	GL.draw(meshFloor);
 
-	shaderShadow.uniform("rotation", "uniform1f", time);
-	shaderShadow.uniform("color", "uniform3fv", [1, 1, .5]);
-	shaderShadow.uniform("position", "uniform3fv", [0, 1 + Math.sin(time) * .35, 0]);
-	GL.draw(mesh);
+	shader.uniform("rotation", "uniform1f", time);
+	shader.uniform("color", "uniform3fv", [1, 1, .5]);
+	shader.uniform("position", "uniform3fv", [0, 1 + Math.sin(time) * .35, 0]);
+	GL.draw(meshCube);
 }
 
 function resize() {
