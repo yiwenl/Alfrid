@@ -7121,6 +7121,9 @@ var Scene = function () {
 		this._efIndex = _Scheduler2.default.addEF(function () {
 			return _this._loop();
 		});
+		window.addEventListener('resize', function () {
+			return _this.resize();
+		});
 	}
 
 	//	PUBLIC METHODS
@@ -7148,6 +7151,12 @@ var Scene = function () {
 			this._efIndex = _Scheduler2.default.addEF(function () {
 				return _this2._loop();
 			});
+		}
+	}, {
+		key: 'resize',
+		value: function resize() {
+			_GLTool2.default.setSize(window.innerWidth, window.innerHeight);
+			this.camera.setAspectRatio(_GLTool2.default.aspectRatio);
 		}
 
 		//	PROTECTED METHODS TO BE OVERRIDEN BY CHILDREN

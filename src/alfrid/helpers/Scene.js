@@ -16,6 +16,7 @@ class Scene {
 		this._initViews();
 
 		this._efIndex = Scheduler.addEF( ()=>this._loop());
+		window.addEventListener('resize', ()=>this.resize());
 	}
 
 
@@ -39,6 +40,12 @@ class Scene {
 		} 
 
 		this._efIndex = Scheduler.addEF( ()=>this._loop());
+	}
+
+
+	resize() {
+		GL.setSize(window.innerWidth, window.innerHeight);
+		this.camera.setAspectRatio(GL.aspectRatio);
 	}
 
 
