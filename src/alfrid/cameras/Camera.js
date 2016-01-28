@@ -28,8 +28,16 @@ class Camera {
 		return this._matrix;
 	}
 
+	get viewMatrix() {
+		return this._matrix;
+	}
+
 
 	get projection() {
+		return this._projection;
+	} 
+
+	get projectionMatrix() {
 		return this._projection;
 	} 
 }

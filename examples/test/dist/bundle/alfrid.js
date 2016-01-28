@@ -5155,10 +5155,12 @@ var FrameBuffer = function () {
 
 		this.width = mWidth;
 		this.height = mHeight;
+
+		console.log('Framebuffer size : ', this.width, mWidth);
 		this.magFilter = mParameters.magFilter || gl.LINEAR;
 		this.minFilter = mParameters.minFilter || gl.LINEAR;
-		this.wrapS = mParameters.wrapS || gl.MIRRORED_REPEAT;
-		this.wrapT = mParameters.wrapT || gl.MIRRORED_REPEAT;
+		this.wrapS = mParameters.wrapS || gl.CLAMP_TO_EDGE;
+		this.wrapT = mParameters.wrapT || gl.CLAMP_TO_EDGE;
 		this.useDepth = mParameters.useDepth || true;
 		this.useStencil = mParameters.useStencil || false;
 
@@ -5994,6 +5996,7 @@ Geom.plane = function (width, height, numSegments) {
 	var index = 0;
 	var sx = -width * 0.5;
 	var sy = -height * 0.5;
+	console.log(gapX, sx);
 
 	for (var i = 0; i < numSegments; i++) {
 		for (var j = 0; j < numSegments; j++) {
@@ -6674,7 +6677,17 @@ var Camera = function () {
 			return this._matrix;
 		}
 	}, {
+		key: 'viewMatrix',
+		get: function get() {
+			return this._matrix;
+		}
+	}, {
 		key: 'projection',
+		get: function get() {
+			return this._projection;
+		}
+	}, {
+		key: 'projectionMatrix',
 		get: function get() {
 			return this._projection;
 		}
