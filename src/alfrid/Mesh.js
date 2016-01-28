@@ -9,11 +9,13 @@ class Mesh {
 		gl = GL.gl;
 		this.drawType = mDrawType;
 		this._attributes = [];
+		this._vertexSize = 0;
 	}
 
 
 	bufferVertex(mArrayVertices, isDynamic=false) {
 
+		this._vertexSize = mArrayVertices.length;
 		this.bufferData(mArrayVertices, 'aVertexPosition', 3, isDynamic);
 
 	}
@@ -97,6 +99,10 @@ class Mesh {
 
 	get attributes() {
 		return this._attributes;
+	}
+
+	get vertexSize() {
+		return this._vertexSize;
 	}
 
 
