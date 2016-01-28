@@ -1,5 +1,7 @@
 // HDRLoader.js
 
+'use strict';
+
 import BinaryLoader from './BinaryLoader';
 import HDRParser from '../tools/HDRParser';
 
@@ -24,6 +26,6 @@ class HDRLoader extends BinaryLoader {
 
 HDRLoader.parse = function(mArrayBuffer) {
 	return HDRParser(mArrayBuffer);
-}
+};
 
 export default HDRLoader;
