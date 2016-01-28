@@ -1,11 +1,14 @@
 // SceneApp.js
 import alfrid from '../../../../build/alfrid.js';
-
 import ViewCube from './ViewCube';
+
+let GL;
 
 class SceneApp extends alfrid.Scene {
 	constructor() {
 		super();
+
+		GL = alfrid.GL;
 	}
 
 
@@ -19,6 +22,7 @@ class SceneApp extends alfrid.Scene {
 		this._vCube      = new ViewCube();
 		this._bAxis      = new alfrid.BatchAxis();
 		this._bDotsPlane = new alfrid.BatchDotsPlane();
+		this._bCopy 	 = new alfrid.BatchCopy();
 	}
 
 
@@ -27,6 +31,13 @@ class SceneApp extends alfrid.Scene {
 		this._bDotsPlane.draw();
 
 		this._vCube.render(this._texture);
+
+
+		GL.setMatrices(this.cameraOrtho);
+		GL.disable(GL.DEPTH_TEST);
+		GL.viewport(0, 0, 256, 256);
+		this._bCopy.draw(this._texture);
+		GL.enable(GL.DEPTH_TEST);
 	}
 }
 

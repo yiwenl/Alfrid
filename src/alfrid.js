@@ -33,6 +33,7 @@ import BatchAxis			from './alfrid/helpers/BatchAxis';
 import BatchDotsPlane		from './alfrid/helpers/BatchDotsPlane';
 import Scene				from './alfrid/helpers/Scene';
 import View					from './alfrid/helpers/View';
+import ShaderLibs			from './alfrid/tools/ShaderLibs';
 
 
 const VERSION = '1.0.0';
@@ -67,6 +68,7 @@ class alfrid {
 		this.BatchDotsPlane    = BatchDotsPlane;
 		this.Scene             = Scene;
 		this.View              = View;
+		this.ShaderLibs        = ShaderLibs;
 
 
 		//	NOT SUPER SURE I'VE DONE THIS IS A GOOD WAY

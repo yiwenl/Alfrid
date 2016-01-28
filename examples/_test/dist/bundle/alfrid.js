@@ -5008,6 +5008,10 @@ var _View = _dereq_('./alfrid/helpers/View');
 
 var _View2 = _interopRequireDefault(_View);
 
+var _ShaderLibs = _dereq_('./alfrid/tools/ShaderLibs');
+
+var _ShaderLibs2 = _interopRequireDefault(_ShaderLibs);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -5044,6 +5048,7 @@ var alfrid = function () {
 		this.BatchDotsPlane = _BatchDotsPlane2.default;
 		this.Scene = _Scene2.default;
 		this.View = _View2.default;
+		this.ShaderLibs = _ShaderLibs2.default;
 
 		//	NOT SUPER SURE I'VE DONE THIS IS A GOOD WAY
 
@@ -5081,7 +5086,7 @@ var b = new alfrid();
 
 module.exports = b;
 
-},{"./alfrid/Batch":12,"./alfrid/FrameBuffer":13,"./alfrid/GLCubeTexture":14,"./alfrid/GLShader":15,"./alfrid/GLTexture":16,"./alfrid/GLTool":17,"./alfrid/Geom":18,"./alfrid/Mesh":19,"./alfrid/cameras/Camera":20,"./alfrid/cameras/CameraOrtho":21,"./alfrid/cameras/CameraPerspective":22,"./alfrid/helpers/BatchAxis":23,"./alfrid/helpers/BatchCopy":24,"./alfrid/helpers/BatchDotsPlane":25,"./alfrid/helpers/Scene":26,"./alfrid/helpers/View":27,"./alfrid/loaders/BinaryLoader":28,"./alfrid/loaders/HDRLoader":29,"./alfrid/loaders/ObjLoader":30,"./alfrid/tools/EaseNumber":31,"./alfrid/tools/EventDispatcher":32,"./alfrid/tools/OrbitalControl":34,"./alfrid/tools/QuatRotation":35,"./alfrid/tools/Scheduler":36,"gl-matrix":1}],12:[function(_dereq_,module,exports){
+},{"./alfrid/Batch":12,"./alfrid/FrameBuffer":13,"./alfrid/GLCubeTexture":14,"./alfrid/GLShader":15,"./alfrid/GLTexture":16,"./alfrid/GLTool":17,"./alfrid/Geom":18,"./alfrid/Mesh":19,"./alfrid/cameras/Camera":20,"./alfrid/cameras/CameraOrtho":21,"./alfrid/cameras/CameraPerspective":22,"./alfrid/helpers/BatchAxis":23,"./alfrid/helpers/BatchCopy":24,"./alfrid/helpers/BatchDotsPlane":25,"./alfrid/helpers/Scene":26,"./alfrid/helpers/View":27,"./alfrid/loaders/BinaryLoader":28,"./alfrid/loaders/HDRLoader":29,"./alfrid/loaders/ObjLoader":30,"./alfrid/tools/EaseNumber":31,"./alfrid/tools/EventDispatcher":32,"./alfrid/tools/OrbitalControl":34,"./alfrid/tools/QuatRotation":35,"./alfrid/tools/Scheduler":36,"./alfrid/tools/ShaderLibs":37,"gl-matrix":1}],12:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // Batch.js
@@ -8706,6 +8711,22 @@ var Scheduler = function () {
 var scheduler = new Scheduler();
 
 exports.default = scheduler;
+
+},{}],37:[function(_dereq_,module,exports){
+// ShaderLbs.js
+
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+
+var ShaderLibs = {
+	simpleColorFrag: "#define GLSLIFY 1\n// simpleColor.frag\n\n#define SHADER_NAME SIMPLE_COLOR\n\nprecision highp float;\n\nuniform vec3 color;\nuniform float opacity;\n\nvoid main(void) {\n    gl_FragColor = vec4(color, opacity);\n}"
+};
+
+exports.default = ShaderLibs;
 
 },{}]},{},[11])(11)
 });
