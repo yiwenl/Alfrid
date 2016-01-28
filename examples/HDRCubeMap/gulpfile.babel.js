@@ -15,6 +15,7 @@ const reload      = browserSync.reload;
 var bundler = watchify(browserify('./src/js/app.js', watchify.args));
 bundler.transform(babelify);
 gulp.task('browserify', bundle);
+gulp.task('release', bundleRelease);
 
 bundler.on('update', bundle);     
 
@@ -28,6 +29,20 @@ function bundle() {
 	.pipe(source('bundle.js'))
 	.pipe(buffer())
 	.pipe(sourcemaps.init({ loadMaps: true }))
+	.pipe(sourcemaps.write('./'))
+	.pipe(gulp.dest('./dist/bundle/'))
+	.pipe(reload({stream: true, once: true}));
+
+    return b;
+}
+
+function bundleRelease() {
+    var b = bundler.bundle()
+	.on('error', logError)
+	.pipe(source('bundle.js'))
+	.pipe(buffer())
+	.pipe(sourcemaps.init({ loadMaps: true }))
+	.pipe(uglify())
 	.pipe(sourcemaps.write('./'))
 	.pipe(gulp.dest('./dist/bundle/'))
 	.pipe(reload({stream: true, once: true}));
@@ -71,6 +86,7 @@ gulp.task('browser-sync', function() {
 	  });
 });
 
+gulp.task('release', ['release']);
 gulp.task('default', ['browserify', 'sass', 'browser-sync', 'watch']);
 
 /*

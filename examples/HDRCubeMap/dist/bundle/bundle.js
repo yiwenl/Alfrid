@@ -5482,6 +5482,10 @@ var SceneApp = function (_alfrid$Scene) {
 				return;
 			}
 
+			if (document.body.classList.contains('isLoading')) {
+				document.body.classList.remove('isLoading');
+			}
+
 			GL.setMatrices(this.cameraCubemap);
 
 			// 	SKYBOX
@@ -5618,27 +5622,32 @@ window.params = {
 };
 
 var assets = [{ id: 'irr_posx', url: 'assets/irr_posx.hdr', type: 'binary' }, { id: 'irr_posy', url: 'assets/irr_posy.hdr', type: 'binary' }, { id: 'irr_posz', url: 'assets/irr_posz.hdr', type: 'binary' }, { id: 'irr_negx', url: 'assets/irr_negx.hdr', type: 'binary' }, { id: 'irr_negy', url: 'assets/irr_negy.hdr', type: 'binary' }, { id: 'irr_negz', url: 'assets/irr_negz.hdr', type: 'binary' }, { id: 'rad_posx', url: 'assets/rad_posx.hdr', type: 'binary' }, { id: 'rad_posy', url: 'assets/rad_posy.hdr', type: 'binary' }, { id: 'rad_posz', url: 'assets/rad_posz.hdr', type: 'binary' }, { id: 'rad_negx', url: 'assets/rad_negx.hdr', type: 'binary' }, { id: 'rad_negy', url: 'assets/rad_negy.hdr', type: 'binary' }, { id: 'rad_negz', url: 'assets/rad_negz.hdr', type: 'binary' }];
-var loader = new _assetsLoader2.default({
-	assets: assets
-}).on('error', function (error) {
-	console.error(error);
-}).on('progress', function (p) {
-	// console.log('Progress : ', p);
-}).on('complete', _onImageLoaded).start();
+
+if (document.body) {
+	_init();
+} else {
+	window.addEventListener('load', function () {
+		return _init();
+	});
+}
+
+function _init() {
+	document.body.classList.add('isLoading');
+
+	var loader = new _assetsLoader2.default({
+		assets: assets
+	}).on('error', function (error) {
+		console.error(error);
+	}).on('progress', function (p) {
+		console.log('Progress : ', p);
+		var loader = document.body.querySelector('.Loading-Bar');
+		loader.style.width = (p * 100).toFixed(2) + '%';
+	}).on('complete', _onImageLoaded).start();
+}
 
 function _onImageLoaded(o) {
 	window.assets = o;
 
-	if (document.body) {
-		_init();
-	} else {
-		window.addEventListener('load', function () {
-			return _init();
-		});
-	}
-}
-
-function _init() {
 	//	CREATE CANVAS
 	var canvas = document.createElement("canvas");
 	canvas.className = 'Main-Canvas';

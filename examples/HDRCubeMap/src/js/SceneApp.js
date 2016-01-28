@@ -84,6 +84,11 @@ class SceneApp extends alfrid.Scene {
 			return;
 		}
 
+		if(document.body.classList.contains('isLoading')) {
+			document.body.classList.remove('isLoading');
+		}
+		
+
 		GL.setMatrices(this.cameraCubemap);
 
 		// 	SKYBOX

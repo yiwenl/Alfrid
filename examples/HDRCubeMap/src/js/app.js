@@ -32,32 +32,38 @@ let assets = [
 	{id:'rad_negy', url:'assets/rad_negy.hdr', type:'binary'},
 	{id:'rad_negz', url:'assets/rad_negz.hdr', type:'binary'}
 ]
-let loader = new AssetsLoader({
-	assets:assets
-}).on('error', function(error) {
-	console.error(error);
-}).on('progress', function(p) {
-	// console.log('Progress : ', p);
-}).on('complete', _onImageLoaded)
-.start();
+
+if(document.body) {
+	_init();
+} else {
+	window.addEventListener('load', ()=>_init());
+}
+
+
+function _init() {
+	document.body.classList.add('isLoading');
+	
+	let loader = new AssetsLoader({
+		assets:assets
+	}).on('error', function(error) {
+		console.error(error);
+	}).on('progress', function(p) {
+		console.log('Progress : ', p);
+		let loader = document.body.querySelector('.Loading-Bar');
+		loader.style.width = (p * 100).toFixed(2) + '%';
+	}).on('complete', _onImageLoaded)
+	.start();
+}
 
 
 function _onImageLoaded(o) {
 	window.assets = o;
 
-	if(document.body) {
-		_init();
-	} else {
-		window.addEventListener('load', ()=>_init());
-	}
-}
-
-
-function _init() {
 	//	CREATE CANVAS
 	let canvas = document.createElement("canvas");
 	canvas.className = 'Main-Canvas';
 	document.body.appendChild(canvas);
+	
 
 	//	INIT GL TOOL
 	alfrid.GL.init(canvas);
