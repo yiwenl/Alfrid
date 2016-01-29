@@ -14,6 +14,7 @@ class SceneApp extends alfrid.Scene {
 		super();
 
 		this.orbitalControl._rx.value = .3;
+		this._count = 0;
 	}
 
 
@@ -72,13 +73,22 @@ class SceneApp extends alfrid.Scene {
 
 
 	render() {
+		let p = 0;
+
+		if(this._count % params.skipCount === 0) {
+			this._count = 0;
+			this.updateFbo();
+		}
+		p = this._count / params.skipCount;
+		this._count ++;
+
 		this.orbitalControl._ry.value += -.01;
-		this.updateFbo();
+		
 
 		this._bAxis.draw();
 		this._bDotsPlane.draw();
 
-		this._vRender.render(this._fboCurrent.getTexture());
+		this._vRender.render(this._fboTarget.getTexture(), this._fboCurrent.getTexture(), p);
 
 		GL.setMatrices(this.cameraOrtho);
 		GL.disable(GL.DEPTH_TEST);

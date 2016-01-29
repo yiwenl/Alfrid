@@ -7,6 +7,7 @@ var glslify = require("glslify");
 let GL = alfrid.GL;
 
 class ViewSimulation extends alfrid.View {
+	
 	constructor() {
 		
 		super(alfrid.ShaderLibs.bigTriangleVert, glslify('../shaders/sim.frag'));
@@ -27,6 +28,7 @@ class ViewSimulation extends alfrid.View {
 		this.shader.uniform("texture", "uniform1i", 0);
 		texture.bind(0);
 		this.shader.uniform("time", "uniform1f", this.time);
+		this.shader.uniform("skipCount", "uniform1f", params.skipCount);
 
 		GL.draw(this.mesh);
 	}

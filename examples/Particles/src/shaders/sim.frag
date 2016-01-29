@@ -6,6 +6,7 @@ precision highp float;
 varying vec2 vTextureCoord;
 uniform sampler2D texture;
 uniform float time;
+uniform float skipCount;
 
 vec3 mod289(vec3 x) {	return x - floor(x * (1.0 / 289.0)) * 289.0;	}
 
@@ -133,7 +134,8 @@ void main(void) {
     		pos += vel;
     		const float maxRadius = 4.5;
     		if(length(pos) > maxRadius) {
-    			pos *= .001;
+    			// pos *= .001;
+          pos = curlNoise(pos) * .01;
     		}
     		gl_FragColor = vec4(pos, 1.0);
 		} else {
@@ -154,7 +156,7 @@ void main(void) {
 			vec3 acc = curlNoise(pos * posOffset + time * .1);
 			//*/
 			
-			vel += acc * .001;
+			vel += acc * .001 * (skipCount+1.0);
 
 			const float decrease = .96;
 			vel *= decrease;
