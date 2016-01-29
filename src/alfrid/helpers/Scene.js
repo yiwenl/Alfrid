@@ -66,8 +66,8 @@ class Scene {
 	_init() {
 		this.camera                 = new CameraPerspective();
 		this.camera.setPerspective(45*Math.PI/180, GL.aspectRatio, 0.1, 100);
-		let orbitalControl          = new OrbitalControl(this.camera, window, 15);
-		orbitalControl.radius.value = 10;
+		this.orbitalControl          = new OrbitalControl(this.camera, window, 15);
+		this.orbitalControl.radius.value = 10;
 		
 		this.cameraOrtho            = new cameraOrtho();
 	}
