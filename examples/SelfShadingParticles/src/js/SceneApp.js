@@ -21,7 +21,6 @@ class SceneApp extends alfrid.Scene {
 		this.shadowMatrix  = mat4.create();
 		
 		this.cameraLight   = new alfrid.CameraPerspective();
-		// this.cameraLight   = new alfrid.CameraOrtho();
 		let fov            = 45*Math.PI/180;
 		let near           = .5;
 		let far            = 100;

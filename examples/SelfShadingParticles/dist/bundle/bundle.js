@@ -6407,7 +6407,6 @@ var SceneApp = function (_alfrid$Scene) {
 		_this.shadowMatrix = mat4.create();
 
 		_this.cameraLight = new _alfrid2.default.CameraPerspective();
-		// this.cameraLight   = new alfrid.CameraOrtho();
 		var fov = 45 * Math.PI / 180;
 		var near = .5;
 		var far = 100;
