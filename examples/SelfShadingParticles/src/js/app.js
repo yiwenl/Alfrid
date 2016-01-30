@@ -4,7 +4,7 @@ import dat from 'dat-gui';
 
 
 window.params = {
-	numParticles:512,
+	numParticles:512*2,
 	skipCount:5
 };
 
@@ -29,6 +29,6 @@ function _init() {
 	let scene = new SceneApp();
 
 
-	let gui = new dat.GUI({width:300});
+	// let gui = new dat.GUI({width:300});
 
 }

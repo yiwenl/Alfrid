@@ -134,11 +134,11 @@ void main(void) {
         vec3 vel     = texture2D(texture, uvVel).rgb;
         vec3 extra   = texture2D(texture, uvExtra).rgb;
     		pos += vel;
-    		const float maxRadius = 4.5;
-    		if(length(pos) > maxRadius) {
-    			// pos *= .001;
-          pos = curlNoise(pos*extra) * .1 * extra.b;
-    		}
+    		// 
+    		// if(length(pos) > maxRadius) {
+    		// 	// pos *= .001;
+      //     pos = curlNoise(pos*extra) * .1 * extra.b;
+    		// }
     		gl_FragColor = vec4(pos, 1.0);
 		} else {
 			
@@ -147,7 +147,7 @@ void main(void) {
       vec3 pos        = texture2D(texture, uvPos).rgb;
       vec3 vel        = texture2D(texture, vTextureCoord).rgb;
       vec3 extra      = texture2D(texture, uvExtra).rgb;
-      float posOffset = (0.5 + extra.r * 0.0002) * .5;
+      float posOffset = (0.5 + extra.r * 0.25) * .15;
 
 			/*/
 			float ax = snoise(pos.xyz * posOffset + time * .1);
@@ -157,10 +157,19 @@ void main(void) {
 			/*/
 			vec3 acc = curlNoise(pos * posOffset + time * .3);
 			//*/
-			
-			vel += acc * .0005 * (skipCount+1.0);
 
-			const float decrease = .916;
+
+      const float maxRadius = 2.5;
+      float d = length(pos);
+      if(d > maxRadius) {
+        vec3 dir = normalize(pos);
+        float f = d * .1;
+        acc -= dir * f;
+      }
+
+			vel += acc * .003 * (skipCount+1.0);
+
+			const float decrease = .9;
 			vel *= decrease;
 
 			gl_FragColor = vec4(vel, 1.0);

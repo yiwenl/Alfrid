@@ -21,15 +21,18 @@ class SceneApp extends alfrid.Scene {
 		this.shadowMatrix  = mat4.create();
 		
 		this.cameraLight   = new alfrid.CameraPerspective();
+		// this.cameraLight   = new alfrid.CameraOrtho();
 		let fov            = 45*Math.PI/180;
 		let near           = .5;
 		let far            = 100;
 		this.camera.setPerspective(fov, GL.aspectRatio, near, far);
-		this.cameraLight.setPerspective(fov, GL.aspectRatio, near, far);
+		this.cameraLight.setPerspective(fov*3, GL.aspectRatio, near, far);
 		this.cameraLight.lookAt(this.lightPosition, vec3.fromValues(0, 0, 0), vec3.fromValues(0, 1, 0));
 		mat4.multiply(this.shadowMatrix, this.cameraLight.projection, this.cameraLight.viewMatrix);
 
-		this.orbitalControl._rx.value = .3;
+		this.orbitalControl._rx.value = .6;
+		this.orbitalControl._ry.value = -.8;
+		this.orbitalControl.radius.value = 40.3;
 		this._count = 0;
 	}
 
@@ -63,7 +66,7 @@ class SceneApp extends alfrid.Scene {
 		this._vCube 	 = new ViewCube([0, 0, 0], [1, 1, 1], [1, 1, .5]);
 		this._vLight 	 = new ViewCube([1, 15, 1], [.2, .2, .2], [1, 0, 0]);
 		let grey = .9
-		this._vFloor 	 = new ViewCube([0, -5, 0], [20, 0.1, 20], [grey, grey, grey * .98]);
+		this._vFloor 	 = new ViewCube([0, -7, 0], [25, 0.1, 25], [grey, grey, grey * .98]);
 
 		
 
@@ -115,10 +118,10 @@ class SceneApp extends alfrid.Scene {
 		p = this._count / params.skipCount;
 		this._count ++;
 
-		// this.orbitalControl._ry.value += -.01;
+		this.orbitalControl._ry.value += -.01;
 
-		// this._bAxis.draw();
-		// this._bDotsPlane.draw();
+		
+		//	DRAW SHADOW MAP
 
 		this._fboShadowMap.bind();
 		GL.clear(1, 1, 1, 1);
@@ -127,27 +130,21 @@ class SceneApp extends alfrid.Scene {
 		this._vRender.render(this._fboTarget.getTexture(), this._fboCurrent.getTexture(), p);
 		this._fboShadowMap.unbind();
 
+		//	DRAW WITH SHADOW MAP
+
 		GL.viewport(0, 0, GL.width, GL.height);
 		GL.setMatrices(this.camera);
-		// mat4.multiply(this.shadowMatrix, this.cameraLight.projection, this.cameraLight.viewMatrix);
 		
-		
+		this._bAxis.draw();
+		this._bDotsPlane.draw();
 		this._vLight.render();
-		// this._vCube.render(this.shadowMatrix, this.lightPosition, this._fboShadowMap.getDepthTexture());
 		this._vFloor.render(this.shadowMatrix, this.lightPosition, this._fboShadowMap.getDepthTexture());
 		this._vShadowRender.render(this._fboTarget.getTexture(), this._fboCurrent.getTexture(), p, this._fboShadowMap.getDepthTexture(), this.shadowMatrix, this.lightPosition);
 
-		// this._vTestRender.render();
 
 		GL.setMatrices(this.cameraOrtho);
 		GL.disable(GL.DEPTH_TEST);
-		let viewSize = this._fboCurrent.width/2;
-		GL.viewport(0, 0, viewSize, viewSize);
-		// this._bCopy.draw(this._fboCurrent.getTexture());
-
-		GL.viewport(0, 0, 200, 200/GL.aspectRatio);
-		// GL.viewport(0, 0, GL.width, GL.height);
-		// this._bCopy.draw(this._fboRender.getTexture());
+		GL.viewport(0, 0, 100, 100/GL.aspectRatio);
 		this._bCopy.draw(this._fboShadowMap.getDepthTexture());
 		GL.enable(GL.DEPTH_TEST);
 	}

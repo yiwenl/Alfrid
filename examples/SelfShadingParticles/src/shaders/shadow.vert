@@ -39,7 +39,7 @@ void main(void) {
 	float a      = smoothstep(3.0, 4.5, d);
 	vColor       = vec4(1.0, 1.0, 1.0, 1.0);
 
-	gl_PointSize = 3.0;
+	gl_PointSize = 2.0;
 
 	if(length(currPos) - length(nextPos) > 1.0) vColor.a = 0.0;
 }
