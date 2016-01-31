@@ -7599,16 +7599,62 @@ var ObjLoader = function (_BinaryLoader) {
 		key: '_generateMeshes',
 		value: function _generateMeshes(o) {
 
-			var mesh = new _Mesh2.default(this._drawType);
-			mesh.bufferVertex(o.positions);
-			mesh.bufferTexCoords(o.coords);
-			mesh.bufferIndices(o.indices);
-			if (!this._ignoreNormals) {
-				mesh.bufferNormal(o.normals);
-			}
+			var maxNumVertices = 65535;
 
-			if (this._callback) {
-				this._callback(mesh, o);
+			if (o.positions.length > maxNumVertices) {
+				var meshes = [];
+				var lastIndex = 0;
+
+				var oCopy = {};
+				oCopy.positions = o.positions.concat();
+				oCopy.coords = o.coords.concat();
+				oCopy.indices = o.indices.concat();
+				oCopy.normals = o.normals.concat();
+
+				while (o.positions.length > 0) {
+
+					var sliceNum = Math.min(maxNumVertices, o.positions.length);
+					var positions = o.positions.splice(0, sliceNum);
+					var coords = o.coords.splice(0, sliceNum);
+					var indices = o.indices.splice(0, sliceNum);
+					var normals = o.normals.splice(0, sliceNum);
+
+					var tmpIndex = 0;
+					for (var i = 0; i < indices.length; i++) {
+						if (indices[i] > tmpIndex) {
+							tmpIndex = indices[i];
+						}
+						indices[i] -= lastIndex;
+					}
+
+					lastIndex = tmpIndex + 1;
+
+					var mesh = new _Mesh2.default(this._drawType);
+					mesh.bufferVertex(positions);
+					mesh.bufferTexCoords(coords);
+					mesh.bufferIndices(indices);
+					if (!this._ignoreNormals) {
+						mesh.bufferNormal(normals);
+					}
+
+					meshes.push(mesh);
+				}
+
+				if (this._callback) {
+					this._callback(meshes, oCopy);
+				}
+			} else {
+				var mesh = new _Mesh2.default(this._drawType);
+				mesh.bufferVertex(o.positions);
+				mesh.bufferTexCoords(o.coords);
+				mesh.bufferIndices(o.indices);
+				if (!this._ignoreNormals) {
+					mesh.bufferNormal(o.normals);
+				}
+
+				if (this._callback) {
+					this._callback(mesh, o);
+				}
 			}
 		}
 	}]);

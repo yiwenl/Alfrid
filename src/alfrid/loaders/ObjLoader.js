@@ -232,17 +232,64 @@ class ObjLoader extends BinaryLoader {
 
 	_generateMeshes(o) {
 
-		let mesh = new Mesh(this._drawType);
-		mesh.bufferVertex(o.positions);
-		mesh.bufferTexCoords(o.coords);
-		mesh.bufferIndices(o.indices);
-		if(!this._ignoreNormals) {
-			mesh.bufferNormal(o.normals);
-		}
+		const maxNumVertices = 65535;
 
-		if(this._callback) {
-			this._callback(mesh, o);
+		if(o.positions.length > maxNumVertices) {
+			let meshes = [];
+			let lastIndex = 0;
+
+			let oCopy       = {};
+			oCopy.positions = o.positions.concat();
+			oCopy.coords    = o.coords.concat();
+			oCopy.indices   = o.indices.concat();
+			oCopy.normals   = o.normals.concat();
+
+			while(o.positions.length > 0) {
+
+				let sliceNum  = Math.min(maxNumVertices, o.positions.length);
+				let positions = o.positions.splice(0, sliceNum);
+				let coords    = o.coords.splice(0, sliceNum);
+				let indices   = o.indices.splice(0, sliceNum);
+				let normals   = o.normals.splice(0, sliceNum);
+
+				let tmpIndex = 0;
+				for(let i=0; i<indices.length; i++ ) {
+					if(indices[i] > tmpIndex) {
+						tmpIndex = indices[i];
+					}
+					indices[i] -= lastIndex;
+				}
+
+				lastIndex = tmpIndex+1;
+
+				let mesh = new Mesh(this._drawType);
+				mesh.bufferVertex(positions);
+				mesh.bufferTexCoords(coords);
+				mesh.bufferIndices(indices);
+				if(!this._ignoreNormals) {
+					mesh.bufferNormal(normals);
+				}
+
+				meshes.push(mesh);
+			}
+
+			if(this._callback) {
+				this._callback(meshes, oCopy);
+			}
+		} else {
+			let mesh = new Mesh(this._drawType);
+			mesh.bufferVertex(o.positions);
+			mesh.bufferTexCoords(o.coords);
+			mesh.bufferIndices(o.indices);
+			if(!this._ignoreNormals) {
+				mesh.bufferNormal(o.normals);
+			}
+
+			if(this._callback) {
+				this._callback(mesh, o);
+			}
 		}
+		
 	}
 }
 

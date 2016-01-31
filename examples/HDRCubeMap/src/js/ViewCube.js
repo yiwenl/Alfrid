@@ -1,5 +1,5 @@
 // ViewCube.js
-import alfrid from '../../../../build/alfrid.min.js';
+import alfrid from '../../../../build/alfrid.js';
 let GL = alfrid.GL;
 var glslify = require("glslify");
 

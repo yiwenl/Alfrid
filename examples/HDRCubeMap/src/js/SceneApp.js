@@ -1,15 +1,13 @@
 // SceneApp.js
-import alfrid from '../../../../build/alfrid.min.js';
+import alfrid from '../../../../build/alfrid.js';
 import ViewCube from './ViewCube';
 var glslify = require("glslify");
 
-let GL;
+let GL = alfrid.GL;
 
 class SceneApp extends alfrid.Scene {
 	constructor() {
 		super();
-
-		GL = alfrid.GL;
 		let fov = 60;
 		this.camera.setPerspective(fov*Math.PI/180, GL.aspectRatio, 0.1, 100);
 
@@ -67,7 +65,7 @@ class SceneApp extends alfrid.Scene {
 
 
 		this._objLoader 	  = new alfrid.ObjLoader();
-		this._objLoader.load('./assets/mask.obj', (mesh)=>this._onObjLoaded(mesh), false );
+		this._objLoader.load('./assets/maskHigh.obj', (mesh)=>this._onObjLoaded(mesh), false);
 	}
 
 
@@ -122,8 +120,16 @@ class SceneApp extends alfrid.Scene {
 		this.shaderReflection.uniform("uExposure", "uniform1f", params.exposure);
 		this.shaderReflection.uniform("uGamma", "uniform1f", params.gamma);
 
-
-		GL.draw(this.meshMask);
+		if(this.meshMask.length) {
+			// console.log(this.meshMask.length);
+			for(let i=0; i<this.meshMask.length; i++) {
+				GL.draw(this.meshMask[i]);		
+			}
+			
+		} else {
+			GL.draw(this.meshMask);	
+		}
+		
 
 
 	}
