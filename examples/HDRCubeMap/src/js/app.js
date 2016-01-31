@@ -1,4 +1,4 @@
-import alfrid from '../../../../build/alfrid.min.js';
+import alfrid from '../../../../build/alfrid.js';
 import SceneApp from './SceneApp';
 import AssetsLoader from 'assets-loader';
 import dat from 'dat-gui';

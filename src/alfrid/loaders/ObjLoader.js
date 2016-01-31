@@ -222,6 +222,9 @@ class ObjLoader extends BinaryLoader {
 			} 
 		}
 
+
+		console.log('Vertices : ', positions.length, coords.length, normals.length, indices.length);
+
 		this._generateMeshes({	
 			positions:positions,
 			coords:coords,

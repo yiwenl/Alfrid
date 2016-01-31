@@ -1,5 +1,5 @@
 // SceneApp.js
-import alfrid from '../../../../build/alfrid.min.js';
+import alfrid from '../../../../build/alfrid.js';
 import ViewCube from './ViewCube';
 var glslify = require("glslify");
 
@@ -67,7 +67,7 @@ class SceneApp extends alfrid.Scene {
 
 
 		this._objLoader 	  = new alfrid.ObjLoader();
-		this._objLoader.load('./assets/mask.obj', (mesh)=>this._onObjLoaded(mesh), false );
+		this._objLoader.load('./assets/tree.obj', (mesh)=>this._onObjLoaded(mesh), false );
 	}
 
 
