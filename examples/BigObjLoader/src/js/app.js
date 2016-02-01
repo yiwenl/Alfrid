@@ -59,11 +59,7 @@ function _loop() {
 
 	// batch.draw();
 	shader.bind();
-	if(mesh.length) {
-		for(let i =0; i<mesh.length; i++) {
-			GL.draw(mesh[i]);
-		}
-	}
+	GL.draw(mesh);
 }
 
 

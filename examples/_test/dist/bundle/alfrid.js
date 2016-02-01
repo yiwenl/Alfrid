@@ -5848,6 +5848,14 @@ var GLTool = function () {
 	}, {
 		key: 'draw',
 		value: function draw(mMesh) {
+
+			if (mMesh.length) {
+				for (var i = 0; i < mMesh.length; i++) {
+					this.draw(mMesh[i]);
+				}
+				return;
+			}
+
 			function getAttribLoc(gl, shaderProgram, name) {
 				if (shaderProgram.cacheAttribLoc === undefined) {
 					shaderProgram.cacheAttribLoc = {};
@@ -7587,8 +7595,6 @@ var ObjLoader = function (_BinaryLoader) {
 				}
 			}
 
-			console.log('Vertices : ', positions.length, coords.length, normals.length, indices.length);
-
 			this._generateMeshes({
 				positions: positions,
 				coords: coords,
@@ -7612,19 +7618,26 @@ var ObjLoader = function (_BinaryLoader) {
 				oCopy.indices = o.indices.concat();
 				oCopy.normals = o.normals.concat();
 
-				while (o.positions.length > 0) {
+				while (o.indices.length > 0) {
 
 					var sliceNum = Math.min(maxNumVertices, o.positions.length);
-					var positions = o.positions.splice(0, sliceNum);
-					var coords = o.coords.splice(0, sliceNum);
 					var indices = o.indices.splice(0, sliceNum);
-					var normals = o.normals.splice(0, sliceNum);
+					var positions = [];
+					var coords = [];
+					var normals = [];
+					var index = undefined,
+					    tmpIndex = 0;
 
-					var tmpIndex = 0;
 					for (var i = 0; i < indices.length; i++) {
 						if (indices[i] > tmpIndex) {
 							tmpIndex = indices[i];
 						}
+
+						index = indices[i];
+
+						positions.push(oCopy.positions[index]);
+						coords.push(oCopy.coords[index]);
+						normals.push(oCopy.normals[index]);
 						indices[i] -= lastIndex;
 					}
 
