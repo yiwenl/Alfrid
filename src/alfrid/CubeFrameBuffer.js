@@ -14,7 +14,7 @@ class CubeFrameBuffer {
 		gl = GL.gl;
 		this._size = size;
 		this.magFilter = mParameters.magFilter || gl.LINEAR;
-		this.minFilter = mParameters.minFilter || gl.LINEAR_MIPMAP_NEAREST;
+		this.minFilter = mParameters.minFilter || gl.LINEAR;
 		this.wrapS     = mParameters.wrapS || gl.CLAMP_TO_EDGE;
 		this.wrapT     = mParameters.wrapT || gl.CLAMP_TO_EDGE;
 
@@ -58,7 +58,7 @@ class CubeFrameBuffer {
 			this._frameBuffers.push(frameBuffer);
 		}
 
-		gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
+		// gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 		gl.bindRenderbuffer(gl.RENDERBUFFER, null);
 		gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
