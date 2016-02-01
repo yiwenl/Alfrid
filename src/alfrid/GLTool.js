@@ -110,6 +110,14 @@ class GLTool {
 
 
 	draw(mMesh) {
+
+		if(mMesh.length) {
+			for(let i =0; i<mMesh.length; i++) {
+				this.draw(mMesh[i]);
+			}
+			return;
+		}
+
 		function getAttribLoc(gl, shaderProgram, name) {
 			if(shaderProgram.cacheAttribLoc === undefined) {	shaderProgram.cacheAttribLoc = {};	}
 			if(shaderProgram.cacheAttribLoc[name] === undefined) {
