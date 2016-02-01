@@ -9,6 +9,7 @@ import Mesh 				from './alfrid/Mesh';
 import Geom					from './alfrid/Geom';
 import Batch				from './alfrid/Batch';
 import FrameBuffer			from './alfrid/FrameBuffer';
+import CubeFrameBuffer		from './alfrid/CubeFrameBuffer';
 
 //	TOOLS
 import Scheduler 			from './alfrid/tools/Scheduler';
@@ -52,6 +53,7 @@ class alfrid {
 		this.Geom              = Geom;
 		this.Batch             = Batch;
 		this.FrameBuffer       = FrameBuffer;
+		this.CubeFrameBuffer   = CubeFrameBuffer;
 		this.Scheduler         = Scheduler;
 		this.EventDispatcher   = EventDispatcher;
 		this.EaseNumber        = EaseNumber;
