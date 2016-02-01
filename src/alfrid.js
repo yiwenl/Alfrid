@@ -22,6 +22,7 @@ import QuatRotation			from './alfrid/tools/QuatRotation';
 import Camera 				from './alfrid/cameras/Camera';
 import CameraOrtho 			from './alfrid/cameras/CameraOrtho';
 import CameraPerspective	from './alfrid/cameras/CameraPerspective';
+import CameraCube			from './alfrid/cameras/CameraCube';
 
 //	LOADERS
 import BinaryLoader			from './alfrid/loaders/BinaryLoader';
@@ -60,6 +61,7 @@ class alfrid {
 		this.Camera            = Camera;
 		this.CameraOrtho       = CameraOrtho;
 		this.CameraPerspective = CameraPerspective;
+		this.CameraCube        = CameraCube;
 		this.OrbitalControl    = OrbitalControl;
 		this.QuatRotation      = QuatRotation;
 		this.BinaryLoader      = BinaryLoader;
