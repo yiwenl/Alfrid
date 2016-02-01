@@ -223,14 +223,13 @@ class ObjLoader extends BinaryLoader {
 		}
 
 
-		console.log('Vertices : ', positions.length, coords.length, normals.length, indices.length);
-
 		this._generateMeshes({	
 			positions:positions,
 			coords:coords,
 			normals:finalNormals,
 			indices:indices
 		});
+		
 	}
 
 	_generateMeshes(o) {
@@ -247,19 +246,25 @@ class ObjLoader extends BinaryLoader {
 			oCopy.indices   = o.indices.concat();
 			oCopy.normals   = o.normals.concat();
 
-			while(o.positions.length > 0) {
+			while(o.indices.length > 0) {
 
 				let sliceNum  = Math.min(maxNumVertices, o.positions.length);
-				let positions = o.positions.splice(0, sliceNum);
-				let coords    = o.coords.splice(0, sliceNum);
 				let indices   = o.indices.splice(0, sliceNum);
-				let normals   = o.normals.splice(0, sliceNum);
+				let positions = [];
+				let coords    = [];
+				let normals   = [];
+				let index, tmpIndex = 0;
 
-				let tmpIndex = 0;
 				for(let i=0; i<indices.length; i++ ) {
 					if(indices[i] > tmpIndex) {
 						tmpIndex = indices[i];
 					}
+
+					index = indices[i];
+
+					positions.push(oCopy.positions[index]);
+					coords.push(oCopy.coords[index]);
+					normals.push(oCopy.normals[index]);
 					indices[i] -= lastIndex;
 				}
 
