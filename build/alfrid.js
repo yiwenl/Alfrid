@@ -6548,9 +6548,11 @@ Geom.bigTriangle = function () {
 exports.default = Geom;
 
 },{"./Mesh":19}],19:[function(_dereq_,module,exports){
+// Mesh.js
+
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // Mesh.js
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
@@ -6560,11 +6562,17 @@ var _GLTool = _dereq_('./GLTool');
 
 var _GLTool2 = _interopRequireDefault(_GLTool);
 
+var _glMatrix = _dereq_('gl-matrix');
+
+var _glMatrix2 = _interopRequireDefault(_glMatrix);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var gl = undefined;
+
+var vec3 = _glMatrix2.default.vec3;
 
 var Mesh = function () {
 	function Mesh() {
@@ -6580,8 +6588,10 @@ var Mesh = function () {
 		this._vertices = [];
 		this._texCoords = [];
 		this._normals = [];
+		this._faceNormals = [];
 		this._tangents = [];
 		this._indices = [];
+		this._faces = [];
 	}
 
 	_createClass(Mesh, [{
@@ -6591,6 +6601,7 @@ var Mesh = function () {
 
 			this._vertexSize = mArrayVertices.length;
 			this.bufferData(mArrayVertices, 'aVertexPosition', 3, isDynamic);
+			this._vertices = mArrayVertices;
 		}
 	}, {
 		key: 'bufferTexCoords',
@@ -6598,6 +6609,7 @@ var Mesh = function () {
 			var isDynamic = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
 
 			this.bufferData(mArrayTexCoords, 'aTextureCoord', 2, isDynamic);
+			this._texCoords = mArrayTexCoords;
 		}
 	}, {
 		key: 'bufferNormal',
@@ -6605,6 +6617,7 @@ var Mesh = function () {
 			var isDynamic = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
 
 			this.bufferData(mNormals, 'aNormal', 3, isDynamic);
+			this._normals = mNormals;
 		}
 	}, {
 		key: 'bufferIndices',
@@ -6618,6 +6631,7 @@ var Mesh = function () {
 			gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(mArrayIndices), drawType);
 			this.iBuffer.itemSize = 1;
 			this.iBuffer.numItems = mArrayIndices.length;
+			this._indices = mArrayIndices;
 		}
 	}, {
 		key: 'bufferData',
@@ -6670,10 +6684,115 @@ var Mesh = function () {
 		}
 	}, {
 		key: 'computeNormals',
-		value: function computeNormals() {}
+		value: function computeNormals() {
+			var usingFaceNormals = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+
+			this._generateFaces();
+
+			if (usingFaceNormals) {
+				this._computeFaceNormals();
+			} else {
+				this._computeVertexNormals();
+			}
+		}
 	}, {
 		key: 'computeTangents',
 		value: function computeTangents() {}
+
+		//	PRIVATE METHODS
+
+	}, {
+		key: '_computeFaceNormals',
+		value: function _computeFaceNormals() {
+
+			var faceIndex = undefined;
+			var face = undefined;
+			var normals = [];
+
+			for (var i = 0; i < this._indices.length; i += 3) {
+				faceIndex = i / 3;
+				face = this._faces[faceIndex];
+				var N = face.normal;
+
+				normals[face.indices[0]] = N;
+				normals[face.indices[1]] = N;
+				normals[face.indices[2]] = N;
+			}
+
+			this.bufferNormal(normals);
+		}
+	}, {
+		key: '_computeVertexNormals',
+		value: function _computeVertexNormals() {
+			//	loop through all vertices
+			var sumNormal = vec3.create();
+			var face = undefined;
+			var normals = [];
+
+			for (var i = 0; i < this._vertices.length; i++) {
+
+				vec3.set(sumNormal, 0, 0, 0);
+
+				for (var j = 0; j < this._faces.length; j++) {
+					face = this._faces[j];
+
+					//	if vertex exist in the face, add the normal to sum normal
+					if (face.indices.indexOf(i) >= 0) {
+
+						sumNormal[0] += face.normal[0];
+						sumNormal[1] += face.normal[1];
+						sumNormal[2] += face.normal[2];
+					}
+				}
+
+				vec3.normalize(sumNormal, sumNormal);
+				normals.push([sumNormal[0], sumNormal[1], sumNormal[2]]);
+			}
+
+			this.bufferNormal(normals);
+		}
+	}, {
+		key: '_generateFaces',
+		value: function _generateFaces() {
+
+			var ia = undefined,
+			    ib = undefined,
+			    ic = undefined;
+			var a = undefined,
+			    b = undefined,
+			    c = undefined,
+			    vba = vec3.create(),
+			    vca = vec3.create(),
+			    vNormal = vec3.create();
+
+			for (var i = 0; i < this._indices.length; i += 3) {
+
+				ia = this._indices[i];
+				ib = this._indices[i + 1];
+				ic = this._indices[i + 2];
+
+				a = vec3.clone(this._vertices[ia]);
+				b = vec3.clone(this._vertices[ib]);
+				c = vec3.clone(this._vertices[ic]);
+
+				vec3.sub(vba, b, a);
+				vec3.sub(vca, c, a);
+
+				vec3.cross(vNormal, vba, vca);
+				vec3.normalize(vNormal, vNormal);
+				var N = [vNormal[0], vNormal[1], vNormal[2]];
+
+				var face = {
+					indices: [ia, ib, ic],
+					normal: N
+				};
+
+				this._faces.push(face);
+			}
+		}
+
+		//	GETTER AND SETTERS
+
 	}, {
 		key: 'attributes',
 		get: function get() {
@@ -6707,7 +6826,7 @@ var Mesh = function () {
 
 exports.default = Mesh;
 
-},{"./GLTool":17}],20:[function(_dereq_,module,exports){
+},{"./GLTool":17,"gl-matrix":1}],20:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // Camera.js
