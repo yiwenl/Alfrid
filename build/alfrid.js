@@ -5181,7 +5181,6 @@ var FrameBuffer = function () {
 		this.width = mWidth;
 		this.height = mHeight;
 
-		console.log('Framebuffer size : ', this.width, mWidth);
 		this.magFilter = mParameters.magFilter || gl.LINEAR;
 		this.minFilter = mParameters.minFilter || gl.LINEAR;
 		this.wrapS = mParameters.wrapS || gl.CLAMP_TO_EDGE;
@@ -7587,6 +7586,8 @@ var ObjLoader = function (_BinaryLoader) {
 					addFace(result[2], result[5], result[8], result[11], undefined, undefined, undefined, undefined, result[3], result[6], result[9], result[12]);
 				}
 			}
+
+			console.log('Vertices : ', positions.length, coords.length, normals.length, indices.length);
 
 			this._generateMeshes({
 				positions: positions,
