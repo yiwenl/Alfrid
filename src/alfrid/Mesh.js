@@ -6,10 +6,16 @@ let gl;
 
 class Mesh {
 	constructor(mDrawType = GL.gl.TRIANGLES) {
-		gl = GL.gl;
-		this.drawType = mDrawType;
+		gl               = GL.gl;
+		this.drawType    = mDrawType;
 		this._attributes = [];
 		this._vertexSize = 0;
+		
+		this._vertices   = [];
+		this._texCoords  = [];
+		this._normals    = [];
+		this._tangents   = [];
+		this._indices    = [];
 	}
 
 
@@ -97,12 +103,32 @@ class Mesh {
 	}
 
 
+	computeNormals() {
+
+	}
+
+
+	computeTangents() {
+
+	}
+
+
 	get attributes() {
 		return this._attributes;
 	}
 
 	get vertexSize() {
 		return this._vertexSize;
+	}
+
+	get hasNormals() {
+		if(this._normals.length === 0) {	return false; }
+		return true;
+	}
+
+	get hasTangents() {
+		if(this._tangents.length === 0) {	return false; }
+		return true;	
 	}
 
 

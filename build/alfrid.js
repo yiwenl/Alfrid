@@ -6576,6 +6576,12 @@ var Mesh = function () {
 		this.drawType = mDrawType;
 		this._attributes = [];
 		this._vertexSize = 0;
+
+		this._vertices = [];
+		this._texCoords = [];
+		this._normals = [];
+		this._tangents = [];
+		this._indices = [];
 	}
 
 	_createClass(Mesh, [{
@@ -6663,6 +6669,12 @@ var Mesh = function () {
 			}
 		}
 	}, {
+		key: 'computeNormals',
+		value: function computeNormals() {}
+	}, {
+		key: 'computeTangents',
+		value: function computeTangents() {}
+	}, {
 		key: 'attributes',
 		get: function get() {
 			return this._attributes;
@@ -6671,6 +6683,22 @@ var Mesh = function () {
 		key: 'vertexSize',
 		get: function get() {
 			return this._vertexSize;
+		}
+	}, {
+		key: 'hasNormals',
+		get: function get() {
+			if (this._normals.length === 0) {
+				return false;
+			}
+			return true;
+		}
+	}, {
+		key: 'hasTangents',
+		get: function get() {
+			if (this._tangents.length === 0) {
+				return false;
+			}
+			return true;
 		}
 	}]);
 
