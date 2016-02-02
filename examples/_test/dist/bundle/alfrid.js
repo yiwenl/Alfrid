@@ -4944,6 +4944,10 @@ var _FrameBuffer = _dereq_('./alfrid/FrameBuffer');
 
 var _FrameBuffer2 = _interopRequireDefault(_FrameBuffer);
 
+var _CubeFrameBuffer = _dereq_('./alfrid/CubeFrameBuffer');
+
+var _CubeFrameBuffer2 = _interopRequireDefault(_CubeFrameBuffer);
+
 var _Scheduler = _dereq_('./alfrid/tools/Scheduler');
 
 var _Scheduler2 = _interopRequireDefault(_Scheduler);
@@ -4975,6 +4979,10 @@ var _CameraOrtho2 = _interopRequireDefault(_CameraOrtho);
 var _CameraPerspective = _dereq_('./alfrid/cameras/CameraPerspective');
 
 var _CameraPerspective2 = _interopRequireDefault(_CameraPerspective);
+
+var _CameraCube = _dereq_('./alfrid/cameras/CameraCube');
+
+var _CameraCube2 = _interopRequireDefault(_CameraCube);
 
 var _BinaryLoader = _dereq_('./alfrid/loaders/BinaryLoader');
 
@@ -5032,12 +5040,14 @@ var alfrid = function () {
 		this.Geom = _Geom2.default;
 		this.Batch = _Batch2.default;
 		this.FrameBuffer = _FrameBuffer2.default;
+		this.CubeFrameBuffer = _CubeFrameBuffer2.default;
 		this.Scheduler = _Scheduler2.default;
 		this.EventDispatcher = _EventDispatcher2.default;
 		this.EaseNumber = _EaseNumber2.default;
 		this.Camera = _Camera2.default;
 		this.CameraOrtho = _CameraOrtho2.default;
 		this.CameraPerspective = _CameraPerspective2.default;
+		this.CameraCube = _CameraCube2.default;
 		this.OrbitalControl = _OrbitalControl2.default;
 		this.QuatRotation = _QuatRotation2.default;
 		this.BinaryLoader = _BinaryLoader2.default;
@@ -5086,7 +5096,7 @@ var b = new alfrid();
 
 module.exports = b;
 
-},{"./alfrid/Batch":12,"./alfrid/FrameBuffer":13,"./alfrid/GLCubeTexture":14,"./alfrid/GLShader":15,"./alfrid/GLTexture":16,"./alfrid/GLTool":17,"./alfrid/Geom":18,"./alfrid/Mesh":19,"./alfrid/cameras/Camera":20,"./alfrid/cameras/CameraOrtho":21,"./alfrid/cameras/CameraPerspective":22,"./alfrid/helpers/BatchAxis":23,"./alfrid/helpers/BatchCopy":24,"./alfrid/helpers/BatchDotsPlane":25,"./alfrid/helpers/Scene":26,"./alfrid/helpers/View":27,"./alfrid/loaders/BinaryLoader":28,"./alfrid/loaders/HDRLoader":29,"./alfrid/loaders/ObjLoader":30,"./alfrid/tools/EaseNumber":31,"./alfrid/tools/EventDispatcher":32,"./alfrid/tools/OrbitalControl":34,"./alfrid/tools/QuatRotation":35,"./alfrid/tools/Scheduler":36,"./alfrid/tools/ShaderLibs":37,"gl-matrix":1}],12:[function(_dereq_,module,exports){
+},{"./alfrid/Batch":12,"./alfrid/CubeFrameBuffer":13,"./alfrid/FrameBuffer":14,"./alfrid/GLCubeTexture":15,"./alfrid/GLShader":16,"./alfrid/GLTexture":17,"./alfrid/GLTool":18,"./alfrid/Geom":19,"./alfrid/Mesh":20,"./alfrid/cameras/Camera":21,"./alfrid/cameras/CameraCube":22,"./alfrid/cameras/CameraOrtho":23,"./alfrid/cameras/CameraPerspective":24,"./alfrid/helpers/BatchAxis":25,"./alfrid/helpers/BatchCopy":26,"./alfrid/helpers/BatchDotsPlane":27,"./alfrid/helpers/Scene":28,"./alfrid/helpers/View":29,"./alfrid/loaders/BinaryLoader":30,"./alfrid/loaders/HDRLoader":31,"./alfrid/loaders/ObjLoader":32,"./alfrid/tools/EaseNumber":33,"./alfrid/tools/EventDispatcher":34,"./alfrid/tools/OrbitalControl":36,"./alfrid/tools/QuatRotation":37,"./alfrid/tools/Scheduler":38,"./alfrid/tools/ShaderLibs":39,"gl-matrix":1}],12:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // Batch.js
@@ -5139,7 +5149,128 @@ var Batch = function () {
 
 exports.default = Batch;
 
-},{"./GLTool":17}],13:[function(_dereq_,module,exports){
+},{"./GLTool":18}],13:[function(_dereq_,module,exports){
+// CubeFrameBuffer.js
+
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _GLTool = _dereq_('./GLTool');
+
+var _GLTool2 = _interopRequireDefault(_GLTool);
+
+var _GLCubeTexture = _dereq_('./GLCubeTexture');
+
+var _GLCubeTexture2 = _interopRequireDefault(_GLCubeTexture);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var gl = undefined;
+
+var CubeFrameBuffer = function () {
+	function CubeFrameBuffer(size) {
+		var mParameters = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+		_classCallCheck(this, CubeFrameBuffer);
+
+		gl = _GLTool2.default.gl;
+		this._size = size;
+		this.magFilter = mParameters.magFilter || gl.LINEAR;
+		this.minFilter = mParameters.minFilter || gl.LINEAR;
+		this.wrapS = mParameters.wrapS || gl.CLAMP_TO_EDGE;
+		this.wrapT = mParameters.wrapT || gl.CLAMP_TO_EDGE;
+
+		this._init();
+	}
+
+	_createClass(CubeFrameBuffer, [{
+		key: '_init',
+		value: function _init() {
+			this.texture = gl.createTexture();
+			this.glTexture = new _GLCubeTexture2.default(this.texture, {}, true);
+
+			gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.texture);
+			gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, this.magFilter);
+			gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, this.minFilter);
+			gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, this.wrapS);
+			gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, this.wrapT);
+
+			var targets = [gl.TEXTURE_CUBE_MAP_POSITIVE_X, gl.TEXTURE_CUBE_MAP_NEGATIVE_X, gl.TEXTURE_CUBE_MAP_POSITIVE_Y, gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, gl.TEXTURE_CUBE_MAP_POSITIVE_Z, gl.TEXTURE_CUBE_MAP_NEGATIVE_Z];
+
+			for (var i = 0; i < targets.length; i++) {
+				gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+				gl.texImage2D(targets[i], 0, gl.RGBA, this.width, this.height, 0, gl.RGBA, gl.FLOAT, null);
+			}
+
+			this._frameBuffers = [];
+			for (var i = 0; i < targets.length; i++) {
+				var frameBuffer = gl.createFramebuffer();
+				gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer);
+				gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, targets[i], this.texture, 0);
+
+				var status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+				if (status != gl.FRAMEBUFFER_COMPLETE) {
+					console.log("gl.checkFramebufferStatus() returned " + status);
+				}
+
+				this._frameBuffers.push(frameBuffer);
+			}
+
+			// gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
+			gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+			gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+			gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
+		}
+	}, {
+		key: 'bind',
+		value: function bind(mTargetIndex) {
+
+			// if(Math.random() > .99) console.log('bind :', mTargetIndex, this._frameBuffers[mTargetIndex]);
+			_GLTool2.default.viewport(0, 0, this.width, this.height);
+			gl.bindFramebuffer(gl.FRAMEBUFFER, this._frameBuffers[mTargetIndex]);
+		}
+	}, {
+		key: 'unbind',
+		value: function unbind() {
+			gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+			_GLTool2.default.viewport(0, 0, _GLTool2.default.width, _GLTool2.default.height);
+		}
+
+		//	TEXTURES
+
+	}, {
+		key: 'getTexture',
+		value: function getTexture() {
+			return this.glTexture;
+		}
+
+		//	GETTERS AND SETTERS
+
+	}, {
+		key: 'width',
+		get: function get() {
+			return this._size;
+		}
+	}, {
+		key: 'height',
+		get: function get() {
+			return this._size;
+		}
+	}]);
+
+	return CubeFrameBuffer;
+}();
+
+exports.default = CubeFrameBuffer;
+
+},{"./GLCubeTexture":15,"./GLTool":18}],14:[function(_dereq_,module,exports){
 // FrameBuffer.js
 
 'use strict';
@@ -5261,6 +5392,7 @@ var FrameBuffer = function () {
 		key: 'unbind',
 		value: function unbind() {
 			gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+			_GLTool2.default.viewport(0, 0, _GLTool2.default.width, _GLTool2.default.height);
 		}
 
 		//	TEXTURES
@@ -5324,7 +5456,7 @@ var FrameBuffer = function () {
 
 exports.default = FrameBuffer;
 
-},{"./GLTexture":16,"./GLTool":17}],14:[function(_dereq_,module,exports){
+},{"./GLTexture":17,"./GLTool":18}],15:[function(_dereq_,module,exports){
 // GLCubeTexture.js
 
 'use strict';
@@ -5348,16 +5480,23 @@ var gl = undefined;
 var GLCubeTexture = function () {
 	function GLCubeTexture(mSource) {
 		var mParameters = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+		var isCubeTexture = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
 
 		_classCallCheck(this, GLCubeTexture);
 
+		// console.log(typeof(mSource));
 		gl = _GLTool2.default.gl;
+
+		if (isCubeTexture) {
+			this.texture = mSource;
+			return;
+		}
 
 		this.texture = gl.createTexture();
 		this.magFilter = mParameters.magFilter || gl.LINEAR;
 		this.minFilter = mParameters.minFilter || gl.LINEAR_MIPMAP_NEAREST;
-		this.wrapS = mParameters.wrapS || gl.MIRRORED_REPEAT;
-		this.wrapT = mParameters.wrapT || gl.MIRRORED_REPEAT;
+		this.wrapS = mParameters.wrapS || gl.CLAMP_TO_EDGE;
+		this.wrapT = mParameters.wrapT || gl.CLAMP_TO_EDGE;
 
 		gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.texture);
 		var targets = [gl.TEXTURE_CUBE_MAP_POSITIVE_X, gl.TEXTURE_CUBE_MAP_NEGATIVE_X, gl.TEXTURE_CUBE_MAP_POSITIVE_Y, gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, gl.TEXTURE_CUBE_MAP_POSITIVE_Z, gl.TEXTURE_CUBE_MAP_NEGATIVE_Z];
@@ -5408,7 +5547,7 @@ var GLCubeTexture = function () {
 
 exports.default = GLCubeTexture;
 
-},{"./GLTool":17}],15:[function(_dereq_,module,exports){
+},{"./GLTool":18}],16:[function(_dereq_,module,exports){
 // GLShader.js
 
 'use strict';
@@ -5537,7 +5676,7 @@ var GLShader = function () {
 
 exports.default = GLShader;
 
-},{"./GLTool":17}],16:[function(_dereq_,module,exports){
+},{"./GLTool":18}],17:[function(_dereq_,module,exports){
 // GLTexture.js
 
 'use strict';
@@ -5714,7 +5853,7 @@ var GLTexture = function () {
 
 exports.default = GLTexture;
 
-},{"./GLTool":17}],17:[function(_dereq_,module,exports){
+},{"./GLTool":18}],18:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // GLTool.js
@@ -6005,7 +6144,7 @@ var GL = new GLTool();
 
 exports.default = GL;
 
-},{"gl-matrix":1}],18:[function(_dereq_,module,exports){
+},{"gl-matrix":1}],19:[function(_dereq_,module,exports){
 // Geom.js
 
 'use strict';
@@ -6038,7 +6177,6 @@ Geom.plane = function (width, height, numSegments) {
 	var index = 0;
 	var sx = -width * 0.5;
 	var sy = -height * 0.5;
-	console.log(gapX, sx);
 
 	for (var i = 0; i < numSegments; i++) {
 		for (var j = 0; j < numSegments; j++) {
@@ -6547,7 +6685,7 @@ Geom.bigTriangle = function () {
 
 exports.default = Geom;
 
-},{"./Mesh":19}],19:[function(_dereq_,module,exports){
+},{"./Mesh":20}],20:[function(_dereq_,module,exports){
 // Mesh.js
 
 'use strict';
@@ -6826,7 +6964,7 @@ var Mesh = function () {
 
 exports.default = Mesh;
 
-},{"./GLTool":17,"gl-matrix":1}],20:[function(_dereq_,module,exports){
+},{"./GLTool":18,"gl-matrix":1}],21:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // Camera.js
@@ -6894,7 +7032,63 @@ var Camera = function () {
 
 exports.default = Camera;
 
-},{"gl-matrix":1}],21:[function(_dereq_,module,exports){
+},{"gl-matrix":1}],22:[function(_dereq_,module,exports){
+// CameraCube.js
+
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _CameraPerspective2 = _dereq_('./CameraPerspective');
+
+var _CameraPerspective3 = _interopRequireDefault(_CameraPerspective2);
+
+var _glMatrix = _dereq_('gl-matrix');
+
+var _glMatrix2 = _interopRequireDefault(_glMatrix);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var vec3 = _glMatrix2.default.vec3;
+
+var CAMERA_SETTINGS = [[vec3.fromValues(0, 0, 0), vec3.fromValues(1, 0, 0), vec3.fromValues(0, -1, 0)], [vec3.fromValues(0, 0, 0), vec3.fromValues(-1, 0, 0), vec3.fromValues(0, -1, 0)], [vec3.fromValues(0, 0, 0), vec3.fromValues(0, 1, 0), vec3.fromValues(0, 0, 1)], [vec3.fromValues(0, 0, 0), vec3.fromValues(0, -1, 0), vec3.fromValues(0, 0, -1)], [vec3.fromValues(0, 0, 0), vec3.fromValues(0, 0, 1), vec3.fromValues(0, -1, 0)], [vec3.fromValues(0, 0, 0), vec3.fromValues(0, 0, -1), vec3.fromValues(0, -1, 0)]];
+
+var CameraCube = function (_CameraPerspective) {
+	_inherits(CameraCube, _CameraPerspective);
+
+	function CameraCube() {
+		_classCallCheck(this, CameraCube);
+
+		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(CameraCube).call(this));
+
+		_this.setPerspective(Math.PI / 2, 1, .1, 1000);
+		return _this;
+	}
+
+	_createClass(CameraCube, [{
+		key: 'face',
+		value: function face(mIndex) {
+			var o = CAMERA_SETTINGS[mIndex];
+			this.lookAt(o[0], o[1], o[2]);
+		}
+	}]);
+
+	return CameraCube;
+}(_CameraPerspective3.default);
+
+exports.default = CameraCube;
+
+},{"./CameraPerspective":24,"gl-matrix":1}],23:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -6957,7 +7151,7 @@ var CameraOrtho = function (_Camera) {
 
 exports.default = CameraOrtho;
 
-},{"./Camera":20,"gl-matrix":1}],22:[function(_dereq_,module,exports){
+},{"./Camera":21,"gl-matrix":1}],24:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -7014,7 +7208,7 @@ var CameraPerspective = function (_Camera) {
 
 exports.default = CameraPerspective;
 
-},{"./Camera":20,"gl-matrix":1}],23:[function(_dereq_,module,exports){
+},{"./Camera":21,"gl-matrix":1}],25:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7087,7 +7281,7 @@ var BatchAxis = function (_Batch) {
 
 exports.default = BatchAxis;
 
-},{"../Batch":12,"../GLShader":15,"../GLTool":17,"../Mesh":19}],24:[function(_dereq_,module,exports){
+},{"../Batch":12,"../GLShader":16,"../GLTool":18,"../Mesh":20}],26:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -7150,7 +7344,7 @@ var BatchCopy = function (_Batch) {
 
 exports.default = BatchCopy;
 
-},{"../Batch":12,"../GLShader":15,"../Geom":18}],25:[function(_dereq_,module,exports){
+},{"../Batch":12,"../GLShader":16,"../Geom":19}],27:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -7244,7 +7438,7 @@ var BatchDotsPlane = function (_Batch) {
 
 exports.default = BatchDotsPlane;
 
-},{"../Batch":12,"../GLShader":15,"../GLTool":17,"../Mesh":19}],26:[function(_dereq_,module,exports){
+},{"../Batch":12,"../GLShader":16,"../GLTool":18,"../Mesh":20}],28:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // Scene.js
@@ -7368,7 +7562,7 @@ var Scene = function () {
 
 exports.default = Scene;
 
-},{"../GLTool":17,"../cameras/CameraOrtho":21,"../cameras/CameraPerspective":22,"../tools/OrbitalControl":34,"../tools/Scheduler":36}],27:[function(_dereq_,module,exports){
+},{"../GLTool":18,"../cameras/CameraOrtho":23,"../cameras/CameraPerspective":24,"../tools/OrbitalControl":36,"../tools/Scheduler":38}],29:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // View.js
@@ -7412,7 +7606,7 @@ var View = function () {
 
 exports.default = View;
 
-},{"../GLShader":15}],28:[function(_dereq_,module,exports){
+},{"../GLShader":16}],30:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -7471,7 +7665,7 @@ var BinaryLoader = function () {
 
 exports.default = BinaryLoader;
 
-},{}],29:[function(_dereq_,module,exports){
+},{}],31:[function(_dereq_,module,exports){
 // HDRLoader.js
 
 'use strict';
@@ -7531,7 +7725,7 @@ HDRLoader.parse = function (mArrayBuffer) {
 
 exports.default = HDRLoader;
 
-},{"../tools/HDRParser":33,"./BinaryLoader":28}],30:[function(_dereq_,module,exports){
+},{"../tools/HDRParser":35,"./BinaryLoader":30}],32:[function(_dereq_,module,exports){
 // ObjLoader.js
 
 'use strict';
@@ -7825,7 +8019,7 @@ var ObjLoader = function (_BinaryLoader) {
 
 exports.default = ObjLoader;
 
-},{"../Mesh":19,"./BinaryLoader":28}],31:[function(_dereq_,module,exports){
+},{"../Mesh":20,"./BinaryLoader":30}],33:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // EaseNumber.js
@@ -7921,7 +8115,7 @@ var EaseNumber = function () {
 
 exports.default = EaseNumber;
 
-},{"./Scheduler":36}],32:[function(_dereq_,module,exports){
+},{"./Scheduler":38}],34:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -8059,7 +8253,7 @@ var EventDispatcher = function () {
 
 exports.default = EventDispatcher;
 
-},{}],33:[function(_dereq_,module,exports){
+},{}],35:[function(_dereq_,module,exports){
 // HDRParser.js
 
 'use strict';
@@ -8271,7 +8465,7 @@ function parseHdr(buffer) {
 
 exports.default = parseHdr;
 
-},{}],34:[function(_dereq_,module,exports){
+},{}],36:[function(_dereq_,module,exports){
 // OrbitalControl.js
 'use strict';
 
@@ -8504,7 +8698,7 @@ var OrbitalControl = function () {
 
 exports.default = OrbitalControl;
 
-},{"./EaseNumber":31,"./Scheduler":36,"gl-matrix":1}],35:[function(_dereq_,module,exports){
+},{"./EaseNumber":33,"./Scheduler":38,"gl-matrix":1}],37:[function(_dereq_,module,exports){
 // QuatRotation.js
 
 'use strict';
@@ -8773,7 +8967,7 @@ var QuatRotation = function () {
 
 exports.default = QuatRotation;
 
-},{"./EaseNumber":31,"./Scheduler":36,"gl-matrix":1}],36:[function(_dereq_,module,exports){
+},{"./EaseNumber":33,"./Scheduler":38,"gl-matrix":1}],38:[function(_dereq_,module,exports){
 // Scheduler.js
 
 'use strict';
@@ -8942,7 +9136,7 @@ var scheduler = new Scheduler();
 
 exports.default = scheduler;
 
-},{}],37:[function(_dereq_,module,exports){
+},{}],39:[function(_dereq_,module,exports){
 // ShaderLbs.js
 
 'use strict';

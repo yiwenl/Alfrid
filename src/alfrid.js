@@ -9,6 +9,7 @@ import Mesh 				from './alfrid/Mesh';
 import Geom					from './alfrid/Geom';
 import Batch				from './alfrid/Batch';
 import FrameBuffer			from './alfrid/FrameBuffer';
+import CubeFrameBuffer		from './alfrid/CubeFrameBuffer';
 
 //	TOOLS
 import Scheduler 			from './alfrid/tools/Scheduler';
@@ -21,6 +22,7 @@ import QuatRotation			from './alfrid/tools/QuatRotation';
 import Camera 				from './alfrid/cameras/Camera';
 import CameraOrtho 			from './alfrid/cameras/CameraOrtho';
 import CameraPerspective	from './alfrid/cameras/CameraPerspective';
+import CameraCube			from './alfrid/cameras/CameraCube';
 
 //	LOADERS
 import BinaryLoader			from './alfrid/loaders/BinaryLoader';
@@ -52,12 +54,14 @@ class alfrid {
 		this.Geom              = Geom;
 		this.Batch             = Batch;
 		this.FrameBuffer       = FrameBuffer;
+		this.CubeFrameBuffer   = CubeFrameBuffer;
 		this.Scheduler         = Scheduler;
 		this.EventDispatcher   = EventDispatcher;
 		this.EaseNumber        = EaseNumber;
 		this.Camera            = Camera;
 		this.CameraOrtho       = CameraOrtho;
 		this.CameraPerspective = CameraPerspective;
+		this.CameraCube        = CameraCube;
 		this.OrbitalControl    = OrbitalControl;
 		this.QuatRotation      = QuatRotation;
 		this.BinaryLoader      = BinaryLoader;

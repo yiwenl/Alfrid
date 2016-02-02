@@ -103,6 +103,7 @@ class FrameBuffer {
 
 	unbind() {
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+		GL.viewport(0, 0, GL.width, GL.height);
 	}
 
 
