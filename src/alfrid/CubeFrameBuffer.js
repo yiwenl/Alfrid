@@ -51,8 +51,8 @@ class CubeFrameBuffer {
 			gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, targets[i], this.texture, 0);
 
 			let status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
-			if (status != gl.FRAMEBUFFER_COMPLETE) {
-				console.log("gl.checkFramebufferStatus() returned " + status);
+			if (status !== gl.FRAMEBUFFER_COMPLETE) {
+				console.log('gl.checkFramebufferStatus() returned ' + status);
 			}
 
 			this._frameBuffers.push(frameBuffer);

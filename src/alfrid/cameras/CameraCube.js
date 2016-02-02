@@ -21,7 +21,7 @@ class CameraCube extends CameraPerspective {
 	constructor() {
 		super();
 
-		this.setPerspective(Math.PI/2, 1, .1, 1000);
+		this.setPerspective(Math.PI/2, 1, 0.1, 1000);
 	}
 
 
