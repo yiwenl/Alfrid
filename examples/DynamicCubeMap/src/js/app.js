@@ -7,7 +7,7 @@ window.alfrid = alfrid;
 
 let img = new Image();
 img.addEventListener('load', ()=>_onImageLoaded());
-img.src = 'assets/texture.jpg';
+img.src = 'assets/light.jpg';
 window.image = img;
 
 

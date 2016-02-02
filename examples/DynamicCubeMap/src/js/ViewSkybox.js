@@ -12,7 +12,7 @@ class ViewSkybox extends alfrid.View {
 
 
 	_init() {
-		this.mesh = alfrid.Geom.skybox(30);
+		this.mesh = alfrid.Geom.skybox(12);
 	}
 
 
