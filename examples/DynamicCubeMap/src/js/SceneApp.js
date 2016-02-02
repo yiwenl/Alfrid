@@ -71,6 +71,7 @@ class SceneApp extends alfrid.Scene {
 		}
 
 		GL.setMatrices(this.camera);
+		GL.clear(0, 0, 0, 0);
 
 		this._bAxis.draw();
 		this._bDotsPlane.draw();

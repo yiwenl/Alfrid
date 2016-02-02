@@ -2,14 +2,24 @@ import alfrid from '../../../../build/alfrid.js';
 import AssetLoader from 'assets-loader';
 var glslify = require("glslify");
 
+// let assets = [
+// 	{id:'posx', url:'assets/posx.jpg'},
+// 	{id:'posy', url:'assets/posy.jpg'},
+// 	{id:'posz', url:'assets/posz.jpg'},
+// 	{id:'negx', url:'assets/negx.jpg'},
+// 	{id:'negy', url:'assets/negy.jpg'},
+// 	{id:'negz', url:'assets/negz.jpg'}
+// ]
+
 let assets = [
-	{id:'posx', url:'assets/posx.jpg'},
-	{id:'posy', url:'assets/posy.jpg'},
-	{id:'posz', url:'assets/posz.jpg'},
-	{id:'negx', url:'assets/negx.jpg'},
-	{id:'negy', url:'assets/negy.jpg'},
-	{id:'negz', url:'assets/negz.jpg'}
+	{id:'posx', url:'assets/px.png'},
+	{id:'posy', url:'assets/py.png'},
+	{id:'posz', url:'assets/pz.png'},
+	{id:'negx', url:'assets/nx.png'},
+	{id:'negy', url:'assets/ny.png'},
+	{id:'negz', url:'assets/nz.png'}
 ]
+
 let loader = new AssetLoader({
 	assets:assets
 }).on('error', function(error) {

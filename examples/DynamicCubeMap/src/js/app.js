@@ -29,7 +29,8 @@ function _init() {
 	document.body.appendChild(canvas);
 
 	//	INIT GL TOOL
-	alfrid.GL.init(canvas);
+	alfrid.GL.init(canvas, {preserveDrawingBuffer: true} );
+	// alfrid.GL.init(canvas);
 
 	//	INIT SCENE
 	let scene = new SceneApp();

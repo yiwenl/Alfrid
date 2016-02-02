@@ -2046,6 +2046,7 @@ var SceneApp = function (_alfrid$Scene) {
 			}
 
 			GL.setMatrices(this.camera);
+			GL.clear(0, 0, 0, 0);
 
 			this._bAxis.draw();
 			this._bDotsPlane.draw();
@@ -2331,7 +2332,8 @@ function _init() {
 	document.body.appendChild(canvas);
 
 	//	INIT GL TOOL
-	_alfrid2.default.GL.init(canvas);
+	_alfrid2.default.GL.init(canvas, { preserveDrawingBuffer: true });
+	// alfrid.GL.init(canvas);
 
 	//	INIT SCENE
 	var scene = new _SceneApp2.default();
