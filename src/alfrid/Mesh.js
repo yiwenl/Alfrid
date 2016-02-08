@@ -220,6 +220,9 @@ class Mesh {
 
 	//	GETTER AND SETTERS
 
+	get vertices() {
+		return this._vertices;
+	}
 
 	get attributes() {
 		return this._attributes;
