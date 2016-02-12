@@ -5216,8 +5216,8 @@ var CubeFrameBuffer = function () {
 				gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, targets[i], this.texture, 0);
 
 				var status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
-				if (status != gl.FRAMEBUFFER_COMPLETE) {
-					console.log("gl.checkFramebufferStatus() returned " + status);
+				if (status !== gl.FRAMEBUFFER_COMPLETE) {
+					console.log('gl.checkFramebufferStatus() returned ' + status);
 				}
 
 				this._frameBuffers.push(frameBuffer);
@@ -7071,7 +7071,7 @@ var CameraCube = function (_CameraPerspective) {
 
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(CameraCube).call(this));
 
-		_this.setPerspective(Math.PI / 2, 1, .1, 1000);
+		_this.setPerspective(Math.PI / 2, 1, 0.1, 1000);
 		return _this;
 	}
 

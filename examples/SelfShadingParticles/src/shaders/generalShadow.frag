@@ -14,9 +14,10 @@ void main(void) {
 	vec4 Shadow		= vec4(1.0);
 
 	if ( ShadowCoord.z > -1.0 && ShadowCoord.z < 1.0 ) {
-		Shadow = texture2DProj( textureDepth, ShadowCoord, -0.00005 );		
+		Shadow = texture2DProj( textureDepth, ShadowCoord,  0.00005 );		
 	}
 
+/*
 	float bias = .0001;
 	float visibility = 1.0;
 	float descrease = .1;
@@ -25,7 +26,7 @@ void main(void) {
 	if ( texture2D( textureDepth, ShadowCoord.xy + vec2( 0.94558609, -0.768907256 )/700.0 ).z  <  ShadowCoord.z-bias ){		visibility-=descrease;}
 	if ( texture2D( textureDepth, ShadowCoord.xy + vec2( -0.094184101, -0.92938870 )/700.0 ).z  <  ShadowCoord.z-bias ){	visibility-=descrease;}
 	if ( texture2D( textureDepth, ShadowCoord.xy + vec2( 0.34495938, 0.29387760 )/700.0 ).z  <  ShadowCoord.z-bias ){		visibility-=descrease;}
-
+*/
 	gl_FragColor = vec4( color, 1.0) * Shadow;
 
 /*
