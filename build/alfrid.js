@@ -6932,6 +6932,11 @@ var Mesh = function () {
 		//	GETTER AND SETTERS
 
 	}, {
+		key: 'vertices',
+		get: function get() {
+			return this._vertices;
+		}
+	}, {
 		key: 'attributes',
 		get: function get() {
 			return this._attributes;

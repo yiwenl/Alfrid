@@ -1939,40 +1939,329 @@ break;}}this._highTasks=this._highTasks.concat(this._nextTasks);this._nextTasks=
 },{}],2:[function(require,module,exports){
 'use strict';
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _alfrid = require('../../../../build/alfrid.js');
+
+var _alfrid2 = _interopRequireDefault(_alfrid);
+
+var _ViewCube = require('./ViewCube');
+
+var _ViewCube2 = _interopRequireDefault(_ViewCube);
+
+var _ViewBall = require('./ViewBall');
+
+var _ViewBall2 = _interopRequireDefault(_ViewBall);
+
+var _ViewSSAO = require('./ViewSSAO');
+
+var _ViewSSAO2 = _interopRequireDefault(_ViewSSAO);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // SceneApp.js
+
+var random = function random(min, max) {
+	return min + Math.random() * (max - min);
+};
+var GL = _alfrid2.default.GL;
+
+var SceneApp = function (_alfrid$Scene) {
+	_inherits(SceneApp, _alfrid$Scene);
+
+	function SceneApp() {
+		_classCallCheck(this, SceneApp);
+
+		return _possibleConstructorReturn(this, Object.getPrototypeOf(SceneApp).call(this));
+	}
+
+	_createClass(SceneApp, [{
+		key: '_initTextures',
+		value: function _initTextures() {
+			console.log('Init textures');
+			this.camera.setPerspective(Math.PI / 2, GL.aspectRatio, 1, 100);
+			this._texture = new _alfrid2.default.GLTexture(image);
+			this._fboRender = new _alfrid2.default.FrameBuffer(GL.width, GL.height);
+			this.orbitalControl.radius.value = 5;
+			// console.log(this.orbitalControl.radius.value);
+		}
+	}, {
+		key: '_initViews',
+		value: function _initViews() {
+			console.log('Init Views');
+			this._vCube = new _ViewCube2.default();
+			this._vBall = new _ViewBall2.default();
+			this._bAxis = new _alfrid2.default.BatchAxis();
+			this._bDotsPlane = new _alfrid2.default.BatchDotsPlane();
+			this._bCopy = new _alfrid2.default.BatchCopy();
+			this._vSSAO = new _ViewSSAO2.default();
+
+			var r = 1;
+			this._balls = [];
+
+			for (var i = 0; i < 10; i++) {
+				var b = {
+					position: [random(-r, r), random(-r, r), random(-r, r)],
+					scale: random(.5, 1)
+				};
+
+				this._balls.push(b);
+			}
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+			// this._bAxis.draw();
+			// this._bDotsPlane.draw();
+
+			// this._vCube.render(this._texture);
+
+			this._fboRender.bind();
+			GL.clear(0, 0, 0, 0);
+			for (var i = 0; i < this._balls.length; i++) {
+				var b = this._balls[i];
+				this._vBall.render(b.position, b.scale);
+			}
+			this._fboRender.unbind();
+
+			GL.setMatrices(this.cameraOrtho);
+			GL.disable(GL.DEPTH_TEST);
+			GL.clear(1, 0, 0, 1);
+			this._vSSAO.render(this._fboRender.getDepthTexture());
+
+			// GL.viewport(0, 0, 256, 256/GL.aspectRatio);
+			// this._bCopy.draw(this._fboRender.getTexture());
+			// GL.viewport(256, 0, 256, 256/GL.aspectRatio);
+			// this._bCopy.draw(this._fboRender.getDepthTexture());
+
+			GL.enable(GL.DEPTH_TEST);
+			GL.viewport(GL.width, GL.height);
+		}
+	}]);
+
+	return SceneApp;
+}(_alfrid2.default.Scene);
+
+exports.default = SceneApp;
+
+},{"../../../../build/alfrid.js":1,"./ViewBall":3,"./ViewCube":4,"./ViewSSAO":5}],3:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
 var _alfrid = require('../../../../build/alfrid.js');
 
 var _alfrid2 = _interopRequireDefault(_alfrid);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // ViewBall.js
+
+var GL = _alfrid2.default.GL;
 
 
-window.addEventListener('resize', function () {
-	return resize();
+var ViewBall = function (_alfrid$View) {
+	_inherits(ViewBall, _alfrid$View);
+
+	function ViewBall() {
+		_classCallCheck(this, ViewBall);
+
+		// super(alfrid.ShaderLibs.generalVert, alfrid.ShaderLibs.simpleColorFrag);
+		return _possibleConstructorReturn(this, Object.getPrototypeOf(ViewBall).call(this, "#define GLSLIFY 1\n// ball.vert\n\nprecision highp float;\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nuniform vec3 position;\nuniform vec3 scale;\n\nvarying vec2 vTextureCoord;\nvarying float vDepth;\n\nvoid main(void) {\n\tvec3 pos  \t  = aVertexPosition * scale + position;\n\tvec4 V        = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(pos, 1.0);\n\tgl_Position   = V;\n\t\n\tvTextureCoord = aTextureCoord;\n\tvDepth        = V.z/V.w;\n}", "#define GLSLIFY 1\n// ball.frag\n\n#define SHADER_NAME SIMPLE_TEXTURE\n\nprecision highp float;\nvarying vec2 vTextureCoord;\nvarying float vDepth;\n\nvoid main(void) {\n    gl_FragColor = vec4(vec3(vDepth), 1.0);\n}"));
+	}
+
+	_createClass(ViewBall, [{
+		key: '_init',
+		value: function _init() {
+			this.mesh = _alfrid2.default.Geom.sphere(1, 48);
+		}
+	}, {
+		key: 'render',
+		value: function render(position, scale) {
+			var color = arguments.length <= 2 || arguments[2] === undefined ? [1, 1, 1] : arguments[2];
+
+			this.shader.bind();
+			this.shader.uniform("position", "uniform3fv", position);
+			this.shader.uniform("scale", "uniform3fv", [scale, scale, scale]);
+			this.shader.uniform("color", "uniform3fv", color);
+			this.shader.uniform("opacity", "uniform1f", 1);
+			GL.draw(this.mesh);
+		}
+	}]);
+
+	return ViewBall;
+}(_alfrid2.default.View);
+
+exports.default = ViewBall;
+
+},{"../../../../build/alfrid.js":1}],4:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
 });
 
-var GL = undefined;
-var time = 0;
-var fbo = undefined;
-var meshSphere = undefined,
-    meshCube = undefined,
-    meshFloor = undefined;
-var shaderShadow = undefined,
-    shaderColor = undefined;
-var camera = undefined,
-    cameraLight = undefined;
-var lightPosition = vec3.fromValues(0.0, 4.0, .0);
+var _alfrid = require('../../../../build/alfrid.js');
 
-if (document.body) {
-	_init();
-} else {
-	window.addEventListener('load', function () {
-		return _init();
-	});
+var _alfrid2 = _interopRequireDefault(_alfrid);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // ViewCube.js
+
+var GL = _alfrid2.default.GL;
+
+
+var ViewCube = function (_alfrid$View) {
+	_inherits(ViewCube, _alfrid$View);
+
+	function ViewCube() {
+		_classCallCheck(this, ViewCube);
+
+		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ViewCube).call(this, _alfrid2.default.ShaderLibs.generalNormalVert, "#define GLSLIFY 1\n// basic.frag\n\n#define SHADER_NAME BASIC_FRAGMENT\n\nprecision highp float;\nuniform sampler2D texture;\nvarying vec2 vTextureCoord;\nvarying vec3 vNormal;\n\nconst vec3 light = vec3(1.0, 1.0, 1.0);\n\nfloat diffuse(vec3 N, vec3 L) {\n\treturn max(dot(N, normalize(L)), 0.0);\n}\n\nvoid main(void) {\n\tvec4 color = texture2D(texture, vTextureCoord);\n    float _diffuse = mix(diffuse(vNormal, light), 1.0, .2);\n    gl_FragColor = color * _diffuse;;\n}"));
+
+		_this.time = 0;
+		return _this;
+	}
+
+	_createClass(ViewCube, [{
+		key: '_init',
+		value: function _init() {
+			var size = 1;
+			this.mesh = _alfrid2.default.Geom.cube(size, size, size, true);
+		}
+	}, {
+		key: 'render',
+		value: function render(texture) {
+			this.time += .02;
+			var scale = (Math.cos(this.time) * .5 + .5) * .9 + 1.0;
+			this.shader.bind();
+			this.shader.uniform("texture", "uniform1i", 0);
+			texture.bind(0);
+			this.shader.uniform("scale", "uniform3fv", [scale, scale, scale]);
+			GL.draw(this.mesh);
+		}
+	}]);
+
+	return ViewCube;
+}(_alfrid2.default.View);
+
+exports.default = ViewCube;
+
+},{"../../../../build/alfrid.js":1}],5:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _alfrid = require('../../../../build/alfrid.js');
+
+var _alfrid2 = _interopRequireDefault(_alfrid);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // ViewSSAO.js
+
+var GL = _alfrid2.default.GL;
+
+
+var ViewSSAO = function (_alfrid$View) {
+	_inherits(ViewSSAO, _alfrid$View);
+
+	function ViewSSAO() {
+		_classCallCheck(this, ViewSSAO);
+
+		return _possibleConstructorReturn(this, Object.getPrototypeOf(ViewSSAO).call(this, _alfrid2.default.ShaderLibs.bigTriangleVert, "#define GLSLIFY 1\n// ssao.frag\n\n#define SHADER_NAME SIMPLE_TEXTURE\n\nprecision highp float;\nvarying vec2 vTextureCoord;\nuniform sampler2D texture;\n\nuniform float textureWidth;\nuniform float textureHeight;\n\nconst float near = 1.0;\nconst float far = 100.0;\nconst float PI = 3.141592657;\n\nconst int samples = 5; //samples on the first ring (4-8)\nconst int rings = 3; //ring count (3-6)\n\nvec2 rand(in vec2 coord) //generating random noise\n{\n\tfloat noiseX = (fract(sin(dot(coord ,vec2(12.9898,78.233))) * 43758.5453));\n\tfloat noiseY = (fract(sin(dot(coord ,vec2(12.9898,78.233)*2.0)) * 43758.5453));\n\treturn vec2(noiseX,noiseY)*0.004;\n}\n\nfloat readDepth(in vec2 coord)\n{\n\treturn (2.0 * near) / (far + near - texture2D(texture, coord ).x * (far-near));        \n}\n\nfloat compareDepths( in float depth1, in float depth2 )\n{\n        float aoCap = 1.0;\n        float aoMultiplier = 100.0;\n        float depthTolerance = 0.0000;\n        float aorange = 60.0;// units in space the AO effect extends to (this gets divided by the camera far range\n        float diff = sqrt(clamp(1.0-(depth1-depth2) / (aorange/(far-near)),0.0,1.0));\n        float ao = min(aoCap,max(0.0,depth1-depth2-depthTolerance) * aoMultiplier) * diff;\n        return ao;\n}\n\nfloat ssao() {\n\n\tfloat depth = readDepth(vTextureCoord);\n\tfloat d;\n\tfloat aspect = textureWidth/textureHeight;\n\tvec2 noise = rand(vTextureCoord);\n\n\tfloat w = (1.0 / textureWidth)/clamp(depth,0.05,1.0)+(noise.x*(1.0-noise.x));\n    float h = (1.0 / textureHeight)/clamp(depth,0.05,1.0)+(noise.y*(1.0-noise.y));\n   \n    float pw;\n    float ph;\n\n    float ao;       \n    float s;\n    float fade = 4.0;\n\n    for (int i = 0 ; i < rings; i += 1) {\n    \tfade *= 0.5;\n        for (int j = 0 ; j < samples*rings; j += 1) {\n        \tif (j >= samples*i) break;\n            float step = PI*2.0 / (float(samples)*float(i));\n            pw = (cos(float(j)*step)*float(i));\n            ph = (sin(float(j)*step)*float(i))*aspect;\n            d = readDepth( vec2(vTextureCoord.s+pw*w,vTextureCoord.t+ph*h));\n            ao += compareDepths(depth,d)*fade;     \n            s += 1.0*fade;\n        }\n    }\n   \n    ao /= s;\n    ao = 1.0 - ao;\n    float offset = .5;\n    ao = offset + (1.0 - offset) * ao;\n    ao = pow(ao, 2.0);\n\n\treturn ao;\n}\n\nvoid main(void) {\n\tfloat ao = ssao();\n\t// ao = smoothstep(0.5, 1.0, ao);\n    gl_FragColor = vec4(vec3(ao), 1.0);\n    // gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0);\n}"));
+	}
+
+	_createClass(ViewSSAO, [{
+		key: '_init',
+		value: function _init() {
+			this.mesh = _alfrid2.default.Geom.bigTriangle();
+		}
+	}, {
+		key: 'render',
+		value: function render(texture) {
+			this.shader.bind();
+			this.shader.uniform("textureWidth", "uniform1f", GL.width);
+			this.shader.uniform("textureHeight", "uniform1f", GL.height);
+			this.shader.uniform("texture", "uniform1i", 0);
+			texture.bind(0);
+			GL.draw(this.mesh);
+		}
+	}]);
+
+	return ViewSSAO;
+}(_alfrid2.default.View);
+
+exports.default = ViewSSAO;
+
+},{"../../../../build/alfrid.js":1}],6:[function(require,module,exports){
+'use strict';
+
+var _alfrid = require('../../../../build/alfrid.js');
+
+var _alfrid2 = _interopRequireDefault(_alfrid);
+
+var _SceneApp = require('./SceneApp');
+
+var _SceneApp2 = _interopRequireDefault(_SceneApp);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+
+
+window.alfrid = _alfrid2.default;
+
+var img = new Image();
+img.addEventListener('load', function () {
+	return _onImageLoaded();
+});
+img.src = 'assets/texture.jpg';
+window.image = img;
+
+function _onImageLoaded() {
+	console.log('Image Loaded');
+
+	if (document.body) {
+		_init();
+	} else {
+		window.addEventListener('load', function () {
+			return _init();
+		});
+	}
 }
 
 function _init() {
-
 	//	CREATE CANVAS
 	var canvas = document.createElement("canvas");
 	canvas.className = 'Main-Canvas';
@@ -1980,102 +2269,24 @@ function _init() {
 
 	//	INIT GL TOOL
 	_alfrid2.default.GL.init(canvas);
-	GL = _alfrid2.default.GL;
 
-	//	CREATE CAMERA
-	camera = new _alfrid2.default.CameraPerspective();
-	var fov = 90 * Math.PI / 180;
-	camera.setPerspective(fov, GL.aspectRatio, 1., 2000);
-
-	cameraLight = new _alfrid2.default.CameraPerspective();
-	cameraLight.setPerspective(fov * 3, 1, 1., 2000);
-	cameraLight.lookAt(lightPosition, vec3.fromValues(0, 0, 0), vec3.fromValues(0, 1, 0));
-
-	//	ORBIAL CAMERA CONTROL
-	var orbitalControl = new _alfrid2.default.OrbitalControl(camera, window, 15);
-	orbitalControl.radius.value = 10;
-
-	//	CREATE MESH
-	var size = .5;
-	meshCube = _alfrid2.default.Geom.cube(size, size, size, true);
-	size = 16;
-	meshFloor = _alfrid2.default.Geom.cube(size, .001, size, true);
-	meshSphere = _alfrid2.default.Geom.sphere(.1, 24, true);
-
-	//	CREATE SHADER
-	shaderColor = new _alfrid2.default.GLShader("#define GLSLIFY 1\n// basic.vert\n\n#define SHADER_NAME BASIC_VERTEX\n\nprecision highp float;\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec3 aNormal;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\nuniform mat3 uNormalMatrix;\n\nuniform vec3 position;\nuniform float rotation;\n\nvarying vec2 vTextureCoord;\nvarying vec3 vNormal;\n\nvec2 rotate(vec2 v, float t) {\n\tfloat c = cos(t);\n\tfloat s = sin(t);\n\tmat2 m = mat2(c, -s, s, c);\n\treturn m*v;\n}\n\nvoid main(void) {\n\tvec3 pos        = aVertexPosition;\n\t// pos.xz \t\t\t= rotate(pos.xz, rotation);\n\tpos \t\t\t+= position;\n    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(pos, 1.0);\n    vTextureCoord = aTextureCoord;\n\tvNormal         = normalize(uNormalMatrix * aNormal);\n}", "#define GLSLIFY 1\n#define SHADER_NAME SIMPLE_TEXTURE\n\nprecision highp float;\n// varying vec2 vTextureCoord;\n// uniform sampler2D texture;\n\nuniform vec3 color;\nuniform float opacity;\n\nvoid main(void) {\n    gl_FragColor = vec4(color, opacity);\n}");
-	shaderShadow = new _alfrid2.default.GLShader("#define GLSLIFY 1\n// shadow.vert\n\n#define SHADER_NAME SHADOW_VERTEX\n\nprecision highp float;\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec3 aNormal;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\nuniform mat4 uShadowMatrix;\nuniform mat3 uNormalMatrix;\nuniform float rotation;\n\nuniform vec3 position;\n\nvarying vec2 vTextureCoord;\nvarying vec3 vNormal;\nvarying vec4 vShadowCoord;\nvarying vec4 vPosition;\n\nconst mat4 biasMatrix = mat4( 0.5, 0.0, 0.0, 0.0,\n\t\t\t\t\t\t\t  0.0, 0.5, 0.0, 0.0,\n\t\t\t\t\t\t\t  0.0, 0.0, 0.5, 0.0,\n\t\t\t\t\t\t\t  0.5, 0.5, 0.5, 1.0 );\n\nvec2 rotate(vec2 v, float t) {\n\tfloat c = cos(t);\n\tfloat s = sin(t);\n\tmat2 m = mat2(c, -s, s, c);\n\treturn m*v;\n}\n\nvoid main(void) {\n\tvec3 pos        = aVertexPosition;\n\t// pos.xz \t\t\t= rotate(pos.xz, rotation);\n\tpos \t\t\t+= position;\n\tvec4 mvPosition = uViewMatrix * uModelMatrix * vec4(pos, 1.0);\n\tgl_Position     = uProjectionMatrix * mvPosition;\n\tvPosition       = mvPosition;\n\tvTextureCoord   = aTextureCoord;\n\tvec3 N \t\t\t= aNormal;\n\tvNormal         = normalize(uNormalMatrix * aNormal);\n\tvShadowCoord    = ( biasMatrix * uShadowMatrix * uModelMatrix ) * vec4(pos, 1.0);;\n}", "#define GLSLIFY 1\n// shadow.frag\n\n#define SHADER_NAME SIMPLE_TEXTURE\n\nprecision highp float;\nvarying vec2 vTextureCoord;\nvarying vec4 vPosition;\nvarying vec4 vShadowCoord;\nvarying vec3 vNormal;\n\nuniform vec3 color;\nuniform mat4 uViewMatrix;\nuniform mat4 uModelMatrix;\nuniform vec3 lightPosition;\nuniform float uShadowStrength;\nuniform sampler2D textureDepth;\n\nfloat pcfSoftShadow(sampler2D shadowMap) {\n\tconst float shadowMapSize  = 1024.0;\n\tconst float shadowBias     = .00005;\n\tfloat shadow = 0.0;\n\tfloat texelSizeX =  1.0 / shadowMapSize;\n\tfloat texelSizeY =  1.0 / shadowMapSize;\n\tvec4 shadowCoord\t= vShadowCoord / vShadowCoord.w;\n\n\tbvec4 inFrustumVec = bvec4 ( shadowCoord.x >= 0.0, shadowCoord.x <= 1.0, shadowCoord.y >= 0.0, shadowCoord.y <= 1.0 );\n\tbool inFrustum = all( inFrustumVec );\n\n\tbvec2 frustumTestVec = bvec2( inFrustum, shadowCoord.z <= 1.0 );\n\n\tbool frustumTest = all( frustumTestVec );\n\t\n\n\tif ( frustumTest ) {\n\t\tshadowCoord.z += shadowBias;\n\t\tfloat xPixelOffset = texelSizeX;\n\t\tfloat yPixelOffset = texelSizeY;\n\n\t\tfloat dx0 = - 1.0 * xPixelOffset;\n\t\tfloat dy0 = - 1.0 * yPixelOffset;\n\t\tfloat dx1 = 1.0 * xPixelOffset;\n\t\tfloat dy1 = 1.0 * yPixelOffset;\n\n\t\tmat3 shadowKernel;\n\t\tmat3 depthKernel;\n\n\t\tdepthKernel[ 0 ][ 0 ] = texture2D( shadowMap, shadowCoord.xy + vec2( dx0, dy0 ) ).r ;\n\t\tdepthKernel[ 0 ][ 1 ] = texture2D( shadowMap, shadowCoord.xy + vec2( dx0, 0.0 ) ).r ;\n\t\tdepthKernel[ 0 ][ 2 ] = texture2D( shadowMap, shadowCoord.xy + vec2( dx0, dy1 ) ).r ;\n\t\tdepthKernel[ 1 ][ 0 ] = texture2D( shadowMap, shadowCoord.xy + vec2( 0.0, dy0 ) ).r ;\n\t\tdepthKernel[ 1 ][ 1 ] = texture2D( shadowMap, shadowCoord.xy ).r ;\n\t\tdepthKernel[ 1 ][ 2 ] = texture2D( shadowMap, shadowCoord.xy + vec2( 0.0, dy1 ) ).r ;\n\t\tdepthKernel[ 2 ][ 0 ] = texture2D( shadowMap, shadowCoord.xy + vec2( dx1, dy0 ) ).r ;\n\t\tdepthKernel[ 2 ][ 1 ] = texture2D( shadowMap, shadowCoord.xy + vec2( dx1, 0.0 ) ).r ;\n\t\tdepthKernel[ 2 ][ 2 ] = texture2D( shadowMap, shadowCoord.xy + vec2( dx1, dy1 ) ).r ;\n\n\t\tvec3 shadowZ = vec3( shadowCoord.z );\n\t\tshadowKernel[ 0 ] = vec3( lessThan( depthKernel[ 0 ], shadowZ ) );\n\t\tshadowKernel[ 0 ] *= vec3( 0.25 );\n\n\t\tshadowKernel[ 1 ] = vec3( lessThan( depthKernel[ 1 ], shadowZ ) );\n\t\tshadowKernel[ 1 ] *= vec3( 0.25 );\n\n\t\tshadowKernel[ 2 ] = vec3( lessThan( depthKernel[ 2 ], shadowZ ) );\n\t\tshadowKernel[ 2 ] *= vec3( 0.25 );\n\n\t\tvec2 fractionalCoord = 1.0 - fract( shadowCoord.xy * shadowMapSize );\n\n\t\tshadowKernel[ 0 ] = mix( shadowKernel[ 1 ], shadowKernel[ 0 ], fractionalCoord.x );\n\t\tshadowKernel[ 1 ] = mix( shadowKernel[ 2 ], shadowKernel[ 1 ], fractionalCoord.x );\n\n\t\tvec4 shadowValues;\n\t\tshadowValues.x = mix( shadowKernel[ 0 ][ 1 ], shadowKernel[ 0 ][ 0 ], fractionalCoord.y );\n\t\tshadowValues.y = mix( shadowKernel[ 0 ][ 2 ], shadowKernel[ 0 ][ 1 ], fractionalCoord.y );\n\t\tshadowValues.z = mix( shadowKernel[ 1 ][ 1 ], shadowKernel[ 1 ][ 0 ], fractionalCoord.y );\n\t\tshadowValues.w = mix( shadowKernel[ 1 ][ 2 ], shadowKernel[ 1 ][ 1 ], fractionalCoord.y );\n\n\t\tshadow = dot( shadowValues, vec4( 1.0 ) ) * uShadowStrength;\n\n\t}\n\n\treturn shadow;\n}\n\nvec4 textureProjOffset(sampler2D uShadowMap, vec4 sc, vec2 offset) {\n\tconst float shadowBias     = .00005;\n\tvec4 scCopy = sc;\n\tscCopy.xy += offset;\n\treturn texture2DProj(uShadowMap, scCopy, shadowBias);\n}\n\nvec4 pcfShadow(sampler2D uShadowMap) {\n\tvec4 sc                   = vShadowCoord / vShadowCoord.w;\n\tconst float shadowMapSize = 1024.0;\n\tconst float s             = 1.0/shadowMapSize;\n\tvec4 shadow              = vec4(0.0);\n\tshadow += textureProjOffset( uShadowMap, sc, vec2(-s,-s) );\n\tshadow += textureProjOffset( uShadowMap, sc, vec2(-s, 0) );\n\tshadow += textureProjOffset( uShadowMap, sc, vec2(-s, s) );\n\tshadow += textureProjOffset( uShadowMap, sc, vec2( 0,-s) );\n\tshadow += textureProjOffset( uShadowMap, sc, vec2( 0, 0) );\n\tshadow += textureProjOffset( uShadowMap, sc, vec2( 0, s) );\n\tshadow += textureProjOffset( uShadowMap, sc, vec2( s,-s) );\n\tshadow += textureProjOffset( uShadowMap, sc, vec2( s, 0) );\n\tshadow += textureProjOffset( uShadowMap, sc, vec2( s, s) );\n\treturn shadow/9.0;\n}\n\nvoid main(void) {\n\tvec4 shadow = pcfShadow(textureDepth);\n\tgl_FragColor = vec4( color, 1.0) * shadow;\n\t// float shadow = pcfSoftShadow(textureDepth);\n\t// gl_FragColor = vec4( color * (1.0-shadow), 1.0);\n\n/*\n\tfloat bias = 0.005*tan(acos(NdotL)); // cosTheta is dot( n,l ), clamped between 0 and 1\n\tbias = clamp(bias, 0.0, 0.01);\n\tfloat visibility = 1.0;\n\tif ( texture2D( textureDepth, ShadowCoord.xy ).z  <  ShadowCoord.z-bias){\n\t\tvisibility = 0.5;\n\t}\n\n    gl_FragColor = vec4(( Diffuse * visibility + Ambient ) * color, 1.0);\n*/  \n}");
-
-	//	CREATE FRAMEBUFFER
-	var fboSize = 1024;
-	fbo = new _alfrid2.default.FrameBuffer(fboSize, fboSize);
-
-	//	LOOPING
-	_alfrid2.default.Scheduler.addEF(function () {
-		return _loop();
-	});
+	//	INIT SCENE
+	var scene = new _SceneApp2.default();
 }
 
 function _loop() {
-	time += .03;
 	GL.clear(0, 0, 0, 0);
-	GL.setMatrices(cameraLight);
-	lightPosition[0] = Math.cos(time) * 2;
-	lightPosition[2] = Math.sin(time) * 2;
-	cameraLight.lookAt(lightPosition, vec3.fromValues(0, 0, 0), vec3.fromValues(0, 1, 0));
-
-	fbo.bind();
-	GL.clear(0, 0, 0, 0);
-	shaderColor.bind();
-	drawScene(shaderColor, true);
-	fbo.unbind();
-
-	GL.viewport(0, 0, GL.width, GL.height);
 	GL.setMatrices(camera);
-	shaderColor.bind();
-	shaderColor.uniform("color", "uniform3fv", [1, 1, .79]);
-	shaderColor.uniform("position", "uniform3fv", lightPosition);
-	GL.draw(meshSphere); //	LIGHT SOURCE
 
-	var shadowMatrix = mat4.create();
-	mat4.multiply(shadowMatrix, cameraLight.projection, cameraLight.viewMatrix);
+	time += .02;
+	shader.bind();
+	shader.uniform('texture', 'uniform1i', 0);
+	shader.uniform('time', 'uniform1f', time);
+	texture.bind(0);
 
-	shaderShadow.bind();
-	shaderShadow.uniform("uShadowStrength", "uniform1f", 0.4);
-	shaderShadow.uniform("lightPosition", "uniform3fv", lightPosition);
-	shaderShadow.uniform("uShadowMatrix", "uniformMatrix4fv", shadowMatrix);
-	shaderShadow.uniform("textureDepth", "uniform1i", 0);
-	fbo.getDepthTexture().bind(0);
-
-	drawScene(shaderShadow, false);
+	batch.draw();
 }
 
-function drawScene(shader, isShadowMap) {
-	if (!isShadowMap) {
-		shader.uniform("color", "uniform3fv", [1, 1, 1]);
-		shader.uniform("opacity", "uniform1f", 1);
-		shader.uniform("position", "uniform3fv", [0, -1.5, 0]);
-		shader.uniform("rotation", "uniform1f", 0);
-		GL.draw(meshFloor);
-	}
-
-	shader.uniform("rotation", "uniform1f", time);
-	shader.uniform("color", "uniform3fv", [1, 1, .5]);
-	shader.uniform("position", "uniform3fv", [0, 1 + Math.sin(time) * .35, 0]);
-	GL.draw(meshCube);
-
-	shader.uniform("rotation", "uniform1f", time);
-	shader.uniform("color", "uniform3fv", [1, .5, 1]);
-	shader.uniform("position", "uniform3fv", [1, 0, 1 + Math.cos(time) * .35]);
-	GL.draw(meshCube);
-}
-
-function resize() {
-	console.log('resize');
-	GL.setSize(window.innerWidth, window.innerHeight);
-	camera.setAspectRatio(GL.aspectRatio);
-}
-
-},{"../../../../build/alfrid.js":1}]},{},[2]);
+},{"../../../../build/alfrid.js":1,"./SceneApp":2}]},{},[6]);
 
 //# sourceMappingURL=bundle.js.map
