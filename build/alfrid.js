@@ -7941,6 +7941,8 @@ var ObjLoader = function (_BinaryLoader) {
 				}
 			}
 
+			console.log(positions.length);
+
 			this._generateMeshes({
 				positions: positions,
 				coords: coords,
@@ -7951,8 +7953,9 @@ var ObjLoader = function (_BinaryLoader) {
 	}, {
 		key: '_generateMeshes',
 		value: function _generateMeshes(o) {
-
 			var maxNumVertices = 65535;
+			var hasNormals = o.normals.length > 0;
+			var hasUVs = o.coords.length > 0;
 
 			if (o.positions.length > maxNumVertices) {
 				var meshes = [];
@@ -7982,8 +7985,13 @@ var ObjLoader = function (_BinaryLoader) {
 						index = indices[i];
 
 						positions.push(oCopy.positions[index]);
-						coords.push(oCopy.coords[index]);
-						normals.push(oCopy.normals[index]);
+						if (hasUVs) {
+							coords.push(oCopy.coords[index]);
+						}
+						if (hasNormals) {
+							normals.push(oCopy.normals[index]);
+						}
+
 						indices[i] -= lastIndex;
 					}
 
@@ -7991,9 +7999,12 @@ var ObjLoader = function (_BinaryLoader) {
 
 					var mesh = new _Mesh2.default(this._drawType);
 					mesh.bufferVertex(positions);
-					mesh.bufferTexCoords(coords);
+					if (hasUVs) {
+						mesh.bufferTexCoords(coords);
+					}
+
 					mesh.bufferIndices(indices);
-					if (!this._ignoreNormals) {
+					if (!this._ignoreNormals && hasNormals) {
 						mesh.bufferNormal(normals);
 					}
 
@@ -8006,9 +8017,11 @@ var ObjLoader = function (_BinaryLoader) {
 			} else {
 				var mesh = new _Mesh2.default(this._drawType);
 				mesh.bufferVertex(o.positions);
-				mesh.bufferTexCoords(o.coords);
+				if (hasUVs) {
+					mesh.bufferTexCoords(o.coords);
+				}
 				mesh.bufferIndices(o.indices);
-				if (!this._ignoreNormals) {
+				if (!this._ignoreNormals && hasNormals) {
 					mesh.bufferNormal(o.normals);
 				}
 

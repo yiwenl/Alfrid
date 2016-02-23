@@ -24,7 +24,7 @@ function _init() {
 	GL = alfrid.GL;
 
 	objLoader = new alfrid.ObjLoader();
-	objLoader.load('assets/tree.obj', (e)=>_onLoaded(e), false);
+	objLoader.load('assets/004.obj', (e)=>_onLoaded(e), false);
 }
 
 function _onLoaded(mMesh) {

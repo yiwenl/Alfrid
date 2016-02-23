@@ -222,6 +222,8 @@ class ObjLoader extends BinaryLoader {
 			} 
 		}
 
+		console.log(positions.length);
+
 
 		this._generateMeshes({	
 			positions:positions,
@@ -233,8 +235,9 @@ class ObjLoader extends BinaryLoader {
 	}
 
 	_generateMeshes(o) {
-
 		const maxNumVertices = 65535;
+		let hasNormals = o.normals.length > 0;
+		let hasUVs = o.coords.length > 0;
 
 		if(o.positions.length > maxNumVertices) {
 			let meshes = [];
@@ -263,8 +266,13 @@ class ObjLoader extends BinaryLoader {
 					index = indices[i];
 
 					positions.push(oCopy.positions[index]);
-					coords.push(oCopy.coords[index]);
-					normals.push(oCopy.normals[index]);
+					if(hasUVs) {
+						coords.push(oCopy.coords[index]);	
+					}
+					if(hasNormals) {
+						normals.push(oCopy.normals[index]);	
+					}
+					
 					indices[i] -= lastIndex;
 				}
 
@@ -272,9 +280,12 @@ class ObjLoader extends BinaryLoader {
 
 				let mesh = new Mesh(this._drawType);
 				mesh.bufferVertex(positions);
-				mesh.bufferTexCoords(coords);
+				if(hasUVs) {
+					mesh.bufferTexCoords(coords);	
+				}
+				
 				mesh.bufferIndices(indices);
-				if(!this._ignoreNormals) {
+				if(!this._ignoreNormals && hasNormals) {
 					mesh.bufferNormal(normals);
 				}
 
@@ -287,9 +298,11 @@ class ObjLoader extends BinaryLoader {
 		} else {
 			let mesh = new Mesh(this._drawType);
 			mesh.bufferVertex(o.positions);
-			mesh.bufferTexCoords(o.coords);
+			if(hasUVs) {
+				mesh.bufferTexCoords(o.coords);	
+			}
 			mesh.bufferIndices(o.indices);
-			if(!this._ignoreNormals) {
+			if(!this._ignoreNormals && hasNormals) {
 				mesh.bufferNormal(o.normals);
 			}
 
