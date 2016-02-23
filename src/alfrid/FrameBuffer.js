@@ -58,7 +58,7 @@ class FrameBuffer {
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, this.minFilter);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, this.wrapS);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, this.wrapT);
-		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.width, this.height, 0, gl.RGBA, gl.FLOAT, null);
+		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.width, this.height, 0, gl.RGBA, GL.isMobile ? gl.UNSIGNED_BYTE : gl.FLOAT, null);
 
 		if(WEBGL_depth_texture) {
 			gl.bindTexture(gl.TEXTURE_2D, this.depthTexture);

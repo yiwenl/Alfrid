@@ -5349,7 +5349,7 @@ var FrameBuffer = function () {
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, this.minFilter);
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, this.wrapS);
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, this.wrapT);
-			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.width, this.height, 0, gl.RGBA, gl.FLOAT, null);
+			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.width, this.height, 0, gl.RGBA, _GLTool2.default.isMobile ? gl.UNSIGNED_BYTE : gl.FLOAT, null);
 
 			if (WEBGL_depth_texture) {
 				gl.bindTexture(gl.TEXTURE_2D, this.depthTexture);
@@ -5883,6 +5883,13 @@ var GLTool = function () {
 		this._modelMatrix = _glMatrix2.default.mat4.create();
 		this._matrix = _glMatrix2.default.mat4.create();
 		_glMatrix2.default.mat4.identity(this.identityMatrix, this.identityMatrix);
+
+		this.isMobile = false;
+		if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+			this.isMobile = true;
+		}
+
+		console.debug('Is Mobile : ', this.isMobile);
 	}
 
 	//	INITIALIZE

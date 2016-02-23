@@ -14,6 +14,13 @@ class GLTool {
 		this._modelMatrix            = glm.mat4.create();
 		this._matrix                 = glm.mat4.create();
 		glm.mat4.identity(this.identityMatrix, this.identityMatrix);
+
+		this.isMobile = false;
+		if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+			this.isMobile = true;
+		}
+
+		console.debug('Is Mobile : ', this.isMobile);
 	}
 
 	//	INITIALIZE
