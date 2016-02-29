@@ -224,6 +224,10 @@ class Mesh {
 		return this._vertices;
 	}
 
+	get normals() {
+		return this._normals;
+	}
+
 	get attributes() {
 		return this._attributes;
 	}

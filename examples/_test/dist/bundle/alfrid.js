@@ -6944,6 +6944,11 @@ var Mesh = function () {
 			return this._vertices;
 		}
 	}, {
+		key: 'normals',
+		get: function get() {
+			return this._normals;
+		}
+	}, {
 		key: 'attributes',
 		get: function get() {
 			return this._attributes;
@@ -7947,8 +7952,6 @@ var ObjLoader = function (_BinaryLoader) {
 					addFace(result[2], result[5], result[8], result[11], undefined, undefined, undefined, undefined, result[3], result[6], result[9], result[12]);
 				}
 			}
-
-			console.log(positions.length);
 
 			this._generateMeshes({
 				positions: positions,

@@ -222,9 +222,6 @@ class ObjLoader extends BinaryLoader {
 			} 
 		}
 
-		console.log(positions.length);
-
-
 		this._generateMeshes({	
 			positions:positions,
 			coords:coords,
