@@ -5378,6 +5378,10 @@ var FrameBuffer = function () {
 			gl.bindTexture(gl.TEXTURE_2D, null);
 			gl.bindRenderbuffer(gl.RENDERBUFFER, null);
 			gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+			//	CLEAR FRAMEBUFFER
+
+			this.clear();
 		}
 
 		//	PUBLIC METHODS
@@ -5393,6 +5397,18 @@ var FrameBuffer = function () {
 		value: function unbind() {
 			gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 			_GLTool2.default.viewport(0, 0, _GLTool2.default.width, _GLTool2.default.height);
+		}
+	}, {
+		key: 'clear',
+		value: function clear() {
+			var r = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+			var g = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
+			var b = arguments.length <= 2 || arguments[2] === undefined ? 0 : arguments[2];
+			var a = arguments.length <= 3 || arguments[3] === undefined ? 0 : arguments[3];
+
+			this.bind();
+			_GLTool2.default.clear(r, g, b, a);
+			this.unbind();
 		}
 
 		//	TEXTURES

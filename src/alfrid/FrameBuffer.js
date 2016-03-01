@@ -90,6 +90,10 @@ class FrameBuffer {
 		gl.bindRenderbuffer(gl.RENDERBUFFER, null);
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
+		
+		//	CLEAR FRAMEBUFFER 
+
+		this.clear();
 	}
 
 
@@ -105,6 +109,13 @@ class FrameBuffer {
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 		GL.viewport(0, 0, GL.width, GL.height);
 	}
+
+
+	clear(r=0, g=0, b=0, a=0) {
+		this.bind();
+		GL.clear(r, g, b, a);
+		this.unbind();
+	}	
 
 
 	//	TEXTURES
