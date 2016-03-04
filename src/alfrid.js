@@ -32,11 +32,14 @@ import HDRLoader			from './alfrid/loaders/HDRLoader';
 //	HELPERS
 import BatchCopy			from './alfrid/helpers/BatchCopy';
 import BatchAxis			from './alfrid/helpers/BatchAxis';
+import BatchBall			from './alfrid/helpers/BatchBall';
 import BatchDotsPlane		from './alfrid/helpers/BatchDotsPlane';
 import Scene				from './alfrid/helpers/Scene';
 import View					from './alfrid/helpers/View';
 import ShaderLibs			from './alfrid/tools/ShaderLibs';
 
+//	POST
+import EffectComposer		from './alfrid/post/EffectComposer';
 
 const VERSION = '1.0.0';
 
@@ -69,9 +72,12 @@ class alfrid {
 		this.HDRLoader         = HDRLoader;
 		this.BatchCopy         = BatchCopy;
 		this.BatchAxis         = BatchAxis;
+		this.BatchBall         = BatchBall;
+		this.BatchBall         = BatchBall;
 		this.BatchDotsPlane    = BatchDotsPlane;
 		this.Scene             = Scene;
 		this.View              = View;
+		this.EffectComposer    = EffectComposer;
 		this.ShaderLibs        = ShaderLibs;
 
 
