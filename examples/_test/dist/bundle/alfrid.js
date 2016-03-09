@@ -5960,6 +5960,7 @@ var GLTool = function () {
 			this.LINEAR_MIPMAP_NEAREST = gl.LINEAR_MIPMAP_NEAREST;
 			this.MIRRORED_REPEAT = gl.MIRRORED_REPEAT;
 			this.CLAMP_TO_EDGE = gl.CLAMP_TO_EDGE;
+			this.SCISSOR_TEST = gl.SCISSOR_TEST;
 
 			this.enable(this.DEPTH_TEST);
 			this.enable(this.CULL_FACE);
@@ -5989,6 +5990,11 @@ var GLTool = function () {
 				this.gl.viewport(x, y, w, h);
 				this._viewport = [x, y, w, h];
 			}
+		}
+	}, {
+		key: 'scissor',
+		value: function scissor(x, y, w, h) {
+			this.gl.scissor(x, y, w, h);
 		}
 	}, {
 		key: 'clear',
@@ -6022,7 +6028,7 @@ var GLTool = function () {
 		}
 	}, {
 		key: 'draw',
-		value: function draw(mMesh) {
+		value: function draw(mMesh, drawingType) {
 
 			if (mMesh.length) {
 				for (var i = 0; i < mMesh.length; i++) {
@@ -6067,11 +6073,16 @@ var GLTool = function () {
 			this.shader.uniform('uNormalMatrix', 'uniformMatrix3fv', this._normalMatrix);
 			this.shader.uniform('uModelViewMatrixInverse', 'uniformMatrix3fv', this._inverseModelViewMatrix);
 
+			var drawType = mMesh.drawType;
+			if (drawingType !== undefined) {
+				drawType = drawingType;
+			}
+
 			//	DRAWING
-			if (mMesh.drawType === this.gl.POINTS) {
-				this.gl.drawArrays(mMesh.drawType, 0, mMesh.vertexSize);
+			if (drawType === this.gl.POINTS) {
+				this.gl.drawArrays(drawType, 0, mMesh.vertexSize);
 			} else {
-				this.gl.drawElements(mMesh.drawType, mMesh.iBuffer.numItems, this.gl.UNSIGNED_SHORT, 0);
+				this.gl.drawElements(drawType, mMesh.iBuffer.numItems, this.gl.UNSIGNED_SHORT, 0);
 			}
 		}
 	}, {
