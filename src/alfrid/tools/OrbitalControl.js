@@ -157,6 +157,17 @@ class OrbitalControl {
 	}
 
 
+	//	GETTER / SETTER
+
+
+	get rx() {
+		return this._rx;
+	}
+
+
+	get ry() {
+		return this._ry;
+	}
 }
 
 

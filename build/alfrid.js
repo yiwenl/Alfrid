@@ -8735,6 +8735,19 @@ var OrbitalControl = function () {
 		value: function _updateCamera() {
 			this._target.lookAt(this.position, this.center, this._up);
 		}
+
+		//	GETTER / SETTER
+
+	}, {
+		key: 'rx',
+		get: function get() {
+			return this._rx;
+		}
+	}, {
+		key: 'ry',
+		get: function get() {
+			return this._ry;
+		}
 	}]);
 
 	return OrbitalControl;
