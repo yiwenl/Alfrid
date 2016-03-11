@@ -6067,9 +6067,12 @@ var GLTool = function () {
 			this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, mMesh.iBuffer);
 
 			//	DEFAULT MATRICES
-			this.shader.uniform('uProjectionMatrix', 'uniformMatrix4fv', this.camera.projection);
+			if (this.camera !== undefined) {
+				this.shader.uniform('uProjectionMatrix', 'uniformMatrix4fv', this.camera.projection);
+				this.shader.uniform('uViewMatrix', 'uniformMatrix4fv', this.camera.matrix);
+			}
+
 			this.shader.uniform('uModelMatrix', 'uniformMatrix4fv', this._modelMatrix);
-			this.shader.uniform('uViewMatrix', 'uniformMatrix4fv', this.camera.matrix);
 			this.shader.uniform('uNormalMatrix', 'uniformMatrix3fv', this._normalMatrix);
 			this.shader.uniform('uModelViewMatrixInverse', 'uniformMatrix3fv', this._inverseModelViewMatrix);
 
