@@ -24,7 +24,7 @@ img.src ='./assets/image.jpg';
 window.addEventListener('resize', () => resize());
 
 function _init() {
-	alfrid.log();
+	// alfrid.log();
 
 	let canvas = document.createElement("canvas");
 	canvas.className = 'Main-Canvas';
@@ -141,7 +141,7 @@ function loop() {
 
 	batch.draw();
 	batch2.draw();
-	shader.uniform("time", "uniform1f", cnt*.1);
+	shader.uniform("time", "float", cnt*.1);
 	
 
 	shaderUV.bind();

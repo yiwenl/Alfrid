@@ -41,7 +41,7 @@ import ShaderLibs			from './alfrid/tools/ShaderLibs';
 //	POST
 import EffectComposer		from './alfrid/post/EffectComposer';
 
-const VERSION = '1.0.0';
+const VERSION = '0.0.1';
 
 class alfrid {
 
@@ -89,8 +89,6 @@ class alfrid {
 			}
 		}
 
-
-		//	TESTING CODES
 	}
 
 

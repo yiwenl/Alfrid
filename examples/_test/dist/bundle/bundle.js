@@ -8,20 +8,20 @@
 
 var cnt = 0;
 var GL = alfrid.GL;
-var mesh = undefined,
-    shader = undefined,
-    cameraOrtho = undefined,
-    cameraPersp = undefined,
-    meshPlane = undefined,
-    meshSphere = undefined,
-    batchSphere = undefined,
-    shaderUV = undefined,
-    meshPlane2 = undefined;
-var texture = undefined;
-var batchCopy = undefined,
-    batch = undefined,
-    batch2 = undefined;
-var fbo = undefined;
+var mesh = void 0,
+    shader = void 0,
+    cameraOrtho = void 0,
+    cameraPersp = void 0,
+    meshPlane = void 0,
+    meshSphere = void 0,
+    batchSphere = void 0,
+    shaderUV = void 0,
+    meshPlane2 = void 0;
+var texture = void 0;
+var batchCopy = void 0,
+    batch = void 0,
+    batch2 = void 0;
+var fbo = void 0;
 
 var img = new Image();
 img.onload = function () {
@@ -40,7 +40,7 @@ window.addEventListener('resize', function () {
 });
 
 function _init() {
-	alfrid.log();
+	// alfrid.log();
 
 	var canvas = document.createElement("canvas");
 	canvas.className = 'Main-Canvas';
@@ -71,8 +71,8 @@ function _init() {
 	texture = new alfrid.GLTexture(img);
 
 	//	CREATE SHADER
-	shader = new alfrid.GLShader(null, "#define GLSLIFY 1\n// basic.frag\n\n#define SHADER_NAME BASIC_FRAGMENT\n\nprecision highp float;\nvarying vec2 vTextureCoord;\nuniform sampler2D texture;\nuniform float time;\n\nvoid main(void) {\n    gl_FragColor = texture2D(texture, vTextureCoord);\n    // gl_FragColor = vec4(vTextureCoord, sin(time) * .5 + .5, 1.0);\n}");
-	shaderUV = new alfrid.GLShader(null, "#define GLSLIFY 1\n// basic.frag\n\n#define SHADER_NAME BASIC_FRAGMENT\n\nprecision highp float;\nvarying vec2 vTextureCoord;\n// uniform sampler2D texture;\nuniform float time;\n\nvoid main(void) {\n    // gl_FragColor = texture2D(texture, vTextureCoord);\n    gl_FragColor = vec4(vTextureCoord, sin(time) * .5 + .5, 1.0);\n}");
+	shader = new alfrid.GLShader(null, "// basic.frag\n\n#define SHADER_NAME BASIC_FRAGMENT\n\nprecision highp float;\n#define GLSLIFY 1\nvarying vec2 vTextureCoord;\nuniform sampler2D texture;\nuniform float time;\n\nvoid main(void) {\n    gl_FragColor = texture2D(texture, vTextureCoord);\n    // gl_FragColor = vec4(vTextureCoord, sin(time) * .5 + .5, 1.0);\n}");
+	shaderUV = new alfrid.GLShader(null, "// basic.frag\n\n#define SHADER_NAME BASIC_FRAGMENT\n\nprecision highp float;\n#define GLSLIFY 1\nvarying vec2 vTextureCoord;\n// uniform sampler2D texture;\nuniform float time;\n\nvoid main(void) {\n    // gl_FragColor = texture2D(texture, vTextureCoord);\n    gl_FragColor = vec4(vTextureCoord, sin(time) * .5 + .5, 1.0);\n}");
 	shader.bind();
 	shader.uniform("texture", "uniform1i", 0);
 	texture.bind(0);
@@ -149,7 +149,7 @@ function loop() {
 
 	batch.draw();
 	batch2.draw();
-	shader.uniform("time", "uniform1f", cnt * .1);
+	shader.uniform("time", "float", cnt * .1);
 
 	shaderUV.bind();
 	shaderUV.uniform("time", "uniform1f", cnt * .1);

@@ -17,6 +17,16 @@ let gl;
 let defaultVertexShader = glslify('./shaders/basic.vert');
 let defaultFragmentShader = glslify('./shaders/basic.frag');
 
+const uniform_mapping = {
+	'float':'uniform1f',
+	'vec2':'uniform2fv',
+	'vec3':'uniform3fv',
+	'vec4':'uniform4fv',
+	'int':'uniform1i',
+	'mat3':'uniformMatrix3fv',
+	'mat4':'uniformMatrix4fv'
+};
+
 class GLShader {
 	constructor(strVertexShader=defaultVertexShader, strFragmentShader=defaultFragmentShader) {
 
@@ -45,7 +55,7 @@ class GLShader {
 
 
 	uniform(mName, mType, mValue) {
-
+		let uniformType = uniform_mapping[mType] || mType;
 		let hasUniform = false;
 		let oUniform;
 
@@ -60,16 +70,16 @@ class GLShader {
 
 		if(!hasUniform) {
 			this.shaderProgram[mName] = gl.getUniformLocation(this.shaderProgram, mName);
-			this.parameters.push({name : mName, type: mType, value: mValue, uniformLoc: this.shaderProgram[mName]});
+			this.parameters.push({name : mName, type: uniformType, value: mValue, uniformLoc: this.shaderProgram[mName]});
 		} else {
 			this.shaderProgram[mName] = oUniform.uniformLoc;
 		}
 
 
-		if(mType.indexOf('Matrix') === -1) {
-			gl[mType](this.shaderProgram[mName], mValue);
+		if(uniformType.indexOf('Matrix') === -1) {
+			gl[uniformType](this.shaderProgram[mName], mValue);
 		} else {
-			gl[mType](this.shaderProgram[mName], false, mValue);
+			gl[uniformType](this.shaderProgram[mName], false, mValue);
 			this.uniformValues[mName] = mValue;
 		}
 

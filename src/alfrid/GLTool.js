@@ -19,25 +19,28 @@ class GLTool {
 		if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
 			this.isMobile = true;
 		}
-
-		console.debug('Is Mobile : ', this.isMobile);
 	}
 
 	//	INITIALIZE
 
 	init(mCanvas, mParameters = {}) {
+
+		if(mCanvas === null || mCanvas === undefined) {
+			console.error('Canvas not exist');
+			return;
+		}
 		
-		if(this.canvas !== undefined) {
+		if(this.canvas !== undefined && this.canvas !== null) {
 			this.destroy();
 		}
-	
+		
 		this.canvas = mCanvas;
 		this.setSize(window.innerWidth, window.innerHeight);
 		this.gl          = this.canvas.getContext('webgl', mParameters) || this.canvas.getContext('experimental-webgl', mParameters);
 		
 
 		//	extensions
-		const extensions = ['EXT_shader_texture_lod', 'EXT_shader_texture_lod', 'EXT_sRGB', 'EXT_frag_depth', 'OES_texture_float', 'OES_texture_half_float', 'OES_texture_float_linear', 'OES_texture_half_float_linear', 'OES_standard_derivatives', 'WEBGL_depth_texture'];
+		const extensions = ['EXT_shader_texture_lod', 'EXT_sRGB', 'EXT_frag_depth', 'OES_texture_float', 'OES_texture_half_float', 'OES_texture_float_linear', 'OES_texture_half_float_linear', 'OES_standard_derivatives', 'WEBGL_depth_texture'];
 		this.extensions = {};
 		for(let i=0; i<extensions.length; i++) {
 			this.extensions[extensions[i]] = this.gl.getExtension(extensions[i]);
@@ -162,13 +165,13 @@ class GLTool {
 
 		//	DEFAULT MATRICES
 		if(this.camera !== undefined) {
-			this.shader.uniform('uProjectionMatrix', 'uniformMatrix4fv', this.camera.projection);	
-			this.shader.uniform('uViewMatrix', 'uniformMatrix4fv', this.camera.matrix);
+			this.shader.uniform('uProjectionMatrix', 'mat4', this.camera.projection);	
+			this.shader.uniform('uViewMatrix', 'mat4', this.camera.matrix);
 		}
 		
-		this.shader.uniform('uModelMatrix', 'uniformMatrix4fv', this._modelMatrix);
-		this.shader.uniform('uNormalMatrix', 'uniformMatrix3fv', this._normalMatrix);
-		this.shader.uniform('uModelViewMatrixInverse', 'uniformMatrix3fv', this._inverseModelViewMatrix);
+		this.shader.uniform('uModelMatrix', 'mat4', this._modelMatrix);
+		this.shader.uniform('uNormalMatrix', 'mat3', this._normalMatrix);
+		this.shader.uniform('uModelViewMatrixInverse', 'mat3', this._inverseModelViewMatrix);
 
 		let drawType = mMesh.drawType;
 		if(drawingType !== undefined) {
@@ -248,7 +251,7 @@ class GLTool {
 	//	DESTROY
 
 	destroy() {
-		this.canvas = null;
+		
 		if(this.canvas.parentNode) {
 			try {
 				this.canvas.parentNode.removeChild(this.canvas);
@@ -256,6 +259,8 @@ class GLTool {
 				console.log('Error : ', e);
 			}
 		}
+
+		this.canvas = null;
 	}
 }
 

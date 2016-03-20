@@ -1,8 +1,8 @@
 {
-  "name": "bongiovi",
-  "version": "1.0.0",
-  "description": "WebGL 3D tools",
-  "main": "gulpfile.babel.js",
+  "name": "alfrid",
+  "version": "0.0.1",
+  "description": "WebGL 3D toolkit",
+  "main": "build/alfrid.js",
   "directories": {
     "example": "examples"
   },
@@ -12,14 +12,14 @@
   "author": "Yi-Wen Lin",
   "license": "ISC",
   "devDependencies": {
-    "babel-core": "^6.4.5",
+    "babel-core": "6.7.2",
     "babel-preset-es2015": "^6.3.13",
     "babel-preset-stage-1": "^6.3.13",
     "babelify": "^7.2.0",
     "browser-sync": "^2.11.1",
     "browserify": "^13.0.0",
-    "gl-matrix": "^2.3.1",
-    "glslify": "^5.0.2",
+    "gl-matrix": "2.3.2",
+    "glslify": "5.0.2",
     "gulp": "^3.9.0",
     "gulp-babel": "^6.1.1",
     "gulp-derequire": "^2.1.0",
