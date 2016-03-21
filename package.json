@@ -1,6 +1,6 @@
 {
   "name": "alfrid",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "WebGL 3D toolkit",
   "main": "lib/alfrid.js",
   "directories": {
@@ -12,6 +12,9 @@
   },
   "author": "Yi-Wen Lin",
   "license": "ISC",
+  "dependencies": {
+    "gl-matrix": "2.3.2"
+  },
   "devDependencies": {
     "babel": "^6.5.2",
     "babel-cli": "^6.6.5",
@@ -21,7 +24,6 @@
     "babelify": "^7.2.0",
     "browser-sync": "^2.11.1",
     "browserify": "^13.0.0",
-    "gl-matrix": "2.3.2",
     "glslify": "5.0.2",
     "gulp": "^3.9.0",
     "gulp-babel": "^6.1.1",
