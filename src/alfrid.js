@@ -12,7 +12,7 @@ import FrameBuffer			from './alfrid/FrameBuffer';
 import CubeFrameBuffer		from './alfrid/CubeFrameBuffer';
 
 //	TOOLS
-import Scheduler 			from './alfrid/tools/Scheduler';
+import Scheduler 			from 'scheduling';
 import EventDispatcher 		from './alfrid/tools/EventDispatcher';
 import EaseNumber 			from './alfrid/tools/EaseNumber';
 import OrbitalControl		from './alfrid/tools/OrbitalControl';

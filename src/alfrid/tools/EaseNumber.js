@@ -1,6 +1,6 @@
 // EaseNumber.js
 
-import Scheduler from './Scheduler';
+import Scheduler from 'scheduling';
 
 class EaseNumber {
 	constructor(mValue, mEasing=0.1) {

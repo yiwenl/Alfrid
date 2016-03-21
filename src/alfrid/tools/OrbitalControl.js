@@ -2,7 +2,7 @@
 'use strict';
 
 import EaseNumber from './EaseNumber';
-import Scheduler from './Scheduler';
+import Scheduler from  'scheduling';
 import glm from 'gl-matrix';
 
 const getMouse = function(mEvent, mTarget) {

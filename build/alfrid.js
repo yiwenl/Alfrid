@@ -6485,6 +6485,156 @@ vec4.equals = function (a, b) {
 module.exports = vec4;
 
 },{"./common.js":2}],11:[function(_dereq_,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+// Scheduler.js
+var FRAMERATE = 60;
+
+var Scheduler = function () {
+	function Scheduler() {
+		_classCallCheck(this, Scheduler);
+
+		this._delayTasks = [];
+		this._nextTasks = [];
+		this._deferTasks = [];
+		this._highTasks = [];
+		this._usurpTask = [];
+		this._enterframeTasks = [];
+		this._idTable = 0;
+
+		this._loop();
+	}
+
+	//  PUBLIC METHODS
+
+	_createClass(Scheduler, [{
+		key: "addEF",
+		value: function addEF(func, params) {
+			params = params || [];
+			var id = this._idTable;
+			this._enterframeTasks[id] = { func: func, params: params };
+			this._idTable++;
+			return id;
+		}
+	}, {
+		key: "removeEF",
+		value: function removeEF(id) {
+			if (this._enterframeTasks[id] !== undefined) {
+				this._enterframeTasks[id] = null;
+			}
+			return -1;
+		}
+	}, {
+		key: "delay",
+		value: function delay(func, params, _delay) {
+			var time = new Date().getTime();
+			var t = { func: func, params: params, delay: _delay, time: time };
+			this._delayTasks.push(t);
+		}
+	}, {
+		key: "defer",
+		value: function defer(func, params) {
+			var t = { func: func, params: params };
+			this._deferTasks.push(t);
+		}
+	}, {
+		key: "next",
+		value: function next(func, params) {
+			var t = { func: func, params: params };
+			this._nextTasks.push(t);
+		}
+	}, {
+		key: "usurp",
+		value: function usurp(func, params) {
+			var t = { func: func, params: params };
+			this._usurpTask.push(t);
+		}
+
+		//  PRIVATE METHODS
+
+	}, {
+		key: "_process",
+		value: function _process() {
+			var i = 0;
+			var task = void 0;
+			var interval = void 0;
+			var current = void 0;
+			for (i = 0; i < this._enterframeTasks.length; i++) {
+				task = this._enterframeTasks[i];
+				if (task !== null && task !== undefined) {
+					task.func(task.params);
+				}
+			}
+
+			while (this._highTasks.length > 0) {
+				task = this._highTasks.pop();
+				task.func(task.params);
+			}
+
+			var startTime = new Date().getTime();
+
+			for (i = 0; i < this._delayTasks.length; i++) {
+				task = this._delayTasks[i];
+				if (startTime - task.time > task.delay) {
+					task.func(task.params);
+					this._delayTasks.splice(i, 1);
+				}
+			}
+
+			startTime = new Date().getTime();
+			interval = 1000 / FRAMERATE;
+			while (this._deferTasks.length > 0) {
+				task = this._deferTasks.shift();
+				current = new Date().getTime();
+				if (current - startTime < interval) {
+					task.func(task.params);
+				} else {
+					this._deferTasks.unshift(task);
+					break;
+				}
+			}
+
+			startTime = new Date().getTime();
+			interval = 1000 / FRAMERATE;
+			while (this._usurpTask.length > 0) {
+				task = this._usurpTask.shift();
+				current = new Date().getTime();
+				if (current - startTime < interval) {
+					task.func(task.params);
+				}
+			}
+
+			this._highTasks = this._highTasks.concat(this._nextTasks);
+			this._nextTasks = [];
+			this._usurpTask = [];
+		}
+	}, {
+		key: "_loop",
+		value: function _loop() {
+			var _this = this;
+
+			this._process();
+			window.requestAnimationFrame(function () {
+				return _this._loop();
+			});
+		}
+	}]);
+
+	return Scheduler;
+}();
+
+var scheduler = new Scheduler();
+
+exports.default = scheduler;
+},{}],12:[function(_dereq_,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // alfrid.js
@@ -6544,9 +6694,9 @@ var _CubeFrameBuffer = _dereq_('./alfrid/CubeFrameBuffer');
 
 var _CubeFrameBuffer2 = _interopRequireDefault(_CubeFrameBuffer);
 
-var _Scheduler = _dereq_('./alfrid/tools/Scheduler');
+var _scheduling = _dereq_('scheduling');
 
-var _Scheduler2 = _interopRequireDefault(_Scheduler);
+var _scheduling2 = _interopRequireDefault(_scheduling);
 
 var _EventDispatcher = _dereq_('./alfrid/tools/EventDispatcher');
 
@@ -6645,7 +6795,7 @@ var alfrid = function () {
 		this.Batch = _Batch2.default;
 		this.FrameBuffer = _FrameBuffer2.default;
 		this.CubeFrameBuffer = _CubeFrameBuffer2.default;
-		this.Scheduler = _Scheduler2.default;
+		this.Scheduler = _scheduling2.default;
 		this.EventDispatcher = _EventDispatcher2.default;
 		this.EaseNumber = _EaseNumber2.default;
 		this.Camera = _Camera2.default;
@@ -6701,7 +6851,7 @@ var b = new alfrid();
 
 module.exports = b;
 
-},{"./alfrid/Batch":12,"./alfrid/CubeFrameBuffer":13,"./alfrid/FrameBuffer":14,"./alfrid/GLCubeTexture":15,"./alfrid/GLShader":16,"./alfrid/GLTexture":17,"./alfrid/GLTool":18,"./alfrid/Geom":19,"./alfrid/Mesh":20,"./alfrid/cameras/Camera":21,"./alfrid/cameras/CameraCube":22,"./alfrid/cameras/CameraOrtho":23,"./alfrid/cameras/CameraPerspective":24,"./alfrid/helpers/BatchAxis":25,"./alfrid/helpers/BatchBall":26,"./alfrid/helpers/BatchCopy":27,"./alfrid/helpers/BatchDotsPlane":28,"./alfrid/helpers/Scene":29,"./alfrid/helpers/View":30,"./alfrid/loaders/BinaryLoader":31,"./alfrid/loaders/HDRLoader":32,"./alfrid/loaders/ObjLoader":33,"./alfrid/post/EffectComposer":34,"./alfrid/tools/EaseNumber":35,"./alfrid/tools/EventDispatcher":36,"./alfrid/tools/OrbitalControl":38,"./alfrid/tools/QuatRotation":39,"./alfrid/tools/Scheduler":40,"./alfrid/tools/ShaderLibs":41,"gl-matrix":1}],12:[function(_dereq_,module,exports){
+},{"./alfrid/Batch":13,"./alfrid/CubeFrameBuffer":14,"./alfrid/FrameBuffer":15,"./alfrid/GLCubeTexture":16,"./alfrid/GLShader":17,"./alfrid/GLTexture":18,"./alfrid/GLTool":19,"./alfrid/Geom":20,"./alfrid/Mesh":21,"./alfrid/cameras/Camera":22,"./alfrid/cameras/CameraCube":23,"./alfrid/cameras/CameraOrtho":24,"./alfrid/cameras/CameraPerspective":25,"./alfrid/helpers/BatchAxis":26,"./alfrid/helpers/BatchBall":27,"./alfrid/helpers/BatchCopy":28,"./alfrid/helpers/BatchDotsPlane":29,"./alfrid/helpers/Scene":30,"./alfrid/helpers/View":31,"./alfrid/loaders/BinaryLoader":32,"./alfrid/loaders/HDRLoader":33,"./alfrid/loaders/ObjLoader":34,"./alfrid/post/EffectComposer":35,"./alfrid/tools/EaseNumber":36,"./alfrid/tools/EventDispatcher":37,"./alfrid/tools/OrbitalControl":39,"./alfrid/tools/QuatRotation":40,"./alfrid/tools/ShaderLibs":41,"gl-matrix":1,"scheduling":11}],13:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6754,7 +6904,7 @@ var Batch = function () {
 
 exports.default = Batch;
 
-},{"./GLTool":18}],13:[function(_dereq_,module,exports){
+},{"./GLTool":19}],14:[function(_dereq_,module,exports){
 // CubeFrameBuffer.js
 
 'use strict';
@@ -6875,7 +7025,7 @@ var CubeFrameBuffer = function () {
 
 exports.default = CubeFrameBuffer;
 
-},{"./GLCubeTexture":15,"./GLTool":18}],14:[function(_dereq_,module,exports){
+},{"./GLCubeTexture":16,"./GLTool":19}],15:[function(_dereq_,module,exports){
 // FrameBuffer.js
 
 'use strict';
@@ -7077,7 +7227,7 @@ var FrameBuffer = function () {
 
 exports.default = FrameBuffer;
 
-},{"./GLTexture":17,"./GLTool":18}],15:[function(_dereq_,module,exports){
+},{"./GLTexture":18,"./GLTool":19}],16:[function(_dereq_,module,exports){
 // GLCubeTexture.js
 
 'use strict';
@@ -7168,7 +7318,7 @@ var GLCubeTexture = function () {
 
 exports.default = GLCubeTexture;
 
-},{"./GLTool":18}],16:[function(_dereq_,module,exports){
+},{"./GLTool":19}],17:[function(_dereq_,module,exports){
 // GLShader.js
 
 'use strict';
@@ -7200,6 +7350,7 @@ var addLineNumbers = function addLineNumbers(string) {
 var gl = void 0;
 var defaultVertexShader = "// basic.vert\n\n#define SHADER_NAME BASIC_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvarying vec2 vTextureCoord;\n\nvoid main(void) {\n    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);\n    vTextureCoord = aTextureCoord;\n}";
 var defaultFragmentShader = "// basic.frag\n\n#define SHADER_NAME BASIC_FRAGMENT\n\nprecision highp float;\n#define GLSLIFY 1\nvarying vec2 vTextureCoord;\nuniform float time;\n// uniform sampler2D texture;\n\nvoid main(void) {\n    gl_FragColor = vec4(vTextureCoord, sin(time) * .5 + .5, 1.0);\n}";
+
 var uniform_mapping = {
 	'float': 'uniform1f',
 	'vec2': 'uniform2fv',
@@ -7306,7 +7457,7 @@ var GLShader = function () {
 
 exports.default = GLShader;
 
-},{"./GLTool":18}],17:[function(_dereq_,module,exports){
+},{"./GLTool":19}],18:[function(_dereq_,module,exports){
 // GLTexture.js
 
 'use strict';
@@ -7483,7 +7634,7 @@ var GLTexture = function () {
 
 exports.default = GLTexture;
 
-},{"./GLTool":18}],18:[function(_dereq_,module,exports){
+},{"./GLTool":19}],19:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7802,7 +7953,7 @@ var GL = new GLTool();
 
 exports.default = GL;
 
-},{"gl-matrix":1}],19:[function(_dereq_,module,exports){
+},{"gl-matrix":1}],20:[function(_dereq_,module,exports){
 // Geom.js
 
 'use strict';
@@ -8343,7 +8494,7 @@ Geom.bigTriangle = function () {
 
 exports.default = Geom;
 
-},{"./Mesh":20}],20:[function(_dereq_,module,exports){
+},{"./Mesh":21}],21:[function(_dereq_,module,exports){
 // Mesh.js
 
 'use strict';
@@ -8637,7 +8788,7 @@ var Mesh = function () {
 
 exports.default = Mesh;
 
-},{"./GLTool":18,"gl-matrix":1}],21:[function(_dereq_,module,exports){
+},{"./GLTool":19,"gl-matrix":1}],22:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8705,7 +8856,7 @@ var Camera = function () {
 
 exports.default = Camera;
 
-},{"gl-matrix":1}],22:[function(_dereq_,module,exports){
+},{"gl-matrix":1}],23:[function(_dereq_,module,exports){
 // CameraCube.js
 
 'use strict';
@@ -8761,7 +8912,7 @@ var CameraCube = function (_CameraPerspective) {
 
 exports.default = CameraCube;
 
-},{"./CameraPerspective":24,"gl-matrix":1}],23:[function(_dereq_,module,exports){
+},{"./CameraPerspective":25,"gl-matrix":1}],24:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8824,7 +8975,7 @@ var CameraOrtho = function (_Camera) {
 
 exports.default = CameraOrtho;
 
-},{"./Camera":21,"gl-matrix":1}],24:[function(_dereq_,module,exports){
+},{"./Camera":22,"gl-matrix":1}],25:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8881,7 +9032,7 @@ var CameraPerspective = function (_Camera) {
 
 exports.default = CameraPerspective;
 
-},{"./Camera":21,"gl-matrix":1}],25:[function(_dereq_,module,exports){
+},{"./Camera":22,"gl-matrix":1}],26:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8954,7 +9105,7 @@ var BatchAxis = function (_Batch) {
 
 exports.default = BatchAxis;
 
-},{"../Batch":12,"../GLShader":16,"../GLTool":18,"../Mesh":20}],26:[function(_dereq_,module,exports){
+},{"../Batch":13,"../GLShader":17,"../GLTool":19,"../Mesh":21}],27:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9020,7 +9171,7 @@ var BatchBall = function (_Batch) {
 
 exports.default = BatchBall;
 
-},{"../Batch":12,"../GLShader":16,"../Geom":19}],27:[function(_dereq_,module,exports){
+},{"../Batch":13,"../GLShader":17,"../Geom":20}],28:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9083,7 +9234,7 @@ var BatchCopy = function (_Batch) {
 
 exports.default = BatchCopy;
 
-},{"../Batch":12,"../GLShader":16,"../Geom":19}],28:[function(_dereq_,module,exports){
+},{"../Batch":13,"../GLShader":17,"../Geom":20}],29:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9177,7 +9328,7 @@ var BatchDotsPlane = function (_Batch) {
 
 exports.default = BatchDotsPlane;
 
-},{"../Batch":12,"../GLShader":16,"../GLTool":18,"../Mesh":20}],29:[function(_dereq_,module,exports){
+},{"../Batch":13,"../GLShader":17,"../GLTool":19,"../Mesh":21}],30:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9186,13 +9337,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // Scene.js
 
+var _scheduling = _dereq_('scheduling');
+
+var _scheduling2 = _interopRequireDefault(_scheduling);
+
 var _GLTool = _dereq_('../GLTool');
 
 var _GLTool2 = _interopRequireDefault(_GLTool);
-
-var _Scheduler = _dereq_('../tools/Scheduler');
-
-var _Scheduler2 = _interopRequireDefault(_Scheduler);
 
 var _CameraPerspective = _dereq_('../cameras/CameraPerspective');
 
@@ -9220,7 +9371,7 @@ var Scene = function () {
 		this._initTextures();
 		this._initViews();
 
-		this._efIndex = _Scheduler2.default.addEF(function () {
+		this._efIndex = _scheduling2.default.addEF(function () {
 			return _this._loop();
 		});
 		window.addEventListener('resize', function () {
@@ -9239,7 +9390,7 @@ var Scene = function () {
 			if (this._efIndex === -1) {
 				return;
 			}
-			this._efIndex = _Scheduler2.default.removeEF(this._efIndex);
+			this._efIndex = _scheduling2.default.removeEF(this._efIndex);
 		}
 	}, {
 		key: 'start',
@@ -9250,7 +9401,7 @@ var Scene = function () {
 				return;
 			}
 
-			this._efIndex = _Scheduler2.default.addEF(function () {
+			this._efIndex = _scheduling2.default.addEF(function () {
 				return _this2._loop();
 			});
 		}
@@ -9301,7 +9452,7 @@ var Scene = function () {
 
 exports.default = Scene;
 
-},{"../GLTool":18,"../cameras/CameraOrtho":23,"../cameras/CameraPerspective":24,"../tools/OrbitalControl":38,"../tools/Scheduler":40}],30:[function(_dereq_,module,exports){
+},{"../GLTool":19,"../cameras/CameraOrtho":24,"../cameras/CameraPerspective":25,"../tools/OrbitalControl":39,"scheduling":11}],31:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9345,7 +9496,7 @@ var View = function () {
 
 exports.default = View;
 
-},{"../GLShader":16}],31:[function(_dereq_,module,exports){
+},{"../GLShader":17}],32:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9404,7 +9555,7 @@ var BinaryLoader = function () {
 
 exports.default = BinaryLoader;
 
-},{}],32:[function(_dereq_,module,exports){
+},{}],33:[function(_dereq_,module,exports){
 // HDRLoader.js
 
 'use strict';
@@ -9464,7 +9615,7 @@ HDRLoader.parse = function (mArrayBuffer) {
 
 exports.default = HDRLoader;
 
-},{"../tools/HDRParser":37,"./BinaryLoader":31}],33:[function(_dereq_,module,exports){
+},{"../tools/HDRParser":38,"./BinaryLoader":32}],34:[function(_dereq_,module,exports){
 // ObjLoader.js
 
 'use strict';
@@ -9769,7 +9920,7 @@ var ObjLoader = function (_BinaryLoader) {
 
 exports.default = ObjLoader;
 
-},{"../Mesh":20,"./BinaryLoader":31}],34:[function(_dereq_,module,exports){
+},{"../Mesh":21,"./BinaryLoader":32}],35:[function(_dereq_,module,exports){
 // EffectComposer.js
 
 'use strict';
@@ -9838,7 +9989,7 @@ var EffectComposer = function () {
 
 exports.default = EffectComposer;
 
-},{"../FrameBuffer":14,"../GLTool":18,"../Geom":19}],35:[function(_dereq_,module,exports){
+},{"../FrameBuffer":15,"../GLTool":19,"../Geom":20}],36:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9847,9 +9998,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // EaseNumber.js
 
-var _Scheduler = _dereq_('./Scheduler');
+var _scheduling = _dereq_('scheduling');
 
-var _Scheduler2 = _interopRequireDefault(_Scheduler);
+var _scheduling2 = _interopRequireDefault(_scheduling);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9866,7 +10017,7 @@ var EaseNumber = function () {
 		this.easing = mEasing;
 		this._value = mValue;
 		this._targetValue = mValue;
-		_Scheduler2.default.addEF(function () {
+		_scheduling2.default.addEF(function () {
 			return _this._update();
 		});
 	}
@@ -9934,7 +10085,7 @@ var EaseNumber = function () {
 
 exports.default = EaseNumber;
 
-},{"./Scheduler":40}],36:[function(_dereq_,module,exports){
+},{"scheduling":11}],37:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10072,7 +10223,7 @@ var EventDispatcher = function () {
 
 exports.default = EventDispatcher;
 
-},{}],37:[function(_dereq_,module,exports){
+},{}],38:[function(_dereq_,module,exports){
 // HDRParser.js
 
 'use strict';
@@ -10284,7 +10435,7 @@ function parseHdr(buffer) {
 
 exports.default = parseHdr;
 
-},{}],38:[function(_dereq_,module,exports){
+},{}],39:[function(_dereq_,module,exports){
 // OrbitalControl.js
 'use strict';
 
@@ -10298,9 +10449,9 @@ var _EaseNumber = _dereq_('./EaseNumber');
 
 var _EaseNumber2 = _interopRequireDefault(_EaseNumber);
 
-var _Scheduler = _dereq_('./Scheduler');
+var _scheduling = _dereq_('scheduling');
 
-var _Scheduler2 = _interopRequireDefault(_Scheduler);
+var _scheduling2 = _interopRequireDefault(_scheduling);
 
 var _glMatrix = _dereq_('gl-matrix');
 
@@ -10378,7 +10529,7 @@ var OrbitalControl = function () {
 			return _this._onUp();
 		});
 
-		_Scheduler2.default.addEF(function () {
+		_scheduling2.default.addEF(function () {
 			return _this._loop();
 		});
 	}
@@ -10530,7 +10681,7 @@ var OrbitalControl = function () {
 
 exports.default = OrbitalControl;
 
-},{"./EaseNumber":35,"./Scheduler":40,"gl-matrix":1}],39:[function(_dereq_,module,exports){
+},{"./EaseNumber":36,"gl-matrix":1,"scheduling":11}],40:[function(_dereq_,module,exports){
 // QuatRotation.js
 
 'use strict';
@@ -10549,9 +10700,9 @@ var _EaseNumber = _dereq_('./EaseNumber');
 
 var _EaseNumber2 = _interopRequireDefault(_EaseNumber);
 
-var _Scheduler = _dereq_('./Scheduler');
+var _scheduling = _dereq_('scheduling');
 
-var _Scheduler2 = _interopRequireDefault(_Scheduler);
+var _scheduling2 = _interopRequireDefault(_scheduling);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -10619,7 +10770,7 @@ var QuatRotation = function () {
 			return _this._onUp();
 		});
 
-		_Scheduler2.default.addEF(function () {
+		_scheduling2.default.addEF(function () {
 			return _this._loop();
 		});
 	}
@@ -10799,176 +10950,7 @@ var QuatRotation = function () {
 
 exports.default = QuatRotation;
 
-},{"./EaseNumber":35,"./Scheduler":40,"gl-matrix":1}],40:[function(_dereq_,module,exports){
-// Scheduler.js
-
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-if (window.requestAnimFrame === undefined) {
-	window.requestAnimFrame = function () {
-		return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function (callback) {
-			window.setTimeout(callback, 1000 / 60);
-		};
-	}();
-}
-
-var FRAMERATE = 60;
-
-var Scheduler = function () {
-	function Scheduler() {
-		_classCallCheck(this, Scheduler);
-
-		this._delayTasks = [];
-		this._nextTasks = [];
-		this._deferTasks = [];
-		this._highTasks = [];
-		this._usurpTask = [];
-		this._enterframeTasks = [];
-		this._idTable = 0;
-
-		this._loop();
-	}
-
-	//	PUBLIC METHODS
-
-	_createClass(Scheduler, [{
-		key: 'addEF',
-		value: function addEF(func, params) {
-			params = params || [];
-			var id = this._idTable;
-			this._enterframeTasks[id] = { func: func, params: params };
-			this._idTable++;
-			return id;
-		}
-	}, {
-		key: 'removeEF',
-		value: function removeEF(id) {
-			if (this._enterframeTasks[id] !== undefined) {
-				this._enterframeTasks[id] = null;
-			}
-			return -1;
-		}
-	}, {
-		key: 'delay',
-		value: function delay(func, params, _delay) {
-			var time = new Date().getTime();
-			var t = { func: func, params: params, delay: _delay, time: time };
-			this._delayTasks.push(t);
-		}
-	}, {
-		key: 'defer',
-		value: function defer(func, params) {
-			var t = { func: func, params: params };
-			this._deferTasks.push(t);
-		}
-	}, {
-		key: 'next',
-		value: function next(func, params) {
-			var t = { func: func, params: params };
-			this._nextTasks.push(t);
-		}
-	}, {
-		key: 'usurp',
-		value: function usurp(func, params) {
-			var t = { func: func, params: params };
-			this._usurpTask.push(t);
-		}
-
-		//	PRIVATE METHODS
-
-	}, {
-		key: '_process',
-		value: function _process() {
-			var i = 0,
-			    task = void 0,
-			    interval = void 0,
-			    current = void 0;
-			for (i = 0; i < this._enterframeTasks.length; i++) {
-				task = this._enterframeTasks[i];
-				if (task !== null && task !== undefined) {
-					// task.func.apply(task.scope, task.params);
-					// console.log(task.func());
-					task.func(task.params);
-				}
-			}
-
-			while (this._highTasks.length > 0) {
-				task = this._highTasks.pop();
-				task.func(task.params);
-				// task.func.apply(task.scope, task.params);
-			}
-
-			var startTime = new Date().getTime();
-
-			for (i = 0; i < this._delayTasks.length; i++) {
-				task = this._delayTasks[i];
-				if (startTime - task.time > task.delay) {
-					// task.func.apply(task.scope, task.params);
-					task.func(task.params);
-					this._delayTasks.splice(i, 1);
-				}
-			}
-
-			startTime = new Date().getTime();
-			interval = 1000 / FRAMERATE;
-			while (this._deferTasks.length > 0) {
-				task = this._deferTasks.shift();
-				current = new Date().getTime();
-				if (current - startTime < interval) {
-					// task.func.apply(task.scope, task.params);
-					task.func(task.params);
-				} else {
-					this._deferTasks.unshift(task);
-					break;
-				}
-			}
-
-			startTime = new Date().getTime();
-			interval = 1000 / FRAMERATE;
-			while (this._usurpTask.length > 0) {
-				task = this._usurpTask.shift();
-				current = new Date().getTime();
-				if (current - startTime < interval) {
-					// task.func.apply(task.scope, task.params);
-					task.func(task.params);
-				} else {
-					// this._usurpTask.unshift(task);
-					break;
-				}
-			}
-
-			this._highTasks = this._highTasks.concat(this._nextTasks);
-			this._nextTasks = [];
-			this._usurpTask = [];
-		}
-	}, {
-		key: '_loop',
-		value: function _loop() {
-			var _this = this;
-
-			this._process();
-			window.requestAnimFrame(function () {
-				return _this._loop();
-			});
-		}
-	}]);
-
-	return Scheduler;
-}();
-
-var scheduler = new Scheduler();
-
-exports.default = scheduler;
-
-},{}],41:[function(_dereq_,module,exports){
+},{"./EaseNumber":36,"gl-matrix":1,"scheduling":11}],41:[function(_dereq_,module,exports){
 // ShaderLbs.js
 
 'use strict';
@@ -10987,7 +10969,7 @@ var ShaderLibs = {
 
 exports.default = ShaderLibs;
 
-},{}]},{},[11])(11)
+},{}]},{},[12])(12)
 });
 
 
