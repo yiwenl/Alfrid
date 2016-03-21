@@ -1,7 +1,7 @@
 // Scene.js
 
+import Scheduler from 'scheduling';
 import GL from '../GLTool';
-import Scheduler from '../tools/Scheduler';
 import CameraPerspective from '../cameras/CameraPerspective';
 import cameraOrtho from '../cameras/CameraOrtho';
 import OrbitalControl from '../tools/OrbitalControl';

@@ -131,47 +131,44 @@ function _init() {
 }
 
 function loop() {
-	var max = 60 * 5;
-	var gray = 0;
-
-	GL.enable(GL.DEPTH_TEST);
-	GL.viewport(0, 0, GL.width, GL.height);
-	fbo.bind();
-	GL.setMatrices(cameraPersp);
-	GL.clear(0, 0, 0, 0);
-
-	//	WITHOUT BATCH : BIND SHADER THEN DRAW MESH
-
-	shader.bind();
-	GL.draw(mesh);
-
-	//	DRAWING USING BATCH
-
-	batch.draw();
-	batch2.draw();
-	shader.uniform("time", "float", cnt * .1);
-
-	shaderUV.bind();
-	shaderUV.uniform("time", "uniform1f", cnt * .1);
-
-	batchSphere.draw();
-	fbo.unbind();
-
-	GL.setMatrices(cameraOrtho);
-	GL.disable(GL.DEPTH_TEST);
-
-	GL.viewport(0, 0, GL.width, GL.height);
-	batchCopy.draw(fbo.getTexture());
-
-	GL.viewport(0, 0, 200, 200 / GL.aspectRatio);
-	batchCopy.draw(fbo.getDepthTexture());
-
-	GL.viewport(200, 0, 100, 100 * 983 / 736);
-	batchCopy.draw(texture);
-
-	if (cnt++ > max) {
-		// window.location.href = './';
-	}
+	/*
+ const max = 60 * 5;
+ let gray = 0;
+ 
+ GL.enable(GL.DEPTH_TEST);
+ GL.viewport(0, 0, GL.width, GL.height);
+ fbo.bind();
+ GL.setMatrices(cameraPersp);
+ GL.clear(0, 0, 0, 0);
+ 
+ //	WITHOUT BATCH : BIND SHADER THEN DRAW MESH
+ 	shader.bind();
+ GL.draw(mesh);
+ 
+ //	DRAWING USING BATCH
+ 	batch.draw();
+ batch2.draw();
+ shader.uniform("time", "float", cnt*.1);
+ 
+ 	shaderUV.bind();
+ shaderUV.uniform("time", "uniform1f", cnt*.1);
+ 
+ batchSphere.draw();
+ fbo.unbind();
+ 
+ GL.setMatrices(cameraOrtho);
+ GL.disable(GL.DEPTH_TEST);
+ 	GL.viewport(0, 0, GL.width, GL.height);
+ batchCopy.draw(fbo.getTexture());
+ 	GL.viewport(0, 0, 200, 200/GL.aspectRatio);
+ batchCopy.draw(fbo.getDepthTexture());
+ 	GL.viewport(200, 0, 100, 100 *983/736);
+ batchCopy.draw(texture);
+ 
+ 	if(cnt++ > max) {
+ 	// window.location.href = './';
+ }
+ 	*/
 }
 
 function resize() {

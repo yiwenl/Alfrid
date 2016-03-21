@@ -120,6 +120,7 @@ function _init() {
 
 
 function loop() {
+	/*
 	const max = 60 * 5;
 	let gray = 0;
 
@@ -168,6 +169,8 @@ function loop() {
 	if(cnt++ > max) {
 		// window.location.href = './';
 	}
+
+	*/
 }
 
 function resize() {

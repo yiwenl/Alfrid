@@ -5,10 +5,13 @@
   "main": "gulpfile.babel.js",
   "dependencies": {
     "babel-preset-es2015": "^6.3.13",
-    "gulp-sourcemaps": "^1.6.0"
+    "gulp-sourcemaps": "^1.6.0",
+    "scheduling": "^1.0.2"
   },
   "browserify": {
-    "transform": ["glslify"]
+    "transform": [
+      "glslify"
+    ]
   },
   "devDependencies": {
     "babel-preset-stage-1": "^6.3.13",
