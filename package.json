@@ -11,7 +11,7 @@
     "build": "webpack --progress --colors; babel src --out-dir lib"
   },
   "author": "Yi-Wen Lin",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "gl-matrix": "2.3.2",
     "scheduling": "1.0.3"
