@@ -1,6 +1,6 @@
 {
   "name": "alfrid",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "WebGL 3D toolkit",
   "main": "build/alfrid.js",
   "directories": {
@@ -21,7 +21,7 @@
     "url": "https://github.com/yiwenl/Alfrid"
   },
   "bugs": {
-    "url": "https://github.com/mrdoob/three.js/issues"
+    "url": "https://github.com/yiwenl/Alfrid/issues"
   },
   "devDependencies": {
     "babel": "^6.5.2",
