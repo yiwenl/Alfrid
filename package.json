@@ -1,6 +1,6 @@
 {
   "name": "alfrid",
-  "version": "0.0.6",
+  "version": "0.0.8",
   "description": "WebGL 3D toolkit",
   "main": "build/alfrid.js",
   "directories": {
@@ -11,10 +11,17 @@
     "build": "webpack --progress --colors; babel src --out-dir lib"
   },
   "author": "Yi-Wen Lin",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "gl-matrix": "2.3.2",
-    "scheduling": "^1.0.2"
+    "scheduling": "1.0.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yiwenl/Alfrid"
+  },
+  "bugs": {
+    "url": "https://github.com/yiwenl/Alfrid/issues"
   },
   "devDependencies": {
     "babel": "^6.5.2",
