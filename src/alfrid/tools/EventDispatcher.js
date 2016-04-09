@@ -11,15 +11,16 @@ try {
 class EventDispatcher {
 
 	constructor() {
-
+		this._eventListeners = {};
 	}
 
 
 	addEventListener(aEventType, aFunction) {
 
-		if(this._eventListeners === null) {
+		if(this._eventListeners === null || this._eventListeners === undefined) {
 			this._eventListeners = {};
 		}
+
 		if(!this._eventListeners[aEventType]){
 			this._eventListeners[aEventType] = [];
 		}
@@ -29,9 +30,10 @@ class EventDispatcher {
 
 	}
 
+	on(aEventType, aFunction) {	return this.addEventListener(aEventType, aFunction);	}
 
 	removeEventListener(aEventType, aFunction) {
-		if(this._eventListeners === null) {
+		if(this._eventListeners === null || this._eventListeners === undefined) {
 			this._eventListeners = {};
 		}
 		let currentArray = this._eventListeners[aEventType];
@@ -51,8 +53,10 @@ class EventDispatcher {
 		return this;
 	}
 
+	off(aEventType, aFunction) {	return this.removeEventListener(aEventType, aFunction);	}
+
 	dispatchEvent(aEvent) {
-		if(this._eventListeners === null) {
+		if(this._eventListeners === null || this._eventListeners === undefined) {
 			this._eventListeners = {};
 		}
 		let eventType = aEvent.type;
@@ -92,6 +96,8 @@ class EventDispatcher {
 		}
 		return this.dispatchEvent(newEvent);
 	}
+
+	trigger(aEventType, aDetail) {	return this.dispatchCustomEvent(aEventType, aDetail);	}
 
 	_destroy() {
 		if(this._eventListeners !== null) {

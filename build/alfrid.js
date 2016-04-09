@@ -10109,15 +10109,18 @@ try {
 var EventDispatcher = function () {
 	function EventDispatcher() {
 		_classCallCheck(this, EventDispatcher);
+
+		this._eventListeners = {};
 	}
 
 	_createClass(EventDispatcher, [{
 		key: 'addEventListener',
 		value: function addEventListener(aEventType, aFunction) {
 
-			if (this._eventListeners === null) {
+			if (this._eventListeners === null || this._eventListeners === undefined) {
 				this._eventListeners = {};
 			}
+
 			if (!this._eventListeners[aEventType]) {
 				this._eventListeners[aEventType] = [];
 			}
@@ -10126,9 +10129,14 @@ var EventDispatcher = function () {
 			return this;
 		}
 	}, {
+		key: 'on',
+		value: function on(aEventType, aFunction) {
+			return this.addEventListener(aEventType, aFunction);
+		}
+	}, {
 		key: 'removeEventListener',
 		value: function removeEventListener(aEventType, aFunction) {
-			if (this._eventListeners === null) {
+			if (this._eventListeners === null || this._eventListeners === undefined) {
 				this._eventListeners = {};
 			}
 			var currentArray = this._eventListeners[aEventType];
@@ -10148,9 +10156,14 @@ var EventDispatcher = function () {
 			return this;
 		}
 	}, {
+		key: 'off',
+		value: function off(aEventType, aFunction) {
+			return this.removeEventListener(aEventType, aFunction);
+		}
+	}, {
 		key: 'dispatchEvent',
 		value: function dispatchEvent(aEvent) {
-			if (this._eventListeners === null) {
+			if (this._eventListeners === null || this._eventListeners === undefined) {
 				this._eventListeners = {};
 			}
 			var eventType = aEvent.type;
@@ -10188,6 +10201,11 @@ var EventDispatcher = function () {
 				newEvent = { 'type': aEventType, 'detail': aDetail, 'dispatcher': this };
 			}
 			return this.dispatchEvent(newEvent);
+		}
+	}, {
+		key: 'trigger',
+		value: function trigger(aEventType, aDetail) {
+			return this.dispatchCustomEvent(aEventType, aDetail);
 		}
 	}, {
 		key: '_destroy',

@@ -1,10 +1,63 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
-// console.log('alfrid : ', alfrid);
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+// DispatcherTest.js
+
+var DispatcherTest = function (_alfrid$EventDispatch) {
+	_inherits(DispatcherTest, _alfrid$EventDispatch);
+
+	function DispatcherTest() {
+		_classCallCheck(this, DispatcherTest);
+
+		// this.test();
+
+		// window.setTimeout(()=> this.test(), 1000);
+
+		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(DispatcherTest).call(this));
+
+		window.setInterval(function () {
+			return _this.test();
+		}, 1000);
+		return _this;
+	}
+
+	_createClass(DispatcherTest, [{
+		key: 'test',
+		value: function test() {
+			// console.log('test');
+			// this.dispatchCustomEvent('test', {x:Math.random()});
+			this.trigger('test', { x: Math.random() });
+		}
+	}]);
+
+	return DispatcherTest;
+}(alfrid.EventDispatcher);
+
+exports.default = DispatcherTest;
+
+},{}],2:[function(require,module,exports){
+'use strict';
+
+var _DispatcherTest = require('./DispatcherTest');
+
+var _DispatcherTest2 = _interopRequireDefault(_DispatcherTest);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // import glslify from 'glslify';
-
+ // console.log('alfrid : ', alfrid);
 
 var cnt = 0;
 var GL = alfrid.GL;
@@ -38,6 +91,17 @@ img.src = './assets/image.jpg';
 window.addEventListener('resize', function () {
 	return resize();
 });
+
+var dispatcher = new _DispatcherTest2.default();
+
+// dispatcher.addEventListener('test', (o)=>onTest(o));
+dispatcher.on('test', function (o) {
+	return onTest(o);
+});
+
+function onTest(o) {
+	// console.log('onTest :', o);
+}
 
 function _init() {
 	// alfrid.log();
@@ -176,6 +240,6 @@ function resize() {
 	cameraPersp.setAspectRatio(GL.aspectRatio);
 }
 
-},{}]},{},[1]);
+},{"./DispatcherTest":1}]},{},[2]);
 
 //# sourceMappingURL=bundle.js.map

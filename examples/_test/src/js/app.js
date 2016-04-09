@@ -1,5 +1,6 @@
 // console.log('alfrid : ', alfrid);
 
+import DispatcherTest from './DispatcherTest';
 // import glslify from 'glslify';
 var glslify = require("glslify");
 
@@ -22,6 +23,17 @@ img.onload = function() {
 img.src ='./assets/image.jpg';
 
 window.addEventListener('resize', () => resize());
+
+
+let dispatcher = new DispatcherTest();
+
+// dispatcher.addEventListener('test', (o)=>onTest(o));
+dispatcher.on('test', (o)=>onTest(o));
+
+function onTest(o) {
+	// console.log('onTest :', o);
+}
+
 
 function _init() {
 	// alfrid.log();
