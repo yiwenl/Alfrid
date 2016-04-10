@@ -10935,9 +10935,12 @@ var QuatRotation = function () {
 			} else {
 				this._slerp += (0 - this._slerp) * 0.1;
 
-				if (this._slerp < 0.001) {
-					_glMatrix2.default.quat.set(this._rotation, this._targetQuat[0], this._targetQuat[1], this._targetQuat[2], this._targetQuat[3]);
+				if (this._slerp < 0.0005) {
+					_glMatrix2.default.quat.copy(this._rotation, this._targetQuat);
+					_glMatrix2.default.quat.copy(this.tempRotation, this._targetQuat);
 					this._targetQuat = undefined;
+					this._diffX.setTo(0);
+					this._diffY.setTo(0);
 					this._slerp = -1;
 				} else {
 					_glMatrix2.default.quat.set(this.tempRotation, 0, 0, 0, 0);
