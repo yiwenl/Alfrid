@@ -10520,6 +10520,7 @@ var OrbitalControl = function () {
 		this._isLockZoom = false;
 		this._isLockRotation = false;
 		this._isInvert = false;
+		this.sensitivity = 1.0;
 
 		this._listenerTarget.addEventListener('mousewheel', function (e) {
 			return _this._onWheel(e);
@@ -10614,13 +10615,13 @@ var OrbitalControl = function () {
 				if (this._isInvert) {
 					diffX *= -1;
 				}
-				this._ry.value = this._preRY - diffX * 0.01;
+				this._ry.value = this._preRY - diffX * 0.01 * this.sensitivity;
 
 				var diffY = -(this._mouse.y - this._preMouse.y);
 				if (this._isInvert) {
 					diffY *= -1;
 				}
-				this._rx.value = this._preRX - diffY * 0.01;
+				this._rx.value = this._preRX - diffY * 0.01 * this.sensitivity;
 			}
 		}
 	}, {
