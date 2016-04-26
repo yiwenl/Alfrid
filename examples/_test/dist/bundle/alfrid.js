@@ -7993,10 +7993,12 @@ Geom.plane = function (width, height, numSegments) {
 			var ty = gapY * j + sy;
 
 			if (axis === 'xz') {
-				positions.push([tx, 0, -ty + gapY]);
-				positions.push([tx + gapX, 0, -ty + gapY]);
-				positions.push([tx + gapX, 0, -ty]);
-				positions.push([tx, 0, -ty]);
+				positions.push([tx, 0, ty + gapY]);
+				positions.push([tx + gapX, 0, ty + gapY]);
+				positions.push([tx + gapX, 0, ty]);
+				positions.push([tx, 0, ty]);
+
+				console.log(positions);
 
 				normals.push([0, 1, 0]);
 				normals.push([0, 1, 0]);

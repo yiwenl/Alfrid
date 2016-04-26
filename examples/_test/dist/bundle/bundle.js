@@ -175,7 +175,8 @@ function _init() {
 
 	//	MESH VIA GEOM
 
-	meshPlane = alfrid.Geom.plane(7, 7 * 983 / 736, 12, false, 'xz');
+	// meshPlane  = alfrid.Geom.plane(7, 7*983/736, 12, false, 'xz');
+	meshPlane = alfrid.Geom.plane(5, 5, 1, false, 'xz');
 	meshPlane2 = alfrid.Geom.plane(1.5, 1.5 * 983 / 736, 1);
 	meshSphere = alfrid.Geom.sphere(1, 48);
 
@@ -195,44 +196,48 @@ function _init() {
 }
 
 function loop() {
-	/*
- const max = 60 * 5;
- let gray = 0;
- 
- GL.enable(GL.DEPTH_TEST);
- GL.viewport(0, 0, GL.width, GL.height);
- fbo.bind();
- GL.setMatrices(cameraPersp);
- GL.clear(0, 0, 0, 0);
- 
- //	WITHOUT BATCH : BIND SHADER THEN DRAW MESH
- 	shader.bind();
- GL.draw(mesh);
- 
- //	DRAWING USING BATCH
- 	batch.draw();
- batch2.draw();
- shader.uniform("time", "float", cnt*.1);
- 
- 	shaderUV.bind();
- shaderUV.uniform("time", "uniform1f", cnt*.1);
- 
- batchSphere.draw();
- fbo.unbind();
- 
- GL.setMatrices(cameraOrtho);
- GL.disable(GL.DEPTH_TEST);
- 	GL.viewport(0, 0, GL.width, GL.height);
- batchCopy.draw(fbo.getTexture());
- 	GL.viewport(0, 0, 200, 200/GL.aspectRatio);
- batchCopy.draw(fbo.getDepthTexture());
- 	GL.viewport(200, 0, 100, 100 *983/736);
- batchCopy.draw(texture);
- 
- 	if(cnt++ > max) {
- 	// window.location.href = './';
- }
- 	*/
+
+	var max = 60 * 5;
+	var gray = 0;
+
+	GL.enable(GL.DEPTH_TEST);
+	GL.viewport(0, 0, GL.width, GL.height);
+	fbo.bind();
+	GL.setMatrices(cameraPersp);
+	GL.clear(0, 0, 0, 0);
+
+	//	WITHOUT BATCH : BIND SHADER THEN DRAW MESH
+
+	shader.bind();
+	GL.draw(mesh);
+
+	//	DRAWING USING BATCH
+
+	batch.draw();
+	batch2.draw();
+	shader.uniform("time", "float", cnt * .1);
+
+	shaderUV.bind();
+	shaderUV.uniform("time", "uniform1f", cnt * .1);
+
+	batchSphere.draw();
+	fbo.unbind();
+
+	GL.setMatrices(cameraOrtho);
+	GL.disable(GL.DEPTH_TEST);
+
+	GL.viewport(0, 0, GL.width, GL.height);
+	batchCopy.draw(fbo.getTexture());
+
+	GL.viewport(0, 0, 200, 200 / GL.aspectRatio);
+	batchCopy.draw(fbo.getDepthTexture());
+
+	GL.viewport(200, 0, 100, 100 * 983 / 736);
+	batchCopy.draw(texture);
+
+	if (cnt++ > max) {
+		// window.location.href = './';
+	}
 }
 
 function resize() {
