@@ -9,7 +9,10 @@ const ShaderLibs = {
 	bigTriangleVert:glslify('../shaders/bigTriangle.vert'),
 	generalVert:glslify('../shaders/general.vert'),
 	generalNormalVert:glslify('../shaders/generalWithNormal.vert'),
-	copyFrag:glslify('../shaders/copy.frag')
+	copyFrag:glslify('../shaders/copy.frag'),
+	basicVert:glslify('../shaders/basic.vert'),
+	skyboxVert:glslify('../shaders/skybox.vert'),
+	skyboxFrag:glslify('../shaders/skybox.frag')
 };
 
 

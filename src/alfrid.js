@@ -34,6 +34,7 @@ import BatchCopy			from './alfrid/helpers/BatchCopy';
 import BatchAxis			from './alfrid/helpers/BatchAxis';
 import BatchBall			from './alfrid/helpers/BatchBall';
 import BatchDotsPlane		from './alfrid/helpers/BatchDotsPlane';
+import BatchSkybox			from './alfrid/helpers/BatchSkybox';
 import Scene				from './alfrid/helpers/Scene';
 import View					from './alfrid/helpers/View';
 import ShaderLibs			from './alfrid/tools/ShaderLibs';
@@ -74,6 +75,7 @@ class alfrid {
 		this.BatchAxis         = BatchAxis;
 		this.BatchBall         = BatchBall;
 		this.BatchBall         = BatchBall;
+		this.BatchSkybox       = BatchSkybox;
 		this.BatchDotsPlane    = BatchDotsPlane;
 		this.Scene             = Scene;
 		this.View              = View;

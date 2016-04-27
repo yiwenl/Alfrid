@@ -6758,6 +6758,10 @@ var _BatchDotsPlane = _dereq_('./alfrid/helpers/BatchDotsPlane');
 
 var _BatchDotsPlane2 = _interopRequireDefault(_BatchDotsPlane);
 
+var _BatchSkybox = _dereq_('./alfrid/helpers/BatchSkybox');
+
+var _BatchSkybox2 = _interopRequireDefault(_BatchSkybox);
+
 var _Scene = _dereq_('./alfrid/helpers/Scene');
 
 var _Scene2 = _interopRequireDefault(_Scene);
@@ -6811,6 +6815,7 @@ var alfrid = function () {
 		this.BatchAxis = _BatchAxis2.default;
 		this.BatchBall = _BatchBall2.default;
 		this.BatchBall = _BatchBall2.default;
+		this.BatchSkybox = _BatchSkybox2.default;
 		this.BatchDotsPlane = _BatchDotsPlane2.default;
 		this.Scene = _Scene2.default;
 		this.View = _View2.default;
@@ -6851,7 +6856,7 @@ var b = new alfrid();
 
 module.exports = b;
 
-},{"./alfrid/Batch":13,"./alfrid/CubeFrameBuffer":14,"./alfrid/FrameBuffer":15,"./alfrid/GLCubeTexture":16,"./alfrid/GLShader":17,"./alfrid/GLTexture":18,"./alfrid/GLTool":19,"./alfrid/Geom":20,"./alfrid/Mesh":21,"./alfrid/cameras/Camera":22,"./alfrid/cameras/CameraCube":23,"./alfrid/cameras/CameraOrtho":24,"./alfrid/cameras/CameraPerspective":25,"./alfrid/helpers/BatchAxis":26,"./alfrid/helpers/BatchBall":27,"./alfrid/helpers/BatchCopy":28,"./alfrid/helpers/BatchDotsPlane":29,"./alfrid/helpers/Scene":30,"./alfrid/helpers/View":31,"./alfrid/loaders/BinaryLoader":32,"./alfrid/loaders/HDRLoader":33,"./alfrid/loaders/ObjLoader":34,"./alfrid/post/EffectComposer":35,"./alfrid/tools/EaseNumber":36,"./alfrid/tools/EventDispatcher":37,"./alfrid/tools/OrbitalControl":39,"./alfrid/tools/QuatRotation":40,"./alfrid/tools/ShaderLibs":41,"gl-matrix":1,"scheduling":11}],13:[function(_dereq_,module,exports){
+},{"./alfrid/Batch":13,"./alfrid/CubeFrameBuffer":14,"./alfrid/FrameBuffer":15,"./alfrid/GLCubeTexture":16,"./alfrid/GLShader":17,"./alfrid/GLTexture":18,"./alfrid/GLTool":19,"./alfrid/Geom":20,"./alfrid/Mesh":21,"./alfrid/cameras/Camera":22,"./alfrid/cameras/CameraCube":23,"./alfrid/cameras/CameraOrtho":24,"./alfrid/cameras/CameraPerspective":25,"./alfrid/helpers/BatchAxis":26,"./alfrid/helpers/BatchBall":27,"./alfrid/helpers/BatchCopy":28,"./alfrid/helpers/BatchDotsPlane":29,"./alfrid/helpers/BatchSkybox":30,"./alfrid/helpers/Scene":31,"./alfrid/helpers/View":32,"./alfrid/loaders/BinaryLoader":33,"./alfrid/loaders/HDRLoader":34,"./alfrid/loaders/ObjLoader":35,"./alfrid/post/EffectComposer":36,"./alfrid/tools/EaseNumber":37,"./alfrid/tools/EventDispatcher":38,"./alfrid/tools/OrbitalControl":40,"./alfrid/tools/QuatRotation":41,"./alfrid/tools/ShaderLibs":42,"gl-matrix":1,"scheduling":11}],13:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7997,8 +8002,6 @@ Geom.plane = function (width, height, numSegments) {
 				positions.push([tx + gapX, 0, ty + gapY]);
 				positions.push([tx + gapX, 0, ty]);
 				positions.push([tx, 0, ty]);
-
-				console.log(positions);
 
 				normals.push([0, 1, 0]);
 				normals.push([0, 1, 0]);
@@ -9337,6 +9340,71 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _GLTool = _dereq_('../GLTool');
+
+var _GLTool2 = _interopRequireDefault(_GLTool);
+
+var _Geom = _dereq_('../Geom');
+
+var _Geom2 = _interopRequireDefault(_Geom);
+
+var _GLShader = _dereq_('../GLShader');
+
+var _GLShader2 = _interopRequireDefault(_GLShader);
+
+var _Batch2 = _dereq_('../Batch');
+
+var _Batch3 = _interopRequireDefault(_Batch2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // BatchSkybox.js
+
+
+
+var BatchSkybox = function (_Batch) {
+	_inherits(BatchSkybox, _Batch);
+
+	function BatchSkybox() {
+		var size = arguments.length <= 0 || arguments[0] === undefined ? 20 : arguments[0];
+
+		_classCallCheck(this, BatchSkybox);
+
+		var mesh = _Geom2.default.skybox(size);
+		var shader = new _GLShader2.default("// basic.vert\n\n#define SHADER_NAME SKYBOX_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvarying vec2 vTextureCoord;\nvarying vec3 vVertex;\n\nvoid main(void) {\n\tgl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);\n\tvTextureCoord = aTextureCoord;\n\t\n\tvVertex = aVertexPosition;\n}", "// basic.frag\n\n#define SHADER_NAME SKYBOX_FRAGMENT\n\nprecision highp float;\n#define GLSLIFY 1\nuniform samplerCube texture;\nvarying vec2 vTextureCoord;\nvarying vec3 vVertex;\n\nvoid main(void) {\n    gl_FragColor = textureCube(texture, vVertex);\n}");
+
+		return _possibleConstructorReturn(this, Object.getPrototypeOf(BatchSkybox).call(this, mesh, shader));
+	}
+
+	_createClass(BatchSkybox, [{
+		key: 'draw',
+		value: function draw(texture) {
+			this.shader.bind();
+			texture.bind(0);
+			_get(Object.getPrototypeOf(BatchSkybox.prototype), 'draw', this).call(this);
+		}
+	}]);
+
+	return BatchSkybox;
+}(_Batch3.default);
+
+exports.default = BatchSkybox;
+
+},{"../Batch":13,"../GLShader":17,"../GLTool":19,"../Geom":20}],31:[function(_dereq_,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // Scene.js
 
 var _scheduling = _dereq_('scheduling');
@@ -9454,7 +9522,7 @@ var Scene = function () {
 
 exports.default = Scene;
 
-},{"../GLTool":19,"../cameras/CameraOrtho":24,"../cameras/CameraPerspective":25,"../tools/OrbitalControl":39,"scheduling":11}],31:[function(_dereq_,module,exports){
+},{"../GLTool":19,"../cameras/CameraOrtho":24,"../cameras/CameraPerspective":25,"../tools/OrbitalControl":40,"scheduling":11}],32:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9498,7 +9566,7 @@ var View = function () {
 
 exports.default = View;
 
-},{"../GLShader":17}],32:[function(_dereq_,module,exports){
+},{"../GLShader":17}],33:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9557,7 +9625,7 @@ var BinaryLoader = function () {
 
 exports.default = BinaryLoader;
 
-},{}],33:[function(_dereq_,module,exports){
+},{}],34:[function(_dereq_,module,exports){
 // HDRLoader.js
 
 'use strict';
@@ -9617,7 +9685,7 @@ HDRLoader.parse = function (mArrayBuffer) {
 
 exports.default = HDRLoader;
 
-},{"../tools/HDRParser":38,"./BinaryLoader":32}],34:[function(_dereq_,module,exports){
+},{"../tools/HDRParser":39,"./BinaryLoader":33}],35:[function(_dereq_,module,exports){
 // ObjLoader.js
 
 'use strict';
@@ -9922,7 +9990,7 @@ var ObjLoader = function (_BinaryLoader) {
 
 exports.default = ObjLoader;
 
-},{"../Mesh":21,"./BinaryLoader":32}],35:[function(_dereq_,module,exports){
+},{"../Mesh":21,"./BinaryLoader":33}],36:[function(_dereq_,module,exports){
 // EffectComposer.js
 
 'use strict';
@@ -9991,7 +10059,7 @@ var EffectComposer = function () {
 
 exports.default = EffectComposer;
 
-},{"../FrameBuffer":15,"../GLTool":19,"../Geom":20}],36:[function(_dereq_,module,exports){
+},{"../FrameBuffer":15,"../GLTool":19,"../Geom":20}],37:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10087,7 +10155,7 @@ var EaseNumber = function () {
 
 exports.default = EaseNumber;
 
-},{"scheduling":11}],37:[function(_dereq_,module,exports){
+},{"scheduling":11}],38:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10243,7 +10311,7 @@ var EventDispatcher = function () {
 
 exports.default = EventDispatcher;
 
-},{}],38:[function(_dereq_,module,exports){
+},{}],39:[function(_dereq_,module,exports){
 // HDRParser.js
 
 'use strict';
@@ -10455,7 +10523,7 @@ function parseHdr(buffer) {
 
 exports.default = parseHdr;
 
-},{}],39:[function(_dereq_,module,exports){
+},{}],40:[function(_dereq_,module,exports){
 // OrbitalControl.js
 'use strict';
 
@@ -10702,7 +10770,7 @@ var OrbitalControl = function () {
 
 exports.default = OrbitalControl;
 
-},{"./EaseNumber":36,"gl-matrix":1,"scheduling":11}],40:[function(_dereq_,module,exports){
+},{"./EaseNumber":37,"gl-matrix":1,"scheduling":11}],41:[function(_dereq_,module,exports){
 // QuatRotation.js
 
 'use strict';
@@ -10974,7 +11042,7 @@ var QuatRotation = function () {
 
 exports.default = QuatRotation;
 
-},{"./EaseNumber":36,"gl-matrix":1,"scheduling":11}],41:[function(_dereq_,module,exports){
+},{"./EaseNumber":37,"gl-matrix":1,"scheduling":11}],42:[function(_dereq_,module,exports){
 // ShaderLbs.js
 
 'use strict';
@@ -10989,7 +11057,10 @@ var ShaderLibs = {
 	bigTriangleVert: "// bigTriangle.vert\n\n#define SHADER_NAME BIG_TRIANGLE_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec2 aPosition;\nvarying vec2 vTextureCoord;\n\nvoid main(void) {\n    gl_Position = vec4(aPosition, 0.0, 1.0);\n    vTextureCoord = aPosition * .5 + .5;\n}",
 	generalVert: "// general.vert\n\n#define SHADER_NAME GENERAL_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nuniform vec3 position;\nuniform vec3 scale;\n\nvarying vec2 vTextureCoord;\n\nvoid main(void) {\n\tvec3 pos      = aVertexPosition * scale;\n\tpos           += position;\n\tgl_Position   = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(pos, 1.0);\n\tvTextureCoord = aTextureCoord;\n}",
 	generalNormalVert: "// generalWithNormal.vert\n\n#define SHADER_NAME GENERAL_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec3 aNormal;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\nuniform mat3 uNormalMatrix;\n\nuniform vec3 position;\nuniform vec3 scale;\n\nvarying vec2 vTextureCoord;\nvarying vec3 vNormal;\n\nvoid main(void) {\n\tvec3 pos      = aVertexPosition * scale;\n\tpos           += position;\n\tgl_Position   = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(pos, 1.0);\n\t\n\tvTextureCoord = aTextureCoord;\n\tvNormal       = normalize(uNormalMatrix * aNormal);\n}",
-	copyFrag: "// copy.frag\n\n#define SHADER_NAME COPY_FRAGMENT\n\nprecision highp float;\n#define GLSLIFY 1\n\nvarying vec2 vTextureCoord;\nuniform sampler2D texture;\n\nvoid main(void) {\n    gl_FragColor = texture2D(texture, vTextureCoord);\n}"
+	copyFrag: "// copy.frag\n\n#define SHADER_NAME COPY_FRAGMENT\n\nprecision highp float;\n#define GLSLIFY 1\n\nvarying vec2 vTextureCoord;\nuniform sampler2D texture;\n\nvoid main(void) {\n    gl_FragColor = texture2D(texture, vTextureCoord);\n}",
+	basicVert: "// basic.vert\n\n#define SHADER_NAME BASIC_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvarying vec2 vTextureCoord;\n\nvoid main(void) {\n    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);\n    vTextureCoord = aTextureCoord;\n}",
+	skyboxVert: "// basic.vert\n\n#define SHADER_NAME SKYBOX_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvarying vec2 vTextureCoord;\nvarying vec3 vVertex;\n\nvoid main(void) {\n\tgl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);\n\tvTextureCoord = aTextureCoord;\n\t\n\tvVertex = aVertexPosition;\n}",
+	skyboxFrag: "// basic.frag\n\n#define SHADER_NAME SKYBOX_FRAGMENT\n\nprecision highp float;\n#define GLSLIFY 1\nuniform samplerCube texture;\nvarying vec2 vTextureCoord;\nvarying vec3 vVertex;\n\nvoid main(void) {\n    gl_FragColor = textureCube(texture, vVertex);\n}"
 };
 
 exports.default = ShaderLibs;
