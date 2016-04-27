@@ -30,8 +30,6 @@ Geom.plane = function(width, height, numSegments, withNormals=false, axis='xy', 
 				positions.push([tx+gapX, 	0, 	 ty	]);
 				positions.push([tx, 		0, 	 ty	]);	
 
-				console.log(positions);
-
 				normals.push([0, 1, 0]);
 				normals.push([0, 1, 0]);
 				normals.push([0, 1, 0]);
