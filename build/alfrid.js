@@ -7548,6 +7548,12 @@ var GLTexture = function () {
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, this.wrapS);
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, this.wrapT);
 
+			var ext = _GLTool2.default.getExtension('EXT_texture_filter_anisotropic');
+			if (ext) {
+				var max = gl.getParameter(ext.MAX_TEXTURE_MAX_ANISOTROPY_EXT);
+				gl.texParameterf(gl.TEXTURE_2D, ext.TEXTURE_MAX_ANISOTROPY_EXT, max);
+			}
+
 			if (this.minFilter === gl.LINEAR_MIPMAP_NEAREST) {
 				gl.generateMipmap(gl.TEXTURE_2D);
 			}
@@ -7698,7 +7704,7 @@ var GLTool = function () {
 			this.gl = this.canvas.getContext('webgl', mParameters) || this.canvas.getContext('experimental-webgl', mParameters);
 
 			//	extensions
-			var extensions = ['EXT_shader_texture_lod', 'EXT_sRGB', 'EXT_frag_depth', 'OES_texture_float', 'OES_texture_half_float', 'OES_texture_float_linear', 'OES_texture_half_float_linear', 'OES_standard_derivatives', 'WEBGL_depth_texture'];
+			var extensions = ['EXT_shader_texture_lod', 'EXT_sRGB', 'EXT_frag_depth', 'OES_texture_float', 'OES_texture_half_float', 'OES_texture_float_linear', 'OES_texture_half_float_linear', 'OES_standard_derivatives', 'WEBGL_depth_texture', 'EXT_texture_filter_anisotropic', 'ANGLE_instanced_arrays'];
 			this.extensions = {};
 			for (var i = 0; i < extensions.length; i++) {
 				this.extensions[extensions[i]] = this.gl.getExtension(extensions[i]);
@@ -9344,10 +9350,6 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _GLTool = _dereq_('../GLTool');
-
-var _GLTool2 = _interopRequireDefault(_GLTool);
-
 var _Geom = _dereq_('../Geom');
 
 var _Geom2 = _interopRequireDefault(_Geom);
@@ -9398,7 +9400,7 @@ var BatchSkybox = function (_Batch) {
 
 exports.default = BatchSkybox;
 
-},{"../Batch":13,"../GLShader":17,"../GLTool":19,"../Geom":20}],31:[function(_dereq_,module,exports){
+},{"../Batch":13,"../GLShader":17,"../Geom":20}],31:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

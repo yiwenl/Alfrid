@@ -43,7 +43,7 @@ function _init() {
 	document.body.appendChild(canvas);
 
 	GL.init(canvas);
-	// alfrid.GL.showExtensions();
+	alfrid.GL.showExtensions();
 
 	//	LOOPING
 	alfrid.Scheduler.addEF(loop);

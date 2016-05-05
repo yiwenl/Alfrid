@@ -64,6 +64,12 @@ class GLTexture {
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, this.minFilter);
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, this.wrapS);
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, this.wrapT);
+
+			const ext = GL.getExtension('EXT_texture_filter_anisotropic');
+			if(ext) {
+				const max = gl.getParameter(ext.MAX_TEXTURE_MAX_ANISOTROPY_EXT);
+				gl.texParameterf(gl.TEXTURE_2D, ext.TEXTURE_MAX_ANISOTROPY_EXT, max);
+			}
 			
 			if(this.minFilter === gl.LINEAR_MIPMAP_NEAREST)	{
 				gl.generateMipmap(gl.TEXTURE_2D);
