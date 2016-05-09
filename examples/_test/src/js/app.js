@@ -111,8 +111,8 @@ function _init() {
 	
 	//	MESH VIA GEOM
 
-	// meshPlane  = alfrid.Geom.plane(7, 7*983/736, 12, false, 'xz');
-	meshPlane  = alfrid.Geom.plane(5, 5, 1, false, 'xz');
+	meshPlane  = alfrid.Geom.plane(7, 7*983/736, 12, false, 'xz');
+	// meshPlane  = alfrid.Geom.plane(5, 5, 5, false, 'xz');
 	meshPlane2 = alfrid.Geom.plane(1.5, 1.5*983/736, 1);
 	meshSphere = alfrid.Geom.sphere(1, 48);
 

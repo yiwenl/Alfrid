@@ -8003,21 +8003,34 @@ Geom.plane = function (width, height, numSegments) {
 			var tx = gapX * i + sx;
 			var ty = gapY * j + sy;
 
+			var u = i / numSegments;
+			var v = j / numSegments;
+
 			if (axis === 'xz') {
 				positions.push([tx, 0, ty + gapY]);
 				positions.push([tx + gapX, 0, ty + gapY]);
 				positions.push([tx + gapX, 0, ty]);
 				positions.push([tx, 0, ty]);
 
+				coords.push([u, 1.0 - (v + gapUV)]);
+				coords.push([u + gapUV, 1.0 - (v + gapUV)]);
+				coords.push([u + gapUV, 1.0 - v]);
+				coords.push([u, 1.0 - v]);
+
 				normals.push([0, 1, 0]);
 				normals.push([0, 1, 0]);
 				normals.push([0, 1, 0]);
 				normals.push([0, 1, 0]);
 			} else if (axis === 'yz') {
-				positions.push([0, tx, ty]);
-				positions.push([0, tx + gapX, ty]);
-				positions.push([0, tx + gapX, ty + gapY]);
-				positions.push([0, tx, ty + gapY]);
+				positions.push([0, ty, tx]);
+				positions.push([0, ty, tx + gapX]);
+				positions.push([0, ty + gapY, tx + gapX]);
+				positions.push([0, ty + gapY, tx]);
+
+				coords.push([u, v]);
+				coords.push([u + gapUV, v]);
+				coords.push([u + gapUV, v + gapUV]);
+				coords.push([u, v + gapUV]);
 
 				normals.push([1, 0, 0]);
 				normals.push([1, 0, 0]);
@@ -8029,19 +8042,16 @@ Geom.plane = function (width, height, numSegments) {
 				positions.push([tx + gapX, ty + gapY, 0]);
 				positions.push([tx, ty + gapY, 0]);
 
+				coords.push([u, v]);
+				coords.push([u + gapUV, v]);
+				coords.push([u + gapUV, v + gapUV]);
+				coords.push([u, v + gapUV]);
+
 				normals.push([0, 0, 1]);
 				normals.push([0, 0, 1]);
 				normals.push([0, 0, 1]);
 				normals.push([0, 0, 1]);
 			}
-
-			var u = i / numSegments;
-			var v = j / numSegments;
-
-			coords.push([u, v]);
-			coords.push([u + gapUV, v]);
-			coords.push([u + gapUV, v + gapUV]);
-			coords.push([u, v + gapUV]);
 
 			indices.push(index * 4 + 0);
 			indices.push(index * 4 + 1);
