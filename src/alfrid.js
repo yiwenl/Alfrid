@@ -15,6 +15,7 @@ import CubeFrameBuffer		from './alfrid/CubeFrameBuffer';
 import Scheduler 			from 'scheduling';
 import EventDispatcher 		from './alfrid/tools/EventDispatcher';
 import EaseNumber 			from './alfrid/tools/EaseNumber';
+import TweenNumber 			from './alfrid/tools/TweenNumber';
 import OrbitalControl		from './alfrid/tools/OrbitalControl';
 import QuatRotation			from './alfrid/tools/QuatRotation';
 
@@ -62,6 +63,7 @@ class alfrid {
 		this.Scheduler         = Scheduler;
 		this.EventDispatcher   = EventDispatcher;
 		this.EaseNumber        = EaseNumber;
+		this.TweenNumber       = TweenNumber;
 		this.Camera            = Camera;
 		this.CameraOrtho       = CameraOrtho;
 		this.CameraPerspective = CameraPerspective;

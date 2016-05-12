@@ -11,6 +11,7 @@ let mesh, shader, cameraOrtho, cameraPersp, meshPlane, meshSphere, batchSphere, 
 let texture;
 let batchCopy, batch, batch2;
 let fbo;
+let tweenNumber = new alfrid.TweenNumber(0, 'bounceOut');
 
 let img = new Image();
 img.onload = function() {
@@ -23,7 +24,12 @@ img.onload = function() {
 img.src ='./assets/image.jpg';
 
 window.addEventListener('resize', () => resize());
-
+window.addEventListener('keydown', (e) => {
+	// console.log(e.keyCode);
+	if(e.keyCode == 40) {	//	down
+		tweenNumber.value = Math.random() * (window.innerWidth - 200);
+	}
+});
 
 let dispatcher = new DispatcherTest();
 
@@ -129,6 +135,9 @@ function _init() {
 		minFilter:GL.LINEAR_MIPMAP_LINEAR,
 		magFilter:GL.LINEAR
 	});
+
+
+	tweenNumber.value = 100;
 }
 
 
@@ -147,14 +156,14 @@ function loop() {
 
 	//	WITHOUT BATCH : BIND SHADER THEN DRAW MESH
 
-	shader.bind();
-	GL.draw(mesh);
+	// shader.bind();
+	// GL.draw(mesh);
 
 
 	//	DRAWING USING BATCH
 
-	batch.draw();
-	batch2.draw();
+	// batch.draw();
+	// batch2.draw();
 	shader.uniform("time", "float", cnt*.1);
 	
 
@@ -171,11 +180,11 @@ function loop() {
 	GL.viewport(0, 0, GL.width, GL.height);
 	batchCopy.draw(fbo.getTexture());
 
-	GL.viewport(0, 0, 200, 200/GL.aspectRatio);
+	GL.viewport(tweenNumber.value, 0, 200, 200/GL.aspectRatio);
 	batchCopy.draw(fbo.getDepthTexture());
 
 	GL.viewport(200, 0, 100, 100 *983/736);
-	batchCopy.draw(texture);
+	// batchCopy.draw(texture);
 
 
 

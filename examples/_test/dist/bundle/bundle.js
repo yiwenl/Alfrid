@@ -75,6 +75,7 @@ var batchCopy = void 0,
     batch = void 0,
     batch2 = void 0;
 var fbo = void 0;
+var tweenNumber = new alfrid.TweenNumber(0, 'bounceOut');
 
 var img = new Image();
 img.onload = function () {
@@ -90,6 +91,13 @@ img.src = './assets/image.jpg';
 
 window.addEventListener('resize', function () {
 	return resize();
+});
+window.addEventListener('keydown', function (e) {
+	// console.log(e.keyCode);
+	if (e.keyCode == 40) {
+		//	down
+		tweenNumber.value = Math.random() * (window.innerWidth - 200);
+	}
 });
 
 var dispatcher = new _DispatcherTest2.default();
@@ -193,6 +201,8 @@ function _init() {
 		minFilter: GL.LINEAR_MIPMAP_LINEAR,
 		magFilter: GL.LINEAR
 	});
+
+	tweenNumber.value = 100;
 }
 
 function loop() {
@@ -208,13 +218,13 @@ function loop() {
 
 	//	WITHOUT BATCH : BIND SHADER THEN DRAW MESH
 
-	shader.bind();
-	GL.draw(mesh);
+	// shader.bind();
+	// GL.draw(mesh);
 
 	//	DRAWING USING BATCH
 
-	batch.draw();
-	batch2.draw();
+	// batch.draw();
+	// batch2.draw();
 	shader.uniform("time", "float", cnt * .1);
 
 	shaderUV.bind();
@@ -229,11 +239,11 @@ function loop() {
 	GL.viewport(0, 0, GL.width, GL.height);
 	batchCopy.draw(fbo.getTexture());
 
-	GL.viewport(0, 0, 200, 200 / GL.aspectRatio);
+	GL.viewport(tweenNumber.value, 0, 200, 200 / GL.aspectRatio);
 	batchCopy.draw(fbo.getDepthTexture());
 
 	GL.viewport(200, 0, 100, 100 * 983 / 736);
-	batchCopy.draw(texture);
+	// batchCopy.draw(texture);
 
 	if (cnt++ > max) {
 		// window.location.href = './';

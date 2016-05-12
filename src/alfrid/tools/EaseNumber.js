@@ -7,7 +7,7 @@ class EaseNumber {
 		this.easing       = mEasing;
 		this._value       = mValue;
 		this._targetValue = mValue;
-		Scheduler.addEF( ()=> this._update());		
+		this._efIndex     = Scheduler.addEF( ()=> this._update());
 	}
 
 
@@ -46,6 +46,11 @@ class EaseNumber {
 		if(this._max !== undefined && this._targetValue > this._max) {
 			this._targetValue = this._max;
 		} 
+	}
+
+
+	destroy() {
+		Scheduler.removeEF(this._efIndex);
 	}
 
 

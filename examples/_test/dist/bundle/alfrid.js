@@ -6706,6 +6706,10 @@ var _EaseNumber = _dereq_('./alfrid/tools/EaseNumber');
 
 var _EaseNumber2 = _interopRequireDefault(_EaseNumber);
 
+var _TweenNumber = _dereq_('./alfrid/tools/TweenNumber');
+
+var _TweenNumber2 = _interopRequireDefault(_TweenNumber);
+
 var _OrbitalControl = _dereq_('./alfrid/tools/OrbitalControl');
 
 var _OrbitalControl2 = _interopRequireDefault(_OrbitalControl);
@@ -6802,6 +6806,7 @@ var alfrid = function () {
 		this.Scheduler = _scheduling2.default;
 		this.EventDispatcher = _EventDispatcher2.default;
 		this.EaseNumber = _EaseNumber2.default;
+		this.TweenNumber = _TweenNumber2.default;
 		this.Camera = _Camera2.default;
 		this.CameraOrtho = _CameraOrtho2.default;
 		this.CameraPerspective = _CameraPerspective2.default;
@@ -6856,7 +6861,7 @@ var b = new alfrid();
 
 module.exports = b;
 
-},{"./alfrid/Batch":13,"./alfrid/CubeFrameBuffer":14,"./alfrid/FrameBuffer":15,"./alfrid/GLCubeTexture":16,"./alfrid/GLShader":17,"./alfrid/GLTexture":18,"./alfrid/GLTool":19,"./alfrid/Geom":20,"./alfrid/Mesh":21,"./alfrid/cameras/Camera":22,"./alfrid/cameras/CameraCube":23,"./alfrid/cameras/CameraOrtho":24,"./alfrid/cameras/CameraPerspective":25,"./alfrid/helpers/BatchAxis":26,"./alfrid/helpers/BatchBall":27,"./alfrid/helpers/BatchCopy":28,"./alfrid/helpers/BatchDotsPlane":29,"./alfrid/helpers/BatchSkybox":30,"./alfrid/helpers/Scene":31,"./alfrid/helpers/View":32,"./alfrid/loaders/BinaryLoader":33,"./alfrid/loaders/HDRLoader":34,"./alfrid/loaders/ObjLoader":35,"./alfrid/post/EffectComposer":36,"./alfrid/tools/EaseNumber":37,"./alfrid/tools/EventDispatcher":38,"./alfrid/tools/OrbitalControl":40,"./alfrid/tools/QuatRotation":41,"./alfrid/tools/ShaderLibs":42,"gl-matrix":1,"scheduling":11}],13:[function(_dereq_,module,exports){
+},{"./alfrid/Batch":13,"./alfrid/CubeFrameBuffer":14,"./alfrid/FrameBuffer":15,"./alfrid/GLCubeTexture":16,"./alfrid/GLShader":17,"./alfrid/GLTexture":18,"./alfrid/GLTool":19,"./alfrid/Geom":20,"./alfrid/Mesh":21,"./alfrid/cameras/Camera":22,"./alfrid/cameras/CameraCube":23,"./alfrid/cameras/CameraOrtho":24,"./alfrid/cameras/CameraPerspective":25,"./alfrid/helpers/BatchAxis":26,"./alfrid/helpers/BatchBall":27,"./alfrid/helpers/BatchCopy":28,"./alfrid/helpers/BatchDotsPlane":29,"./alfrid/helpers/BatchSkybox":30,"./alfrid/helpers/Scene":31,"./alfrid/helpers/View":32,"./alfrid/loaders/BinaryLoader":33,"./alfrid/loaders/HDRLoader":34,"./alfrid/loaders/ObjLoader":35,"./alfrid/post/EffectComposer":36,"./alfrid/tools/EaseNumber":37,"./alfrid/tools/EventDispatcher":38,"./alfrid/tools/OrbitalControl":40,"./alfrid/tools/QuatRotation":41,"./alfrid/tools/ShaderLibs":42,"./alfrid/tools/TweenNumber":43,"gl-matrix":1,"scheduling":11}],13:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10099,7 +10104,7 @@ var EaseNumber = function () {
 		this.easing = mEasing;
 		this._value = mValue;
 		this._targetValue = mValue;
-		_scheduling2.default.addEF(function () {
+		this._efIndex = _scheduling2.default.addEF(function () {
 			return _this._update();
 		});
 	}
@@ -10143,6 +10148,11 @@ var EaseNumber = function () {
 			if (this._max !== undefined && this._targetValue > this._max) {
 				this._targetValue = this._max;
 			}
+		}
+	}, {
+		key: 'destroy',
+		value: function destroy() {
+			_scheduling2.default.removeEF(this._efIndex);
 		}
 
 		//	GETTERS / SETTERS
@@ -11077,7 +11087,376 @@ var ShaderLibs = {
 
 exports.default = ShaderLibs;
 
-},{}]},{},[12])(12)
+},{}],43:[function(_dereq_,module,exports){
+// TweenNumber.js
+
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _scheduling = _dereq_('scheduling');
+
+var _scheduling2 = _interopRequireDefault(_scheduling);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Easing = {
+	Linear: {
+		None: function None(k) {
+			return k;
+		}
+	},
+	Quadratic: {
+		In: function In(k) {
+			return k * k;
+		},
+		Out: function Out(k) {
+			return k * (2 - k);
+		},
+		InOut: function InOut(k) {
+			if ((k *= 2) < 1) {
+				return 0.5 * k * k;
+			}
+			return -0.5 * (--k * (k - 2) - 1);
+		}
+	},
+	Cubic: {
+		In: function In(k) {
+			return k * k * k;
+		},
+		Out: function Out(k) {
+			return --k * k * k + 1;
+		},
+		InOut: function InOut(k) {
+			if ((k *= 2) < 1) {
+				return 0.5 * k * k * k;
+			}
+			return 0.5 * ((k -= 2) * k * k + 2);
+		}
+	},
+	Quartic: {
+		In: function In(k) {
+			return k * k * k * k;
+		},
+		Out: function Out(k) {
+			return 1 - --k * k * k * k;
+		},
+		InOut: function InOut(k) {
+			if ((k *= 2) < 1) {
+				return 0.5 * k * k * k * k;
+			}
+			return -0.5 * ((k -= 2) * k * k * k - 2);
+		}
+	},
+	Quintic: {
+		In: function In(k) {
+			return k * k * k * k * k;
+		},
+		Out: function Out(k) {
+			return --k * k * k * k * k + 1;
+		},
+		InOut: function InOut(k) {
+			if ((k *= 2) < 1) {
+				return 0.5 * k * k * k * k * k;
+			}
+			return 0.5 * ((k -= 2) * k * k * k * k + 2);
+		}
+	},
+	Sinusoidal: {
+		In: function In(k) {
+			return 1 - Math.cos(k * Math.PI / 2);
+		},
+		Out: function Out(k) {
+			return Math.sin(k * Math.PI / 2);
+		},
+		InOut: function InOut(k) {
+			return 0.5 * (1 - Math.cos(Math.PI * k));
+		}
+	},
+	Exponential: {
+		In: function In(k) {
+			return k === 0 ? 0 : Math.pow(1024, k - 1);
+		},
+		Out: function Out(k) {
+			return k === 1 ? 1 : 1 - Math.pow(2, -10 * k);
+		},
+		InOut: function InOut(k) {
+			if (k === 0) {
+				return 0;
+			}
+			if (k === 1) {
+				return 1;
+			}
+			if ((k *= 2) < 1) {
+				return 0.5 * Math.pow(1024, k - 1);
+			}
+			return 0.5 * (-Math.pow(2, -10 * (k - 1)) + 2);
+		}
+	},
+	Circular: {
+		In: function In(k) {
+			return 1 - Math.sqrt(1 - k * k);
+		},
+		Out: function Out(k) {
+			return Math.sqrt(1 - --k * k);
+		},
+		InOut: function InOut(k) {
+			if ((k *= 2) < 1) {
+				return -0.5 * (Math.sqrt(1 - k * k) - 1);
+			}
+			return 0.5 * (Math.sqrt(1 - (k -= 2) * k) + 1);
+		}
+	},
+	Elastic: {
+		In: function In(k) {
+			var s;
+			var a = 0.1;
+			var p = 0.4;
+			if (k === 0) {
+				return 0;
+			}
+			if (k === 1) {
+				return 1;
+			}
+			if (!a || a < 1) {
+				a = 1;
+				s = p / 4;
+			} else {
+				s = p * Math.asin(1 / a) / (2 * Math.PI);
+			}
+			return -(a * Math.pow(2, 10 * (k -= 1)) * Math.sin((k - s) * (2 * Math.PI) / p));
+		},
+		Out: function Out(k) {
+			var s;
+			var a = 0.1;
+			var p = 0.4;
+			if (k === 0) {
+				return 0;
+			}
+			if (k === 1) {
+				return 1;
+			}
+			if (!a || a < 1) {
+				a = 1;
+				s = p / 4;
+			} else {
+				s = p * Math.asin(1 / a) / (2 * Math.PI);
+			}
+			return a * Math.pow(2, -10 * k) * Math.sin((k - s) * (2 * Math.PI) / p) + 1;
+		},
+		InOut: function InOut(k) {
+			var s;
+			var a = 0.1;
+			var p = 0.4;
+			if (k === 0) {
+				return 0;
+			}
+			if (k === 1) {
+				return 1;
+			}
+			if (!a || a < 1) {
+				a = 1;
+				s = p / 4;
+			} else {
+				s = p * Math.asin(1 / a) / (2 * Math.PI);
+			}
+			if ((k *= 2) < 1) {
+				return -0.5 * (a * Math.pow(2, 10 * (k -= 1)) * Math.sin((k - s) * (2 * Math.PI) / p));
+			}
+			return a * Math.pow(2, -10 * (k -= 1)) * Math.sin((k - s) * (2 * Math.PI) / p) * 0.5 + 1;
+		}
+	},
+	Back: {
+		In: function In(k) {
+			var s = 1.70158;
+			return k * k * ((s + 1) * k - s);
+		},
+		Out: function Out(k) {
+			var s = 1.70158;
+			return --k * k * ((s + 1) * k + s) + 1;
+		},
+		InOut: function InOut(k) {
+			var s = 1.70158 * 1.525;
+			if ((k *= 2) < 1) {
+				return 0.5 * (k * k * ((s + 1) * k - s));
+			}
+			return 0.5 * ((k -= 2) * k * ((s + 1) * k + s) + 2);
+		}
+	},
+	Bounce: {
+		In: function In(k) {
+			return 1 - Easing.Bounce.Out(1 - k);
+		},
+		Out: function Out(k) {
+			if (k < 1 / 2.75) {
+				return 7.5625 * k * k;
+			} else if (k < 2 / 2.75) {
+				return 7.5625 * (k -= 1.5 / 2.75) * k + 0.75;
+			} else if (k < 2.5 / 2.75) {
+				return 7.5625 * (k -= 2.25 / 2.75) * k + 0.9375;
+			} else {
+				return 7.5625 * (k -= 2.625 / 2.75) * k + 0.984375;
+			}
+		},
+		InOut: function InOut(k) {
+			if (k < 0.5) {
+				return Easing.Bounce.In(k * 2) * 0.5;
+			}
+			return Easing.Bounce.Out(k * 2 - 1) * 0.5 + 0.5;
+		}
+	}
+};
+
+function getFunc(mEasing) {
+	switch (mEasing) {
+		default:
+		case 'linear':
+			return Easing.Linear.None;
+		case 'expIn':
+			return Easing.Exponential.In;
+		case 'expOut':
+			return Easing.Exponential.Out;
+		case 'expInOut':
+			return Easing.Exponential.InOut;
+
+		case 'cubicIn':
+			return Easing.Cubic.In;
+		case 'cubicOut':
+			return Easing.Cubic.Out;
+		case 'cubicInOut':
+			return Easing.Cubic.InOut;
+
+		case 'quarticIn':
+			return Easing.Quartic.In;
+		case 'quarticOut':
+			return Easing.Quartic.Out;
+		case 'quarticInOut':
+			return Easing.Quartic.InOut;
+
+		case 'quinticIn':
+			return Easing.Quintic.In;
+		case 'quinticOut':
+			return Easing.Quintic.Out;
+		case 'quinticInOut':
+			return Easing.Quintic.InOut;
+
+		case 'sinusoidalIn':
+			return Easing.Sinusoidal.In;
+		case 'sinusoidalOut':
+			return Easing.Sinusoidal.Out;
+		case 'sinusoidalInOut':
+			return Easing.Sinusoidal.InOut;
+
+		case 'circularIn':
+			return Easing.Circular.In;
+		case 'circularOut':
+			return Easing.Circular.Out;
+		case 'circularInOut':
+			return Easing.Circular.InOut;
+
+		case 'elasticIn':
+			return Easing.Elastic.In;
+		case 'elasticOut':
+			return Easing.Elastic.Out;
+		case 'elasticInOut':
+			return Easing.Elastic.InOut;
+
+		case 'backIn':
+			return Easing.Back.In;
+		case 'backOut':
+			return Easing.Back.Out;
+		case 'backInOut':
+			return Easing.Back.InOut;
+
+		case 'bounceIn':
+			return Easing.Bounce.In;
+		case 'bounceOut':
+			return Easing.Bounce.Out;
+		case 'bounceInOut':
+			return Easing.Bounce.InOut;
+	}
+}
+
+var TweenNumber = function () {
+	function TweenNumber(mValue) {
+		var _this = this;
+
+		var mEasing = arguments.length <= 1 || arguments[1] === undefined ? 'expOut' : arguments[1];
+		var mSpeed = arguments.length <= 2 || arguments[2] === undefined ? 0.01 : arguments[2];
+
+		_classCallCheck(this, TweenNumber);
+
+		this._value = mValue;
+		this._startValue = mValue;
+		this._targetValue = mValue;
+		this._counter = 1;
+		this.speed = mSpeed;
+		this.easing = mEasing;
+		this._needUpdate = true;
+
+		this._efIndex = _scheduling2.default.addEF(function () {
+			return _this._update();
+		});
+	}
+
+	_createClass(TweenNumber, [{
+		key: '_update',
+		value: function _update() {
+			var newCounter = this._counter + this.speed;
+			if (newCounter > 1) {
+				newCounter = 1;
+			}
+			if (this._counter === newCounter) {
+				this._needUpdate = false;
+				return;
+			}
+
+			this._counter = newCounter;
+			this._needUpdate = true;
+		}
+	}, {
+		key: 'destroy',
+		value: function destroy() {
+			_scheduling2.default.removeEF(this._efIndex);
+		}
+
+		//	GETTERS / SETTERS
+
+	}, {
+		key: 'value',
+		set: function set(mValue) {
+			this._startValue = this._value;
+			this._targetValue = mValue;
+			this._counter = 0;
+		},
+		get: function get() {
+			if (this._needUpdate) {
+				var f = getFunc(this.easing);
+				var p = f(this._counter);
+				this._value = this._startValue + p * (this._targetValue - this._startValue);
+				this._needUpdate = false;
+			}
+			return this._value;
+		}
+	}, {
+		key: 'targetValue',
+		get: function get() {
+			return this._targetValue;
+		}
+	}]);
+
+	return TweenNumber;
+}();
+
+exports.default = TweenNumber;
+
+},{"scheduling":11}]},{},[12])(12)
 });
 
 
