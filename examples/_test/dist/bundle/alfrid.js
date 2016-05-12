@@ -11421,6 +11421,30 @@ var TweenNumber = function () {
 			this._needUpdate = true;
 		}
 	}, {
+		key: 'limit',
+		value: function limit(mMin, mMax) {
+			if (mMin > mMax) {
+				this.limit(mMax, mMin);
+				return;
+			}
+
+			this._min = mMin;
+			this._max = mMax;
+
+			this._checkLimit();
+		}
+	}, {
+		key: '_checkLimit',
+		value: function _checkLimit() {
+			if (this._min !== undefined && this._targetValue < this._min) {
+				this._targetValue = this._min;
+			}
+
+			if (this._max !== undefined && this._targetValue > this._max) {
+				this._targetValue = this._max;
+			}
+		}
+	}, {
 		key: 'destroy',
 		value: function destroy() {
 			_scheduling2.default.removeEF(this._efIndex);
@@ -11433,6 +11457,7 @@ var TweenNumber = function () {
 		set: function set(mValue) {
 			this._startValue = this._value;
 			this._targetValue = mValue;
+			this._checkLimit();
 			this._counter = 0;
 		},
 		get: function get() {

@@ -11,7 +11,7 @@ let mesh, shader, cameraOrtho, cameraPersp, meshPlane, meshSphere, batchSphere, 
 let texture;
 let batchCopy, batch, batch2;
 let fbo;
-let tweenNumber = new alfrid.TweenNumber(0, 'bounceOut');
+let tweenNumber = new alfrid.TweenNumber(0, 'expOut');
 
 let img = new Image();
 img.onload = function() {
@@ -26,6 +26,7 @@ img.src ='./assets/image.jpg';
 window.addEventListener('resize', () => resize());
 window.addEventListener('keydown', (e) => {
 	// console.log(e.keyCode);
+	tweenNumber.limit(0, window.innerWidth/2-200);
 	if(e.keyCode == 40) {	//	down
 		tweenNumber.value = Math.random() * (window.innerWidth - 200);
 	}

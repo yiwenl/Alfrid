@@ -75,7 +75,7 @@ var batchCopy = void 0,
     batch = void 0,
     batch2 = void 0;
 var fbo = void 0;
-var tweenNumber = new alfrid.TweenNumber(0, 'bounceOut');
+var tweenNumber = new alfrid.TweenNumber(0, 'expOut');
 
 var img = new Image();
 img.onload = function () {
@@ -94,6 +94,7 @@ window.addEventListener('resize', function () {
 });
 window.addEventListener('keydown', function (e) {
 	// console.log(e.keyCode);
+	tweenNumber.limit(0, window.innerWidth / 2 - 200);
 	if (e.keyCode == 40) {
 		//	down
 		tweenNumber.value = Math.random() * (window.innerWidth - 200);

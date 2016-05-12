@@ -308,6 +308,30 @@ class TweenNumber {
 	}
 
 
+	limit(mMin, mMax) {
+		if(mMin > mMax) {
+			this.limit(mMax, mMin);
+			return;
+		}
+
+		this._min = mMin;
+		this._max = mMax;
+
+		this._checkLimit();
+	}
+
+
+	_checkLimit() {
+		if(this._min !== undefined && this._targetValue < this._min) {
+			this._targetValue = this._min;
+		} 
+
+		if(this._max !== undefined && this._targetValue > this._max) {
+			this._targetValue = this._max;
+		} 
+	}
+
+
 	destroy() {
 		Scheduler.removeEF(this._efIndex);
 	}
@@ -317,6 +341,7 @@ class TweenNumber {
 	set value(mValue) {
 		this._startValue = this._value;
 		this._targetValue = mValue;
+		this._checkLimit();
 		this._counter = 0;
 	}
 
