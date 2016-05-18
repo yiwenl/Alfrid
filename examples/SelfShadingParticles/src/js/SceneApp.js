@@ -108,7 +108,7 @@ class SceneApp extends alfrid.Scene {
 
 
 	render() {
-
+		// this.lightPosition[0] = 0.5 + this._count * .1;
 		let p = 0;
 
 		if(this._count % params.skipCount === 0) {
@@ -118,7 +118,7 @@ class SceneApp extends alfrid.Scene {
 		p = this._count / params.skipCount;
 		this._count ++;
 
-		this.orbitalControl._ry.value += -.01;
+		this.orbitalControl._ry.value += -.02;
 
 		
 		//	DRAW SHADOW MAP
@@ -139,7 +139,7 @@ class SceneApp extends alfrid.Scene {
 		// this._bAxis.draw();
 		// this._bDotsPlane.draw();
 		// this._vLight.render();
-		this._vFloor.render(this.shadowMatrix, this.lightPosition, this._fboShadowMap.getTexture());
+		// this._vFloor.render(this.shadowMatrix, this.lightPosition, this._fboShadowMap.getTexture());
 		this._vShadowRender.render(this._fboTarget.getTexture(), this._fboCurrent.getTexture(), p, this._fboShadowMap.getTexture(), this.shadowMatrix, this.lightPosition);
 
 		/*/

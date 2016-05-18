@@ -7348,6 +7348,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 
+var isSame = function isSame(array1, array2) {
+	return array1.every(function (element, index) {
+		if (element !== array2[index]) {
+			return false;
+		}
+		return true;
+	});
+};
 
 var addLineNumbers = function addLineNumbers(string) {
 	var lines = string.split('\n');
@@ -7380,7 +7388,6 @@ var GLShader = function () {
 
 		gl = _GLTool2.default.gl;
 		this.parameters = [];
-		this.uniformValues = {};
 		this.uniformTextures = [];
 
 		if (!strVertexShader) {
@@ -7406,31 +7413,55 @@ var GLShader = function () {
 	}, {
 		key: 'uniform',
 		value: function uniform(mName, mType, mValue) {
+			if (mValue === undefined) {
+				return;
+			}
+
 			var uniformType = uniform_mapping[mType] || mType;
 			var hasUniform = false;
 			var oUniform = void 0;
+			var parameterIndex = -1;
 
 			for (var i = 0; i < this.parameters.length; i++) {
 				oUniform = this.parameters[i];
 				if (oUniform.name === mName) {
-					oUniform.value = mValue;
 					hasUniform = true;
+					parameterIndex = i;
 					break;
 				}
 			}
 
 			if (!hasUniform) {
 				this.shaderProgram[mName] = gl.getUniformLocation(this.shaderProgram, mName);
-				this.parameters.push({ name: mName, type: uniformType, value: mValue, uniformLoc: this.shaderProgram[mName] });
+				if (!mValue.slice) {
+					this.parameters.push({ name: mName, type: uniformType, value: mValue, uniformLoc: this.shaderProgram[mName] });
+				} else {
+					this.parameters.push({ name: mName, type: uniformType, value: mValue.slice(0), uniformLoc: this.shaderProgram[mName] });
+				}
+
+				parameterIndex = this.parameters.length - 1;
 			} else {
 				this.shaderProgram[mName] = oUniform.uniformLoc;
 			}
 
 			if (uniformType.indexOf('Matrix') === -1) {
-				gl[uniformType](this.shaderProgram[mName], mValue);
+				if (mValue.slice) {
+					if (!isSame(this.parameters[parameterIndex].value, mValue) || !hasUniform || 1) {
+						gl[uniformType](this.shaderProgram[mName], mValue);
+						this.parameters[parameterIndex].value = mValue.slice(0);
+					}
+				} else {
+					var needUpdate = this.parameters[parameterIndex].value !== mValue || !hasUniform || 1;
+					if (needUpdate) {
+						gl[uniformType](this.shaderProgram[mName], mValue);
+						this.parameters[parameterIndex].value = mValue;
+					}
+				}
 			} else {
-				gl[uniformType](this.shaderProgram[mName], false, mValue);
-				this.uniformValues[mName] = mValue;
+				if (!isSame(this.parameters[parameterIndex].value, mValue) || !hasUniform || 1) {
+					gl[uniformType](this.shaderProgram[mName], false, mValue);
+					this.parameters[parameterIndex].value = mValue.slice(0);
+				}
 			}
 		}
 	}, {
@@ -11432,6 +11463,13 @@ var TweenNumber = function () {
 			this._max = mMax;
 
 			this._checkLimit();
+		}
+	}, {
+		key: 'setTo',
+		value: function setTo(mValue) {
+			this._value = mValue;
+			this._targetValue = mValue;
+			this._counter = 1;
 		}
 	}, {
 		key: '_checkLimit',
