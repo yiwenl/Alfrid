@@ -320,6 +320,12 @@ class TweenNumber {
 		this._checkLimit();
 	}
 
+	setTo(mValue) {
+		this._value = mValue;
+		this._targetValue = mValue;
+		this._counter = 1;
+	}
+
 
 	_checkLimit() {
 		if(this._min !== undefined && this._targetValue < this._min) {

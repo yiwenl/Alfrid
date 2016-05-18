@@ -12,8 +12,12 @@ class EaseNumber {
 
 
 	_update() {
+		const MIN_DIFF = 0.0001;
 		this._checkLimit();
 		this._value += (this._targetValue - this._value) * this.easing;	
+		if(Math.abs(this._targetValue - this._value) < MIN_DIFF) {
+			this._value = this._targetValue;
+		}
 	}
 
 	setTo(mValue) {
