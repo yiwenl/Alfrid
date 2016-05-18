@@ -7413,7 +7413,8 @@ var GLShader = function () {
 	}, {
 		key: 'uniform',
 		value: function uniform(mName, mType, mValue) {
-			if (mValue === undefined) {
+			if (mValue === undefined || mValue === null) {
+				console.warn('mValue Error:', mName);
 				return;
 			}
 
@@ -7444,21 +7445,25 @@ var GLShader = function () {
 				this.shaderProgram[mName] = oUniform.uniformLoc;
 			}
 
+			if (!this.parameters[parameterIndex].uniformLoc) {
+				return;
+			}
+
 			if (uniformType.indexOf('Matrix') === -1) {
 				if (mValue.slice) {
-					if (!isSame(this.parameters[parameterIndex].value, mValue) || !hasUniform || 1) {
+					if (!isSame(this.parameters[parameterIndex].value, mValue) || !hasUniform) {
 						gl[uniformType](this.shaderProgram[mName], mValue);
 						this.parameters[parameterIndex].value = mValue.slice(0);
 					}
 				} else {
-					var needUpdate = this.parameters[parameterIndex].value !== mValue || !hasUniform || 1;
+					var needUpdate = this.parameters[parameterIndex].value !== mValue || !hasUniform;
 					if (needUpdate) {
 						gl[uniformType](this.shaderProgram[mName], mValue);
 						this.parameters[parameterIndex].value = mValue;
 					}
 				}
 			} else {
-				if (!isSame(this.parameters[parameterIndex].value, mValue) || !hasUniform || 1) {
+				if (!isSame(this.parameters[parameterIndex].value, mValue) || !hasUniform) {
 					gl[uniformType](this.shaderProgram[mName], false, mValue);
 					this.parameters[parameterIndex].value = mValue.slice(0);
 				}
@@ -10143,8 +10148,12 @@ var EaseNumber = function () {
 	_createClass(EaseNumber, [{
 		key: '_update',
 		value: function _update() {
+			var MIN_DIFF = 0.0001;
 			this._checkLimit();
 			this._value += (this._targetValue - this._value) * this.easing;
+			if (Math.abs(this._targetValue - this._value) < MIN_DIFF) {
+				this._value = this._targetValue;
+			}
 		}
 	}, {
 		key: 'setTo',

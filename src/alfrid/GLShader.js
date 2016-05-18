@@ -62,7 +62,8 @@ class GLShader {
 
 
 	uniform(mName, mType, mValue) {
-		if(mValue === undefined) {
+		if( mValue === undefined || mValue === null) {
+			console.warn('mValue Error:', mName);
 			return;
 		}
 
@@ -70,6 +71,7 @@ class GLShader {
 		let hasUniform = false;
 		let oUniform;
 		let parameterIndex = -1;
+
 
 		for(let i=0; i<this.parameters.length; i++) {
 			oUniform = this.parameters[i];
@@ -79,6 +81,7 @@ class GLShader {
 				break;
 			}
 		}
+
 
 		if(!hasUniform) {
 			this.shaderProgram[mName] = gl.getUniformLocation(this.shaderProgram, mName);
@@ -93,14 +96,19 @@ class GLShader {
 			this.shaderProgram[mName] = oUniform.uniformLoc;
 		}
 
+
+		if(!this.parameters[parameterIndex].uniformLoc) {
+			return;
+		}
+
 		if(uniformType.indexOf('Matrix') === -1) {
 			if(mValue.slice) {
-				if( !isSame(this.parameters[parameterIndex].value, mValue) || !hasUniform || 1) {
+				if( !isSame(this.parameters[parameterIndex].value, mValue) || !hasUniform) {
 					gl[uniformType](this.shaderProgram[mName], mValue);	
 					this.parameters[parameterIndex].value = mValue.slice(0);
 				}
 			} else {
-				const needUpdate = (this.parameters[parameterIndex].value !== mValue || !hasUniform || 1);
+				const needUpdate = (this.parameters[parameterIndex].value !== mValue || !hasUniform);
 				if( needUpdate) {
 					gl[uniformType](this.shaderProgram[mName], mValue);	
 					this.parameters[parameterIndex].value = mValue;
@@ -108,12 +116,12 @@ class GLShader {
 			}
 
 		} else {
-			if( !isSame(this.parameters[parameterIndex].value, mValue) || !hasUniform || 1) {
+			if( !isSame(this.parameters[parameterIndex].value, mValue) || !hasUniform) {
 				gl[uniformType](this.shaderProgram[mName], false, mValue);	
 				this.parameters[parameterIndex].value = mValue.slice(0);
+
 			}
 		}
-
 	}
 
 

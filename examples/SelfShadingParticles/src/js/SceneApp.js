@@ -118,7 +118,7 @@ class SceneApp extends alfrid.Scene {
 		p = this._count / params.skipCount;
 		this._count ++;
 
-		this.orbitalControl._ry.value += -.02;
+		// this.orbitalControl._ry.value += -.02;
 
 		
 		//	DRAW SHADOW MAP
