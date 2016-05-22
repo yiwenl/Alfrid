@@ -139,4 +139,44 @@ class GLTexture {
 
 }
 
+
+let _whiteTexture, _greyTexture, _blackTexture;
+
+GLTexture.whiteTexture = function() {
+	if(_whiteTexture === undefined) {
+		let canvas = document.createElement('canvas');
+		canvas.width = canvas.height = 4;
+		let ctx = canvas.getContext('2d');
+		ctx.fillStyle = '#fff';
+		ctx.fillRect(0, 0, 4, 4);
+		_whiteTexture = new GLTexture(canvas);
+	}
+	
+	return _whiteTexture;
+};
+
+GLTexture.greyTexture = function() {
+	if(_greyTexture === undefined) {
+		let canvas = document.createElement('canvas');
+		canvas.width = canvas.height = 4;
+		let ctx = canvas.getContext('2d');
+		ctx.fillStyle = 'rgb(127, 127, 127)';
+		ctx.fillRect(0, 0, 4, 4);
+		_greyTexture = new GLTexture(canvas);
+	}
+	return _greyTexture;
+};
+
+GLTexture.blackTexture = function() {
+	if(_blackTexture === undefined) {
+		let canvas = document.createElement('canvas');
+		canvas.width = canvas.height = 4;
+		let ctx = canvas.getContext('2d');
+		ctx.fillStyle = 'rgb(127, 127, 127)';
+		ctx.fillRect(0, 0, 4, 4);
+		_blackTexture = new GLTexture(canvas);
+	}
+	return _blackTexture;
+};
+
 export default GLTexture;

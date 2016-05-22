@@ -315,7 +315,6 @@ class ObjLoader extends BinaryLoader {
 
 
 ObjLoader.parse = function(objStr) {
-	console.log('Parsing');
 	const loader = new ObjLoader();
 	return loader.parseObj(objStr);
 };

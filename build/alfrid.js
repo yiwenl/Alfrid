@@ -7684,6 +7684,47 @@ var GLTexture = function () {
 	return GLTexture;
 }();
 
+var _whiteTexture = void 0,
+    _greyTexture = void 0,
+    _blackTexture = void 0;
+
+GLTexture.whiteTexture = function () {
+	if (_whiteTexture === undefined) {
+		var canvas = document.createElement('canvas');
+		canvas.width = canvas.height = 4;
+		var ctx = canvas.getContext('2d');
+		ctx.fillStyle = '#fff';
+		ctx.fillRect(0, 0, 4, 4);
+		_whiteTexture = new GLTexture(canvas);
+	}
+
+	return _whiteTexture;
+};
+
+GLTexture.greyTexture = function () {
+	if (_greyTexture === undefined) {
+		var canvas = document.createElement('canvas');
+		canvas.width = canvas.height = 4;
+		var ctx = canvas.getContext('2d');
+		ctx.fillStyle = 'rgb(127, 127, 127)';
+		ctx.fillRect(0, 0, 4, 4);
+		_greyTexture = new GLTexture(canvas);
+	}
+	return _greyTexture;
+};
+
+GLTexture.blackTexture = function () {
+	if (_blackTexture === undefined) {
+		var canvas = document.createElement('canvas');
+		canvas.width = canvas.height = 4;
+		var ctx = canvas.getContext('2d');
+		ctx.fillStyle = 'rgb(127, 127, 127)';
+		ctx.fillRect(0, 0, 4, 4);
+		_blackTexture = new GLTexture(canvas);
+	}
+	return _blackTexture;
+};
+
 exports.default = GLTexture;
 
 },{"./GLTool":19}],19:[function(_dereq_,module,exports){
@@ -10045,7 +10086,6 @@ var ObjLoader = function (_BinaryLoader) {
 }(_BinaryLoader3.default);
 
 ObjLoader.parse = function (objStr) {
-	console.log('Parsing');
 	var loader = new ObjLoader();
 	return loader.parseObj(objStr);
 };
