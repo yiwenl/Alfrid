@@ -9789,11 +9789,11 @@ var ObjLoader = function (_BinaryLoader) {
 	}, {
 		key: '_onLoaded',
 		value: function _onLoaded() {
-			this._parseObj(this._req.response);
+			this.parseObj(this._req.response);
 		}
 	}, {
-		key: '_parseObj',
-		value: function _parseObj(objStr) {
+		key: 'parseObj',
+		value: function parseObj(objStr) {
 			var lines = objStr.split('\n');
 
 			var positions = [];
@@ -9949,7 +9949,7 @@ var ObjLoader = function (_BinaryLoader) {
 				}
 			}
 
-			this._generateMeshes({
+			return this._generateMeshes({
 				positions: positions,
 				coords: coords,
 				normals: finalNormals,
@@ -9962,6 +9962,7 @@ var ObjLoader = function (_BinaryLoader) {
 			var maxNumVertices = 65535;
 			var hasNormals = o.normals.length > 0;
 			var hasUVs = o.coords.length > 0;
+			var mesh = void 0;
 
 			if (o.positions.length > maxNumVertices) {
 				var meshes = [];
@@ -10003,7 +10004,7 @@ var ObjLoader = function (_BinaryLoader) {
 
 					lastIndex = tmpIndex + 1;
 
-					var mesh = new _Mesh2.default(this._drawType);
+					mesh = new _Mesh2.default(this._drawType);
 					mesh.bufferVertex(positions);
 					if (hasUVs) {
 						mesh.bufferTexCoords(coords);
@@ -10021,25 +10022,33 @@ var ObjLoader = function (_BinaryLoader) {
 					this._callback(meshes, oCopy);
 				}
 			} else {
-				var _mesh = new _Mesh2.default(this._drawType);
-				_mesh.bufferVertex(o.positions);
+				mesh = new _Mesh2.default(this._drawType);
+				mesh.bufferVertex(o.positions);
 				if (hasUVs) {
-					_mesh.bufferTexCoords(o.coords);
+					mesh.bufferTexCoords(o.coords);
 				}
-				_mesh.bufferIndices(o.indices);
+				mesh.bufferIndices(o.indices);
 				if (!this._ignoreNormals && hasNormals) {
-					_mesh.bufferNormal(o.normals);
+					mesh.bufferNormal(o.normals);
 				}
 
 				if (this._callback) {
-					this._callback(_mesh, o);
+					this._callback(mesh, o);
 				}
 			}
+
+			return mesh;
 		}
 	}]);
 
 	return ObjLoader;
 }(_BinaryLoader3.default);
+
+ObjLoader.parse = function (objStr) {
+	console.log('Parsing');
+	var loader = new ObjLoader();
+	return loader.parseObj(objStr);
+};
 
 exports.default = ObjLoader;
 
