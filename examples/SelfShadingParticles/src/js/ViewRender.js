@@ -33,7 +33,7 @@ class ViewRender extends alfrid.View {
 
 		this.mesh = new alfrid.Mesh(GL.POINTS);
 		this.mesh.bufferVertex(positions);
-		this.mesh.bufferIndices(indices);
+		this.mesh.bufferIndex(indices);
 	}
 
 

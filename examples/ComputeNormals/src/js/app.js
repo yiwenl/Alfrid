@@ -44,8 +44,7 @@ function _init() {
 
 	//	CREATE MESH
 	let size = 2;
-	mesh = alfrid.Geom.cube(size, size, size, false);
-	console.log('Has Normals : ', mesh.hasNormals);
+	mesh = alfrid.Geom.cube(size, size, size);
 	mesh.computeNormals();
 
 	//	CREATE TEXTURE

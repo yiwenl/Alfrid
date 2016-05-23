@@ -46,7 +46,7 @@ function _init() {
 
 	//	CREATE MESH
 	let size = 2;
-	mesh = alfrid.Geom.cube(size, size, size, true);
+	mesh = alfrid.Geom.cube(size, size, size);
 
 	//	CREATE TEXTURE
 	texture = new alfrid.GLTexture(img);

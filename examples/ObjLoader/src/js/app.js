@@ -24,7 +24,7 @@ function _init() {
 	GL = alfrid.GL;
 
 	objLoader = new alfrid.ObjLoader();
-	objLoader.load('assets/mask.obj', (e)=>_onLoaded(e), false);
+	objLoader.load('assets/mask.obj', (e)=>_onLoaded(e));
 }
 
 function _onLoaded(mMesh) {
