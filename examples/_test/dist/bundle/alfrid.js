@@ -7366,7 +7366,7 @@ var addLineNumbers = function addLineNumbers(string) {
 };
 
 var gl = void 0;
-var defaultVertexShader = "// basic.vert\n\n#define SHADER_NAME BASIC_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvarying vec2 vTextureCoord;\n\nvoid main(void) {\n    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);\n    vTextureCoord = aTextureCoord;\n}";
+var defaultVertexShader = "// basic.vert\n\n#define SHADER_NAME BASIC_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec3 aNormal;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvarying vec2 vTextureCoord;\nvarying vec3 vNormal;\n\nvoid main(void) {\n    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);\n    vTextureCoord = aTextureCoord;\n    vNormal = aNormal;\n}";
 var defaultFragmentShader = "// basic.frag\n\n#define SHADER_NAME BASIC_FRAGMENT\n\nprecision highp float;\n#define GLSLIFY 1\nvarying vec2 vTextureCoord;\nuniform float time;\n// uniform sampler2D texture;\n\nvoid main(void) {\n    gl_FragColor = vec4(vTextureCoord, sin(time) * .5 + .5, 1.0);\n}";
 
 var uniform_mapping = {
@@ -8023,9 +8023,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var Geom = {};
 
 Geom.plane = function (width, height, numSegments) {
-	var withNormals = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
-	var axis = arguments.length <= 4 || arguments[4] === undefined ? 'xy' : arguments[4];
-	var drawType = arguments.length <= 5 || arguments[5] === undefined ? 4 : arguments[5];
+	var axis = arguments.length <= 3 || arguments[3] === undefined ? 'xy' : arguments[3];
+	var drawType = arguments.length <= 4 || arguments[4] === undefined ? 4 : arguments[4];
 
 	var positions = [];
 	var coords = [];
@@ -8107,19 +8106,16 @@ Geom.plane = function (width, height, numSegments) {
 
 	var mesh = new _Mesh2.default(drawType);
 	mesh.bufferVertex(positions);
-	mesh.bufferTexCoords(coords);
-	mesh.bufferIndices(indices);
-	if (withNormals) {
-		mesh.bufferNormal(normals);
-	}
+	mesh.bufferTexCoord(coords);
+	mesh.bufferIndex(indices);
+	mesh.bufferNormal(normals);
 
 	return mesh;
 };
 
 Geom.sphere = function (size, numSegments) {
-	var withNormals = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
-	var isInvert = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
-	var drawType = arguments.length <= 4 || arguments[4] === undefined ? 4 : arguments[4];
+	var isInvert = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+	var drawType = arguments.length <= 3 || arguments[3] === undefined ? 4 : arguments[3];
 
 	var positions = [];
 	var coords = [];
@@ -8155,12 +8151,10 @@ Geom.sphere = function (size, numSegments) {
 			positions.push(getPosition(i + 1, j + 1));
 			positions.push(getPosition(i, j + 1));
 
-			if (withNormals) {
-				normals.push(getPosition(i, j, true));
-				normals.push(getPosition(i + 1, j, true));
-				normals.push(getPosition(i + 1, j + 1, true));
-				normals.push(getPosition(i, j + 1, true));
-			}
+			normals.push(getPosition(i, j, true));
+			normals.push(getPosition(i + 1, j, true));
+			normals.push(getPosition(i + 1, j + 1, true));
+			normals.push(getPosition(i, j + 1, true));
 
 			var u = j / numSegments;
 			var v = i / numSegments;
@@ -8187,18 +8181,15 @@ Geom.sphere = function (size, numSegments) {
 
 	var mesh = new _Mesh2.default(drawType);
 	mesh.bufferVertex(positions);
-	mesh.bufferTexCoords(coords);
-	mesh.bufferIndices(indices);
-	if (withNormals) {
-		mesh.bufferNormal(normals);
-	}
+	mesh.bufferTexCoord(coords);
+	mesh.bufferIndex(indices);
+	mesh.bufferNormal(normals);
 
 	return mesh;
 };
 
 Geom.cube = function (w, h, d) {
-	var withNormals = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
-	var drawType = arguments.length <= 4 || arguments[4] === undefined ? 4 : arguments[4];
+	var drawType = arguments.length <= 3 || arguments[3] === undefined ? 4 : arguments[3];
 
 	h = h || w;
 	d = d || w;
@@ -8365,18 +8356,15 @@ Geom.cube = function (w, h, d) {
 
 	var mesh = new _Mesh2.default(drawType);
 	mesh.bufferVertex(positions);
-	mesh.bufferTexCoords(coords);
-	mesh.bufferIndices(indices);
-	if (withNormals) {
-		mesh.bufferNormal(normals);
-	}
+	mesh.bufferTexCoord(coords);
+	mesh.bufferIndex(indices);
+	mesh.bufferNormal(normals);
 
 	return mesh;
 };
 
 Geom.skybox = function (size) {
-	var withNormals = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
-	var drawType = arguments.length <= 2 || arguments[2] === undefined ? 4 : arguments[2];
+	var drawType = arguments.length <= 1 || arguments[1] === undefined ? 4 : arguments[1];
 
 	var positions = [];
 	var coords = [];
@@ -8534,11 +8522,9 @@ Geom.skybox = function (size) {
 
 	var mesh = new _Mesh2.default(drawType);
 	mesh.bufferVertex(positions);
-	mesh.bufferTexCoords(coords);
-	mesh.bufferIndices(indices);
-	if (withNormals) {
-		mesh.bufferNormal(normals);
-	}
+	mesh.bufferTexCoord(coords);
+	mesh.bufferIndex(indices);
+	mesh.bufferNormal(normals);
 
 	return mesh;
 };
@@ -8549,7 +8535,7 @@ Geom.bigTriangle = function () {
 
 	var mesh = new _Mesh2.default();
 	mesh.bufferData(positions, 'aPosition', 2);
-	mesh.bufferIndices(indices);
+	mesh.bufferIndex(indices);
 
 	return mesh;
 };
@@ -8612,10 +8598,19 @@ var Mesh = function () {
 			this._vertexSize = mArrayVertices.length;
 			this.bufferData(mArrayVertices, 'aVertexPosition', 3, isDynamic);
 			this._vertices = mArrayVertices;
+
+			var tempNormals = [];
+			for (var i = 0; i < mArrayVertices.length; i++) {
+				tempNormals.push([1, 0, 0]);
+			}
+
+			if (this._normals.length == 0) {
+				this.bufferNormal(tempNormals);
+			}
 		}
 	}, {
-		key: 'bufferTexCoords',
-		value: function bufferTexCoords(mArrayTexCoords) {
+		key: 'bufferTexCoord',
+		value: function bufferTexCoord(mArrayTexCoords) {
 			var isDynamic = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
 
 
@@ -8632,8 +8627,8 @@ var Mesh = function () {
 			this._normals = mNormals;
 		}
 	}, {
-		key: 'bufferIndices',
-		value: function bufferIndices(mArrayIndices) {
+		key: 'bufferIndex',
+		value: function bufferIndex(mArrayIndices) {
 			var isDynamic = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
 
 
@@ -9207,7 +9202,7 @@ var BatchBall = function (_Batch) {
 		_classCallCheck(this, BatchBall);
 
 		var mesh = _Geom2.default.sphere(1, 24);
-		var shader = new _GLShader2.default("// general.vert\n\n#define SHADER_NAME GENERAL_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nuniform vec3 position;\nuniform vec3 scale;\n\nvarying vec2 vTextureCoord;\n\nvoid main(void) {\n\tvec3 pos      = aVertexPosition * scale;\n\tpos           += position;\n\tgl_Position   = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(pos, 1.0);\n\tvTextureCoord = aTextureCoord;\n}", "// simpleColor.frag\n\n#define SHADER_NAME SIMPLE_COLOR\n\nprecision highp float;\n#define GLSLIFY 1\n\nuniform vec3 color;\nuniform float opacity;\n\nvoid main(void) {\n    gl_FragColor = vec4(color, opacity);\n}");
+		var shader = new _GLShader2.default("// generalWithNormal.vert\n\n#define SHADER_NAME GENERAL_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec3 aNormal;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\nuniform mat3 uNormalMatrix;\n\nuniform vec3 position;\nuniform vec3 scale;\n\nvarying vec2 vTextureCoord;\nvarying vec3 vNormal;\n\nvoid main(void) {\n\tvec3 pos      = aVertexPosition * scale;\n\tpos           += position;\n\tgl_Position   = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(pos, 1.0);\n\t\n\tvTextureCoord = aTextureCoord;\n\tvNormal       = normalize(uNormalMatrix * aNormal);\n}", "// simpleColor.frag\n\n#define SHADER_NAME SIMPLE_COLOR\n\nprecision highp float;\n#define GLSLIFY 1\n\nuniform vec3 color;\nuniform float opacity;\n\nvoid main(void) {\n    gl_FragColor = vec4(color, opacity);\n}");
 		return _possibleConstructorReturn(this, Object.getPrototypeOf(BatchBall).call(this, mesh, shader));
 	}
 
@@ -9432,7 +9427,7 @@ var BatchSkybox = function (_Batch) {
 		_classCallCheck(this, BatchSkybox);
 
 		var mesh = _Geom2.default.skybox(size);
-		var shader = new _GLShader2.default("// basic.vert\n\n#define SHADER_NAME SKYBOX_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvarying vec2 vTextureCoord;\nvarying vec3 vVertex;\n\nvoid main(void) {\n\tgl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);\n\tvTextureCoord = aTextureCoord;\n\t\n\tvVertex = aVertexPosition;\n}", "// basic.frag\n\n#define SHADER_NAME SKYBOX_FRAGMENT\n\nprecision highp float;\n#define GLSLIFY 1\nuniform samplerCube texture;\nvarying vec2 vTextureCoord;\nvarying vec3 vVertex;\n\nvoid main(void) {\n    gl_FragColor = textureCube(texture, vVertex);\n}");
+		var shader = new _GLShader2.default("// basic.vert\n\n#define SHADER_NAME SKYBOX_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec3 aNormal;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvarying vec2 vTextureCoord;\nvarying vec3 vVertex;\nvarying vec3 vNormal;\n\nvoid main(void) {\n\tgl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);\n\tvTextureCoord = aTextureCoord;\n\t\n\tvVertex = aVertexPosition;\n}", "// basic.frag\n\n#define SHADER_NAME SKYBOX_FRAGMENT\n\nprecision highp float;\n#define GLSLIFY 1\nuniform samplerCube texture;\nvarying vec2 vTextureCoord;\nvarying vec3 vVertex;\n\nvoid main(void) {\n    gl_FragColor = textureCube(texture, vVertex);\n}");
 
 		return _possibleConstructorReturn(this, Object.getPrototypeOf(BatchSkybox).call(this, mesh, shader));
 	}
@@ -9779,10 +9774,8 @@ var ObjLoader = function (_BinaryLoader) {
 	_createClass(ObjLoader, [{
 		key: 'load',
 		value: function load(url, callback) {
-			var ignoreNormals = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
-			var drawType = arguments.length <= 3 || arguments[3] === undefined ? 4 : arguments[3];
+			var drawType = arguments.length <= 2 || arguments[2] === undefined ? 4 : arguments[2];
 
-			this._ignoreNormals = ignoreNormals;
 			this._drawType = drawType;
 			_get(Object.getPrototypeOf(ObjLoader.prototype), 'load', this).call(this, url, callback);
 		}
@@ -10006,11 +9999,11 @@ var ObjLoader = function (_BinaryLoader) {
 					var mesh = new _Mesh2.default(this._drawType);
 					mesh.bufferVertex(positions);
 					if (hasUVs) {
-						mesh.bufferTexCoords(coords);
+						mesh.bufferTexCoord(coords);
 					}
 
-					mesh.bufferIndices(indices);
-					if (!this._ignoreNormals && hasNormals) {
+					mesh.bufferIndex(indices);
+					if (hasNormals) {
 						mesh.bufferNormal(normals);
 					}
 
@@ -10024,10 +10017,10 @@ var ObjLoader = function (_BinaryLoader) {
 				var _mesh = new _Mesh2.default(this._drawType);
 				_mesh.bufferVertex(o.positions);
 				if (hasUVs) {
-					_mesh.bufferTexCoords(o.coords);
+					_mesh.bufferTexCoord(o.coords);
 				}
-				_mesh.bufferIndices(o.indices);
-				if (!this._ignoreNormals && hasNormals) {
+				_mesh.bufferIndex(o.indices);
+				if (hasNormals) {
 					_mesh.bufferNormal(o.normals);
 				}
 
@@ -11117,11 +11110,11 @@ Object.defineProperty(exports, "__esModule", {
 var ShaderLibs = {
 	simpleColorFrag: "// simpleColor.frag\n\n#define SHADER_NAME SIMPLE_COLOR\n\nprecision highp float;\n#define GLSLIFY 1\n\nuniform vec3 color;\nuniform float opacity;\n\nvoid main(void) {\n    gl_FragColor = vec4(color, opacity);\n}",
 	bigTriangleVert: "// bigTriangle.vert\n\n#define SHADER_NAME BIG_TRIANGLE_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec2 aPosition;\nvarying vec2 vTextureCoord;\n\nvoid main(void) {\n    gl_Position = vec4(aPosition, 0.0, 1.0);\n    vTextureCoord = aPosition * .5 + .5;\n}",
-	generalVert: "// general.vert\n\n#define SHADER_NAME GENERAL_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nuniform vec3 position;\nuniform vec3 scale;\n\nvarying vec2 vTextureCoord;\n\nvoid main(void) {\n\tvec3 pos      = aVertexPosition * scale;\n\tpos           += position;\n\tgl_Position   = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(pos, 1.0);\n\tvTextureCoord = aTextureCoord;\n}",
+	generalVert: "// generalWithNormal.vert\n\n#define SHADER_NAME GENERAL_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec3 aNormal;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\nuniform mat3 uNormalMatrix;\n\nuniform vec3 position;\nuniform vec3 scale;\n\nvarying vec2 vTextureCoord;\nvarying vec3 vNormal;\n\nvoid main(void) {\n\tvec3 pos      = aVertexPosition * scale;\n\tpos           += position;\n\tgl_Position   = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(pos, 1.0);\n\t\n\tvTextureCoord = aTextureCoord;\n\tvNormal       = normalize(uNormalMatrix * aNormal);\n}",
 	generalNormalVert: "// generalWithNormal.vert\n\n#define SHADER_NAME GENERAL_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec3 aNormal;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\nuniform mat3 uNormalMatrix;\n\nuniform vec3 position;\nuniform vec3 scale;\n\nvarying vec2 vTextureCoord;\nvarying vec3 vNormal;\n\nvoid main(void) {\n\tvec3 pos      = aVertexPosition * scale;\n\tpos           += position;\n\tgl_Position   = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(pos, 1.0);\n\t\n\tvTextureCoord = aTextureCoord;\n\tvNormal       = normalize(uNormalMatrix * aNormal);\n}",
 	copyFrag: "// copy.frag\n\n#define SHADER_NAME COPY_FRAGMENT\n\nprecision highp float;\n#define GLSLIFY 1\n\nvarying vec2 vTextureCoord;\nuniform sampler2D texture;\n\nvoid main(void) {\n    gl_FragColor = texture2D(texture, vTextureCoord);\n}",
-	basicVert: "// basic.vert\n\n#define SHADER_NAME BASIC_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvarying vec2 vTextureCoord;\n\nvoid main(void) {\n    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);\n    vTextureCoord = aTextureCoord;\n}",
-	skyboxVert: "// basic.vert\n\n#define SHADER_NAME SKYBOX_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvarying vec2 vTextureCoord;\nvarying vec3 vVertex;\n\nvoid main(void) {\n\tgl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);\n\tvTextureCoord = aTextureCoord;\n\t\n\tvVertex = aVertexPosition;\n}",
+	basicVert: "// basic.vert\n\n#define SHADER_NAME BASIC_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec3 aNormal;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvarying vec2 vTextureCoord;\nvarying vec3 vNormal;\n\nvoid main(void) {\n    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);\n    vTextureCoord = aTextureCoord;\n    vNormal = aNormal;\n}",
+	skyboxVert: "// basic.vert\n\n#define SHADER_NAME SKYBOX_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec3 aNormal;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvarying vec2 vTextureCoord;\nvarying vec3 vVertex;\nvarying vec3 vNormal;\n\nvoid main(void) {\n\tgl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);\n\tvTextureCoord = aTextureCoord;\n\t\n\tvVertex = aVertexPosition;\n}",
 	skyboxFrag: "// basic.frag\n\n#define SHADER_NAME SKYBOX_FRAGMENT\n\nprecision highp float;\n#define GLSLIFY 1\nuniform samplerCube texture;\nvarying vec2 vTextureCoord;\nvarying vec3 vVertex;\n\nvoid main(void) {\n    gl_FragColor = textureCube(texture, vVertex);\n}"
 };
 

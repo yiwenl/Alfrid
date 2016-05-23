@@ -24,7 +24,7 @@ function _init() {
 	GL = alfrid.GL;
 
 	objLoader = new alfrid.ObjLoader();
-	objLoader.load('assets/004.obj', (e)=>_onLoaded(e), false);
+	objLoader.load('assets/004.obj', (e)=>_onLoaded(e));
 }
 
 function _onLoaded(mMesh) {
@@ -39,7 +39,7 @@ function _onLoaded(mMesh) {
 
 	//	ORBIAL CAMERA CONTROL
 	let orbitalControl = new alfrid.OrbitalControl(camera, window, 15);
-	orbitalControl.radius.value = 2;
+	orbitalControl.radius.value = 5;
 
 	//	CREATE SHADER
 	shader = new alfrid.GLShader(glslify('../shaders/basic.vert'), glslify('../shaders/mask.frag'));

@@ -6,7 +6,7 @@ import Mesh from './Mesh';
 
 let Geom = {};
 
-Geom.plane = function(width, height, numSegments, withNormals=false, axis='xy', drawType=4) {
+Geom.plane = function(width, height, numSegments, axis='xy', drawType=4) {
 	let positions = [];
 	let coords    = [];
 	let indices   = [];
@@ -88,16 +88,14 @@ Geom.plane = function(width, height, numSegments, withNormals=false, axis='xy', 
 
 	let mesh = new Mesh(drawType);
 	mesh.bufferVertex(positions);
-	mesh.bufferTexCoords(coords);
-	mesh.bufferIndices(indices);
-	if(withNormals) {
-		mesh.bufferNormal(normals);
-	}
+	mesh.bufferTexCoord(coords);
+	mesh.bufferIndex(indices);
+	mesh.bufferNormal(normals);
 
 	return mesh;
 };
 
-Geom.sphere = function(size, numSegments, withNormals=false, isInvert=false, drawType=4) {
+Geom.sphere = function(size, numSegments, isInvert=false, drawType=4) {
 	let positions = [];
 	let coords    = [];
 	let indices   = [];
@@ -131,12 +129,10 @@ Geom.sphere = function(size, numSegments, withNormals=false, isInvert=false, dra
 			positions.push(getPosition(i+1, j+1));
 			positions.push(getPosition(i, j+1));
 
-			if(withNormals) {
-				normals.push(getPosition(i, j, true));
-				normals.push(getPosition(i+1, j, true));
-				normals.push(getPosition(i+1, j+1, true));
-				normals.push(getPosition(i, j+1, true));	
-			}
+			normals.push(getPosition(i, j, true));
+			normals.push(getPosition(i+1, j, true));
+			normals.push(getPosition(i+1, j+1, true));
+			normals.push(getPosition(i, j+1, true));
 			
 
 			let u = j/numSegments;
@@ -166,16 +162,14 @@ Geom.sphere = function(size, numSegments, withNormals=false, isInvert=false, dra
 
 	let mesh = new Mesh(drawType);
 	mesh.bufferVertex(positions);
-	mesh.bufferTexCoords(coords);
-	mesh.bufferIndices(indices);
-	if(withNormals) {
-		mesh.bufferNormal(normals);
-	}
+	mesh.bufferTexCoord(coords);
+	mesh.bufferIndex(indices);
+	mesh.bufferNormal(normals);
 
 	return mesh;
 };
 
-Geom.cube = function(w,h,d, withNormals=false, drawType=4) {
+Geom.cube = function(w,h,d, drawType=4) {
 	h = h || w;
 	d = d || w;
 
@@ -344,16 +338,14 @@ Geom.cube = function(w,h,d, withNormals=false, drawType=4) {
 
 	let mesh = new Mesh(drawType);
 	mesh.bufferVertex(positions);
-	mesh.bufferTexCoords(coords);
-	mesh.bufferIndices(indices);
-	if(withNormals) {
-		mesh.bufferNormal(normals);
-	}
+	mesh.bufferTexCoord(coords);
+	mesh.bufferIndex(indices);
+	mesh.bufferNormal(normals);
 
 	return mesh;
 };
 
-Geom.skybox = function(size, withNormals=false, drawType=4) {
+Geom.skybox = function(size, drawType=4) {
 	let positions = [];
 	let coords    = [];
 	let indices   = []; 
@@ -510,11 +502,9 @@ Geom.skybox = function(size, withNormals=false, drawType=4) {
 
 	let mesh = new Mesh(drawType);
 	mesh.bufferVertex(positions);
-	mesh.bufferTexCoords(coords);
-	mesh.bufferIndices(indices);
-	if(withNormals) {
-		mesh.bufferNormal(normals);
-	}
+	mesh.bufferTexCoord(coords);
+	mesh.bufferIndex(indices);
+	mesh.bufferNormal(normals);
 
 	return mesh;
 };
@@ -529,7 +519,7 @@ Geom.bigTriangle = function() {
 	
 	let mesh = new Mesh();
 	mesh.bufferData(positions, 'aPosition', 2);
-	mesh.bufferIndices(indices);
+	mesh.bufferIndex(indices);
 
 	return mesh;
 };

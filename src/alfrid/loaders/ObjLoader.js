@@ -10,8 +10,7 @@ class ObjLoader extends BinaryLoader {
 		super();
 	}
 
-	load(url, callback, ignoreNormals=true, drawType=4) {
-		this._ignoreNormals = ignoreNormals;
+	load(url, callback, drawType=4) {
 		this._drawType = drawType;
 		super.load(url, callback);
 	}
@@ -278,11 +277,11 @@ class ObjLoader extends BinaryLoader {
 				let mesh = new Mesh(this._drawType);
 				mesh.bufferVertex(positions);
 				if(hasUVs) {
-					mesh.bufferTexCoords(coords);	
+					mesh.bufferTexCoord(coords);	
 				}
 				
-				mesh.bufferIndices(indices);
-				if(!this._ignoreNormals && hasNormals) {
+				mesh.bufferIndex(indices);
+				if(hasNormals) {
 					mesh.bufferNormal(normals);
 				}
 
@@ -296,10 +295,10 @@ class ObjLoader extends BinaryLoader {
 			let mesh = new Mesh(this._drawType);
 			mesh.bufferVertex(o.positions);
 			if(hasUVs) {
-				mesh.bufferTexCoords(o.coords);	
+				mesh.bufferTexCoord(o.coords);	
 			}
-			mesh.bufferIndices(o.indices);
-			if(!this._ignoreNormals && hasNormals) {
+			mesh.bufferIndex(o.indices);
+			if(hasNormals) {
 				mesh.bufferNormal(o.normals);
 			}
 
