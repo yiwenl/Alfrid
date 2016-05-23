@@ -34,7 +34,7 @@ class BatchDotsPlane extends Batch {
 		
 		let mesh     = new Mesh(GL.POINTS);
 		mesh.bufferVertex(positions);
-		mesh.bufferIndices(indices);
+		mesh.bufferIndex(indices);
 		
 		let shader   = new GLShader(glslify('../shaders/dotsPlane.vert'), glslify('../shaders/simpleColor.frag'));
 		

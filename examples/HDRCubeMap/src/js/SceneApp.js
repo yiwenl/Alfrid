@@ -65,7 +65,7 @@ class SceneApp extends alfrid.Scene {
 
 
 		this._objLoader 	  = new alfrid.ObjLoader();
-		this._objLoader.load('./assets/maskHigh.obj', (mesh)=>this._onObjLoaded(mesh), false);
+		this._objLoader.load('./assets/maskHigh.obj', (mesh)=>this._onObjLoaded(mesh));
 	}
 
 
