@@ -2,6 +2,7 @@
 
 precision highp float;
 attribute vec3 aVertexPosition;
+attribute vec3 aNormal;
 
 uniform mat4 uModelMatrix;
 uniform mat4 uViewMatrix;
@@ -11,6 +12,7 @@ uniform sampler2D texture;
 uniform sampler2D textureNext;
 uniform float percent;
 varying vec4 vColor;
+varying vec3 vNormal;
 
 void main(void) {
 	vec2 uv      = aVertexPosition.xy * .5;
@@ -26,4 +28,5 @@ void main(void) {
 	vColor       = vec4(d, d, d, 1.0);
 
 	if(length(currPos) - length(nextPos) > 1.0) vColor.a = 0.0;
+	vNormal = aNormal;
 }

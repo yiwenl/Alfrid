@@ -11,7 +11,7 @@ class ViewCube extends alfrid.View {
 
 	_init() {
 		let size = 1;
-		this.mesh = alfrid.Geom.cube(size, size, size, true);
+		this.mesh = alfrid.Geom.cube(size, size, size);
 	}
 
 	render(texture) {

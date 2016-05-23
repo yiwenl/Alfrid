@@ -33,7 +33,7 @@ class BatchAxis extends Batch {
 
 		let mesh = new Mesh(GL.LINES);
 		mesh.bufferVertex(positions);
-		mesh.bufferIndices(indices);
+		mesh.bufferIndex(indices);
 		mesh.bufferData(colors, 'aColor', 3);
 
 		let shader = new GLShader(glslify('../shaders/axis.vert'), glslify('../shaders/axis.frag'));

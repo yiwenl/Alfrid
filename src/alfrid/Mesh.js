@@ -32,10 +32,19 @@ class Mesh {
 		this.bufferData(mArrayVertices, 'aVertexPosition', 3, isDynamic);
 		this._vertices = mArrayVertices;
 
+
+		const tempNormals = [];
+		for (let i=0; i<mArrayVertices.length; i++) {
+			tempNormals.push([1, 0, 0]);
+		}
+
+		if(this._normals.length === 0) {
+			this.bufferNormal(tempNormals);	
+		}
 	}
 
 
-	bufferTexCoords(mArrayTexCoords, isDynamic=false) {
+	bufferTexCoord(mArrayTexCoords, isDynamic=false) {
 
 		this.bufferData(mArrayTexCoords, 'aTextureCoord', 2, isDynamic);
 		this._texCoords = mArrayTexCoords;
@@ -51,7 +60,7 @@ class Mesh {
 	}
 
 
-	bufferIndices(mArrayIndices, isDynamic=false) {
+	bufferIndex(mArrayIndices, isDynamic=false) {
 
 		let drawType          = isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW;
 		this._indices         = mArrayIndices;

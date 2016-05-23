@@ -111,8 +111,8 @@ function _init() {
 
 	mesh = new alfrid.Mesh();
 	mesh.bufferVertex(positions);
-	mesh.bufferTexCoords(coords);
-	mesh.bufferIndices(indices);
+	mesh.bufferTexCoord(coords);
+	mesh.bufferIndex(indices);
 
 
 	

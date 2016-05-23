@@ -41,7 +41,7 @@ import View					from './alfrid/helpers/View';
 import ShaderLibs			from './alfrid/tools/ShaderLibs';
 
 //	POST
-import EffectComposer		from './alfrid/post/EffectComposer';
+// import EffectComposer		from './alfrid/post/EffectComposer';
 
 const VERSION = '0.0.1';
 
@@ -81,7 +81,7 @@ class alfrid {
 		this.BatchDotsPlane    = BatchDotsPlane;
 		this.Scene             = Scene;
 		this.View              = View;
-		this.EffectComposer    = EffectComposer;
+		// this.EffectComposer    = EffectComposer;
 		this.ShaderLibs        = ShaderLibs;
 
 
