@@ -10062,6 +10062,8 @@ var ObjLoader = function (_BinaryLoader) {
 				if (this._callback) {
 					this._callback(meshes, oCopy);
 				}
+
+				return meshes;
 			} else {
 				mesh = new _Mesh2.default(this._drawType);
 				mesh.bufferVertex(o.positions);
@@ -10076,9 +10078,11 @@ var ObjLoader = function (_BinaryLoader) {
 				if (this._callback) {
 					this._callback(mesh, o);
 				}
+
+				return mesh;
 			}
 
-			return mesh;
+			return null;
 		}
 	}]);
 

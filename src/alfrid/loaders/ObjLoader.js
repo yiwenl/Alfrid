@@ -293,6 +293,8 @@ class ObjLoader extends BinaryLoader {
 			if(this._callback) {
 				this._callback(meshes, oCopy);
 			}
+
+			return meshes;
 		} else {
 			mesh = new Mesh(this._drawType);
 			mesh.bufferVertex(o.positions);
@@ -307,9 +309,11 @@ class ObjLoader extends BinaryLoader {
 			if(this._callback) {
 				this._callback(mesh, o);
 			}
+
+			return mesh;
 		}
 		
-		return mesh;
+		return null;
 	}
 }
 
