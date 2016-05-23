@@ -16,10 +16,10 @@ class ObjLoader extends BinaryLoader {
 	}
 
 	_onLoaded() {
-		this._parseObj(this._req.response);
+		this.parseObj(this._req.response);
 	}
 
-	_parseObj(objStr) {
+	parseObj(objStr) {
 		let lines = objStr.split('\n');
 
 		let positions    = [];
@@ -221,7 +221,7 @@ class ObjLoader extends BinaryLoader {
 			} 
 		}
 
-		this._generateMeshes({	
+		return this._generateMeshes({	
 			positions:positions,
 			coords:coords,
 			normals:finalNormals,
@@ -234,6 +234,7 @@ class ObjLoader extends BinaryLoader {
 		const maxNumVertices = 65535;
 		let hasNormals = o.normals.length > 0;
 		let hasUVs = o.coords.length > 0;
+		let mesh;
 
 		if(o.positions.length > maxNumVertices) {
 			let meshes = [];
@@ -274,7 +275,7 @@ class ObjLoader extends BinaryLoader {
 
 				lastIndex = tmpIndex+1;
 
-				let mesh = new Mesh(this._drawType);
+				mesh = new Mesh(this._drawType);
 				mesh.bufferVertex(positions);
 				if(hasUVs) {
 					mesh.bufferTexCoord(coords);	
@@ -291,8 +292,10 @@ class ObjLoader extends BinaryLoader {
 			if(this._callback) {
 				this._callback(meshes, oCopy);
 			}
+
+			return meshes;
 		} else {
-			let mesh = new Mesh(this._drawType);
+			mesh = new Mesh(this._drawType);
 			mesh.bufferVertex(o.positions);
 			if(hasUVs) {
 				mesh.bufferTexCoord(o.coords);	
@@ -305,9 +308,18 @@ class ObjLoader extends BinaryLoader {
 			if(this._callback) {
 				this._callback(mesh, o);
 			}
+
+			return mesh;
 		}
 		
+		return null;
 	}
 }
+
+
+ObjLoader.parse = function(objStr) {
+	const loader = new ObjLoader();
+	return loader.parseObj(objStr);
+};
 
 export default ObjLoader;
