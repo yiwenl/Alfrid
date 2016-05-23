@@ -37,7 +37,7 @@ class ViewTestRender extends alfrid.View {
 		this.mesh = new alfrid.Mesh();
 		this.mesh.bufferVertex(positions);
 		this.mesh.bufferData(flipPositions, 'aFlipPosition', 3);
-		this.mesh.bufferIndices(indices);
+		this.mesh.bufferIndex(indices);
 	}
 
 

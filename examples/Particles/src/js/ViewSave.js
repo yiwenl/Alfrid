@@ -53,8 +53,8 @@ class ViewSave extends alfrid.View {
 
 		this.mesh = new alfrid.Mesh(GL.POINTS);
 		this.mesh.bufferVertex(positions);
-		this.mesh.bufferTexCoords(coords);
-		this.mesh.bufferIndices(indices);
+		this.mesh.bufferTexCoord(coords);
+		this.mesh.bufferIndex(indices);
 	}
 
 

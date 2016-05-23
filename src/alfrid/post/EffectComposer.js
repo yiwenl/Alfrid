@@ -2,7 +2,7 @@
 
 'use strict';
 
-import GL from '../GLTool';
+// import GL from '../GLTool';
 import FrameBuffer from '../FrameBuffer';
 import Geom from '../Geom';
 
@@ -22,7 +22,7 @@ class EffectComposer {
 	}
 
 
-	render(mSource) {
+	render() {
 
 		for(let i=0; i<this._passes.length; i++) {
 

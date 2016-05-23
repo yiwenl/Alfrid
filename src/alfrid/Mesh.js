@@ -38,7 +38,7 @@ class Mesh {
 			tempNormals.push([1, 0, 0]);
 		}
 
-		if(this._normals.length == 0) {
+		if(this._normals.length === 0) {
 			this.bufferNormal(tempNormals);	
 		}
 	}

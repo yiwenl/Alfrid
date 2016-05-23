@@ -3,6 +3,7 @@
 precision highp float;
 attribute vec3 aVertexPosition;
 attribute vec2 aTextureCoord;
+attribute vec3 aNormal;
 
 uniform mat4 uModelMatrix;
 uniform mat4 uViewMatrix;
@@ -13,6 +14,7 @@ uniform vec3 scale;
 
 varying vec2 vTextureCoord;
 varying float vDepth;
+varying vec3 vNormal;
 
 void main(void) {
 	vec3 pos  	  = aVertexPosition * scale + position;
@@ -21,4 +23,5 @@ void main(void) {
 	
 	vTextureCoord = aTextureCoord;
 	vDepth        = V.z/V.w;
+	vNormal		  = aNormal;
 }

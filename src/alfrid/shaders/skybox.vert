@@ -20,4 +20,5 @@ void main(void) {
 	vTextureCoord = aTextureCoord;
 	
 	vVertex = aVertexPosition;
+	vNormal = aNormal;
 }
