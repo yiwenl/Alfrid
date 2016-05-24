@@ -4,7 +4,7 @@ let supportsCustomEvents = true;
 try {
 	let newTestCustomEvent = document.createEvent('CustomEvent');
 	newTestCustomEvent = null;
-} catch(e){
+} catch(e) {
 	supportsCustomEvents = false;
 }
 
@@ -21,7 +21,7 @@ class EventDispatcher {
 			this._eventListeners = {};
 		}
 
-		if(!this._eventListeners[aEventType]){
+		if(!this._eventListeners[aEventType]) {
 			this._eventListeners[aEventType] = [];
 		}
 		this._eventListeners[aEventType].push(aFunction);
@@ -36,15 +36,15 @@ class EventDispatcher {
 		if(this._eventListeners === null || this._eventListeners === undefined) {
 			this._eventListeners = {};
 		}
-		let currentArray = this._eventListeners[aEventType];
+		const currentArray = this._eventListeners[aEventType];
 		
 		if (typeof(currentArray) === 'undefined') {
 			return this;
 		}
 		
 		let currentArrayLength = currentArray.length;
-		for(let i = 0; i < currentArrayLength; i++){
-			if(currentArray[i] === aFunction){
+		for(let i = 0; i < currentArrayLength; i++) {
+			if(currentArray[i] === aFunction) {
 				currentArray.splice(i, 1);
 				i--;
 				currentArrayLength--;
@@ -59,25 +59,24 @@ class EventDispatcher {
 		if(this._eventListeners === null || this._eventListeners === undefined) {
 			this._eventListeners = {};
 		}
-		let eventType = aEvent.type;
+		const eventType = aEvent.type;
 		
 		try {
 			if(aEvent.target === null) {
 				aEvent.target = this;
 			}
 			aEvent.currentTarget = this;
-		}
-		catch(theError) {
-			let newEvent = {'type' : eventType, 'detail' : aEvent.detail, 'dispatcher' : this };
+		} catch(theError) {
+			const newEvent = { type: eventType, detail: aEvent.detail, dispatcher: this };
 			return this.dispatchEvent(newEvent);
 		}
 		
-		let currentEventListeners = this._eventListeners[eventType];
+		const currentEventListeners = this._eventListeners[eventType];
 		if(currentEventListeners !== null && currentEventListeners !== undefined) {
-			let currentArray = this._copyArray(currentEventListeners);
-			let currentArrayLength = currentArray.length;
-			for(let i = 0; i < currentArrayLength; i++){
-				let currentFunction = currentArray[i];
+			const currentArray = this._copyArray(currentEventListeners);
+			const currentArrayLength = currentArray.length;
+			for(let i = 0; i < currentArrayLength; i++) {
+				const currentFunction = currentArray[i];
 				currentFunction.call(this, aEvent);
 			}
 		}
@@ -86,13 +85,12 @@ class EventDispatcher {
 
 	dispatchCustomEvent(aEventType, aDetail) {
 		let newEvent;
-		if (supportsCustomEvents){
+		if (supportsCustomEvents) {
 			newEvent = document.createEvent('CustomEvent');
 			newEvent.dispatcher = this;
 			newEvent.initCustomEvent(aEventType, false, false, aDetail);
-		}
-		else {
-			newEvent = {'type' : aEventType, 'detail' : aDetail, 'dispatcher' : this };
+		} else {
+			newEvent = { type: aEventType, detail: aDetail, dispatcher: this };
 		}
 		return this.dispatchEvent(newEvent);
 	}
@@ -101,10 +99,10 @@ class EventDispatcher {
 
 	_destroy() {
 		if(this._eventListeners !== null) {
-			for(let objectName in this._eventListeners) {
+			for(const objectName in this._eventListeners) {
 				if(this._eventListeners.hasOwnProperty(objectName)) {
-					let currentArray = this._eventListeners[objectName];
-					let currentArrayLength = currentArray.length;
+					const currentArray = this._eventListeners[objectName];
+					const currentArrayLength = currentArray.length;
 					for(let i = 0; i < currentArrayLength; i++) {
 						currentArray[i] = null;
 					}
@@ -116,8 +114,8 @@ class EventDispatcher {
 	}
 
 	_copyArray(aArray) {
-		let currentArray = new Array(aArray.length);
-		let currentArrayLength = currentArray.length;
+		const currentArray = new Array(aArray.length);
+		const currentArrayLength = currentArray.length;
 		for(let i = 0; i < currentArrayLength; i++) {
 			currentArray[i] = aArray[i];
 		}

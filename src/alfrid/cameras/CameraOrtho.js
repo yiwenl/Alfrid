@@ -7,11 +7,11 @@ class CameraOrtho extends Camera {
 	constructor() {
 		super();
 
-		var eye    = glm.vec3.clone([0, 0, 5] );
-		var center = glm.vec3.create( );
-		var up     = glm.vec3.clone( [0,-1,0] );
+		const eye    = glm.vec3.clone([0, 0, 5]);
+		const center = glm.vec3.create();
+		const up     = glm.vec3.clone([0, -1, 0]);
 		this.lookAt(eye, center, up);
-		this.ortho( 1, -1, 1, -1);
+		this.ortho(1, -1, 1, -1);
 	}
 
 

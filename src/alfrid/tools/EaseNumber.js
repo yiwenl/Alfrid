@@ -3,11 +3,11 @@
 import Scheduler from 'scheduling';
 
 class EaseNumber {
-	constructor(mValue, mEasing=0.1) {
+	constructor(mValue, mEasing = 0.1) {
 		this.easing       = mEasing;
 		this._value       = mValue;
 		this._targetValue = mValue;
-		this._efIndex     = Scheduler.addEF( ()=> this._update());
+		this._efIndex     = Scheduler.addEF(()=> this._update());
 	}
 
 

@@ -6,7 +6,7 @@ A WebGL tool set
 ### Default Vertex Attributes
 - aVertexPosition
 - aTextureCoord
-- aNormal(if generate normals from Geom)
+- aNormal
 
 ### Default Matrix Uniforms
 - uModelMatrix
@@ -18,7 +18,19 @@ A WebGL tool set
 
 ### Installation 
 
-```javascript
+```
 npm install;
-gulp;
+```
+
+### Development 
+
+```
+npm run dev;
+```
+
+
+### Build 
+
+```
+npm run build;
 ```
