@@ -3,7 +3,7 @@
 'use strict';
 
 import BinaryLoader from './BinaryLoader';
-import HDRParser from '../tools/HDRParser';
+import hdrParser from '../tools/HDRParser';
 
 class HDRLoader extends BinaryLoader {
 	constructor() {
@@ -11,11 +11,11 @@ class HDRLoader extends BinaryLoader {
 	}
 
 	parse(mArrayBuffer) {
-		return HDRParser(mArrayBuffer);
+		return hdrParser(mArrayBuffer);
 	}
 
 	_onLoaded() {
-		let o = this.parse(this._req.response);
+		const o = this.parse(this._req.response);
 		if(this._callback) {
 			this._callback(o);
 		}
@@ -24,8 +24,8 @@ class HDRLoader extends BinaryLoader {
 }
 
 
-HDRLoader.parse = function(mArrayBuffer) {
-	return HDRParser(mArrayBuffer);
+HDRLoader.parse = function (mArrayBuffer) {
+	return hdrParser(mArrayBuffer);
 };
 
 export default HDRLoader;

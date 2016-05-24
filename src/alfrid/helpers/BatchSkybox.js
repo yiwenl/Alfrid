@@ -4,14 +4,15 @@ import Geom from '../Geom';
 import GLShader from '../GLShader';
 import Batch from '../Batch';
 
-let glslify = require('glslify');
+const vs = require('../shaders/skybox.vert');
+const fs = require('../shaders/skybox.frag');
 
 
 class BatchSkybox extends Batch {
 
-	constructor(size=20) {
-		let mesh = Geom.skybox(size);
-		let shader = new GLShader(glslify('../shaders/skybox.vert'), glslify('../shaders/skybox.frag'));
+	constructor(size = 20) {
+		const mesh = Geom.skybox(size);
+		const shader = new GLShader(vs, fs);
 
 		super(mesh, shader);
 	}

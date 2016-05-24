@@ -4,13 +4,14 @@ import Geom from '../Geom';
 import GLShader from '../GLShader';
 import Batch from '../Batch';
 
-var glslify = require('glslify');
+const vs = require('../shaders/bigTriangle.vert');
+const fs = require('../shaders/copy.frag');
 
 class BatchCopy extends Batch {
 
 	constructor() {
-		let mesh = Geom.bigTriangle();
-		let shader = new GLShader(glslify('../shaders/bigTriangle.vert'), glslify('../shaders/copy.frag'));
+		const mesh = Geom.bigTriangle();
+		const shader = new GLShader(vs, fs);
 		super(mesh, shader);
 
 		shader.bind();

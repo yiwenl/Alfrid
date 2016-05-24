@@ -8,7 +8,7 @@ let gl;
 
 
 class GLCubeTexture {
-	constructor(mSource, mParameters={}, isCubeTexture=false) {
+	constructor(mSource, mParameters = {}, isCubeTexture = false) {
 		// console.log(typeof(mSource));
 		gl = GL.gl;
 
@@ -52,8 +52,8 @@ class GLCubeTexture {
 
 	//	PUBLIC METHOD
 
-	bind (index=0) {
-		if(!GL.shader) {return;}
+	bind(index = 0) {
+		if(!GL.shader) { return; }
 
 		gl.activeTexture(gl.TEXTURE0 + index);
 		gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.texture);

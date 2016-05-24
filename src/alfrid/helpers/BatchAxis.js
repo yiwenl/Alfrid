@@ -5,23 +5,24 @@ import Mesh from '../Mesh';
 import GLShader from '../GLShader';
 import Batch from '../Batch';
 
-let glslify = require('glslify');
+const vs = require('../shaders/axis.vert');
+const fs = require('../shaders/axis.frag');
 
 
 class BatchAxis extends Batch {
 
 	constructor() {
-		let positions = [];
-		let colors = [];
-		let indices = [0, 1, 2, 3, 4, 5];
-		let r = 9999;
+		const positions = [];
+		const colors = [];
+		const indices = [0, 1, 2, 3, 4, 5];
+		const r = 9999;
 
 		positions.push([-r,  0,  0]);
-		positions.push([ r,  0,  0]);
-		positions.push([ 0, -r,  0]);
-		positions.push([ 0,  r,  0]);
-		positions.push([ 0,  0, -r]);
-		positions.push([ 0,  0,  r]);
+		positions.push([r,  0,  0]);
+		positions.push([0, -r,  0]);
+		positions.push([0,  r,  0]);
+		positions.push([0,  0, -r]);
+		positions.push([0,  0,  r]);
 
 
 		colors.push([1, 0, 0]);
@@ -31,12 +32,12 @@ class BatchAxis extends Batch {
 		colors.push([0, 0, 1]);
 		colors.push([0, 0, 1]);
 
-		let mesh = new Mesh(GL.LINES);
+		const mesh = new Mesh(GL.LINES);
 		mesh.bufferVertex(positions);
 		mesh.bufferIndex(indices);
 		mesh.bufferData(colors, 'aColor', 3);
 
-		let shader = new GLShader(glslify('../shaders/axis.vert'), glslify('../shaders/axis.frag'));
+		const shader = new GLShader(vs, fs);
 
 		super(mesh, shader);
 
