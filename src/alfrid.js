@@ -76,7 +76,6 @@ class Alfrid {
 		this.BatchDotsPlane    = BatchDotsPlane;
 		this.Scene             = Scene;
 		this.View              = View;
-		// this.EffectComposer    = EffectComposer;
 		this.ShaderLibs        = ShaderLibs;
 
 
