@@ -40,15 +40,10 @@ import Scene				from './alfrid/helpers/Scene';
 import View					from './alfrid/helpers/View';
 import ShaderLibs			from './alfrid/tools/ShaderLibs';
 
-//	POST
-// import EffectComposer		from './alfrid/post/EffectComposer';
+const VERSION = '0.1.1';
 
-const VERSION = '0.0.1';
-
-class alfrid {
-
+class Alfrid {
 	constructor() {
-		
 		this.glm               = GLM;
 		this.GL                = GLTool;
 		this.GLTool            = GLTool;
@@ -87,32 +82,29 @@ class alfrid {
 
 		//	NOT SUPER SURE I'VE DONE THIS IS A GOOD WAY
 
-		for( let s in GLM) {
+		for(const s in GLM) {
 			if(GLM[s]) {
 				window[s] = GLM[s];
 			}
 		}
-
 	}
-
 
 	log() {
 		if(navigator.userAgent.indexOf('Chrome') > -1) {
-            console.log('%clib alfrid : VERSION ' + VERSION, 'background: #193441; color: #FCFFF5');
-        } else {
-        	console.log('lib alfrid : VERSION ', VERSION);
-        }
+			console.log(`%clib alfrid : VERSION ${VERSION}`, 'background: #193441; color: #FCFFF5');
+		} else {
+			console.log('lib alfrid : VERSION ', VERSION);
+		}
 		console.log('%cClasses : ', 'color: #193441');
 
-		for(let s in this) {
+		for(const s in this) {
 			if(this[s]) {
-				console.log('%c - '+s, 'color: #3E606F');
+				console.log(`%c - ${s}`, 'color: #3E606F');
 			}
 		}
 	}
-
 }
 
-let b = new alfrid();
+const al = new Alfrid();
 
-module.exports = b;
+export default al;

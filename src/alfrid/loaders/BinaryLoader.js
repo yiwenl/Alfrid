@@ -2,10 +2,10 @@
 
 class BinaryLoader {
 
-	constructor(isArrayBuffer=false) {
+	constructor(isArrayBuffer = false) {
 		this._req = new XMLHttpRequest();
-		this._req.addEventListener('load', (e)=>this._onLoaded(e) );
-		this._req.addEventListener('progress', (e)=>this._onProgress(e) );
+		this._req.addEventListener('load', (e)=>this._onLoaded(e));
+		this._req.addEventListener('progress', (e)=>this._onProgress(e));
 		if(isArrayBuffer) {
 			this._req.responseType = 'arraybuffer';
 		}
@@ -25,7 +25,7 @@ class BinaryLoader {
 		this._callback(this._req.response);
 	}
 
-	_onProgress(/*e*/) {
+	_onProgress(/* e*/) {
 		// console.log('on Progress:', (e.loaded/e.total*100).toFixed(2));
 	}
 }

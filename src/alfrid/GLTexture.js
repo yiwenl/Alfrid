@@ -4,15 +4,15 @@
 
 import GL from './GLTool';
 
-const isPowerOfTwo = function(x) {	
+function isPowerOfTwo(x) {	
 	return (x !== 0) && (!(x & (x - 1)));
 };
 
-const isSourcePowerOfTwo = function(obj) {	
-	let w = obj.width || obj.videoWidth;
-	let h = obj.height || obj.videoHeight;
+function isSourcePowerOfTwo(obj) {	
+	const w = obj.width || obj.videoWidth;
+	const h = obj.height || obj.videoHeight;
 
-	if(!w || !h) {return false;}
+	if(!w || !h) { return false; }
 
 	return isPowerOfTwo(w) && isPowerOfTwo(h);
 };
@@ -21,7 +21,7 @@ let gl;
 
 class GLTexture {
 
-	constructor(mSource, isTexture=false, mParameters={}) {
+	constructor(mSource, isTexture = false, mParameters = {}) {
 		gl = GL.gl;
 
 		if(isTexture) {
@@ -35,7 +35,7 @@ class GLTexture {
 			
 			this.wrapS     = mParameters.wrapS || gl.MIRRORED_REPEAT;
 			this.wrapT     = mParameters.wrapT || gl.MIRRORED_REPEAT;
-			let width      = mSource.width || mSource.videoWidth;
+			const width      = mSource.width || mSource.videoWidth;
 
 			if(width) {
 				if(!isSourcePowerOfTwo(mSource)) {
@@ -113,7 +113,7 @@ class GLTexture {
 	//	UPDATE TEXTURE
 
 	updateTexture(mSource) {
-		if(mSource){ this._mSource = mSource; }
+		if(mSource) { this._mSource = mSource; }
 		gl.bindTexture(gl.TEXTURE_2D, this.texture);
 		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this._mSource);
@@ -128,8 +128,8 @@ class GLTexture {
 
 
 	bind(index) {
-		if(index === undefined) {index = 0;}
-		if(!GL.shader) {return;}
+		if(index === undefined) { index = 0; }
+		if(!GL.shader) { return; }
 
 		gl.activeTexture(gl.TEXTURE0 + index);
 		gl.bindTexture(gl.TEXTURE_2D, this.texture);
@@ -142,11 +142,11 @@ class GLTexture {
 
 let _whiteTexture, _greyTexture, _blackTexture;
 
-GLTexture.whiteTexture = function() {
+GLTexture.whiteTexture = function whiteTexture() {
 	if(_whiteTexture === undefined) {
-		let canvas = document.createElement('canvas');
+		const canvas = document.createElement('canvas');
 		canvas.width = canvas.height = 4;
-		let ctx = canvas.getContext('2d');
+		const ctx = canvas.getContext('2d');
 		ctx.fillStyle = '#fff';
 		ctx.fillRect(0, 0, 4, 4);
 		_whiteTexture = new GLTexture(canvas);
@@ -155,11 +155,11 @@ GLTexture.whiteTexture = function() {
 	return _whiteTexture;
 };
 
-GLTexture.greyTexture = function() {
+GLTexture.greyTexture = function greyTexture() {
 	if(_greyTexture === undefined) {
-		let canvas = document.createElement('canvas');
+		const canvas = document.createElement('canvas');
 		canvas.width = canvas.height = 4;
-		let ctx = canvas.getContext('2d');
+		const ctx = canvas.getContext('2d');
 		ctx.fillStyle = 'rgb(127, 127, 127)';
 		ctx.fillRect(0, 0, 4, 4);
 		_greyTexture = new GLTexture(canvas);
@@ -167,11 +167,11 @@ GLTexture.greyTexture = function() {
 	return _greyTexture;
 };
 
-GLTexture.blackTexture = function() {
+GLTexture.blackTexture = function blackTexture() {
 	if(_blackTexture === undefined) {
-		let canvas = document.createElement('canvas');
+		const canvas = document.createElement('canvas');
 		canvas.width = canvas.height = 4;
-		let ctx = canvas.getContext('2d');
+		const ctx = canvas.getContext('2d');
 		ctx.fillStyle = 'rgb(127, 127, 127)';
 		ctx.fillRect(0, 0, 4, 4);
 		_blackTexture = new GLTexture(canvas);

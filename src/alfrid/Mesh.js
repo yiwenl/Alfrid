@@ -10,9 +10,9 @@ let gl;
 const vec3 = glm.vec3;
 
 class Mesh {
-	constructor(mDrawType = GL.gl.TRIANGLES) {
+	constructor(mDrawingType = 4) {
 		gl                = GL.gl;
-		this.drawType     = mDrawType;
+		this.drawType     = mDrawingType;
 		this._attributes  = [];
 		this._vertexSize  = 0;
 		
@@ -26,7 +26,7 @@ class Mesh {
 	}
 
 
-	bufferVertex(mArrayVertices, isDynamic=false) {
+	bufferVertex(mArrayVertices, isDynamic = false) {
 
 		this._vertexSize = mArrayVertices.length;
 		this.bufferData(mArrayVertices, 'aVertexPosition', 3, isDynamic);
@@ -34,7 +34,7 @@ class Mesh {
 
 
 		const tempNormals = [];
-		for (let i=0; i<mArrayVertices.length; i++) {
+		for (let i = 0; i < mArrayVertices.length; i++) {
 			tempNormals.push([1, 0, 0]);
 		}
 
@@ -44,7 +44,7 @@ class Mesh {
 	}
 
 
-	bufferTexCoord(mArrayTexCoords, isDynamic=false) {
+	bufferTexCoord(mArrayTexCoords, isDynamic = false) {
 
 		this.bufferData(mArrayTexCoords, 'aTextureCoord', 2, isDynamic);
 		this._texCoords = mArrayTexCoords;
@@ -52,7 +52,7 @@ class Mesh {
 	}
 
 
-	bufferNormal(mNormals, isDynamic=false) {
+	bufferNormal(mNormals, isDynamic = false) {
 
 		this.bufferData(mNormals, 'aNormal', 3, isDynamic);
 		this._normals = mNormals;
@@ -60,9 +60,9 @@ class Mesh {
 	}
 
 
-	bufferIndex(mArrayIndices, isDynamic=false) {
+	bufferIndex(mArrayIndices, isDynamic = false) {
 
-		let drawType          = isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW;
+		const drawType          = isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW;
 		this._indices         = mArrayIndices;
 		this.iBuffer          = gl.createBuffer();
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.iBuffer);
@@ -74,14 +74,16 @@ class Mesh {
 	}
 
 
-	bufferData(mData, mName, mItemSize, isDynamic=false) {
-		let index = -1, i=0;
-		let drawType   = isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW;
-		let bufferData = [];
-		let buffer, dataArray;
+	bufferData(mData, mName, mItemSize, isDynamic = false) {
+		let index = -1;
+		let i = 0;
+		const drawType   = isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW;
+		const bufferData = [];
+		let buffer;
+		let dataArray;
 
 		//	Check for existing attributes
-		for(i=0; i<this._attributes.length; i++) {
+		for(i = 0; i < this._attributes.length; i++) {
 			if(this._attributes[i].name === mName) {
 				this._attributes[i].data = mData;
 				index = i;
@@ -90,8 +92,8 @@ class Mesh {
 		}
 
 		//	flatten buffer data		
-		for(i=0; i<mData.length; i++) {
-			for(let j=0; j<mData[i].length; j++) {
+		for(i = 0; i < mData.length; i++) {
+			for(let j = 0; j < mData[i].length; j++) {
 				bufferData.push(mData[i][j]);
 			}
 		}
@@ -105,7 +107,7 @@ class Mesh {
 
 			dataArray = new Float32Array(bufferData);
 			gl.bufferData(gl.ARRAY_BUFFER, dataArray, drawType);
-			this._attributes.push({name:mName, data:mData, itemSize: mItemSize, buffer:buffer, dataArray:dataArray});
+			this._attributes.push({ name:mName, data:mData, itemSize: mItemSize, buffer:buffer, dataArray:dataArray });
 
 		} else {
 
@@ -113,7 +115,7 @@ class Mesh {
 			buffer = this._attributes[index].buffer;
 			gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
 			dataArray = this._attributes[index].dataArray;
-			for(i=0; i<bufferData.length; i++) {
+			for(i = 0; i < bufferData.length; i++) {
 				dataArray[i] = bufferData[i];
 			}
 			gl.bufferData(gl.ARRAY_BUFFER, dataArray, drawType);
@@ -123,7 +125,7 @@ class Mesh {
 	}
 
 
-	computeNormals(usingFaceNormals=false) {
+	computeNormals(usingFaceNormals = false) {
 
 		this._generateFaces();
 
@@ -145,16 +147,16 @@ class Mesh {
 
 		let faceIndex;
 		let face;
-		let normals = [];
+		const normals = [];
 
-		for(let i=0; i<this._indices.length; i+=3) {
-			faceIndex = i/3;
+		for(let i = 0; i < this._indices.length; i += 3) {
+			faceIndex = i / 3;
 			face = this._faces[faceIndex];
-			let N = face.normal;
+			const N = face.normal;
 
-			normals[ face.indices[0] ] = N;
-			normals[ face.indices[1] ] = N;
-			normals[ face.indices[2] ] = N;
+			normals[face.indices[0]] = N;
+			normals[face.indices[1]] = N;
+			normals[face.indices[2]] = N;
 		}
 
 		this.bufferNormal(normals);
@@ -163,15 +165,15 @@ class Mesh {
 
 	_computeVertexNormals() {
 		//	loop through all vertices
-		let sumNormal = vec3.create();
 		let face;
-		let normals = [];
+		const sumNormal = vec3.create();
+		const normals = [];
 
-		for(let i=0; i<this._vertices.length; i++) {
+		for(let i = 0; i < this._vertices.length; i++) {
 
 			vec3.set(sumNormal, 0, 0, 0);
 
-			for( let j=0; j<this._faces.length; j++) {
+			for(let j = 0; j < this._faces.length; j++) {
 				face = this._faces[j];
 
 				//	if vertex exist in the face, add the normal to sum normal
@@ -186,7 +188,7 @@ class Mesh {
 			}
 
 			vec3.normalize(sumNormal, sumNormal);
-			normals.push( [sumNormal[0], sumNormal[1], sumNormal[2]] );
+			normals.push([sumNormal[0], sumNormal[1], sumNormal[2]]);
 		}
 
 		this.bufferNormal(normals);
@@ -197,13 +199,14 @@ class Mesh {
 	_generateFaces() {
 		
 		let ia, ib, ic;
-		let a, b, c, vba = vec3.create(), vca = vec3.create(), vNormal = vec3.create();
+		let a, b, c;
+		const vba = vec3.create(), vca = vec3.create(), vNormal = vec3.create();
 
-		for(let i=0; i<this._indices.length; i+=3) {
+		for(let i = 0; i < this._indices.length; i += 3) {
 
 			ia = this._indices[i];
-			ib = this._indices[i+1];
-			ic = this._indices[i+2];
+			ib = this._indices[i + 1];
+			ic = this._indices[i + 2];
 
 			a = vec3.clone(this._vertices[ia]);
 			b = vec3.clone(this._vertices[ib]);
@@ -214,9 +217,9 @@ class Mesh {
 
 			vec3.cross(vNormal, vba, vca);
 			vec3.normalize(vNormal, vNormal);
-			let N = [vNormal[0], vNormal[1], vNormal[2]];
+			const N = [vNormal[0], vNormal[1], vNormal[2]];
 
-			let face = {
+			const face = {
 				indices:[ia, ib, ic],
 				normal:N 
 			};

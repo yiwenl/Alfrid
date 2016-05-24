@@ -113,9 +113,9 @@ const Easing = {
 	},
 	Elastic: {
 		In: function (k) {
-			var s;
-			var a = 0.1;
-			var p = 0.4;
+			let s;
+			let a = 0.1;
+			const p = 0.4;
 			if (k === 0) {
 				return 0;
 			}
@@ -131,9 +131,9 @@ const Easing = {
 			return - (a * Math.pow(2, 10 * (k -= 1)) * Math.sin((k - s) * (2 * Math.PI) / p));
 		},
 		Out: function (k) {
-			var s;
-			var a = 0.1;
-			var p = 0.4;
+			let s;
+			let a = 0.1;
+			const p = 0.4;
 			if (k === 0) {
 				return 0;
 			}
@@ -149,9 +149,9 @@ const Easing = {
 			return (a * Math.pow(2, - 10 * k) * Math.sin((k - s) * (2 * Math.PI) / p) + 1);
 		},
 		InOut: function (k) {
-			var s;
-			var a = 0.1;
-			var p = 0.4;
+			let s;
+			let a = 0.1;
+			const p = 0.4;
 			if (k === 0) {
 				return 0;
 			}
@@ -172,26 +172,26 @@ const Easing = {
 	},
 	Back: {
 		In: function (k) {
-			var s = 1.70158;
+			const s = 1.70158;
 			return k * k * ((s + 1) * k - s);
 		},
 		Out: function (k) {
-			var s = 1.70158;
+			const s = 1.70158;
 			return --k * k * ((s + 1) * k + s) + 1;
 		},
 		InOut: function (k) {
-			var s = 1.70158 * 1.525;
+			const s = 1.70158 * 1.525;
 			if ((k *= 2) < 1) {
 				return 0.5 * (k * k * ((s + 1) * k - s));
 			}
 			return 0.5 * ((k -= 2) * k * ((s + 1) * k + s) + 2);
 		}
 	},
-	Bounce: {
-		In: function (k) {
-			return 1 - Easing.Bounce.Out(1 - k);
+	bounce: {
+		in: function (k) {
+			return 1 - Easing.Bounce.out(1 - k);
 		},
-		Out: function (k) {
+		out: function (k) {
 			if (k < (1 / 2.75)) {
 				return 7.5625 * k * k;
 			} else if (k < (2 / 2.75)) {
@@ -202,87 +202,87 @@ const Easing = {
 				return 7.5625 * (k -= (2.625 / 2.75)) * k + 0.984375;
 			}
 		},
-		InOut: function (k) {
+		inOut: function (k) {
 			if (k < 0.5) {
-				return Easing.Bounce.In(k * 2) * 0.5;
+				return Easing.Bounce.in(k * 2) * 0.5;
 			}
-			return Easing.Bounce.Out(k * 2 - 1) * 0.5 + 0.5;
+			return Easing.Bounce.out(k * 2 - 1) * 0.5 + 0.5;
 		}
 	}
 };
 
 function getFunc(mEasing) {
 	switch (mEasing) {
-		default:
-		case 'linear' :
-			return Easing.Linear.None;
-		case 'expIn' :
-			return Easing.Exponential.In;
-		case 'expOut' :
-			return Easing.Exponential.Out;
-		case 'expInOut' :
-			return Easing.Exponential.InOut;
+	default:
+	case 'linear' :
+		return Easing.Linear.None;
+	case 'expIn' :
+		return Easing.Exponential.In;
+	case 'expOut' :
+		return Easing.Exponential.Out;
+	case 'expInOut' :
+		return Easing.Exponential.InOut;
 
-		case 'cubicIn' :
-			return Easing.Cubic.In;
-		case 'cubicOut' :
-			return Easing.Cubic.Out;
-		case 'cubicInOut' :
-			return Easing.Cubic.InOut;
+	case 'cubicIn' :
+		return Easing.Cubic.In;
+	case 'cubicOut' :
+		return Easing.Cubic.Out;
+	case 'cubicInOut' :
+		return Easing.Cubic.InOut;
 
-		case 'quarticIn' :
-			return Easing.Quartic.In;
-		case 'quarticOut' :
-			return Easing.Quartic.Out;
-		case 'quarticInOut' :
-			return Easing.Quartic.InOut;
+	case 'quarticIn' :
+		return Easing.Quartic.In;
+	case 'quarticOut' :
+		return Easing.Quartic.Out;
+	case 'quarticInOut' :
+		return Easing.Quartic.InOut;
 
-		case 'quinticIn' :
-			return Easing.Quintic.In;
-		case 'quinticOut' :
-			return Easing.Quintic.Out;
-		case 'quinticInOut' :
-			return Easing.Quintic.InOut;
+	case 'quinticIn' :
+		return Easing.Quintic.In;
+	case 'quinticOut' :
+		return Easing.Quintic.Out;
+	case 'quinticInOut' :
+		return Easing.Quintic.InOut;
 
-		case 'sinusoidalIn' :
-			return Easing.Sinusoidal.In;
-		case 'sinusoidalOut' :
-			return Easing.Sinusoidal.Out;
-		case 'sinusoidalInOut' :
-			return Easing.Sinusoidal.InOut;
+	case 'sinusoidalIn' :
+		return Easing.Sinusoidal.In;
+	case 'sinusoidalOut' :
+		return Easing.Sinusoidal.Out;
+	case 'sinusoidalInOut' :
+		return Easing.Sinusoidal.InOut;
 
-		case 'circularIn' :
-			return Easing.Circular.In;
-		case 'circularOut' :
-			return Easing.Circular.Out;
-		case 'circularInOut' :
-			return Easing.Circular.InOut;
+	case 'circularIn' :
+		return Easing.Circular.In;
+	case 'circularOut' :
+		return Easing.Circular.Out;
+	case 'circularInOut' :
+		return Easing.Circular.InOut;
 
-		case 'elasticIn' :
-			return Easing.Elastic.In;
-		case 'elasticOut' :
-			return Easing.Elastic.Out;
-		case 'elasticInOut' :
-			return Easing.Elastic.InOut;
+	case 'elasticIn' :
+		return Easing.Elastic.In;
+	case 'elasticOut' :
+		return Easing.Elastic.Out;
+	case 'elasticInOut' :
+		return Easing.Elastic.InOut;
 
-		case 'backIn' :
-			return Easing.Back.In;
-		case 'backOut' :
-			return Easing.Back.Out;
-		case 'backInOut' :
-			return Easing.Back.InOut;
+	case 'backIn' :
+		return Easing.Back.In;
+	case 'backOut' :
+		return Easing.Back.Out;
+	case 'backInOut' :
+		return Easing.Back.InOut;
 
-		case 'bounceIn' :
-			return Easing.Bounce.In;
-		case 'bounceOut' :
-			return Easing.Bounce.Out;
-		case 'bounceInOut' :
-			return Easing.Bounce.InOut;
+	case 'bounceIn' :
+		return Easing.Bounce.in;
+	case 'bounceOut' :
+		return Easing.Bounce.out;
+	case 'bounceInOut' :
+		return Easing.Bounce.inOut;
 	}
 }
 
 class TweenNumber {
-	constructor(mValue, mEasing='expOut', mSpeed=0.01) {
+	constructor(mValue, mEasing = 'expOut', mSpeed = 0.01) {
 		this._value = mValue;
 		this._startValue = mValue;
 		this._targetValue = mValue;
@@ -291,7 +291,7 @@ class TweenNumber {
 		this.easing = mEasing;
 		this._needUpdate = true;
 
-		this._efIndex     = Scheduler.addEF( ()=> this._update());
+		this._efIndex     = Scheduler.addEF(()=> this._update());
 	}
 
 
@@ -355,7 +355,7 @@ class TweenNumber {
 		if(this._needUpdate) {
 			const f = getFunc(this.easing);
 			const p = f(this._counter);
-			this._value = this._startValue + p * ( this._targetValue - this._startValue );
+			this._value = this._startValue + p * (this._targetValue - this._startValue);
 			this._needUpdate = false;
 		}
 		return this._value;

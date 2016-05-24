@@ -8,7 +8,7 @@ import Geom from '../Geom';
 
 
 class EffectComposer {
-	constructor(mWidth, mHeight, mParameters={}) {
+	constructor(mWidth, mHeight, mParameters = {}) {
 		this._fbo = new FrameBuffer(mWidth, mHeight, mParameters);
 		this._fboTarget = new FrameBuffer(mWidth, mHeight, mParameters);
 
@@ -24,7 +24,7 @@ class EffectComposer {
 
 	render() {
 
-		for(let i=0; i<this._passes.length; i++) {
+		for(let i = 0; i < this._passes.length; i++) {
 
 			this._swap();
 		}
@@ -32,7 +32,7 @@ class EffectComposer {
 
 
 	_swap() {
-		let tmp = this._fbo;
+		const tmp = this._fbo;
 		this._fbo = this._fboTarget;
 		this._fboTarget = tmp;
 	}

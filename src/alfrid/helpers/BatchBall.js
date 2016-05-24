@@ -4,18 +4,19 @@ import Geom from '../Geom';
 import GLShader from '../GLShader';
 import Batch from '../Batch';
 
-var glslify = require('glslify');
+const vs = require('../shaders/general.vert');
+const fs = require('../shaders/simpleColor.frag');
 
 class BatchBall extends Batch {
 
 	constructor() {
-		let mesh = Geom.sphere(1, 24);
-		let shader = new GLShader(glslify('../shaders/general.vert'), glslify('../shaders/simpleColor.frag'));
+		const mesh = Geom.sphere(1, 24);
+		const shader = new GLShader(vs, fs);
 		super(mesh, shader);
 	}
 
 
-	draw(position=[0,0,0], scale=[1,1,1], color=[1,1,1], opacity=1) {
+	draw(position = [0, 0, 0], scale = [1, 1, 1], color = [1, 1, 1], opacity = 1) {
 		this.shader.bind();
 		this.shader.uniform('position', 'uniform3fv', position);
 		this.shader.uniform('scale', 'uniform3fv', scale);

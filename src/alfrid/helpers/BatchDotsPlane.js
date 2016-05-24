@@ -5,23 +5,24 @@ import Mesh from '../Mesh';
 import GLShader from '../GLShader';
 import Batch from '../Batch';
 
-let glslify = require('glslify');
+const vs = require('../shaders/dotsPlane.vert');
+const fs = require('../shaders/simpleColor.frag');
 
 class BatchDotsPlane extends Batch {
 
 	constructor() {
-		let positions = [];
-		let indices   = [];
+		const positions = [];
+		const indices   = [];
 		let index     = 0;
 		
-		let numDots   = 100;
-		let size      = 50;
-		let gap       = size / numDots;
+		const numDots   = 100;
+		const size      = 50;
+		const gap       = size / numDots;
 		let i, j;
 
 
-		for(i=-size/2; i<size; i+=gap) {
-			for(j=-size/2; j<size; j+=gap) {
+		for(i = -size / 2; i < size; i += gap) {
+			for(j = -size / 2; j < size; j += gap) {
 				positions.push([i, j, 0]);
 				indices.push(index);
 				index++;
@@ -32,11 +33,11 @@ class BatchDotsPlane extends Batch {
 			}
 		}
 		
-		let mesh     = new Mesh(GL.POINTS);
+		const mesh     = new Mesh(GL.POINTS);
 		mesh.bufferVertex(positions);
 		mesh.bufferIndex(indices);
 		
-		let shader   = new GLShader(glslify('../shaders/dotsPlane.vert'), glslify('../shaders/simpleColor.frag'));
+		const shader   = new GLShader(vs, fs);
 		
 		super(mesh, shader);
 		
