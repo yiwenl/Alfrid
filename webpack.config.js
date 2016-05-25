@@ -24,7 +24,7 @@ module.exports = {
   cache: !prod,
   debug: !prod,
   entry: {
-    app: prod ? ['./src/alfrid.js'] : ['./src/js/app.js']
+    app: prod ? ['./src/alfrid.js'] : ['./src/test/app.js']
   },
   stats: {
     cached: false,
