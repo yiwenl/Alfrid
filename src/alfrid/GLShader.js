@@ -5,12 +5,17 @@
 import GL from './GLTool';
 const glslify = require('glslify');
 function isSame(array1, array2) {
-	return array1.every((element, index) => {
-		if(element !== array2[index]) {
+	if(array1.length !== array2.length) {
+		return false;
+	}
+
+	for(let i = 0; i < array1.length; i++) {
+		if(array1[i] !== array2[i]) {
 			return false;
 		}
-		return true;
-	});
+	}
+
+	return true;
 };
 
 function addLineNumbers(string) {
@@ -62,12 +67,21 @@ class GLShader {
 
 
 	uniform(mName, mType, mValue) {
+		function cloneArray(mArray) {
+			if(mArray.slice) {
+				return mArray.slice(0); 
+			} else {
+				return new Float32Array(mArray);
+			}
+		}
+
 		if(mValue === undefined || mValue === null) {
 			console.warn('mValue Error:', mName);
 			return;
 		}
 
 		const uniformType = uniformMapping[mType] || mType;
+		const isNumber = uniformType === 'uniform1i' || uniformType === 'uniform1f';
 		let hasUniform = false;
 		let oUniform;
 		let parameterIndex = -1;
@@ -85,10 +99,10 @@ class GLShader {
 
 		if(!hasUniform) {
 			this.shaderProgram[mName] = gl.getUniformLocation(this.shaderProgram, mName);
-			if(!mValue.slice) {
+			if(isNumber) {
 				this.parameters.push({ name : mName, type: uniformType, value: mValue, uniformLoc: this.shaderProgram[mName] });	
 			} else {
-				this.parameters.push({ name : mName, type: uniformType, value: mValue.slice(0), uniformLoc: this.shaderProgram[mName] });	
+				this.parameters.push({ name : mName, type: uniformType, value: cloneArray(mValue), uniformLoc: this.shaderProgram[mName] });	
 			}
 			
 			parameterIndex = this.parameters.length - 1;
@@ -102,10 +116,10 @@ class GLShader {
 		}
 
 		if(uniformType.indexOf('Matrix') === -1) {
-			if(mValue.slice) {
+			if(!isNumber) {
 				if(!isSame(this.parameters[parameterIndex].value, mValue) || !hasUniform) {
 					gl[uniformType](this.shaderProgram[mName], mValue);	
-					this.parameters[parameterIndex].value = mValue.slice(0);
+					this.parameters[parameterIndex].value = cloneArray(mValue);
 				}
 			} else {
 				const needUpdate = (this.parameters[parameterIndex].value !== mValue || !hasUniform);
@@ -118,7 +132,7 @@ class GLShader {
 		} else {
 			if(!isSame(this.parameters[parameterIndex].value, mValue) || !hasUniform) {
 				gl[uniformType](this.shaderProgram[mName], false, mValue);	
-				this.parameters[parameterIndex].value = mValue.slice(0);
+				this.parameters[parameterIndex].value = cloneArray(mValue);
 
 			}
 		}
