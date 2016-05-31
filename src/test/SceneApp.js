@@ -28,6 +28,7 @@ class SceneApp extends alfrid.Scene {
 		this.b = [1, 1, 0];
 		this.c = [0, -1, 0];
 		this._size = [.1, .1, .1];
+		this._time = 0;
 	}
 
 
@@ -40,10 +41,16 @@ class SceneApp extends alfrid.Scene {
 		this._bAxis 	 = new alfrid.BatchAxis();
 		this._bDotPlane  = new alfrid.BatchDotsPlane();
 		this._bBall		 = new alfrid.BatchBall();
+		this._bLine 	 = new alfrid.BatchLine();
 	}
 
 
 	render() {
+		this._time += 0.01;
+		const radius = .75;
+		this.ray.direction[0] = Math.cos(this._time) * radius;
+		this.ray.direction[1] = Math.sin(this._time) * radius;
+
 		this.orbitalControl.ry.value += 0.001;
 		this._bAxis.draw();
 		this._bDotPlane.draw();
@@ -59,6 +66,8 @@ class SceneApp extends alfrid.Scene {
 		if(hit) {
 			this._bBall.draw(hit, [.05, .05, .05], [1, 0, 0]);
 		}
+
+		this._bLine.draw(this.ray.origin, this.ray.at(5));
 	}
 
 

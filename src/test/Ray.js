@@ -2,36 +2,36 @@
 
 class Ray {
 	constructor(mOrigin, mDirection) {
-		this._origin = vec3.clone(mOrigin);
-		this._direction = vec3.clone(mDirection);
+		this.origin = vec3.clone(mOrigin);
+		this.direction = vec3.clone(mDirection);
 	}
 
 	at(t) {
-		const target = vec3.clone(this._direction);
+		const target = vec3.clone(this.direction);
 		vec3.scale(target, target, t);
-		vec3.add(target, target, this._origin);
+		vec3.add(target, target, this.origin);
 
 		return target;
 	}
 
 
 	lookAt(mTarget) {
-		vec3.sub(this._direction, mTarget, this._origin);
-		vec3.normalize(this._origin, this._origin);
+		vec3.sub(this.direction, mTarget, this.origin);
+		vec3.normalize(this.origin, this.origin);
 	}
 
 	closestPointToPoint(mPoint) {
 		const result = vec3.create();
-		vec3.sub(mPoint, this._origin);
-		const directionDistance = vec3.dot(result, this._direction);
+		vec3.sub(mPoint, this.origin);
+		const directionDistance = vec3.dot(result, this.direction);
 
 		if (directionDistance < 0) {
-			return vec3.clone(this._origin);
+			return vec3.clone(this.origin);
 		}
 
-		vec3.copy(result, this._direction);
+		vec3.copy(result, this.direction);
 		vec3.scale(result, result, directionDistance);
-		vec3.add(result, result, this._origin);
+		vec3.add(result, result, this.origin);
 
 		return result;
 	}
@@ -45,16 +45,16 @@ class Ray {
 	distanceSqToPoint(mPoint) {
 		const v1 = vec3.create();
 
-		vec3.sub(v1, mPoint, this._origin);
-		const directionDistance = vec3.dot(v1, this._direction);
+		vec3.sub(v1, mPoint, this.origin);
+		const directionDistance = vec3.dot(v1, this.direction);
 
 		if (directionDistance < 0) {
-			return vec3.squaredDistance(this._origin, mPoint);
+			return vec3.squaredDistance(this.origin, mPoint);
 		}
 
-		vec3.copy(v1, this._direction);
+		vec3.copy(v1, this.direction);
 		vec3.scale(v1, v1, directionDistance);
-		vec3.add(v1, v1, this._origin);
+		vec3.add(v1, v1, this.origin);
 		return vec3.squaredDistance(v1, mPoint);
 	}
 
@@ -66,8 +66,8 @@ class Ray {
 
 	intersectSphere(mCenter, mRadius) {
 		const v1 = vec3.create();
-		vec3.sub(v1, mCenter, this._origin);
-		const tca = vec3.dot(v1, this._direction);
+		vec3.sub(v1, mCenter, this.origin);
+		const tca = vec3.dot(v1, this.direction);
 		const d2 = vec3.dot(v1, v1) - tca * tca;
 		const radius2 = mRadius * mRadius;
 
@@ -88,7 +88,7 @@ class Ray {
 
 
 	distanceToPlane(mPlaneCenter, mNormal) {
-		const denominator = vec3.dot(mNormal, this._direction);
+		const denominator = vec3.dot(mNormal, this.direction);
 
 		if(denominator === 0) {
 		}
@@ -109,7 +109,7 @@ class Ray {
 		vec3.sub(edge2, c, a);
 		vec3.cross(normal, edge1, edge2);
 
-		let DdN = vec3.dot(this._direction, normal);
+		let DdN = vec3.dot(this.direction, normal);
 		let sign;
 
 		if (DdN > 0) {
@@ -122,14 +122,14 @@ class Ray {
 			return null;
 		}
 
-		vec3.sub(diff, this._origin, a);
+		vec3.sub(diff, this.origin, a);
 
 		vec3.cross(edge2, diff, edge2);
-		const DdQxE2 = sign * vec3.dot(this._direction, edge2);
+		const DdQxE2 = sign * vec3.dot(this.direction, edge2);
 		if (DdQxE2 < 0) { 	return null; 	}
 
 		vec3.cross(edge1, edge1, diff);
-		const DdE1xQ = sign * vec3.dot(this._direction, edge1);
+		const DdE1xQ = sign * vec3.dot(this.direction, edge1);
 		if (DdE1xQ < 0) {	return null;	}
 
 		if(DdQxE2 + DdE1xQ > DdN) {	return null;	}
@@ -139,11 +139,6 @@ class Ray {
 
 		return this.at(Qdn / DdN);
 	}
-
-
-	get origin() {		return this._origin;	}
-
-	get direction() {	return this._direction;	}
 
 }
 
