@@ -1,6 +1,7 @@
 // SceneApp.js
 import alfrid, { GL } from '../alfrid';
 import Ray from './Ray';
+import ViewPlane from './ViewPlane';
 
 class SceneApp extends alfrid.Scene {
 	constructor() {
@@ -42,12 +43,14 @@ class SceneApp extends alfrid.Scene {
 		this._bDotPlane  = new alfrid.BatchDotsPlane();
 		this._bBall		 = new alfrid.BatchBall();
 		this._bLine 	 = new alfrid.BatchLine();
+
+		this._vPlane  	 = new ViewPlane();
 	}
 
 
 	render() {
 		this._time += 0.01;
-		const radius = .75;
+		const radius = .6;
 		this.ray.direction[0] = Math.cos(this._time) * radius;
 		this.ray.direction[1] = Math.sin(this._time) * radius;
 
@@ -61,13 +64,37 @@ class SceneApp extends alfrid.Scene {
 		this._bBall.draw(this.ray.origin, [.05, .05, .05], [1, 1, 1]);
 		this._bBall.draw(this.ray.at(5), [.05, .05, .05], [1, 1, 1]);
 
-		const hit = this.ray.intersectTriangle(this.c, this.b, this.a, true);
+		// const hit = this.ray.intersectTriangle(this.c, this.b, this.a, true);
+
+		// if(hit) {
+		// 	this._bBall.draw(hit, [.05, .05, .05], [1, 0, 0]);
+		// }
+
+
+		const faces = this._vPlane.mesh.faces;
+		const faceVertices = faces.map((face)=>(face.vertices));
+		if(Math.random() > 0.99) {
+			console.log(faceVertices);	
+		}
+
+		
+		let hit;		
+		for(let i = 0; i < faceVertices.length; i++) {
+			const vertices = faceVertices[i];
+			hit = this.ray.intersectTriangle(vertices[0], vertices[1], vertices[2]);
+			if(hit) {
+				break;
+			}
+		}
 
 		if(hit) {
 			this._bBall.draw(hit, [.05, .05, .05], [1, 0, 0]);
 		}
+		
 
 		this._bLine.draw(this.ray.origin, this.ray.at(5));
+
+		this._vPlane.render();
 	}
 
 

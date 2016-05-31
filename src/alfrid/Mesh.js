@@ -38,8 +38,12 @@ class Mesh {
 			tempNormals.push([1, 0, 0]);
 		}
 
-		if(this._normals.length === 0) {
+		if (this._normals.length === 0) {
 			this.bufferNormal(tempNormals);	
+		}
+
+		if (this._indices.length > 0 && this.drawType === GL.TRIANGLES) {
+			this._generateFaces();
 		}
 	}
 
@@ -71,6 +75,10 @@ class Mesh {
 		this.iBuffer.numItems = mArrayIndices.length;
 		this._indices         = mArrayIndices;
 
+
+		if (this._vertices.length > 0 && this.drawType === GL.TRIANGLES) {
+			this._generateFaces();
+		}
 	}
 
 
@@ -197,7 +205,7 @@ class Mesh {
 
 
 	_generateFaces() {
-		
+		console.log(this._vertices.length);
 		let ia, ib, ic;
 		let a, b, c;
 		const vba = vec3.create(), vca = vec3.create(), vNormal = vec3.create();
@@ -208,20 +216,13 @@ class Mesh {
 			ib = this._indices[i + 1];
 			ic = this._indices[i + 2];
 
-			a = vec3.clone(this._vertices[ia]);
-			b = vec3.clone(this._vertices[ib]);
-			c = vec3.clone(this._vertices[ic]);
-
-			vec3.sub(vba, b, a);
-			vec3.sub(vca, c, a);
-
-			vec3.cross(vNormal, vba, vca);
-			vec3.normalize(vNormal, vNormal);
-			const N = [vNormal[0], vNormal[1], vNormal[2]];
+			a = this._vertices[ia];
+			b = this._vertices[ib];
+			c = this._vertices[ic];
 
 			const face = {
 				indices:[ia, ib, ic],
-				normal:N 
+				vertices:[a, b, c],
 			};
 
 			this._faces.push(face);
@@ -258,6 +259,7 @@ class Mesh {
 		return true;	
 	}
 
+	get faces() {	return this._faces;	}
 
 }
 
