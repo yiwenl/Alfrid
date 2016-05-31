@@ -3,17 +3,21 @@
 import Scheduler from 'scheduling';
 
 class EaseNumber {
-	constructor(mValue, mEasing=0.1) {
+	constructor(mValue, mEasing = 0.1) {
 		this.easing       = mEasing;
 		this._value       = mValue;
 		this._targetValue = mValue;
-		Scheduler.addEF( ()=> this._update());		
+		this._efIndex     = Scheduler.addEF(()=> this._update());
 	}
 
 
 	_update() {
+		const MIN_DIFF = 0.0001;
 		this._checkLimit();
 		this._value += (this._targetValue - this._value) * this.easing;	
+		if(Math.abs(this._targetValue - this._value) < MIN_DIFF) {
+			this._value = this._targetValue;
+		}
 	}
 
 	setTo(mValue) {
@@ -46,6 +50,11 @@ class EaseNumber {
 		if(this._max !== undefined && this._targetValue > this._max) {
 			this._targetValue = this._max;
 		} 
+	}
+
+
+	destroy() {
+		Scheduler.removeEF(this._efIndex);
 	}
 
 

@@ -16,7 +16,7 @@ class GLTool {
 		glm.mat4.identity(this.identityMatrix, this.identityMatrix);
 
 		this.isMobile = false;
-		if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+		if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
 			this.isMobile = true;
 		}
 	}
@@ -40,15 +40,15 @@ class GLTool {
 		
 
 		//	extensions
-		const extensions = ['EXT_shader_texture_lod', 'EXT_sRGB', 'EXT_frag_depth', 'OES_texture_float', 'OES_texture_half_float', 'OES_texture_float_linear', 'OES_texture_half_float_linear', 'OES_standard_derivatives', 'WEBGL_depth_texture'];
+		const extensions = ['EXT_shader_texture_lod', 'EXT_sRGB', 'EXT_frag_depth', 'OES_texture_float', 'OES_texture_half_float', 'OES_texture_float_linear', 'OES_texture_half_float_linear', 'OES_standard_derivatives', 'WEBGL_depth_texture', 'EXT_texture_filter_anisotropic', 'ANGLE_instanced_arrays'];
 		this.extensions = {};
-		for(let i=0; i<extensions.length; i++) {
+		for(let i = 0; i < extensions.length; i++) {
 			this.extensions[extensions[i]] = this.gl.getExtension(extensions[i]);
 		}
 		
 
 		//	Copy gl Attributes
-		let gl                     = this.gl;
+		const gl                     = this.gl;
 		this.VERTEX_SHADER         = gl.VERTEX_SHADER;
 		this.FRAGMENT_SHADER       = gl.FRAGMENT_SHADER;
 		this.COMPILE_STATUS        = gl.COMPILE_STATUS;
@@ -78,10 +78,10 @@ class GLTool {
 
 	setViewport(x, y, w, h) {
 		let hasChanged = false;
-		if(x!==this._viewport[0]) {hasChanged = true;}
-		if(y!==this._viewport[1]) {hasChanged = true;}
-		if(w!==this._viewport[2]) {hasChanged = true;}
-		if(h!==this._viewport[3]) {hasChanged = true;}
+		if(x !== this._viewport[0]) { hasChanged = true; }
+		if(y !== this._viewport[1]) { hasChanged = true; }
+		if(w !== this._viewport[2]) { hasChanged = true; }
+		if(h !== this._viewport[3]) { hasChanged = true; }
 
 		if(hasChanged) {
 			this.gl.viewport(x, y, w, h);
@@ -95,7 +95,7 @@ class GLTool {
 
 
 	clear(r, g, b, a) {
-		this.gl.clearColor( r, g, b, a );
+		this.gl.clearColor(r, g, b, a);
 		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 	}
 
@@ -127,7 +127,7 @@ class GLTool {
 	draw(mMesh, drawingType) {
 
 		if(mMesh.length) {
-			for(let i =0; i<mMesh.length; i++) {
+			for(let i = 0; i < mMesh.length; i++) {
 				this.draw(mMesh[i]);
 			}
 			return;
@@ -143,11 +143,11 @@ class GLTool {
 		}
 
 		//	ATTRIBUTES
-		for(let i=0; i<mMesh.attributes.length; i++) {
+		for(let i = 0; i < mMesh.attributes.length; i++) {
 
-			let attribute = mMesh.attributes[i];
+			const attribute = mMesh.attributes[i];
 			this.gl.bindBuffer(this.gl.ARRAY_BUFFER, attribute.buffer);
-			let attrPosition = getAttribLoc(this.gl, this.shaderProgram, attribute.name);
+			const attrPosition = getAttribLoc(this.gl, this.shaderProgram, attribute.name);
 			this.gl.vertexAttribPointer(attrPosition, attribute.itemSize, this.gl.FLOAT, false, 0, 0);
 			
 			if(this._enabledVertexAttribute.indexOf(attrPosition) === -1) {
@@ -179,7 +179,7 @@ class GLTool {
 		}
 		
 		//	DRAWING
-		if(drawType === this.gl.POINTS ) {
+		if(drawType === this.gl.POINTS) {
 			this.gl.drawArrays(drawType, 0, mMesh.vertexSize);	
 		} else {
 			this.gl.drawElements(drawType, mMesh.iBuffer.numItems, this.gl.UNSIGNED_SHORT, 0);	
@@ -203,8 +203,8 @@ class GLTool {
 
 
 	showExtensions() {
-		console.log('Extensions : ' , this.extensions);
-		for(let ext in this.extensions) {
+		console.log('Extensions : ', this.extensions);
+		for(const ext in this.extensions) {
 			if(this.extensions[ext]) {
 				console.log(ext, ':', this.extensions[ext]);	
 			}
@@ -264,6 +264,6 @@ class GLTool {
 	}
 }
 
-let GL = new GLTool();
+const GL = new GLTool();
 
 export default GL;

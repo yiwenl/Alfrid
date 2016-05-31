@@ -5,18 +5,18 @@
 import GL from './GLTool';
 import GLTexture from './GLTexture';
 
-const isPowerOfTwo = function(x) {	
+function isPowerOfTwo(x) {	
 	return (x !== 0) && (!(x & (x - 1)));
 };
 
 let gl;
-let WEBGL_depth_texture;
+let webglDepthTexture;
 
 class FrameBuffer {
 
-	constructor(mWidth, mHeight, mParameters={}) {
+	constructor(mWidth, mHeight, mParameters = {}) {
 		gl = GL.gl;
-		WEBGL_depth_texture = GL.checkExtension('WEBGL_depth_texture');
+		webglDepthTexture = GL.checkExtension('WEBGL_depth_texture');
 
 		this.width      = mWidth;
 		this.height     = mHeight;
@@ -60,7 +60,7 @@ class FrameBuffer {
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, this.wrapT);
 		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.width, this.height, 0, gl.RGBA, GL.isMobile ? gl.UNSIGNED_BYTE : gl.FLOAT, null);
 
-		if(WEBGL_depth_texture) {
+		if(webglDepthTexture) {
 			gl.bindTexture(gl.TEXTURE_2D, this.depthTexture);
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, this.magFilter);
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, this.minFilter);
@@ -111,7 +111,7 @@ class FrameBuffer {
 	}
 
 
-	clear(r=0, g=0, b=0, a=0) {
+	clear(r = 0, g = 0, b = 0, a = 0) {
 		this.bind();
 		GL.clear(r, g, b, a);
 		this.unbind();

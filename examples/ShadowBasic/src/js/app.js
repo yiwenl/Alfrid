@@ -45,9 +45,9 @@ function _init() {
 	
 	//	CREATE MESH
 	let size                    = .5;
-	meshCube                    = alfrid.Geom.cube(size, size, size, true);
+	meshCube                    = alfrid.Geom.cube(size, size, size);
 	size                        = 16;
-	meshFloor                   = alfrid.Geom.cube(size, .001, size, true);
+	meshFloor                   = alfrid.Geom.cube(size, .001, size);
 	meshSphere                  = alfrid.Geom.sphere(.1, 24, true);
 	
 	//	CREATE SHADER

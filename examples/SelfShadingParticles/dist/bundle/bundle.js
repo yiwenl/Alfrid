@@ -1,1945 +1,6 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-(function (global){
-"use strict";var _typeof=typeof Symbol==="function"&&typeof Symbol.iterator==="symbol"?function(obj){return typeof obj;}:function(obj){return obj&&typeof Symbol==="function"&&obj.constructor===Symbol?"symbol":typeof obj;};(function(f){if((typeof exports==="undefined"?"undefined":_typeof(exports))==="object"&&typeof module!=="undefined"){module.exports=f();}else if(typeof define==="function"&&define.amd){define([],f);}else {var g;if(typeof window!=="undefined"){g=window;}else if(typeof global!=="undefined"){g=global;}else if(typeof self!=="undefined"){g=self;}else {g=this;}g.alfrid=f();}})(function(){var define,module,exports;return function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f;}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e);},l,l.exports,e,t,n,r);}return n[o].exports;}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++){s(r[o]);}return s;}({1:[function(_dereq_,module,exports){ /**
- * @fileoverview gl-matrix - High performance matrix and vector operations
- * @author Brandon Jones
- * @author Colin MacKenzie IV
- * @version 2.3.0
- */ /* Copyright (c) 2015, Brandon Jones, Colin MacKenzie IV.
+"use strict";var _typeof=typeof Symbol==="function"&&typeof Symbol.iterator==="symbol"?function(obj){return typeof obj;}:function(obj){return obj&&typeof Symbol==="function"&&obj.constructor===Symbol?"symbol":typeof obj;};!function(t,e){"object"==(typeof exports==="undefined"?"undefined":_typeof(exports))&&"object"==(typeof module==="undefined"?"undefined":_typeof(module))?module.exports=e():"function"==typeof define&&define.amd?define("alfrid",[],e):"object"==(typeof exports==="undefined"?"undefined":_typeof(exports))?exports.alfrid=e():t.alfrid=e();}(undefined,function(){return function(t){function e(r){if(n[r])return n[r].exports;var a=n[r]={exports:{},id:r,loaded:!1};return t[r].call(a.exports,a,a.exports,e),a.loaded=!0,a.exports;}var n={};return e.m=t,e.c=n,e.p="",e(0);}([function(t,e,n){t.exports=n(75);},function(t,e){"use strict";e.__esModule=!0,e.default=function(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function");};},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t};}e.__esModule=!0;var a=n(94),i=r(a);e.default=function(){function t(t,e){for(var n=0;n<e.length;n++){var r=e[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value" in r&&(r.writable=!0),(0,i.default)(t,r.key,r);}}return function(e,n,r){return n&&t(e.prototype,n),r&&t(e,r),e;};}();},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t};}Object.defineProperty(e,"__esModule",{value:!0});var a=n(1),i=r(a),u=n(2),o=r(u),s=n(8),l=r(s),h=function(){function t(){(0,i.default)(this,t),this.canvas,this._viewport=[0,0,0,0],this._enabledVertexAttribute=[],this.identityMatrix=l.default.mat4.create(),this._normalMatrix=l.default.mat3.create(),this._inverseModelViewMatrix=l.default.mat3.create(),this._modelMatrix=l.default.mat4.create(),this._matrix=l.default.mat4.create(),l.default.mat4.identity(this.identityMatrix,this.identityMatrix),this.isMobile=!1,/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)&&(this.isMobile=!0);}return (0,o.default)(t,[{key:"init",value:function value(t){var e=arguments.length<=1||void 0===arguments[1]?{}:arguments[1];if(null===t||void 0===t)return void console.error("Canvas not exist");void 0!==this.canvas&&null!==this.canvas&&this.destroy(),this.canvas=t,this.setSize(window.innerWidth,window.innerHeight),this.gl=this.canvas.getContext("webgl",e)||this.canvas.getContext("experimental-webgl",e);var n=["EXT_shader_texture_lod","EXT_sRGB","EXT_frag_depth","OES_texture_float","OES_texture_half_float","OES_texture_float_linear","OES_texture_half_float_linear","OES_standard_derivatives","WEBGL_depth_texture","EXT_texture_filter_anisotropic","ANGLE_instanced_arrays"];this.extensions={};for(var r=0;r<n.length;r++){this.extensions[n[r]]=this.gl.getExtension(n[r]);}var a=this.gl;this.VERTEX_SHADER=a.VERTEX_SHADER,this.FRAGMENT_SHADER=a.FRAGMENT_SHADER,this.COMPILE_STATUS=a.COMPILE_STATUS,this.DEPTH_TEST=a.DEPTH_TEST,this.CULL_FACE=a.CULL_FACE,this.BLEND=a.BLEND,this.POINTS=a.POINTS,this.LINES=a.LINES,this.TRIANGLES=a.TRIANGLES,this.LINEAR=a.LINEAR,this.NEAREST=a.NEAREST,this.LINEAR_MIPMAP_NEAREST=a.LINEAR_MIPMAP_NEAREST,this.MIRRORED_REPEAT=a.MIRRORED_REPEAT,this.CLAMP_TO_EDGE=a.CLAMP_TO_EDGE,this.SCISSOR_TEST=a.SCISSOR_TEST,this.enable(this.DEPTH_TEST),this.enable(this.CULL_FACE),this.enable(this.BLEND);}},{key:"setViewport",value:function value(t,e,n,r){var a=!1;t!==this._viewport[0]&&(a=!0),e!==this._viewport[1]&&(a=!0),n!==this._viewport[2]&&(a=!0),r!==this._viewport[3]&&(a=!0),a&&(this.gl.viewport(t,e,n,r),this._viewport=[t,e,n,r]);}},{key:"scissor",value:function value(t,e,n,r){this.gl.scissor(t,e,n,r);}},{key:"clear",value:function value(t,e,n,r){this.gl.clearColor(t,e,n,r),this.gl.clear(this.gl.COLOR_BUFFER_BIT|this.gl.DEPTH_BUFFER_BIT);}},{key:"setMatrices",value:function value(t){this.camera=t,this.rotate(this.identityMatrix);}},{key:"useShader",value:function value(t){this.shader=t,this.shaderProgram=this.shader.shaderProgram;}},{key:"rotate",value:function value(t){l.default.mat4.copy(this._modelMatrix,t),l.default.mat4.multiply(this._matrix,this.camera.matrix,this._modelMatrix),l.default.mat3.fromMat4(this._normalMatrix,this._matrix),l.default.mat3.invert(this._normalMatrix,this._normalMatrix),l.default.mat3.transpose(this._normalMatrix,this._normalMatrix),l.default.mat3.fromMat4(this._inverseModelViewMatrix,this._matrix),l.default.mat3.invert(this._inverseModelViewMatrix,this._inverseModelViewMatrix);}},{key:"draw",value:function value(t,e){function n(t,e,n){return void 0===e.cacheAttribLoc&&(e.cacheAttribLoc={}),void 0===e.cacheAttribLoc[n]&&(e.cacheAttribLoc[n]=t.getAttribLocation(e,n)),e.cacheAttribLoc[n];}if(t.length)for(var r=0;r<t.length;r++){this.draw(t[r]);}else {for(var a=0;a<t.attributes.length;a++){var i=t.attributes[a];this.gl.bindBuffer(this.gl.ARRAY_BUFFER,i.buffer);var u=n(this.gl,this.shaderProgram,i.name);this.gl.vertexAttribPointer(u,i.itemSize,this.gl.FLOAT,!1,0,0),-1===this._enabledVertexAttribute.indexOf(u)&&(this.gl.enableVertexAttribArray(u),this._enabledVertexAttribute.push(u));}this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER,t.iBuffer),void 0!==this.camera&&(this.shader.uniform("uProjectionMatrix","mat4",this.camera.projection),this.shader.uniform("uViewMatrix","mat4",this.camera.matrix)),this.shader.uniform("uModelMatrix","mat4",this._modelMatrix),this.shader.uniform("uNormalMatrix","mat3",this._normalMatrix),this.shader.uniform("uModelViewMatrixInverse","mat3",this._inverseModelViewMatrix);var o=t.drawType;void 0!==e&&(o=e),o===this.gl.POINTS?this.gl.drawArrays(o,0,t.vertexSize):this.gl.drawElements(o,t.iBuffer.numItems,this.gl.UNSIGNED_SHORT,0);}}},{key:"setSize",value:function value(t,e){this._width=t,this._height=e,this.canvas.width=this._width,this.canvas.height=this._height,this._aspectRatio=this._width/this._height,this.gl&&this.viewport(0,0,this._width,this._height);}},{key:"showExtensions",value:function value(){console.log("Extensions : ",this.extensions);for(var t in this.extensions){this.extensions[t]&&console.log(t,":",this.extensions[t]);}}},{key:"checkExtension",value:function value(t){return !!this.extensions[t];}},{key:"getExtension",value:function value(t){return this.extensions[t];}},{key:"enableAlphaBlending",value:function value(){this.gl.blendFunc(this.gl.SRC_ALPHA,this.gl.ONE_MINUS_SRC_ALPHA);}},{key:"enableAdditiveBlending",value:function value(){this.gl.blendFunc(this.gl.ONE,this.gl.ONE);}},{key:"enable",value:function value(t){this.gl.enable(t);}},{key:"disable",value:function value(t){this.gl.disable(t);}},{key:"viewport",value:function value(t,e,n,r){this.setViewport(t,e,n,r);}},{key:"destroy",value:function value(){if(this.canvas.parentNode)try{this.canvas.parentNode.removeChild(this.canvas);}catch(t){console.log("Error : ",t);}this.canvas=null;}},{key:"width",get:function get(){return this._width;}},{key:"height",get:function get(){return this._height;}},{key:"aspectRatio",get:function get(){return this._aspectRatio;}}]),t;}(),f=new h();e.default=f,t.exports=e.default;},function(t,e,n){t.exports={"default":n(102),__esModule:!0};},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t};}e.__esModule=!0;var a=n(96),i=r(a),u=n(93),o=r(u),s=n(53),l=r(s);e.default=function(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function, not "+("undefined"==typeof e?"undefined":(0,l.default)(e)));t.prototype=(0,o.default)(e&&e.prototype,{constructor:{value:t,enumerable:!1,writable:!0,configurable:!0}}),e&&(i.default?(0,i.default)(t,e):t.__proto__=e);};},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t};}e.__esModule=!0;var a=n(53),i=r(a);e.default=function(t,e){if(!t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return !e||"object"!==("undefined"==typeof e?"undefined":(0,i.default)(e))&&"function"!=typeof e?t:e;};},function(t,e){var n=t.exports={version:"2.4.0"};"number"==typeof __e&&(__e=n);},function(t,e,n){e.glMatrix=n(9),e.mat2=n(135),e.mat2d=n(136),e.mat3=n(66),e.mat4=n(137),e.quat=n(138),e.vec2=n(139),e.vec3=n(67),e.vec4=n(68);},function(t,e){var n={};n.EPSILON=1e-6,n.ARRAY_TYPE="undefined"!=typeof Float32Array?Float32Array:Array,n.RANDOM=Math.random,n.ENABLE_SIMD=!1,n.SIMD_AVAILABLE=n.ARRAY_TYPE===Float32Array&&"SIMD" in this,n.USE_SIMD=n.ENABLE_SIMD&&n.SIMD_AVAILABLE,n.setMatrixArrayType=function(t){n.ARRAY_TYPE=t;};var r=Math.PI/180;n.toRadian=function(t){return t*r;},n.equals=function(t,e){return Math.abs(t-e)<=n.EPSILON*Math.max(1,Math.abs(t),Math.abs(e));},t.exports=n;},function(t,e){var n=t.exports="undefined"!=typeof window&&window.Math==Math?window:"undefined"!=typeof self&&self.Math==Math?self:Function("return this")();"number"==typeof __g&&(__g=n);},function(t,e,n){var r=n(111),a=n(34);t.exports=function(t){return r(a(t));};},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t};}function a(t,e){return t.every(function(t,n){return t===e[n];});}function i(t){for(var e=t.split("\n"),n=0;n<e.length;n++){e[n]=n+1+": "+e[n];}return e.join("\n");}Object.defineProperty(e,"__esModule",{value:!0});var u=n(1),o=r(u),s=n(2),l=r(s),h=n(3),f=r(h),c=(n(140),void 0),d=n(69),v=n(143),M={"float":"uniform1f",vec2:"uniform2fv",vec3:"uniform3fv",vec4:"uniform4fv","int":"uniform1i",mat3:"uniformMatrix3fv",mat4:"uniformMatrix4fv"},p=function(){function t(){var e=arguments.length<=0||void 0===arguments[0]?d:arguments[0],n=arguments.length<=1||void 0===arguments[1]?v:arguments[1];(0,o.default)(this,t),c=f.default.gl,this.parameters=[],this.uniformTextures=[],e||(e=d),n||(n=d);var r=this._createShaderProgram(e,!0),a=this._createShaderProgram(n,!1);this._attachShaderProgram(r,a);}return (0,l.default)(t,[{key:"bind",value:function value(){c.useProgram(this.shaderProgram),f.default.useShader(this),this.uniformTextures=[];}},{key:"uniform",value:function value(t,e,n){if(void 0===n||null===n)return void console.warn("mValue Error:",t);for(var r=M[e]||e,i=!1,u=void 0,o=-1,s=0;s<this.parameters.length;s++){if(u=this.parameters[s],u.name===t){i=!0,o=s;break;}}if(i?this.shaderProgram[t]=u.uniformLoc:(this.shaderProgram[t]=c.getUniformLocation(this.shaderProgram,t),n.slice?this.parameters.push({name:t,type:r,value:n.slice(0),uniformLoc:this.shaderProgram[t]}):this.parameters.push({name:t,type:r,value:n,uniformLoc:this.shaderProgram[t]}),o=this.parameters.length-1),this.parameters[o].uniformLoc)if(-1===r.indexOf("Matrix")){if(n.slice)a(this.parameters[o].value,n)&&i||(c[r](this.shaderProgram[t],n),this.parameters[o].value=n.slice(0));else {var l=this.parameters[o].value!==n||!i;l&&(c[r](this.shaderProgram[t],n),this.parameters[o].value=n);}}else a(this.parameters[o].value,n)&&i||(c[r](this.shaderProgram[t],!1,n),this.parameters[o].value=n.slice(0));}},{key:"_createShaderProgram",value:function value(t,e){var n=e?f.default.VERTEX_SHADER:f.default.FRAGMENT_SHADER,r=c.createShader(n);return c.shaderSource(r,t),c.compileShader(r),c.getShaderParameter(r,c.COMPILE_STATUS)?r:(console.warn("Error in Shader : ",c.getShaderInfoLog(r)),console.log(i(t)),null);}},{key:"_attachShaderProgram",value:function value(t,e){this.shaderProgram=c.createProgram(),c.attachShader(this.shaderProgram,t),c.attachShader(this.shaderProgram,e),c.linkProgram(this.shaderProgram);}}]),t;}();e.default=p,t.exports=e.default;},function(t,e,n){t.exports=!n(24)(function(){return 7!=Object.defineProperty({},"a",{get:function get(){return 7;}}).a;});},function(t,e){var n={}.hasOwnProperty;t.exports=function(t,e){return n.call(t,e);};},function(t,e,n){var r=n(23),a=n(57),i=n(45),u=Object.defineProperty;e.f=n(13)?Object.defineProperty:function(t,e,n){if(r(t),e=i(e,!0),r(n),a)try{return u(t,e,n);}catch(o){}if("get" in n||"set" in n)throw TypeError("Accessors not supported!");return "value" in n&&(t[e]=n.value),t;};},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t};}Object.defineProperty(e,"__esModule",{value:!0});var a=n(1),i=r(a),u=n(2),o=r(u),s=n(3),l=r(s),h=function(){function t(e,n){(0,i.default)(this,t),this._mesh=e,this._shader=n;}return (0,o.default)(t,[{key:"draw",value:function value(){this._shader.bind(),l.default.draw(this.mesh);}},{key:"mesh",get:function get(){return this._mesh;}},{key:"shader",get:function get(){return this._shader;}}]),t;}();e.default=h,t.exports=e.default;},function(t,e,n){var r=n(10),a=n(7),i=n(55),u=n(18),o="prototype",s=function s(t,e,n){var l,h,f,c=t&s.F,d=t&s.G,v=t&s.S,M=t&s.P,p=t&s.B,_=t&s.W,m=d?a:a[e]||(a[e]={}),x=m[o],E=d?r:v?r[e]:(r[e]||{})[o];d&&(n=e);for(l in n){h=!c&&E&&void 0!==E[l],h&&l in m||(f=h?E[l]:n[l],m[l]=d&&"function"!=typeof E[l]?n[l]:p&&h?i(f,r):_&&E[l]==f?function(t){var e=function e(_e,n,r){if(this instanceof t){switch(arguments.length){case 0:return new t();case 1:return new t(_e);case 2:return new t(_e,n);}return new t(_e,n,r);}return t.apply(this,arguments);};return e[o]=t[o],e;}(f):M&&"function"==typeof f?i(Function.call,f):f,M&&((m.virtual||(m.virtual={}))[l]=f,t&s.R&&x&&!x[l]&&u(x,l,f)));}};s.F=1,s.G=2,s.S=4,s.P=8,s.B=16,s.W=32,s.U=64,s.R=128,t.exports=s;},function(t,e,n){var r=n(15),a=n(28);t.exports=n(13)?function(t,e,n){return r.f(t,e,a(1,n));}:function(t,e,n){return t[e]=n,t;};},function(t,e,n){var r=n(43)("wks"),a=n(29),i=n(10).Symbol,u="function"==typeof i,o=t.exports=function(t){return r[t]||(r[t]=u&&i[t]||(u?i:a)("Symbol."+t));};o.store=r;},function(t,e){"use strict";function n(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function");}Object.defineProperty(e,"__esModule",{value:!0});var r=function(){function t(t,e){for(var n=0;n<e.length;n++){var r=e[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value" in r&&(r.writable=!0),Object.defineProperty(t,r.key,r);}}return function(e,n,r){return n&&t(e.prototype,n),r&&t(e,r),e;};}(),a=60,i=function(){function t(){n(this,t),this._delayTasks=[],this._nextTasks=[],this._deferTasks=[],this._highTasks=[],this._usurpTask=[],this._enterframeTasks=[],this._idTable=0,this._loop();}return r(t,[{key:"addEF",value:function value(t,e){e=e||[];var n=this._idTable;return this._enterframeTasks[n]={func:t,params:e},this._idTable++,n;}},{key:"removeEF",value:function value(t){return void 0!==this._enterframeTasks[t]&&(this._enterframeTasks[t]=null),-1;}},{key:"delay",value:function value(t,e,n){var r=new Date().getTime(),a={func:t,params:e,delay:n,time:r};this._delayTasks.push(a);}},{key:"defer",value:function value(t,e){var n={func:t,params:e};this._deferTasks.push(n);}},{key:"next",value:function value(t,e){var n={func:t,params:e};this._nextTasks.push(n);}},{key:"usurp",value:function value(t,e){var n={func:t,params:e};this._usurpTask.push(n);}},{key:"_process",value:function value(){var t=0,e=void 0,n=void 0,r=void 0;for(t=0;t<this._enterframeTasks.length;t++){e=this._enterframeTasks[t],null!==e&&void 0!==e&&e.func(e.params);}for(;this._highTasks.length>0;){e=this._highTasks.pop(),e.func(e.params);}var i=new Date().getTime();for(t=0;t<this._delayTasks.length;t++){e=this._delayTasks[t],i-e.time>e.delay&&(e.func(e.params),this._delayTasks.splice(t,1));}for(i=new Date().getTime(),n=1e3/a;this._deferTasks.length>0;){if(e=this._deferTasks.shift(),r=new Date().getTime(),!(n>r-i)){this._deferTasks.unshift(e);break;}e.func(e.params);}for(i=new Date().getTime(),n=1e3/a;this._usurpTask.length>0;){e=this._usurpTask.shift(),r=new Date().getTime(),n>r-i&&e.func(e.params);}this._highTasks=this._highTasks.concat(this._nextTasks),this._nextTasks=[],this._usurpTask=[];}},{key:"_loop",value:function value(){var t=this;this._process(),window.requestAnimationFrame(function(){return t._loop();});}}]),t;}(),u=new i();e.default=u;},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t};}Object.defineProperty(e,"__esModule",{value:!0});var a=n(1),i=r(a),u=n(2),o=r(u),s=n(3),l=r(s),h=n(8),f=r(h),c=void 0,d=f.default.vec3,v=function(){function t(){var e=arguments.length<=0||void 0===arguments[0]?4:arguments[0];(0,i.default)(this,t),c=l.default.gl,this.drawType=e,this._attributes=[],this._vertexSize=0,this._vertices=[],this._texCoords=[],this._normals=[],this._faceNormals=[],this._tangents=[],this._indices=[],this._faces=[];}return (0,o.default)(t,[{key:"bufferVertex",value:function value(t){var e=arguments.length<=1||void 0===arguments[1]?!1:arguments[1];this._vertexSize=t.length,this.bufferData(t,"aVertexPosition",3,e),this._vertices=t;for(var n=[],r=0;r<t.length;r++){n.push([1,0,0]);}0===this._normals.length&&this.bufferNormal(n);}},{key:"bufferTexCoord",value:function value(t){var e=arguments.length<=1||void 0===arguments[1]?!1:arguments[1];this.bufferData(t,"aTextureCoord",2,e),this._texCoords=t;}},{key:"bufferNormal",value:function value(t){var e=arguments.length<=1||void 0===arguments[1]?!1:arguments[1];this.bufferData(t,"aNormal",3,e),this._normals=t;}},{key:"bufferIndex",value:function value(t){var e=arguments.length<=1||void 0===arguments[1]?!1:arguments[1],n=e?c.DYNAMIC_DRAW:c.STATIC_DRAW;this._indices=t,this.iBuffer=c.createBuffer(),c.bindBuffer(c.ELEMENT_ARRAY_BUFFER,this.iBuffer),c.bufferData(c.ELEMENT_ARRAY_BUFFER,new Uint16Array(t),n),this.iBuffer.itemSize=1,this.iBuffer.numItems=t.length,this._indices=t;}},{key:"bufferData",value:function e(t,n,r){var a=arguments.length<=3||void 0===arguments[3]?!1:arguments[3],i=-1,u=0,o=a?c.DYNAMIC_DRAW:c.STATIC_DRAW,e=[],s=void 0,l=void 0;for(u=0;u<this._attributes.length;u++){if(this._attributes[u].name===n){this._attributes[u].data=t,i=u;break;}}for(u=0;u<t.length;u++){for(var h=0;h<t[u].length;h++){e.push(t[u][h]);}}if(-1===i)s=c.createBuffer(),c.bindBuffer(c.ARRAY_BUFFER,s),l=new Float32Array(e),c.bufferData(c.ARRAY_BUFFER,l,o),this._attributes.push({name:n,data:t,itemSize:r,buffer:s,dataArray:l});else {for(s=this._attributes[i].buffer,c.bindBuffer(c.ARRAY_BUFFER,s),l=this._attributes[i].dataArray,u=0;u<e.length;u++){l[u]=e[u];}c.bufferData(c.ARRAY_BUFFER,l,o);}}},{key:"computeNormals",value:function value(){var t=arguments.length<=0||void 0===arguments[0]?!1:arguments[0];this._generateFaces(),t?this._computeFaceNormals():this._computeVertexNormals();}},{key:"computeTangents",value:function value(){}},{key:"_computeFaceNormals",value:function value(){for(var t=void 0,e=void 0,n=[],r=0;r<this._indices.length;r+=3){t=r/3,e=this._faces[t];var a=e.normal;n[e.indices[0]]=a,n[e.indices[1]]=a,n[e.indices[2]]=a;}this.bufferNormal(n);}},{key:"_computeVertexNormals",value:function value(){for(var t=void 0,e=d.create(),n=[],r=0;r<this._vertices.length;r++){d.set(e,0,0,0);for(var a=0;a<this._faces.length;a++){t=this._faces[a],t.indices.indexOf(r)>=0&&(e[0]+=t.normal[0],e[1]+=t.normal[1],e[2]+=t.normal[2]);}d.normalize(e,e),n.push([e[0],e[1],e[2]]);}this.bufferNormal(n);}},{key:"_generateFaces",value:function value(){for(var t=void 0,e=void 0,n=void 0,r=void 0,a=void 0,i=void 0,u=d.create(),o=d.create(),s=d.create(),l=0;l<this._indices.length;l+=3){t=this._indices[l],e=this._indices[l+1],n=this._indices[l+2],r=d.clone(this._vertices[t]),a=d.clone(this._vertices[e]),i=d.clone(this._vertices[n]),d.sub(u,a,r),d.sub(o,i,r),d.cross(s,u,o),d.normalize(s,s);var h=[s[0],s[1],s[2]],f={indices:[t,e,n],normal:h};this._faces.push(f);}}},{key:"vertices",get:function get(){return this._vertices;}},{key:"normals",get:function get(){return this._normals;}},{key:"attributes",get:function get(){return this._attributes;}},{key:"vertexSize",get:function get(){return this._vertexSize;}},{key:"hasNormals",get:function get(){return 0!==this._normals.length;}},{key:"hasTangents",get:function get(){return 0!==this._tangents.length;}}]),t;}();e.default=v,t.exports=e.default;},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t};}e.__esModule=!0;var a=n(4),i=r(a),u=n(95),o=r(u);e.default=function s(t,e,n){null===t&&(t=Function.prototype);var r=(0,o.default)(t,e);if(void 0===r){var a=(0,i.default)(t);return null===a?void 0:s(a,e,n);}if("value" in r)return r.value;var u=r.get;if(void 0!==u)return u.call(n);};},function(t,e,n){var r=n(25);t.exports=function(t){if(!r(t))throw TypeError(t+" is not an object!");return t;};},function(t,e){t.exports=function(t){try{return !!t();}catch(e){return !0;}};},function(t,e){t.exports=function(t){return "object"==(typeof t==="undefined"?"undefined":_typeof(t))?null!==t:"function"==typeof t;};},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t};}Object.defineProperty(e,"__esModule",{value:!0});var a=n(21),i=r(a),u={};u.plane=function(t,e,n){for(var r=arguments.length<=3||void 0===arguments[3]?"xy":arguments[3],a=arguments.length<=4||void 0===arguments[4]?4:arguments[4],u=[],o=[],s=[],l=[],h=t/n,f=e/n,c=1/n,d=.5*-t,v=.5*-e,M=0,p=0;n>p;p++){for(var _=0;n>_;_++){var m=h*p+d,x=f*_+v,E=p/n,I=_/n;"xz"===r?(u.push([m,0,x+f]),u.push([m+h,0,x+f]),u.push([m+h,0,x]),u.push([m,0,x]),o.push([E,1-(I+c)]),o.push([E+c,1-(I+c)]),o.push([E+c,1-I]),o.push([E,1-I]),l.push([0,1,0]),l.push([0,1,0]),l.push([0,1,0]),l.push([0,1,0])):"yz"===r?(u.push([0,x,m]),u.push([0,x,m+h]),u.push([0,x+f,m+h]),u.push([0,x+f,m]),o.push([E,I]),o.push([E+c,I]),o.push([E+c,I+c]),o.push([E,I+c]),l.push([1,0,0]),l.push([1,0,0]),l.push([1,0,0]),l.push([1,0,0])):(u.push([m,x,0]),u.push([m+h,x,0]),u.push([m+h,x+f,0]),u.push([m,x+f,0]),o.push([E,I]),o.push([E+c,I]),o.push([E+c,I+c]),o.push([E,I+c]),l.push([0,0,1]),l.push([0,0,1]),l.push([0,0,1]),l.push([0,0,1])),s.push(4*M+0),s.push(4*M+1),s.push(4*M+2),s.push(4*M+0),s.push(4*M+2),s.push(4*M+3),M++;}}var S=new i.default(a);return S.bufferVertex(u),S.bufferTexCoord(o),S.bufferIndex(s),S.bufferNormal(l),S;},u.sphere=function(t,e){function n(n,r){var a=arguments.length<=2||void 0===arguments[2]?!1:arguments[2],i=n/e*Math.PI-.5*Math.PI,u=r/e*Math.PI*2,o=a?1:t,s=[];s[1]=Math.sin(i)*o;var l=Math.cos(i)*o;s[0]=Math.cos(u)*l,s[2]=Math.sin(u)*l;var h=1e4;return s[0]=Math.floor(s[0]*h)/h,s[1]=Math.floor(s[1]*h)/h,s[2]=Math.floor(s[2]*h)/h,s;}for(var r=arguments.length<=2||void 0===arguments[2]?!1:arguments[2],a=arguments.length<=3||void 0===arguments[3]?4:arguments[3],u=[],o=[],s=[],l=[],h=1/e,f=0,c=0;e>c;c++){for(var d=0;e>d;d++){u.push(n(c,d)),u.push(n(c+1,d)),u.push(n(c+1,d+1)),u.push(n(c,d+1)),l.push(n(c,d,!0)),l.push(n(c+1,d,!0)),l.push(n(c+1,d+1,!0)),l.push(n(c,d+1,!0));var v=d/e,M=c/e;o.push([1-v,M]),o.push([1-v,M+h]),o.push([1-v-h,M+h]),o.push([1-v-h,M]),s.push(4*f+0),s.push(4*f+1),s.push(4*f+2),s.push(4*f+0),s.push(4*f+2),s.push(4*f+3),f++;}}r&&s.reverse();var p=new i.default(a);return p.bufferVertex(u),p.bufferTexCoord(o),p.bufferIndex(s),p.bufferNormal(l),p;},u.cube=function(t,e,n){var r=arguments.length<=3||void 0===arguments[3]?4:arguments[3];e=e||t,n=n||t;var a=t/2,u=e/2,o=n/2,s=[],l=[],h=[],f=[],c=0;s.push([-a,u,-o]),s.push([a,u,-o]),s.push([a,-u,-o]),s.push([-a,-u,-o]),f.push([0,0,-1]),f.push([0,0,-1]),f.push([0,0,-1]),f.push([0,0,-1]),l.push([0,0]),l.push([1,0]),l.push([1,1]),l.push([0,1]),h.push(4*c+0),h.push(4*c+1),h.push(4*c+2),h.push(4*c+0),h.push(4*c+2),h.push(4*c+3),c++,s.push([a,u,-o]),s.push([a,u,o]),s.push([a,-u,o]),s.push([a,-u,-o]),f.push([1,0,0]),f.push([1,0,0]),f.push([1,0,0]),f.push([1,0,0]),l.push([0,0]),l.push([1,0]),l.push([1,1]),l.push([0,1]),h.push(4*c+0),h.push(4*c+1),h.push(4*c+2),h.push(4*c+0),h.push(4*c+2),h.push(4*c+3),c++,s.push([a,u,o]),s.push([-a,u,o]),s.push([-a,-u,o]),s.push([a,-u,o]),f.push([0,0,1]),f.push([0,0,1]),f.push([0,0,1]),f.push([0,0,1]),l.push([0,0]),l.push([1,0]),l.push([1,1]),l.push([0,1]),h.push(4*c+0),h.push(4*c+1),h.push(4*c+2),h.push(4*c+0),h.push(4*c+2),h.push(4*c+3),c++,s.push([-a,u,o]),s.push([-a,u,-o]),s.push([-a,-u,-o]),s.push([-a,-u,o]),f.push([-1,0,0]),f.push([-1,0,0]),f.push([-1,0,0]),f.push([-1,0,0]),l.push([0,0]),l.push([1,0]),l.push([1,1]),l.push([0,1]),h.push(4*c+0),h.push(4*c+1),h.push(4*c+2),h.push(4*c+0),h.push(4*c+2),h.push(4*c+3),c++,s.push([-a,u,o]),s.push([a,u,o]),s.push([a,u,-o]),s.push([-a,u,-o]),f.push([0,1,0]),f.push([0,1,0]),f.push([0,1,0]),f.push([0,1,0]),l.push([0,0]),l.push([1,0]),l.push([1,1]),l.push([0,1]),h.push(4*c+0),h.push(4*c+1),h.push(4*c+2),h.push(4*c+0),h.push(4*c+2),h.push(4*c+3),c++,s.push([-a,-u,-o]),s.push([a,-u,-o]),s.push([a,-u,o]),s.push([-a,-u,o]),f.push([0,-1,0]),f.push([0,-1,0]),f.push([0,-1,0]),f.push([0,-1,0]),l.push([0,0]),l.push([1,0]),l.push([1,1]),l.push([0,1]),h.push(4*c+0),h.push(4*c+1),h.push(4*c+2),h.push(4*c+0),h.push(4*c+2),h.push(4*c+3),c++;var d=new i.default(r);return d.bufferVertex(s),d.bufferTexCoord(l),d.bufferIndex(h),d.bufferNormal(f),d;},u.skybox=function(t){var e=arguments.length<=1||void 0===arguments[1]?4:arguments[1],n=[],r=[],a=[],u=[],o=0;n.push([t,t,-t]),n.push([-t,t,-t]),n.push([-t,-t,-t]),n.push([t,-t,-t]),u.push([0,0,-1]),u.push([0,0,-1]),u.push([0,0,-1]),u.push([0,0,-1]),r.push([0,0]),r.push([1,0]),r.push([1,1]),r.push([0,1]),a.push(4*o+0),a.push(4*o+1),a.push(4*o+2),a.push(4*o+0),a.push(4*o+2),a.push(4*o+3),o++,n.push([t,-t,-t]),n.push([t,-t,t]),n.push([t,t,t]),n.push([t,t,-t]),u.push([1,0,0]),u.push([1,0,0]),u.push([1,0,0]),u.push([1,0,0]),r.push([0,0]),r.push([1,0]),r.push([1,1]),r.push([0,1]),a.push(4*o+0),a.push(4*o+1),a.push(4*o+2),a.push(4*o+0),a.push(4*o+2),a.push(4*o+3),o++,n.push([-t,t,t]),n.push([t,t,t]),n.push([t,-t,t]),n.push([-t,-t,t]),u.push([0,0,1]),u.push([0,0,1]),u.push([0,0,1]),u.push([0,0,1]),r.push([0,0]),r.push([1,0]),r.push([1,1]),r.push([0,1]),a.push(4*o+0),a.push(4*o+1),a.push(4*o+2),a.push(4*o+0),a.push(4*o+2),a.push(4*o+3),o++,n.push([-t,-t,t]),n.push([-t,-t,-t]),n.push([-t,t,-t]),n.push([-t,t,t]),u.push([-1,0,0]),u.push([-1,0,0]),u.push([-1,0,0]),u.push([-1,0,0]),r.push([0,0]),r.push([1,0]),r.push([1,1]),r.push([0,1]),a.push(4*o+0),a.push(4*o+1),a.push(4*o+2),a.push(4*o+0),a.push(4*o+2),a.push(4*o+3),o++,n.push([t,t,t]),n.push([-t,t,t]),n.push([-t,t,-t]),n.push([t,t,-t]),u.push([0,1,0]),u.push([0,1,0]),u.push([0,1,0]),u.push([0,1,0]),r.push([0,0]),r.push([1,0]),r.push([1,1]),r.push([0,1]),a.push(4*o+0),a.push(4*o+1),a.push(4*o+2),a.push(4*o+0),a.push(4*o+2),a.push(4*o+3),o++,n.push([t,-t,-t]),n.push([-t,-t,-t]),n.push([-t,-t,t]),n.push([t,-t,t]),u.push([0,-1,0]),u.push([0,-1,0]),u.push([0,-1,0]),u.push([0,-1,0]),r.push([0,0]),r.push([1,0]),r.push([1,1]),r.push([0,1]),a.push(4*o+0),a.push(4*o+1),a.push(4*o+2),a.push(4*o+0),a.push(4*o+2),a.push(4*o+3);var s=new i.default(e);return s.bufferVertex(n),s.bufferTexCoord(r),s.bufferIndex(a),s.bufferNormal(u),s;},u.bigTriangle=function(){var t=[2,1,0],e=[[-1,-1],[-1,4],[4,-1]],n=new i.default();return n.bufferData(e,"aPosition",2),n.bufferIndex(t),n;},e.default=u,t.exports=e.default;},function(t,e,n){var r=n(62),a=n(35);t.exports=Object.keys||function(t){return r(t,a);};},function(t,e){t.exports=function(t,e){return {enumerable:!(1&t),configurable:!(2&t),writable:!(4&t),value:e};};},function(t,e){var n=0,r=Math.random();t.exports=function(t){return "Symbol(".concat(void 0===t?"":t,")_",(++n+r).toString(36));};},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t};}Object.defineProperty(e,"__esModule",{value:!0});var a=n(1),i=r(a),u=n(2),o=r(u),s=n(8),l=r(s),h=function(){function t(){(0,i.default)(this,t),this._matrix=l.default.mat4.create(),this._projection=l.default.mat4.create(),this.position=l.default.vec3.create();}return (0,o.default)(t,[{key:"lookAt",value:function value(t,e,n){l.default.vec3.copy(this.position,t),l.default.mat4.identity(this._matrix),l.default.mat4.lookAt(this._matrix,t,e,n);}},{key:"matrix",get:function get(){return this._matrix;}},{key:"viewMatrix",get:function get(){return this._matrix;}},{key:"projection",get:function get(){return this._projection;}},{key:"projectionMatrix",get:function get(){return this._projection;}}]),t;}();e.default=h,t.exports=e.default;},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t};}Object.defineProperty(e,"__esModule",{value:!0});var a=n(4),i=r(a),u=n(1),o=r(u),s=n(2),l=r(s),h=n(6),f=r(h),c=n(5),d=r(c),v=n(30),M=r(v),p=n(8),_=r(p),m=function(t){function e(){return (0,o.default)(this,e),(0,f.default)(this,(0,i.default)(e).apply(this,arguments));}return (0,d.default)(e,t),(0,l.default)(e,[{key:"setPerspective",value:function value(t,e,n,r){this._fov=t,this._near=n,this._far=r,this._aspectRatio=e,_.default.mat4.perspective(this._projection,t,e,n,r);}},{key:"setAspectRatio",value:function value(t){this._aspectRatio=t,_.default.mat4.perspective(this.projection,this._fov,t,this._near,this._far);}}]),e;}(M.default);e.default=m,t.exports=e.default;},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t};}Object.defineProperty(e,"__esModule",{value:!0});var a=n(1),i=r(a),u=n(2),o=r(u),s=function(){function t(){var e=this,n=arguments.length<=0||void 0===arguments[0]?!1:arguments[0];(0,i.default)(this,t),this._req=new XMLHttpRequest(),this._req.addEventListener("load",function(t){return e._onLoaded(t);}),this._req.addEventListener("progress",function(t){return e._onProgress(t);}),n&&(this._req.responseType="arraybuffer");}return (0,o.default)(t,[{key:"load",value:function value(t,e){console.log("Loading : ",t),this._callback=e,this._req.open("GET",t),this._req.send();}},{key:"_onLoaded",value:function value(){this._callback(this._req.response);}},{key:"_onProgress",value:function value(){}}]),t;}();e.default=s,t.exports=e.default;},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t};}Object.defineProperty(e,"__esModule",{value:!0});var a=n(1),i=r(a),u=n(2),o=r(u),s=n(20),l=r(s),h=function(){function t(e){var n=this,r=arguments.length<=1||void 0===arguments[1]?.1:arguments[1];(0,i.default)(this,t),this.easing=r,this._value=e,this._targetValue=e,this._efIndex=l.default.addEF(function(){return n._update();});}return (0,o.default)(t,[{key:"_update",value:function value(){var t=1e-4;this._checkLimit(),this._value+=(this._targetValue-this._value)*this.easing,Math.abs(this._targetValue-this._value)<t&&(this._value=this._targetValue);}},{key:"setTo",value:function value(t){this._targetValue=this._value=t;}},{key:"add",value:function value(t){this._targetValue+=t;}},{key:"limit",value:function value(t,e){return t>e?void this.limit(e,t):(this._min=t,this._max=e,void this._checkLimit());}},{key:"_checkLimit",value:function value(){void 0!==this._min&&this._targetValue<this._min&&(this._targetValue=this._min),void 0!==this._max&&this._targetValue>this._max&&(this._targetValue=this._max);}},{key:"destroy",value:function value(){l.default.removeEF(this._efIndex);}},{key:"value",set:function set(t){this._targetValue=t;},get:function get(){return this._value;}},{key:"targetValue",get:function get(){return this._targetValue;}}]),t;}();e.default=h,t.exports=e.default;},function(t,e){t.exports=function(t){if(void 0==t)throw TypeError("Can't call method on  "+t);return t;};},function(t,e){t.exports="constructor,hasOwnProperty,isPrototypeOf,propertyIsEnumerable,toLocaleString,toString,valueOf".split(",");},function(t,e){t.exports={};},function(t,e){t.exports=!0;},function(t,e,n){var r=n(23),a=n(117),i=n(35),u=n(42)("IE_PROTO"),o=function o(){},s="prototype",_l=function l(){var t,e=n(56)("iframe"),r=i.length,a=">";for(e.style.display="none",n(110).appendChild(e),e.src="javascript:",t=e.contentWindow.document,t.open(),t.write("<script>document.F=Object</script"+a),t.close(),_l=t.F;r--;){delete _l[s][i[r]];}return _l();};t.exports=Object.create||function(t,e){var n;return null!==t?(o[s]=r(t),n=new o(),o[s]=null,n[u]=t):n=_l(),void 0===e?n:a(n,e);};},function(t,e,n){var r=n(40),a=n(28),i=n(11),u=n(45),o=n(14),s=n(57),l=Object.getOwnPropertyDescriptor;e.f=n(13)?l:function(t,e){if(t=i(t),e=u(e,!0),s)try{return l(t,e);}catch(n){}return o(t,e)?a(!r.f.call(t,e),t[e]):void 0;};},function(t,e){e.f={}.propertyIsEnumerable;},function(t,e,n){var r=n(15).f,a=n(14),i=n(19)("toStringTag");t.exports=function(t,e,n){t&&!a(t=n?t:t.prototype,i)&&r(t,i,{configurable:!0,value:e});};},function(t,e,n){var r=n(43)("keys"),a=n(29);t.exports=function(t){return r[t]||(r[t]=a(t));};},function(t,e,n){var r=n(10),a="__core-js_shared__",i=r[a]||(r[a]={});t.exports=function(t){return i[t]||(i[t]={});};},function(t,e){var n=Math.ceil,r=Math.floor;t.exports=function(t){return isNaN(t=+t)?0:(t>0?r:n)(t);};},function(t,e,n){var r=n(25);t.exports=function(t,e){if(!r(t))return t;var n,a;if(e&&"function"==typeof (n=t.toString)&&!r(a=n.call(t)))return a;if("function"==typeof (n=t.valueOf)&&!r(a=n.call(t)))return a;if(!e&&"function"==typeof (n=t.toString)&&!r(a=n.call(t)))return a;throw TypeError("Can't convert object to primitive value");};},function(t,e,n){var r=n(10),a=n(7),i=n(37),u=n(47),o=n(15).f;t.exports=function(t){var e=a.Symbol||(a.Symbol=i?{}:r.Symbol||{});"_"==t.charAt(0)||t in e||o(e,t,{value:u.f(t)});};},function(t,e,n){e.f=n(19);},function(t,e){t.exports="// simpleColor.frag\n\n#define SHADER_NAME SIMPLE_COLOR\n\nprecision highp float;\n#define GLSLIFY 1\n\nuniform vec3 color;\nuniform float opacity;\n\nvoid main(void) {\n    gl_FragColor = vec4(color, opacity);\n}";},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t};}Object.defineProperty(e,"__esModule",{value:!0});var a=n(1),i=r(a),u=n(2),o=r(u),s=n(3),l=r(s),h=void 0,f=function(){function t(e){var n=arguments.length<=1||void 0===arguments[1]?{}:arguments[1],r=arguments.length<=2||void 0===arguments[2]?!1:arguments[2];if((0,i.default)(this,t),h=l.default.gl,r)return void (this.texture=e);this.texture=h.createTexture(),this.magFilter=n.magFilter||h.LINEAR,this.minFilter=n.minFilter||h.LINEAR_MIPMAP_NEAREST,this.wrapS=n.wrapS||h.CLAMP_TO_EDGE,this.wrapT=n.wrapT||h.CLAMP_TO_EDGE,h.bindTexture(h.TEXTURE_CUBE_MAP,this.texture);for(var a=[h.TEXTURE_CUBE_MAP_POSITIVE_X,h.TEXTURE_CUBE_MAP_NEGATIVE_X,h.TEXTURE_CUBE_MAP_POSITIVE_Y,h.TEXTURE_CUBE_MAP_NEGATIVE_Y,h.TEXTURE_CUBE_MAP_POSITIVE_Z,h.TEXTURE_CUBE_MAP_NEGATIVE_Z],u=0;6>u;u++){h.pixelStorei(h.UNPACK_FLIP_Y_WEBGL,!1),e[u].exposure?h.texImage2D(a[u],0,h.RGBA,e[u].shape[0],e[u].shape[1],0,h.RGBA,h.FLOAT,e[u].data):h.texImage2D(a[u],0,h.RGBA,h.RGBA,h.UNSIGNED_BYTE,e[u]),h.texParameteri(h.TEXTURE_CUBE_MAP,h.TEXTURE_WRAP_S,this.wrapS),h.texParameteri(h.TEXTURE_CUBE_MAP,h.TEXTURE_WRAP_T,this.wrapT),h.texParameteri(h.TEXTURE_CUBE_MAP,h.TEXTURE_MAG_FILTER,this.magFilter),h.texParameteri(h.TEXTURE_CUBE_MAP,h.TEXTURE_MIN_FILTER,this.minFilter);}h.generateMipmap(h.TEXTURE_CUBE_MAP),h.bindTexture(h.TEXTURE_CUBE_MAP,null);}return (0,o.default)(t,[{key:"bind",value:function value(){var t=arguments.length<=0||void 0===arguments[0]?0:arguments[0];l.default.shader&&(h.activeTexture(h.TEXTURE0+t),h.bindTexture(h.TEXTURE_CUBE_MAP,this.texture),h.uniform1i(l.default.shader.uniformTextures[t],t),this._bindIndex=t);}},{key:"unbind",value:function value(){h.bindTexture(h.TEXTURE_CUBE_MAP,null);}}]),t;}();e.default=f,t.exports=e.default;},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t};}function a(t){return 0!==t&&!(t&t-1);}function i(t){var e=t.width||t.videoWidth,n=t.height||t.videoHeight;return e&&n?a(e)&&a(n):!1;}Object.defineProperty(e,"__esModule",{value:!0});var u=n(1),o=r(u),s=n(2),l=r(s),h=n(3),f=r(h),c=void 0,d=function(){function t(e){var n=arguments.length<=1||void 0===arguments[1]?!1:arguments[1],r=arguments.length<=2||void 0===arguments[2]?{}:arguments[2];if((0,o.default)(this,t),c=f.default.gl,n)this.texture=e;else {this._mSource=e,this.texture=c.createTexture(),this._isVideo="VIDEO"===e.tagName,this.magFilter=r.magFilter||c.LINEAR,this.minFilter=r.minFilter||c.LINEAR_MIPMAP_NEAREST,this.wrapS=r.wrapS||c.MIRRORED_REPEAT,this.wrapT=r.wrapT||c.MIRRORED_REPEAT;var a=e.width||e.videoWidth;a?i(e)||(this.wrapS=this.wrapT=c.CLAMP_TO_EDGE,this.minFilter===c.LINEAR_MIPMAP_NEAREST&&(this.minFilter=c.LINEAR)):(this.wrapS=this.wrapT=c.CLAMP_TO_EDGE,this.minFilter===c.LINEAR_MIPMAP_NEAREST&&(this.minFilter=c.LINEAR)),c.bindTexture(c.TEXTURE_2D,this.texture),c.pixelStorei(c.UNPACK_FLIP_Y_WEBGL,!0),e.exposure?c.texImage2D(c.TEXTURE_2D,0,c.RGBA,e.shape[0],e.shape[1],0,c.RGBA,c.FLOAT,e.data):c.texImage2D(c.TEXTURE_2D,0,c.RGBA,c.RGBA,c.UNSIGNED_BYTE,e),c.texParameteri(c.TEXTURE_2D,c.TEXTURE_MAG_FILTER,this.magFilter),c.texParameteri(c.TEXTURE_2D,c.TEXTURE_MIN_FILTER,this.minFilter),c.texParameteri(c.TEXTURE_2D,c.TEXTURE_WRAP_S,this.wrapS),c.texParameteri(c.TEXTURE_2D,c.TEXTURE_WRAP_T,this.wrapT);var u=f.default.getExtension("EXT_texture_filter_anisotropic");if(u){var s=c.getParameter(u.MAX_TEXTURE_MAX_ANISOTROPY_EXT);c.texParameterf(c.TEXTURE_2D,u.TEXTURE_MAX_ANISOTROPY_EXT,s);}this.minFilter===c.LINEAR_MIPMAP_NEAREST&&c.generateMipmap(c.TEXTURE_2D),c.bindTexture(c.TEXTURE_2D,null);}}return (0,l.default)(t,[{key:"minFilter",value:function value(t){return t!==c.LINEAR&&t!==c.NEAREST&&t!==c.LINEAR_MIPMAP_NEAREST?this:(this.minFilter=t,this);}},{key:"magFilter",value:function value(t){return t!==c.LINEAR&&t!==c.NEAREST&&t!==c.LINEAR_MIPMAP_NEAREST?this:(this.magFilter=t,this);}},{key:"wrapS",value:function value(t){return t!==c.CLAMP_TO_EDGE&&t!==c.REPEAT&&t!==c.MIRRORED_REPEAT?this:(this.wrapS=t,this);}},{key:"wrapT",value:function value(t){return t!==c.CLAMP_TO_EDGE&&t!==c.REPEAT&&t!==c.MIRRORED_REPEAT?this:(this.wrapT=t,this);}},{key:"updateTexture",value:function value(t){t&&(this._mSource=t),c.bindTexture(c.TEXTURE_2D,this.texture),c.pixelStorei(c.UNPACK_FLIP_Y_WEBGL,!0),c.texImage2D(c.TEXTURE_2D,0,c.RGBA,c.RGBA,c.UNSIGNED_BYTE,this._mSource),c.texParameteri(c.TEXTURE_2D,c.TEXTURE_MAG_FILTER,this.magFilter),c.texParameteri(c.TEXTURE_2D,c.TEXTURE_MIN_FILTER,this.minFilter),this.minFilter===c.LINEAR_MIPMAP_NEAREST&&c.generateMipmap(c.TEXTURE_2D),c.bindTexture(c.TEXTURE_2D,null);}},{key:"bind",value:function value(t){void 0===t&&(t=0),f.default.shader&&(c.activeTexture(c.TEXTURE0+t),c.bindTexture(c.TEXTURE_2D,this.texture),c.uniform1i(f.default.shader.uniformTextures[t],t),this._bindIndex=t);}}]),t;}(),v=void 0,M=void 0,p=void 0;d.whiteTexture=function(){if(void 0===v){var t=document.createElement("canvas");t.width=t.height=4;var e=t.getContext("2d");e.fillStyle="#fff",e.fillRect(0,0,4,4),v=new d(t);}return v;},d.greyTexture=function(){if(void 0===M){var t=document.createElement("canvas");t.width=t.height=4;var e=t.getContext("2d");e.fillStyle="rgb(127, 127, 127)",e.fillRect(0,0,4,4),M=new d(t);}return M;},d.blackTexture=function(){if(void 0===p){var t=document.createElement("canvas");t.width=t.height=4;var e=t.getContext("2d");e.fillStyle="rgb(127, 127, 127)",e.fillRect(0,0,4,4),p=new d(t);}return p;},e.default=d,t.exports=e.default;},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t};}Object.defineProperty(e,"__esModule",{value:!0});var a=n(4),i=r(a),u=n(1),o=r(u),s=n(2),l=r(s),h=n(6),f=r(h),c=n(5),d=r(c),v=n(30),M=r(v),p=n(8),_=r(p),m=function(t){function e(){(0,o.default)(this,e);var t=(0,f.default)(this,(0,i.default)(e).call(this)),n=_.default.vec3.clone([0,0,5]),r=_.default.vec3.create(),a=_.default.vec3.clone([0,-1,0]);return t.lookAt(n,r,a),t.ortho(1,-1,1,-1),t;}return (0,d.default)(e,t),(0,l.default)(e,[{key:"setBoundary",value:function value(t,e,n,r){this.ortho(t,e,n,r);}},{key:"ortho",value:function value(t,e,n,r){this.left=t,this.right=e,this.top=n,this.bottom=r,_.default.mat4.ortho(this._projection,t,e,n,r,0,1e4);}}]),e;}(M.default);e.default=m,t.exports=e.default;},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t};}Object.defineProperty(e,"__esModule",{value:!0});var a=n(1),i=r(a),u=n(2),o=r(u),s=n(33),l=r(s),h=n(20),f=r(h),c=n(8),d=r(c),v=function v(t,e){var n=e||{};return t.touches?(n.x=t.touches[0].pageX,n.y=t.touches[0].pageY):(n.x=t.clientX,n.y=t.clientY),n;},M=function(){function t(e){var n=this,r=arguments.length<=1||void 0===arguments[1]?window:arguments[1],a=arguments.length<=2||void 0===arguments[2]?500:arguments[2];(0,i.default)(this,t),this._target=e,this._listenerTarget=r,this._mouse={},this._preMouse={},this.center=d.default.vec3.create(),this._up=d.default.vec3.fromValues(0,1,0),this.radius=new l.default(a),this.position=d.default.vec3.fromValues(0,0,this.radius.value),this.positionOffset=d.default.vec3.create(),this._rx=new l.default(0),this._rx.limit(-Math.PI/2,Math.PI/2),this._ry=new l.default(0),this._preRX=0,this._preRY=0,this._isLockZoom=!1,this._isLockRotation=!1,this._isInvert=!1,this.sensitivity=1,this._listenerTarget.addEventListener("mousewheel",function(t){return n._onWheel(t);}),this._listenerTarget.addEventListener("DOMMouseScroll",function(t){return n._onWheel(t);}),this._listenerTarget.addEventListener("mousedown",function(t){return n._onDown(t);}),this._listenerTarget.addEventListener("touchstart",function(t){return n._onDown(t);}),this._listenerTarget.addEventListener("mousemove",function(t){return n._onMove(t);}),this._listenerTarget.addEventListener("touchmove",function(t){return n._onMove(t);}),window.addEventListener("touchend",function(){return n._onUp();}),window.addEventListener("mouseup",function(){return n._onUp();}),f.default.addEF(function(){return n._loop();});}return (0,o.default)(t,[{key:"lock",value:function value(){var t=arguments.length<=0||void 0===arguments[0]?!0:arguments[0];this._isLockZoom=t,this._isLockRotation=t;}},{key:"lockZoom",value:function value(){var t=arguments.length<=0||void 0===arguments[0]?!0:arguments[0];this._isLockZoom=t;}},{key:"lockRotation",value:function value(){var t=arguments.length<=0||void 0===arguments[0]?!0:arguments[0];this._isLockRotation=t;}},{key:"inverseControl",value:function value(){var t=arguments.length<=0||void 0===arguments[0]?!0:arguments[0];this._isInvert=t;}},{key:"_onDown",value:function value(t){this._isLockRotation||(this._isMouseDown=!0,v(t,this._mouse),v(t,this._preMouse),this._preRX=this._rx.targetValue,this._preRY=this._ry.targetValue);}},{key:"_onMove",value:function value(t){if(!this._isLockRotation&&(v(t,this._mouse),t.touches&&t.preventDefault(),this._isMouseDown)){var e=-(this._mouse.x-this._preMouse.x);this._isInvert&&(e*=-1),this._ry.value=this._preRY-.01*e*this.sensitivity;var n=-(this._mouse.y-this._preMouse.y);this._isInvert&&(n*=-1),this._rx.value=this._preRX-.01*n*this.sensitivity;}}},{key:"_onUp",value:function value(){this._isLockRotation||(this._isMouseDown=!1);}},{key:"_onWheel",value:function value(t){if(!this._isLockZoom){var e=t.wheelDelta,n=t.detail,r=0;r=n?e?e/n/40*n>0?1:-1:-n/3:e/120,this.radius.add(2*-r);}}},{key:"_loop",value:function value(){this._updatePosition(),this._target&&this._updateCamera();}},{key:"_updatePosition",value:function value(){this.position[1]=Math.sin(this._rx.value)*this.radius.value;var t=Math.cos(this._rx.value)*this.radius.value;this.position[0]=Math.cos(this._ry.value+.5*Math.PI)*t,this.position[2]=Math.sin(this._ry.value+.5*Math.PI)*t,d.default.vec3.add(this.position,this.position,this.positionOffset);}},{key:"_updateCamera",value:function value(){this._target.lookAt(this.position,this.center,this._up);}},{key:"rx",get:function get(){return this._rx;}},{key:"ry",get:function get(){return this._ry;}}]),t;}();e.default=M,t.exports=e.default;},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t};}e.__esModule=!0;var a=n(98),i=r(a),u=n(97),o=r(u),s="function"==typeof o.default&&"symbol"==_typeof(i.default)?function(t){return typeof t==="undefined"?"undefined":_typeof(t);}:function(t){return t&&"function"==typeof o.default&&t.constructor===o.default?"symbol":typeof t==="undefined"?"undefined":_typeof(t);};e.default="function"==typeof o.default&&"symbol"===s(i.default)?function(t){return "undefined"==typeof t?"undefined":s(t);}:function(t){return t&&"function"==typeof o.default&&t.constructor===o.default?"symbol":"undefined"==typeof t?"undefined":s(t);};},function(t,e){var n={}.toString;t.exports=function(t){return n.call(t).slice(8,-1);};},function(t,e,n){var r=n(106);t.exports=function(t,e,n){if(r(t),void 0===e)return t;switch(n){case 1:return function(n){return t.call(e,n);};case 2:return function(n,r){return t.call(e,n,r);};case 3:return function(n,r,a){return t.call(e,n,r,a);};}return function(){return t.apply(e,arguments);};};},function(t,e,n){var r=n(25),a=n(10).document,i=r(a)&&r(a.createElement);t.exports=function(t){return i?a.createElement(t):{};};},function(t,e,n){t.exports=!n(13)&&!n(24)(function(){return 7!=Object.defineProperty(n(56)("div"),"a",{get:function get(){return 7;}}).a;});},function(t,e,n){"use strict";var r=n(37),a=n(17),i=n(64),u=n(18),o=n(14),s=n(36),l=n(113),h=n(41),f=n(61),c=n(19)("iterator"),d=!([].keys&&"next" in [].keys()),v="@@iterator",M="keys",p="values",_=function _(){return this;};t.exports=function(t,e,n,m,x,E,I){l(n,e,m);var S,b,g,T=function T(t){if(!d&&t in R)return R[t];switch(t){case M:return function(){return new n(this,t);};case p:return function(){return new n(this,t);};}return function(){return new n(this,t);};},F=e+" Iterator",y=x==p,D=!1,R=t.prototype,w=R[c]||R[v]||x&&R[x],A=w||T(x),P=x?y?T("entries"):A:void 0,O="Array"==e?R.entries||w:w;if(O&&(g=f(O.call(new t())),g!==Object.prototype&&(h(g,F,!0),r||o(g,c)||u(g,c,_))),y&&w&&w.name!==p&&(D=!0,A=function A(){return w.call(this);}),r&&!I||!d&&!D&&R[c]||u(R,c,A),s[e]=A,s[F]=_,x)if(S={values:y?A:T(p),keys:E?A:T(M),entries:P},I)for(b in S){b in R||i(R,b,S[b]);}else a(a.P+a.F*(d||D),e,S);return S;};},function(t,e,n){var r=n(62),a=n(35).concat("length","prototype");e.f=Object.getOwnPropertyNames||function(t){return r(t,a);};},function(t,e){e.f=Object.getOwnPropertySymbols;},function(t,e,n){var r=n(14),a=n(65),i=n(42)("IE_PROTO"),u=Object.prototype;t.exports=Object.getPrototypeOf||function(t){return t=a(t),r(t,i)?t[i]:"function"==typeof t.constructor&&t instanceof t.constructor?t.constructor.prototype:t instanceof Object?u:null;};},function(t,e,n){var r=n(14),a=n(11),i=n(108)(!1),u=n(42)("IE_PROTO");t.exports=function(t,e){var n,o=a(t),s=0,l=[];for(n in o){n!=u&&r(o,n)&&l.push(n);}for(;e.length>s;){r(o,n=e[s++])&&(~i(l,n)||l.push(n));}return l;};},function(t,e,n){var r=n(17),a=n(7),i=n(24);t.exports=function(t,e){var n=(a.Object||{})[t]||Object[t],u={};u[t]=e(n),r(r.S+r.F*i(function(){n(1);}),"Object",u);};},function(t,e,n){t.exports=n(18);},function(t,e,n){var r=n(34);t.exports=function(t){return Object(r(t));};},function(t,e,n){var r=n(9),a={};a.create=function(){var t=new r.ARRAY_TYPE(9);return t[0]=1,t[1]=0,t[2]=0,t[3]=0,t[4]=1,t[5]=0,t[6]=0,t[7]=0,t[8]=1,t;},a.fromMat4=function(t,e){return t[0]=e[0],t[1]=e[1],t[2]=e[2],t[3]=e[4],t[4]=e[5],t[5]=e[6],t[6]=e[8],t[7]=e[9],t[8]=e[10],t;},a.clone=function(t){var e=new r.ARRAY_TYPE(9);return e[0]=t[0],e[1]=t[1],e[2]=t[2],e[3]=t[3],e[4]=t[4],e[5]=t[5],e[6]=t[6],e[7]=t[7],e[8]=t[8],e;},a.copy=function(t,e){return t[0]=e[0],t[1]=e[1],t[2]=e[2],t[3]=e[3],t[4]=e[4],t[5]=e[5],t[6]=e[6],t[7]=e[7],t[8]=e[8],t;},a.fromValues=function(t,e,n,a,i,u,o,s,l){var h=new r.ARRAY_TYPE(9);return h[0]=t,h[1]=e,h[2]=n,h[3]=a,h[4]=i,h[5]=u,h[6]=o,h[7]=s,h[8]=l,h;},a.set=function(t,e,n,r,a,i,u,o,s,l){return t[0]=e,t[1]=n,t[2]=r,t[3]=a,t[4]=i,t[5]=u,t[6]=o,t[7]=s,t[8]=l,t;},a.identity=function(t){return t[0]=1,t[1]=0,t[2]=0,t[3]=0,t[4]=1,t[5]=0,t[6]=0,t[7]=0,t[8]=1,t;},a.transpose=function(t,e){if(t===e){var n=e[1],r=e[2],a=e[5];t[1]=e[3],t[2]=e[6],t[3]=n,t[5]=e[7],t[6]=r,t[7]=a;}else t[0]=e[0],t[1]=e[3],t[2]=e[6],t[3]=e[1],t[4]=e[4],t[5]=e[7],t[6]=e[2],t[7]=e[5],t[8]=e[8];return t;},a.invert=function(t,e){var n=e[0],r=e[1],a=e[2],i=e[3],u=e[4],o=e[5],s=e[6],l=e[7],h=e[8],f=h*u-o*l,c=-h*i+o*s,d=l*i-u*s,v=n*f+r*c+a*d;return v?(v=1/v,t[0]=f*v,t[1]=(-h*r+a*l)*v,t[2]=(o*r-a*u)*v,t[3]=c*v,t[4]=(h*n-a*s)*v,t[5]=(-o*n+a*i)*v,t[6]=d*v,t[7]=(-l*n+r*s)*v,t[8]=(u*n-r*i)*v,t):null;},a.adjoint=function(t,e){var n=e[0],r=e[1],a=e[2],i=e[3],u=e[4],o=e[5],s=e[6],l=e[7],h=e[8];return t[0]=u*h-o*l,t[1]=a*l-r*h,t[2]=r*o-a*u,t[3]=o*s-i*h,t[4]=n*h-a*s,t[5]=a*i-n*o,t[6]=i*l-u*s,t[7]=r*s-n*l,t[8]=n*u-r*i,t;},a.determinant=function(t){var e=t[0],n=t[1],r=t[2],a=t[3],i=t[4],u=t[5],o=t[6],s=t[7],l=t[8];return e*(l*i-u*s)+n*(-l*a+u*o)+r*(s*a-i*o);},a.multiply=function(t,e,n){var r=e[0],a=e[1],i=e[2],u=e[3],o=e[4],s=e[5],l=e[6],h=e[7],f=e[8],c=n[0],d=n[1],v=n[2],M=n[3],p=n[4],_=n[5],m=n[6],x=n[7],E=n[8];return t[0]=c*r+d*u+v*l,t[1]=c*a+d*o+v*h,t[2]=c*i+d*s+v*f,t[3]=M*r+p*u+_*l,t[4]=M*a+p*o+_*h,t[5]=M*i+p*s+_*f,t[6]=m*r+x*u+E*l,t[7]=m*a+x*o+E*h,t[8]=m*i+x*s+E*f,t;},a.mul=a.multiply,a.translate=function(t,e,n){var r=e[0],a=e[1],i=e[2],u=e[3],o=e[4],s=e[5],l=e[6],h=e[7],f=e[8],c=n[0],d=n[1];return t[0]=r,t[1]=a,t[2]=i,t[3]=u,t[4]=o,t[5]=s,t[6]=c*r+d*u+l,t[7]=c*a+d*o+h,t[8]=c*i+d*s+f,t;},a.rotate=function(t,e,n){var r=e[0],a=e[1],i=e[2],u=e[3],o=e[4],s=e[5],l=e[6],h=e[7],f=e[8],c=Math.sin(n),d=Math.cos(n);return t[0]=d*r+c*u,t[1]=d*a+c*o,t[2]=d*i+c*s,t[3]=d*u-c*r,t[4]=d*o-c*a,t[5]=d*s-c*i,t[6]=l,t[7]=h,t[8]=f,t;},a.scale=function(t,e,n){var r=n[0],a=n[1];return t[0]=r*e[0],t[1]=r*e[1],t[2]=r*e[2],t[3]=a*e[3],t[4]=a*e[4],t[5]=a*e[5],t[6]=e[6],t[7]=e[7],t[8]=e[8],t;},a.fromTranslation=function(t,e){return t[0]=1,t[1]=0,t[2]=0,t[3]=0,t[4]=1,t[5]=0,t[6]=e[0],t[7]=e[1],t[8]=1,t;},a.fromRotation=function(t,e){var n=Math.sin(e),r=Math.cos(e);return t[0]=r,t[1]=n,t[2]=0,t[3]=-n,t[4]=r,t[5]=0,t[6]=0,t[7]=0,t[8]=1,t;},a.fromScaling=function(t,e){return t[0]=e[0],t[1]=0,t[2]=0,t[3]=0,t[4]=e[1],t[5]=0,t[6]=0,t[7]=0,t[8]=1,t;},a.fromMat2d=function(t,e){return t[0]=e[0],t[1]=e[1],t[2]=0,t[3]=e[2],t[4]=e[3],t[5]=0,t[6]=e[4],t[7]=e[5],t[8]=1,t;},a.fromQuat=function(t,e){var n=e[0],r=e[1],a=e[2],i=e[3],u=n+n,o=r+r,s=a+a,l=n*u,h=r*u,f=r*o,c=a*u,d=a*o,v=a*s,M=i*u,p=i*o,_=i*s;return t[0]=1-f-v,t[3]=h-_,t[6]=c+p,t[1]=h+_,t[4]=1-l-v,t[7]=d-M,t[2]=c-p,t[5]=d+M,t[8]=1-l-f,t;},a.normalFromMat4=function(t,e){var n=e[0],r=e[1],a=e[2],i=e[3],u=e[4],o=e[5],s=e[6],l=e[7],h=e[8],f=e[9],c=e[10],d=e[11],v=e[12],M=e[13],p=e[14],_=e[15],m=n*o-r*u,x=n*s-a*u,E=n*l-i*u,I=r*s-a*o,S=r*l-i*o,b=a*l-i*s,g=h*M-f*v,T=h*p-c*v,F=h*_-d*v,y=f*p-c*M,D=f*_-d*M,R=c*_-d*p,w=m*R-x*D+E*y+I*F-S*T+b*g;return w?(w=1/w,t[0]=(o*R-s*D+l*y)*w,t[1]=(s*F-u*R-l*T)*w,t[2]=(u*D-o*F+l*g)*w,t[3]=(a*D-r*R-i*y)*w,t[4]=(n*R-a*F+i*T)*w,t[5]=(r*F-n*D-i*g)*w,t[6]=(M*b-p*S+_*I)*w,t[7]=(p*E-v*b-_*x)*w,t[8]=(v*S-M*E+_*m)*w,t):null;},a.str=function(t){return "mat3("+t[0]+", "+t[1]+", "+t[2]+", "+t[3]+", "+t[4]+", "+t[5]+", "+t[6]+", "+t[7]+", "+t[8]+")";},a.frob=function(t){return Math.sqrt(Math.pow(t[0],2)+Math.pow(t[1],2)+Math.pow(t[2],2)+Math.pow(t[3],2)+Math.pow(t[4],2)+Math.pow(t[5],2)+Math.pow(t[6],2)+Math.pow(t[7],2)+Math.pow(t[8],2));},a.add=function(t,e,n){return t[0]=e[0]+n[0],t[1]=e[1]+n[1],t[2]=e[2]+n[2],t[3]=e[3]+n[3],t[4]=e[4]+n[4],t[5]=e[5]+n[5],t[6]=e[6]+n[6],t[7]=e[7]+n[7],t[8]=e[8]+n[8],t;},a.subtract=function(t,e,n){return t[0]=e[0]-n[0],t[1]=e[1]-n[1],t[2]=e[2]-n[2],t[3]=e[3]-n[3],t[4]=e[4]-n[4],t[5]=e[5]-n[5],t[6]=e[6]-n[6],t[7]=e[7]-n[7],t[8]=e[8]-n[8],t;},a.sub=a.subtract,a.multiplyScalar=function(t,e,n){return t[0]=e[0]*n,t[1]=e[1]*n,t[2]=e[2]*n,t[3]=e[3]*n,t[4]=e[4]*n,t[5]=e[5]*n,t[6]=e[6]*n,t[7]=e[7]*n,t[8]=e[8]*n,t;},a.multiplyScalarAndAdd=function(t,e,n,r){return t[0]=e[0]+n[0]*r,t[1]=e[1]+n[1]*r,t[2]=e[2]+n[2]*r,t[3]=e[3]+n[3]*r,t[4]=e[4]+n[4]*r,t[5]=e[5]+n[5]*r,t[6]=e[6]+n[6]*r,t[7]=e[7]+n[7]*r,t[8]=e[8]+n[8]*r,t;},a.exactEquals=function(t,e){return t[0]===e[0]&&t[1]===e[1]&&t[2]===e[2]&&t[3]===e[3]&&t[4]===e[4]&&t[5]===e[5]&&t[6]===e[6]&&t[7]===e[7]&&t[8]===e[8];},a.equals=function(t,e){var n=t[0],a=t[1],i=t[2],u=t[3],o=t[4],s=t[5],l=t[6],h=t[7],f=t[8],c=e[0],d=e[1],v=e[2],M=e[3],p=e[4],_=e[5],m=t[6],x=e[7],E=e[8];return Math.abs(n-c)<=r.EPSILON*Math.max(1,Math.abs(n),Math.abs(c))&&Math.abs(a-d)<=r.EPSILON*Math.max(1,Math.abs(a),Math.abs(d))&&Math.abs(i-v)<=r.EPSILON*Math.max(1,Math.abs(i),Math.abs(v))&&Math.abs(u-M)<=r.EPSILON*Math.max(1,Math.abs(u),Math.abs(M))&&Math.abs(o-p)<=r.EPSILON*Math.max(1,Math.abs(o),Math.abs(p))&&Math.abs(s-_)<=r.EPSILON*Math.max(1,Math.abs(s),Math.abs(_))&&Math.abs(l-m)<=r.EPSILON*Math.max(1,Math.abs(l),Math.abs(m))&&Math.abs(h-x)<=r.EPSILON*Math.max(1,Math.abs(h),Math.abs(x))&&Math.abs(f-E)<=r.EPSILON*Math.max(1,Math.abs(f),Math.abs(E));},t.exports=a;},function(t,e,n){var r=n(9),a={};a.create=function(){var t=new r.ARRAY_TYPE(3);return t[0]=0,t[1]=0,t[2]=0,t;},a.clone=function(t){var e=new r.ARRAY_TYPE(3);return e[0]=t[0],e[1]=t[1],e[2]=t[2],e;},a.fromValues=function(t,e,n){var a=new r.ARRAY_TYPE(3);return a[0]=t,a[1]=e,a[2]=n,a;},a.copy=function(t,e){return t[0]=e[0],t[1]=e[1],t[2]=e[2],t;},a.set=function(t,e,n,r){return t[0]=e,t[1]=n,t[2]=r,t;},a.add=function(t,e,n){return t[0]=e[0]+n[0],t[1]=e[1]+n[1],t[2]=e[2]+n[2],t;},a.subtract=function(t,e,n){return t[0]=e[0]-n[0],t[1]=e[1]-n[1],t[2]=e[2]-n[2],t;},a.sub=a.subtract,a.multiply=function(t,e,n){return t[0]=e[0]*n[0],t[1]=e[1]*n[1],t[2]=e[2]*n[2],t;},a.mul=a.multiply,a.divide=function(t,e,n){return t[0]=e[0]/n[0],t[1]=e[1]/n[1],t[2]=e[2]/n[2],t;},a.div=a.divide,a.ceil=function(t,e){return t[0]=Math.ceil(e[0]),t[1]=Math.ceil(e[1]),t[2]=Math.ceil(e[2]),t;},a.floor=function(t,e){return t[0]=Math.floor(e[0]),t[1]=Math.floor(e[1]),t[2]=Math.floor(e[2]),t;},a.min=function(t,e,n){return t[0]=Math.min(e[0],n[0]),t[1]=Math.min(e[1],n[1]),t[2]=Math.min(e[2],n[2]),t;},a.max=function(t,e,n){return t[0]=Math.max(e[0],n[0]),t[1]=Math.max(e[1],n[1]),t[2]=Math.max(e[2],n[2]),t;},a.round=function(t,e){return t[0]=Math.round(e[0]),t[1]=Math.round(e[1]),t[2]=Math.round(e[2]),t;},a.scale=function(t,e,n){return t[0]=e[0]*n,t[1]=e[1]*n,t[2]=e[2]*n,t;},a.scaleAndAdd=function(t,e,n,r){return t[0]=e[0]+n[0]*r,t[1]=e[1]+n[1]*r,t[2]=e[2]+n[2]*r,t;},a.distance=function(t,e){var n=e[0]-t[0],r=e[1]-t[1],a=e[2]-t[2];return Math.sqrt(n*n+r*r+a*a);},a.dist=a.distance,a.squaredDistance=function(t,e){var n=e[0]-t[0],r=e[1]-t[1],a=e[2]-t[2];return n*n+r*r+a*a;},a.sqrDist=a.squaredDistance,a.length=function(t){var e=t[0],n=t[1],r=t[2];return Math.sqrt(e*e+n*n+r*r);},a.len=a.length,a.squaredLength=function(t){var e=t[0],n=t[1],r=t[2];return e*e+n*n+r*r;},a.sqrLen=a.squaredLength,a.negate=function(t,e){return t[0]=-e[0],t[1]=-e[1],t[2]=-e[2],t;},a.inverse=function(t,e){return t[0]=1/e[0],t[1]=1/e[1],t[2]=1/e[2],t;},a.normalize=function(t,e){var n=e[0],r=e[1],a=e[2],i=n*n+r*r+a*a;return i>0&&(i=1/Math.sqrt(i),t[0]=e[0]*i,t[1]=e[1]*i,t[2]=e[2]*i),t;},a.dot=function(t,e){return t[0]*e[0]+t[1]*e[1]+t[2]*e[2];},a.cross=function(t,e,n){var r=e[0],a=e[1],i=e[2],u=n[0],o=n[1],s=n[2];return t[0]=a*s-i*o,t[1]=i*u-r*s,t[2]=r*o-a*u,t;},a.lerp=function(t,e,n,r){var a=e[0],i=e[1],u=e[2];return t[0]=a+r*(n[0]-a),t[1]=i+r*(n[1]-i),t[2]=u+r*(n[2]-u),t;},a.hermite=function(t,e,n,r,a,i){var u=i*i,o=u*(2*i-3)+1,s=u*(i-2)+i,l=u*(i-1),h=u*(3-2*i);return t[0]=e[0]*o+n[0]*s+r[0]*l+a[0]*h,t[1]=e[1]*o+n[1]*s+r[1]*l+a[1]*h,t[2]=e[2]*o+n[2]*s+r[2]*l+a[2]*h,t;},a.bezier=function(t,e,n,r,a,i){var u=1-i,o=u*u,s=i*i,l=o*u,h=3*i*o,f=3*s*u,c=s*i;return t[0]=e[0]*l+n[0]*h+r[0]*f+a[0]*c,t[1]=e[1]*l+n[1]*h+r[1]*f+a[1]*c,t[2]=e[2]*l+n[2]*h+r[2]*f+a[2]*c,t;},a.random=function(t,e){e=e||1;var n=2*r.RANDOM()*Math.PI,a=2*r.RANDOM()-1,i=Math.sqrt(1-a*a)*e;return t[0]=Math.cos(n)*i,t[1]=Math.sin(n)*i,t[2]=a*e,t;},a.transformMat4=function(t,e,n){var r=e[0],a=e[1],i=e[2],u=n[3]*r+n[7]*a+n[11]*i+n[15];return u=u||1,t[0]=(n[0]*r+n[4]*a+n[8]*i+n[12])/u,t[1]=(n[1]*r+n[5]*a+n[9]*i+n[13])/u,t[2]=(n[2]*r+n[6]*a+n[10]*i+n[14])/u,t;},a.transformMat3=function(t,e,n){var r=e[0],a=e[1],i=e[2];return t[0]=r*n[0]+a*n[3]+i*n[6],t[1]=r*n[1]+a*n[4]+i*n[7],t[2]=r*n[2]+a*n[5]+i*n[8],t;},a.transformQuat=function(t,e,n){var r=e[0],a=e[1],i=e[2],u=n[0],o=n[1],s=n[2],l=n[3],h=l*r+o*i-s*a,f=l*a+s*r-u*i,c=l*i+u*a-o*r,d=-u*r-o*a-s*i;return t[0]=h*l+d*-u+f*-s-c*-o,t[1]=f*l+d*-o+c*-u-h*-s,t[2]=c*l+d*-s+h*-o-f*-u,t;},a.rotateX=function(t,e,n,r){var a=[],i=[];return a[0]=e[0]-n[0],a[1]=e[1]-n[1],a[2]=e[2]-n[2],i[0]=a[0],i[1]=a[1]*Math.cos(r)-a[2]*Math.sin(r),i[2]=a[1]*Math.sin(r)+a[2]*Math.cos(r),t[0]=i[0]+n[0],t[1]=i[1]+n[1],t[2]=i[2]+n[2],t;},a.rotateY=function(t,e,n,r){var a=[],i=[];return a[0]=e[0]-n[0],a[1]=e[1]-n[1],a[2]=e[2]-n[2],i[0]=a[2]*Math.sin(r)+a[0]*Math.cos(r),i[1]=a[1],i[2]=a[2]*Math.cos(r)-a[0]*Math.sin(r),t[0]=i[0]+n[0],t[1]=i[1]+n[1],t[2]=i[2]+n[2],t;},a.rotateZ=function(t,e,n,r){var a=[],i=[];return a[0]=e[0]-n[0],a[1]=e[1]-n[1],a[2]=e[2]-n[2],i[0]=a[0]*Math.cos(r)-a[1]*Math.sin(r),i[1]=a[0]*Math.sin(r)+a[1]*Math.cos(r),i[2]=a[2],t[0]=i[0]+n[0],t[1]=i[1]+n[1],t[2]=i[2]+n[2],t;},a.forEach=function(){var t=a.create();return function(e,n,r,a,i,u){var o,s;for(n||(n=3),r||(r=0),s=a?Math.min(a*n+r,e.length):e.length,o=r;s>o;o+=n){t[0]=e[o],t[1]=e[o+1],t[2]=e[o+2],i(t,t,u),e[o]=t[0],e[o+1]=t[1],e[o+2]=t[2];}return e;};}(),a.angle=function(t,e){var n=a.fromValues(t[0],t[1],t[2]),r=a.fromValues(e[0],e[1],e[2]);a.normalize(n,n),a.normalize(r,r);var i=a.dot(n,r);return i>1?0:Math.acos(i);},a.str=function(t){return "vec3("+t[0]+", "+t[1]+", "+t[2]+")";},a.exactEquals=function(t,e){return t[0]===e[0]&&t[1]===e[1]&&t[2]===e[2];},a.equals=function(t,e){var n=t[0],a=t[1],i=t[2],u=e[0],o=e[1],s=e[2];return Math.abs(n-u)<=r.EPSILON*Math.max(1,Math.abs(n),Math.abs(u))&&Math.abs(a-o)<=r.EPSILON*Math.max(1,Math.abs(a),Math.abs(o))&&Math.abs(i-s)<=r.EPSILON*Math.max(1,Math.abs(i),Math.abs(s));},t.exports=a;},function(t,e,n){var r=n(9),a={};a.create=function(){var t=new r.ARRAY_TYPE(4);return t[0]=0,t[1]=0,t[2]=0,t[3]=0,t;},a.clone=function(t){var e=new r.ARRAY_TYPE(4);return e[0]=t[0],e[1]=t[1],e[2]=t[2],e[3]=t[3],e;},a.fromValues=function(t,e,n,a){var i=new r.ARRAY_TYPE(4);return i[0]=t,i[1]=e,i[2]=n,i[3]=a,i;},a.copy=function(t,e){return t[0]=e[0],t[1]=e[1],t[2]=e[2],t[3]=e[3],t;},a.set=function(t,e,n,r,a){return t[0]=e,t[1]=n,t[2]=r,t[3]=a,t;},a.add=function(t,e,n){return t[0]=e[0]+n[0],t[1]=e[1]+n[1],t[2]=e[2]+n[2],t[3]=e[3]+n[3],t;},a.subtract=function(t,e,n){return t[0]=e[0]-n[0],t[1]=e[1]-n[1],t[2]=e[2]-n[2],t[3]=e[3]-n[3],t;},a.sub=a.subtract,a.multiply=function(t,e,n){return t[0]=e[0]*n[0],t[1]=e[1]*n[1],t[2]=e[2]*n[2],t[3]=e[3]*n[3],t;},a.mul=a.multiply,a.divide=function(t,e,n){return t[0]=e[0]/n[0],t[1]=e[1]/n[1],t[2]=e[2]/n[2],t[3]=e[3]/n[3],t;},a.div=a.divide,a.ceil=function(t,e){return t[0]=Math.ceil(e[0]),t[1]=Math.ceil(e[1]),t[2]=Math.ceil(e[2]),t[3]=Math.ceil(e[3]),t;},a.floor=function(t,e){return t[0]=Math.floor(e[0]),t[1]=Math.floor(e[1]),t[2]=Math.floor(e[2]),t[3]=Math.floor(e[3]),t;},a.min=function(t,e,n){return t[0]=Math.min(e[0],n[0]),t[1]=Math.min(e[1],n[1]),t[2]=Math.min(e[2],n[2]),t[3]=Math.min(e[3],n[3]),t;},a.max=function(t,e,n){return t[0]=Math.max(e[0],n[0]),t[1]=Math.max(e[1],n[1]),t[2]=Math.max(e[2],n[2]),t[3]=Math.max(e[3],n[3]),t;},a.round=function(t,e){return t[0]=Math.round(e[0]),t[1]=Math.round(e[1]),t[2]=Math.round(e[2]),t[3]=Math.round(e[3]),t;},a.scale=function(t,e,n){return t[0]=e[0]*n,t[1]=e[1]*n,t[2]=e[2]*n,t[3]=e[3]*n,t;},a.scaleAndAdd=function(t,e,n,r){return t[0]=e[0]+n[0]*r,t[1]=e[1]+n[1]*r,t[2]=e[2]+n[2]*r,t[3]=e[3]+n[3]*r,t;},a.distance=function(t,e){var n=e[0]-t[0],r=e[1]-t[1],a=e[2]-t[2],i=e[3]-t[3];return Math.sqrt(n*n+r*r+a*a+i*i);},a.dist=a.distance,a.squaredDistance=function(t,e){var n=e[0]-t[0],r=e[1]-t[1],a=e[2]-t[2],i=e[3]-t[3];return n*n+r*r+a*a+i*i;},a.sqrDist=a.squaredDistance,a.length=function(t){var e=t[0],n=t[1],r=t[2],a=t[3];return Math.sqrt(e*e+n*n+r*r+a*a);},a.len=a.length,a.squaredLength=function(t){var e=t[0],n=t[1],r=t[2],a=t[3];return e*e+n*n+r*r+a*a;},a.sqrLen=a.squaredLength,a.negate=function(t,e){return t[0]=-e[0],t[1]=-e[1],t[2]=-e[2],t[3]=-e[3],t;},a.inverse=function(t,e){return t[0]=1/e[0],t[1]=1/e[1],t[2]=1/e[2],t[3]=1/e[3],t;},a.normalize=function(t,e){var n=e[0],r=e[1],a=e[2],i=e[3],u=n*n+r*r+a*a+i*i;return u>0&&(u=1/Math.sqrt(u),t[0]=n*u,t[1]=r*u,t[2]=a*u,t[3]=i*u),t;},a.dot=function(t,e){return t[0]*e[0]+t[1]*e[1]+t[2]*e[2]+t[3]*e[3];},a.lerp=function(t,e,n,r){var a=e[0],i=e[1],u=e[2],o=e[3];return t[0]=a+r*(n[0]-a),t[1]=i+r*(n[1]-i),t[2]=u+r*(n[2]-u),t[3]=o+r*(n[3]-o),t;},a.random=function(t,e){return e=e||1,t[0]=r.RANDOM(),t[1]=r.RANDOM(),t[2]=r.RANDOM(),t[3]=r.RANDOM(),a.normalize(t,t),a.scale(t,t,e),t;},a.transformMat4=function(t,e,n){var r=e[0],a=e[1],i=e[2],u=e[3];return t[0]=n[0]*r+n[4]*a+n[8]*i+n[12]*u,t[1]=n[1]*r+n[5]*a+n[9]*i+n[13]*u,t[2]=n[2]*r+n[6]*a+n[10]*i+n[14]*u,t[3]=n[3]*r+n[7]*a+n[11]*i+n[15]*u,t;},a.transformQuat=function(t,e,n){var r=e[0],a=e[1],i=e[2],u=n[0],o=n[1],s=n[2],l=n[3],h=l*r+o*i-s*a,f=l*a+s*r-u*i,c=l*i+u*a-o*r,d=-u*r-o*a-s*i;return t[0]=h*l+d*-u+f*-s-c*-o,t[1]=f*l+d*-o+c*-u-h*-s,t[2]=c*l+d*-s+h*-o-f*-u,t[3]=e[3],t;},a.forEach=function(){var t=a.create();return function(e,n,r,a,i,u){var o,s;for(n||(n=4),r||(r=0),s=a?Math.min(a*n+r,e.length):e.length,o=r;s>o;o+=n){t[0]=e[o],t[1]=e[o+1],t[2]=e[o+2],t[3]=e[o+3],i(t,t,u),e[o]=t[0],e[o+1]=t[1],e[o+2]=t[2],e[o+3]=t[3];}return e;};}(),a.str=function(t){return "vec4("+t[0]+", "+t[1]+", "+t[2]+", "+t[3]+")";},a.exactEquals=function(t,e){return t[0]===e[0]&&t[1]===e[1]&&t[2]===e[2]&&t[3]===e[3];},a.equals=function(t,e){var n=t[0],a=t[1],i=t[2],u=t[3],o=e[0],s=e[1],l=e[2],h=e[3];return Math.abs(n-o)<=r.EPSILON*Math.max(1,Math.abs(n),Math.abs(o))&&Math.abs(a-s)<=r.EPSILON*Math.max(1,Math.abs(a),Math.abs(s))&&Math.abs(i-l)<=r.EPSILON*Math.max(1,Math.abs(i),Math.abs(l))&&Math.abs(u-h)<=r.EPSILON*Math.max(1,Math.abs(u),Math.abs(h));},t.exports=a;},function(t,e){t.exports="// basic.vert\n\n#define SHADER_NAME BASIC_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec3 aNormal;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvarying vec2 vTextureCoord;\nvarying vec3 vNormal;\n\nvoid main(void) {\n    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);\n    vTextureCoord = aTextureCoord;\n    vNormal = aNormal;\n}";},function(t,e){t.exports="// bigTriangle.vert\n\n#define SHADER_NAME BIG_TRIANGLE_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec2 aPosition;\nvarying vec2 vTextureCoord;\n\nvoid main(void) {\n    gl_Position = vec4(aPosition, 0.0, 1.0);\n    vTextureCoord = aPosition * .5 + .5;\n}";},function(t,e){t.exports="// copy.frag\n\n#define SHADER_NAME COPY_FRAGMENT\n\nprecision highp float;\n#define GLSLIFY 1\n\nvarying vec2 vTextureCoord;\nuniform sampler2D texture;\n\nvoid main(void) {\n    gl_FragColor = texture2D(texture, vTextureCoord);\n}";},function(t,e){t.exports="// generalWithNormal.vert\n\n#define SHADER_NAME GENERAL_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec3 aNormal;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\nuniform mat3 uNormalMatrix;\n\nuniform vec3 position;\nuniform vec3 scale;\n\nvarying vec2 vTextureCoord;\nvarying vec3 vNormal;\n\nvoid main(void) {\n	vec3 pos      = aVertexPosition * scale;\n	pos           += position;\n	gl_Position   = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(pos, 1.0);\n	\n	vTextureCoord = aTextureCoord;\n	vNormal       = normalize(uNormalMatrix * aNormal);\n}";},function(t,e){t.exports="// basic.frag\n\n#define SHADER_NAME SKYBOX_FRAGMENT\n\nprecision highp float;\n#define GLSLIFY 1\nuniform samplerCube texture;\nvarying vec2 vTextureCoord;\nvarying vec3 vVertex;\n\nvoid main(void) {\n    gl_FragColor = textureCube(texture, vVertex);\n}";},function(t,e){t.exports="// basic.vert\n\n#define SHADER_NAME SKYBOX_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec3 aNormal;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvarying vec2 vTextureCoord;\nvarying vec3 vVertex;\nvarying vec3 vNormal;\n\nvoid main(void) {\n	gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);\n	vTextureCoord = aTextureCoord;\n	\n	vVertex = aVertexPosition;\n	vNormal = aNormal;\n}";},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t};}Object.defineProperty(e,"__esModule",{value:!0});var a=n(1),i=r(a),u=n(2),o=r(u),s=n(8),l=r(s),h=n(3),f=r(h),c=n(12),d=r(c),v=n(50),M=r(v),p=n(49),_=r(p),m=n(21),x=r(m),E=n(26),I=r(E),S=n(16),b=r(S),g=n(77),T=r(g),F=n(76),y=r(F),D=n(20),R=r(D),w=n(88),A=r(w),P=n(33),O=r(P),L=n(92),k=r(L),N=n(52),U=r(N),C=n(90),z=r(C),V=n(30),B=r(V),X=n(51),j=r(X),Y=n(31),q=r(Y),G=n(78),H=r(G),W=n(32),Z=r(W),Q=n(87),K=r(Q),J=n(86),$=r(J),tt=n(81),et=r(tt),nt=n(79),rt=r(nt),at=n(80),it=r(at),ut=n(82),ot=r(ut),st=n(83),lt=r(st),ht=n(84),ft=r(ht),ct=n(85),dt=r(ct),vt=n(91),Mt=r(vt),pt="0.1.1",_t=function(){function t(){(0,i.default)(this,t),this.glm=l.default,this.GL=f.default,this.GLTool=f.default,this.GLShader=d.default,this.GLTexture=M.default,this.GLCubeTexture=_.default,this.Mesh=x.default,this.Geom=I.default,this.Batch=b.default,this.FrameBuffer=T.default,this.CubeFrameBuffer=y.default,this.Scheduler=R.default,this.EventDispatcher=A.default,this.EaseNumber=O.default,this.TweenNumber=k.default,this.Camera=B.default,this.CameraOrtho=j.default,this.CameraPerspective=q.default,this.CameraCube=H.default,this.OrbitalControl=U.default,this.QuatRotation=z.default,this.BinaryLoader=Z.default,this.ObjLoader=K.default,this.HDRLoader=$.default,this.BatchCopy=et.default,this.BatchAxis=rt.default,this.BatchBall=it.default,this.BatchBall=it.default,this.BatchSkybox=lt.default,this.BatchDotsPlane=ot.default,this.Scene=ft.default,this.View=dt.default,this.ShaderLibs=Mt.default;for(var e in l.default){l.default[e]&&(window[e]=l.default[e]);}}return (0,o.default)(t,[{key:"log",value:function value(){navigator.userAgent.indexOf("Chrome")>-1?console.log("%clib alfrid : VERSION "+pt,"background: #193441; color: #FCFFF5"):console.log("lib alfrid : VERSION ",pt),console.log("%cClasses : ","color: #193441");for(var t in this){this[t]&&console.log("%c - "+t,"color: #3E606F");}}}]),t;}(),mt=new _t();e.default=mt,t.exports=e.default;},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t};}Object.defineProperty(e,"__esModule",{value:!0});var a=n(1),i=r(a),u=n(2),o=r(u),s=n(3),l=r(s),h=n(49),f=r(h),c=void 0,d=function(){function t(e){var n=arguments.length<=1||void 0===arguments[1]?{}:arguments[1];(0,i.default)(this,t),c=l.default.gl,this._size=e,this.magFilter=n.magFilter||c.LINEAR,this.minFilter=n.minFilter||c.LINEAR,this.wrapS=n.wrapS||c.CLAMP_TO_EDGE,this.wrapT=n.wrapT||c.CLAMP_TO_EDGE,this._init();}return (0,o.default)(t,[{key:"_init",value:function value(){this.texture=c.createTexture(),this.glTexture=new f.default(this.texture,{},!0),c.bindTexture(c.TEXTURE_CUBE_MAP,this.texture),c.texParameteri(c.TEXTURE_CUBE_MAP,c.TEXTURE_MAG_FILTER,this.magFilter),c.texParameteri(c.TEXTURE_CUBE_MAP,c.TEXTURE_MIN_FILTER,this.minFilter),c.texParameteri(c.TEXTURE_CUBE_MAP,c.TEXTURE_WRAP_S,this.wrapS),c.texParameteri(c.TEXTURE_CUBE_MAP,c.TEXTURE_WRAP_T,this.wrapT);for(var t=[c.TEXTURE_CUBE_MAP_POSITIVE_X,c.TEXTURE_CUBE_MAP_NEGATIVE_X,c.TEXTURE_CUBE_MAP_POSITIVE_Y,c.TEXTURE_CUBE_MAP_NEGATIVE_Y,c.TEXTURE_CUBE_MAP_POSITIVE_Z,c.TEXTURE_CUBE_MAP_NEGATIVE_Z],e=0;e<t.length;e++){c.pixelStorei(c.UNPACK_FLIP_Y_WEBGL,!1),c.texImage2D(t[e],0,c.RGBA,this.width,this.height,0,c.RGBA,c.FLOAT,null);}this._frameBuffers=[];for(var n=0;n<t.length;n++){var r=c.createFramebuffer();c.bindFramebuffer(c.FRAMEBUFFER,r),c.framebufferTexture2D(c.FRAMEBUFFER,c.COLOR_ATTACHMENT0,t[n],this.texture,0);var a=c.checkFramebufferStatus(c.FRAMEBUFFER);a!==c.FRAMEBUFFER_COMPLETE&&console.log("'gl.checkFramebufferStatus() returned '"+a),this._frameBuffers.push(r);}c.bindFramebuffer(c.FRAMEBUFFER,null),c.bindRenderbuffer(c.RENDERBUFFER,null),c.bindTexture(c.TEXTURE_CUBE_MAP,null);}},{key:"bind",value:function value(t){l.default.viewport(0,0,this.width,this.height),c.bindFramebuffer(c.FRAMEBUFFER,this._frameBuffers[t]);}},{key:"unbind",value:function value(){c.bindFramebuffer(c.FRAMEBUFFER,null),l.default.viewport(0,0,l.default.width,l.default.height);}},{key:"getTexture",value:function value(){return this.glTexture;}},{key:"width",get:function get(){return this._size;}},{key:"height",get:function get(){return this._size;}}]),t;}();e.default=d,t.exports=e.default;},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t};}function a(t){return 0!==t&&!(t&t-1);}Object.defineProperty(e,"__esModule",{value:!0});var i=n(1),u=r(i),o=n(2),s=r(o),l=n(3),h=r(l),f=n(50),c=r(f),d=void 0,v=void 0,M=function(){function t(e,n){var r=arguments.length<=2||void 0===arguments[2]?{}:arguments[2];(0,u.default)(this,t),d=h.default.gl,v=h.default.checkExtension("WEBGL_depth_texture"),this.width=e,this.height=n,this.magFilter=r.magFilter||d.LINEAR,this.minFilter=r.minFilter||d.LINEAR,this.wrapS=r.wrapS||d.CLAMP_TO_EDGE,this.wrapT=r.wrapT||d.CLAMP_TO_EDGE,this.useDepth=r.useDepth||!0,this.useStencil=r.useStencil||!1,a(this.width)&&a(this.height)||(this.wrapS=this.wrapT=d.CLAMP_TO_EDGE,this.minFilter===d.LINEAR_MIPMAP_NEAREST&&(this.minFilter=d.LINEAR)),this._init();}return (0,s.default)(t,[{key:"_init",value:function value(){this.texture=d.createTexture(),this.glTexture=new c.default(this.texture,!0),this.depthTexture=d.createTexture(),this.glDepthTexture=new c.default(this.depthTexture,!0),this.frameBuffer=d.createFramebuffer(),d.bindFramebuffer(d.FRAMEBUFFER,this.frameBuffer),d.bindTexture(d.TEXTURE_2D,this.texture),d.texParameteri(d.TEXTURE_2D,d.TEXTURE_MAG_FILTER,this.magFilter),d.texParameteri(d.TEXTURE_2D,d.TEXTURE_MIN_FILTER,this.minFilter),d.texParameteri(d.TEXTURE_2D,d.TEXTURE_WRAP_S,this.wrapS),d.texParameteri(d.TEXTURE_2D,d.TEXTURE_WRAP_T,this.wrapT),d.texImage2D(d.TEXTURE_2D,0,d.RGBA,this.width,this.height,0,d.RGBA,h.default.isMobile?d.UNSIGNED_BYTE:d.FLOAT,null),v&&(d.bindTexture(d.TEXTURE_2D,this.depthTexture),d.texParameteri(d.TEXTURE_2D,d.TEXTURE_MAG_FILTER,this.magFilter),d.texParameteri(d.TEXTURE_2D,d.TEXTURE_MIN_FILTER,this.minFilter),d.texParameteri(d.TEXTURE_2D,d.TEXTURE_WRAP_S,this.wrapS),d.texParameteri(d.TEXTURE_2D,d.TEXTURE_WRAP_T,this.wrapT),d.texImage2D(d.TEXTURE_2D,0,d.DEPTH_COMPONENT,this.width,this.height,0,d.DEPTH_COMPONENT,d.UNSIGNED_SHORT,null)),d.framebufferTexture2D(d.FRAMEBUFFER,d.COLOR_ATTACHMENT0,d.TEXTURE_2D,this.texture,0),d.framebufferTexture2D(d.FRAMEBUFFER,d.DEPTH_ATTACHMENT,d.TEXTURE_2D,this.depthTexture,0),this.minFilter===d.LINEAR_MIPMAP_NEAREST&&(d.bindTexture(d.TEXTURE_2D,this.texture),d.generateMipmap(d.TEXTURE_2D)),d.bindTexture(d.TEXTURE_2D,null),d.bindRenderbuffer(d.RENDERBUFFER,null),d.bindFramebuffer(d.FRAMEBUFFER,null),this.clear();}},{key:"bind",value:function value(){h.default.viewport(0,0,this.width,this.height),d.bindFramebuffer(d.FRAMEBUFFER,this.frameBuffer);}},{key:"unbind",value:function value(){d.bindFramebuffer(d.FRAMEBUFFER,null),h.default.viewport(0,0,h.default.width,h.default.height);}},{key:"clear",value:function value(){var t=arguments.length<=0||void 0===arguments[0]?0:arguments[0],e=arguments.length<=1||void 0===arguments[1]?0:arguments[1],n=arguments.length<=2||void 0===arguments[2]?0:arguments[2],r=arguments.length<=3||void 0===arguments[3]?0:arguments[3];this.bind(),h.default.clear(t,e,n,r),this.unbind();}},{key:"getTexture",value:function value(){return this.glTexture;}},{key:"getDepthTexture",value:function value(){return this.glDepthTexture;}},{key:"minFilter",value:function value(t){return t!==d.LINEAR&&t!==d.NEAREST&&t!==d.LINEAR_MIPMAP_NEAREST?this:(this.minFilter=t,this);}},{key:"magFilter",value:function value(t){return t!==d.LINEAR&&t!==d.NEAREST&&t!==d.LINEAR_MIPMAP_NEAREST?this:(this.magFilter=t,this);}},{key:"wrapS",value:function value(t){return t!==d.CLAMP_TO_EDGE&&t!==d.REPEAT&&t!==d.MIRRORED_REPEAT?this:(this.wrapS=t,this);}},{key:"wrapT",value:function value(t){return t!==d.CLAMP_TO_EDGE&&t!==d.REPEAT&&t!==d.MIRRORED_REPEAT?this:(this.wrapT=t,this);}}]),t;}();e.default=M,t.exports=e.default;},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t};}Object.defineProperty(e,"__esModule",{value:!0});var a=n(4),i=r(a),u=n(1),o=r(u),s=n(2),l=r(s),h=n(6),f=r(h),c=n(5),d=r(c),v=n(31),M=r(v),p=n(8),_=r(p),m=_.default.vec3,x=[[m.fromValues(0,0,0),m.fromValues(1,0,0),m.fromValues(0,-1,0)],[m.fromValues(0,0,0),m.fromValues(-1,0,0),m.fromValues(0,-1,0)],[m.fromValues(0,0,0),m.fromValues(0,1,0),m.fromValues(0,0,1)],[m.fromValues(0,0,0),m.fromValues(0,-1,0),m.fromValues(0,0,-1)],[m.fromValues(0,0,0),m.fromValues(0,0,1),m.fromValues(0,-1,0)],[m.fromValues(0,0,0),m.fromValues(0,0,-1),m.fromValues(0,-1,0)]],E=function(t){function e(){(0,o.default)(this,e);var t=(0,f.default)(this,(0,i.default)(e).call(this));return t.setPerspective(Math.PI/2,1,.1,1e3),t;}return (0,d.default)(e,t),(0,l.default)(e,[{key:"face",value:function value(t){var e=x[t];this.lookAt(e[0],e[1],e[2]);}}]),e;}(M.default);e.default=E,t.exports=e.default;},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t};}Object.defineProperty(e,"__esModule",{value:!0});var a=n(4),i=r(a),u=n(1),o=r(u),s=n(6),l=r(s),h=n(5),f=r(h),c=n(3),d=r(c),v=n(21),M=r(v),p=n(12),_=r(p),m=n(16),x=r(m),E=n(142),I=n(141),S=function(t){function e(){(0,o.default)(this,e);var t=[],n=[],r=[0,1,2,3,4,5],a=9999;t.push([-a,0,0]),t.push([a,0,0]),t.push([0,-a,0]),t.push([0,a,0]),t.push([0,0,-a]),t.push([0,0,a]),n.push([1,0,0]),n.push([1,0,0]),n.push([0,1,0]),n.push([0,1,0]),n.push([0,0,1]),n.push([0,0,1]);var u=new M.default(d.default.LINES);u.bufferVertex(t),u.bufferIndex(r),u.bufferData(n,"aColor",3);var s=new _.default(E,I);return (0,l.default)(this,(0,i.default)(e).call(this,u,s));}return (0,f.default)(e,t),e;}(x.default);e.default=S,t.exports=e.default;},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t};}Object.defineProperty(e,"__esModule",{value:!0});var a=n(4),i=r(a),u=n(1),o=r(u),s=n(2),l=r(s),h=n(6),f=r(h),c=n(22),d=r(c),v=n(5),M=r(v),p=n(26),_=r(p),m=n(12),x=r(m),E=n(16),I=r(E),S=n(72),b=n(48),g=function(t){function e(){(0,o.default)(this,e);var t=_.default.sphere(1,24),n=new x.default(S,b);return (0,f.default)(this,(0,i.default)(e).call(this,t,n));}return (0,M.default)(e,t),(0,l.default)(e,[{key:"draw",value:function value(){var t=arguments.length<=0||void 0===arguments[0]?[0,0,0]:arguments[0],n=arguments.length<=1||void 0===arguments[1]?[1,1,1]:arguments[1],r=arguments.length<=2||void 0===arguments[2]?[1,1,1]:arguments[2],a=arguments.length<=3||void 0===arguments[3]?1:arguments[3];this.shader.bind(),this.shader.uniform("position","uniform3fv",t),this.shader.uniform("scale","uniform3fv",n),this.shader.uniform("color","uniform3fv",r),this.shader.uniform("opacity","uniform1f",a),(0,d.default)((0,i.default)(e.prototype),"draw",this).call(this);}}]),e;}(I.default);e.default=g,t.exports=e.default;},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t};}Object.defineProperty(e,"__esModule",{value:!0});var a=n(4),i=r(a),u=n(1),o=r(u),s=n(2),l=r(s),h=n(6),f=r(h),c=n(22),d=r(c),v=n(5),M=r(v),p=n(26),_=r(p),m=n(12),x=r(m),E=n(16),I=r(E),S=n(70),b=n(71),g=function(t){function e(){(0,o.default)(this,e);var t=_.default.bigTriangle(),n=new x.default(S,b),r=(0,f.default)(this,(0,i.default)(e).call(this,t,n));return n.bind(),n.uniform("texture","uniform1i",0),r;}return (0,M.default)(e,t),(0,l.default)(e,[{key:"draw",value:function value(t){this.shader.bind(),t.bind(0),(0,d.default)((0,i.default)(e.prototype),"draw",this).call(this);}}]),e;}(I.default);e.default=g,t.exports=e.default;},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t};}Object.defineProperty(e,"__esModule",{value:!0});var a=n(4),i=r(a),u=n(1),o=r(u),s=n(2),l=r(s),h=n(6),f=r(h),c=n(22),d=r(c),v=n(5),M=r(v),p=n(3),_=r(p),m=n(21),x=r(m),E=n(12),I=r(E),S=n(16),b=r(S),g=n(144),T=n(48),F=function(t){function e(){(0,o.default)(this,e);var t=[],n=[],r=0,a=100,u=50,s=u/a,l=void 0,h=void 0;for(l=-u/2;u>l;l+=s){for(h=-u/2;u>h;h+=s){t.push([l,h,0]),n.push(r),r++,t.push([l,0,h]),n.push(r),r++;}}var c=new x.default(_.default.POINTS);c.bufferVertex(t),c.bufferIndex(n);var d=new I.default(g,T),v=(0,f.default)(this,(0,i.default)(e).call(this,c,d));return v.color=[1,1,1],v.opacity=.5,v;}return (0,M.default)(e,t),(0,l.default)(e,[{key:"draw",value:function value(){this.shader.bind(),this.shader.uniform("color","uniform3fv",this.color),this.shader.uniform("opacity","uniform1f",this.opacity),(0,d.default)((0,i.default)(e.prototype),"draw",this).call(this);}}]),e;}(b.default);e.default=F,t.exports=e.default;},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t};}Object.defineProperty(e,"__esModule",{value:!0});var a=n(4),i=r(a),u=n(1),o=r(u),s=n(2),l=r(s),h=n(6),f=r(h),c=n(22),d=r(c),v=n(5),M=r(v),p=n(26),_=r(p),m=n(12),x=r(m),E=n(16),I=r(E),S=n(74),b=n(73),g=function(t){function e(){var t=arguments.length<=0||void 0===arguments[0]?20:arguments[0];(0,o.default)(this,e);var n=_.default.skybox(t),r=new x.default(S,b);return (0,f.default)(this,(0,i.default)(e).call(this,n,r));}return (0,M.default)(e,t),(0,l.default)(e,[{key:"draw",value:function value(t){this.shader.bind(),t.bind(0),(0,d.default)((0,i.default)(e.prototype),"draw",this).call(this);}}]),e;}(I.default);e.default=g,t.exports=e.default;},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t};}Object.defineProperty(e,"__esModule",{value:!0});var a=n(1),i=r(a),u=n(2),o=r(u),s=n(20),l=r(s),h=n(3),f=r(h),c=n(31),d=r(c),v=n(51),M=r(v),p=n(52),_=r(p),m=function(){function t(){var e=this;(0,i.default)(this,t),this._init(),this._initTextures(),this._initViews(),this._efIndex=l.default.addEF(function(){return e._loop();}),window.addEventListener("resize",function(){return e.resize();});}return (0,o.default)(t,[{key:"render",value:function value(){}},{key:"stop",value:function value(){-1!==this._efIndex&&(this._efIndex=l.default.removeEF(this._efIndex));}},{key:"start",value:function value(){var t=this;-1===this._efIndex&&(this._efIndex=l.default.addEF(function(){return t._loop();}));}},{key:"resize",value:function value(){f.default.setSize(window.innerWidth,window.innerHeight),this.camera.setAspectRatio(f.default.aspectRatio);}},{key:"_initTextures",value:function value(){}},{key:"_initViews",value:function value(){}},{key:"_init",value:function value(){this.camera=new d.default(),this.camera.setPerspective(45*Math.PI/180,f.default.aspectRatio,.1,100),this.orbitalControl=new _.default(this.camera,window,15),this.orbitalControl.radius.value=10,this.cameraOrtho=new M.default();}},{key:"_loop",value:function value(){f.default.viewport(0,0,f.default.width,f.default.height),f.default.setMatrices(this.camera),this.render();}}]),t;}();e.default=m,t.exports=e.default;},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t};}Object.defineProperty(e,"__esModule",{value:!0});var a=n(1),i=r(a),u=n(2),o=r(u),s=n(12),l=r(s),h=function(){function t(e,n){(0,i.default)(this,t),this.shader=new l.default(e,n),this._init();}return (0,o.default)(t,[{key:"_init",value:function value(){}},{key:"render",value:function value(){}}]),t;}();e.default=h,t.exports=e.default;},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t};}Object.defineProperty(e,"__esModule",{value:!0});var a=n(4),i=r(a),u=n(1),o=r(u),s=n(2),l=r(s),h=n(6),f=r(h),c=n(5),d=r(c),v=n(32),M=r(v),p=n(89),_=r(p),m=function(t){function e(){return (0,o.default)(this,e),(0,f.default)(this,(0,i.default)(e).call(this,!0));}return (0,d.default)(e,t),(0,l.default)(e,[{key:"parse",value:function value(t){return (0,_.default)(t);}},{key:"_onLoaded",value:function value(){var t=this.parse(this._req.response);this._callback&&this._callback(t);}}]),e;}(M.default);m.parse=function(t){return (0,_.default)(t);},e.default=m,t.exports=e.default;},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t};}Object.defineProperty(e,"__esModule",{value:!0});var a=n(4),i=r(a),u=n(1),o=r(u),s=n(2),l=r(s),h=n(6),f=r(h),c=n(22),d=r(c),v=n(5),M=r(v),p=n(32),_=r(p),m=n(21),x=r(m),E=function(t){function e(){return (0,o.default)(this,e),(0,f.default)(this,(0,i.default)(e).apply(this,arguments));}return (0,M.default)(e,t),(0,l.default)(e,[{key:"load",value:function value(t,n){var r=arguments.length<=2||void 0===arguments[2]?4:arguments[2];this._drawType=r,(0,d.default)((0,i.default)(e.prototype),"load",this).call(this,t,n);}},{key:"_onLoaded",value:function value(){this.parseObj(this._req.response);}},{key:"parseObj",value:function value(t){function e(t){var e=parseInt(t);return 3*(e>=0?e-1:e+c.length/3);}function n(t){var e=parseInt(t);return 3*(e>=0?e-1:e+d.length/3);}function r(t){var e=parseInt(t);return 2*(e>=0?e-1:e+v.length/2);}function a(t,e,n){l.push([c[t],c[t+1],c[t+2]]),l.push([c[e],c[e+1],c[e+2]]),l.push([c[n],c[n+1],c[n+2]]),M.push(3*p+0),M.push(3*p+1),M.push(3*p+2),p++;}function i(t,e,n){h.push([v[t],v[t+1]]),h.push([v[e],v[e+1]]),h.push([v[n],v[n+1]]);}function u(t,e,n){f.push([d[t],d[t+1],d[t+2]]),f.push([d[e],d[e+1],d[e+2]]),f.push([d[n],d[n+1],d[n+2]]);}function o(t,o,s,l,h,f,c,d,v,M,p,_){var m=e(t),x=e(o),E=e(s),I=void 0;void 0===l?a(m,x,E):(I=e(l),a(m,x,I),a(x,E,I)),void 0!==h&&(m=r(h),x=r(f),E=r(c),void 0===l?i(m,x,E):(I=r(d),i(m,x,I),i(x,E,I))),void 0!==v&&(m=n(v),x=n(M),E=n(p),void 0===l?u(m,x,E):(I=n(_),u(m,x,I),u(x,E,I)));}for(var s=t.split("\n"),l=[],h=[],f=[],c=[],d=[],v=[],M=[],p=0,_=void 0,m=/v( +[\d|\.|\+|\-|e|E]+)( +[\d|\.|\+|\-|e|E]+)( +[\d|\.|\+|\-|e|E]+)/,x=/vn( +[\d|\.|\+|\-|e|E]+)( +[\d|\.|\+|\-|e|E]+)( +[\d|\.|\+|\-|e|E]+)/,E=/vt( +[\d|\.|\+|\-|e|E]+)( +[\d|\.|\+|\-|e|E]+)/,I=/f( +-?\d+)( +-?\d+)( +-?\d+)( +-?\d+)?/,S=/f( +(-?\d+)\/(-?\d+))( +(-?\d+)\/(-?\d+))( +(-?\d+)\/(-?\d+))( +(-?\d+)\/(-?\d+))?/,b=/f( +(-?\d+)\/(-?\d+)\/(-?\d+))( +(-?\d+)\/(-?\d+)\/(-?\d+))( +(-?\d+)\/(-?\d+)\/(-?\d+))( +(-?\d+)\/(-?\d+)\/(-?\d+))?/,g=/f( +(-?\d+)\/\/(-?\d+))( +(-?\d+)\/\/(-?\d+))( +(-?\d+)\/\/(-?\d+))( +(-?\d+)\/\/(-?\d+))?/,T=0;T<s.length;T++){var F=s[T];F=F.trim(),0!==F.length&&"#"!==F.charAt(0)&&(null!==(_=m.exec(F))?c.push(parseFloat(_[1]),parseFloat(_[2]),parseFloat(_[3])):null!==(_=x.exec(F))?d.push(parseFloat(_[1]),parseFloat(_[2]),parseFloat(_[3])):null!==(_=E.exec(F))?v.push(parseFloat(_[1]),parseFloat(_[2])):null!==(_=I.exec(F))?o(_[1],_[2],_[3],_[4]):null!==(_=S.exec(F))?o(_[2],_[5],_[8],_[11],_[3],_[6],_[9],_[12]):null!==(_=b.exec(F))?o(_[2],_[6],_[10],_[14],_[3],_[7],_[11],_[15],_[4],_[8],_[12],_[16]):null!==(_=g.exec(F))&&o(_[2],_[5],_[8],_[11],void 0,void 0,void 0,void 0,_[3],_[6],_[9],_[12]));}return this._generateMeshes({positions:l,coords:h,normals:f,indices:M});}},{key:"_generateMeshes",value:function value(t){var e=65535,n=t.normals.length>0,r=t.coords.length>0,a=void 0;if(t.positions.length>e){var i=[],u=0,o={};for(o.positions=t.positions.concat(),o.coords=t.coords.concat(),o.indices=t.indices.concat(),o.normals=t.normals.concat();t.indices.length>0;){for(var s=Math.min(e,t.positions.length),l=t.indices.splice(0,s),h=[],f=[],c=[],d=void 0,v=0,M=0;M<l.length;M++){l[M]>v&&(v=l[M]),d=l[M],h.push(o.positions[d]),r&&f.push(o.coords[d]),n&&c.push(o.normals[d]),l[M]-=u;}u=v+1,a=new x.default(this._drawType),a.bufferVertex(h),r&&a.bufferTexCoord(f),a.bufferIndex(l),n&&a.bufferNormal(c),i.push(a);}return this._callback&&this._callback(i,o),i;}return a=new x.default(this._drawType),a.bufferVertex(t.positions),r&&a.bufferTexCoord(t.coords),a.bufferIndex(t.indices),n&&a.bufferNormal(t.normals),this._callback&&this._callback(a,t),a;}}]),e;}(_.default);E.parse=function(t){var e=new E();return e.parseObj(t);},e.default=E,t.exports=e.default;},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t};}Object.defineProperty(e,"__esModule",{value:!0});var a=n(1),i=r(a),u=n(2),o=r(u),s=!0;try{var l=document.createEvent("CustomEvent");l=null;}catch(h){s=!1;}var f=function(){function t(){(0,i.default)(this,t),this._eventListeners={};}return (0,o.default)(t,[{key:"addEventListener",value:function value(t,e){return null!==this._eventListeners&&void 0!==this._eventListeners||(this._eventListeners={}),this._eventListeners[t]||(this._eventListeners[t]=[]),this._eventListeners[t].push(e),this;}},{key:"on",value:function value(t,e){return this.addEventListener(t,e);}},{key:"removeEventListener",value:function value(t,e){null!==this._eventListeners&&void 0!==this._eventListeners||(this._eventListeners={});var n=this._eventListeners[t];if("undefined"==typeof n)return this;for(var r=n.length,a=0;r>a;a++){n[a]===e&&(n.splice(a,1),a--,r--);}return this;}},{key:"off",value:function value(t,e){return this.removeEventListener(t,e);}},{key:"dispatchEvent",value:function value(t){null!==this._eventListeners&&void 0!==this._eventListeners||(this._eventListeners={});var e=t.type;try{null===t.target&&(t.target=this),t.currentTarget=this;}catch(n){var r={type:e,detail:t.detail,dispatcher:this};return this.dispatchEvent(r);}var a=this._eventListeners[e];if(null!==a&&void 0!==a)for(var i=this._copyArray(a),u=i.length,o=0;u>o;o++){var s=i[o];s.call(this,t);}return this;}},{key:"dispatchCustomEvent",value:function value(t,e){var n=void 0;return s?(n=document.createEvent("CustomEvent"),n.dispatcher=this,n.initCustomEvent(t,!1,!1,e)):n={type:t,detail:e,dispatcher:this},this.dispatchEvent(n);}},{key:"trigger",value:function value(t,e){return this.dispatchCustomEvent(t,e);}},{key:"_destroy",value:function value(){if(null!==this._eventListeners){for(var t in this._eventListeners){if(this._eventListeners.hasOwnProperty(t)){for(var e=this._eventListeners[t],n=e.length,r=0;n>r;r++){e[r]=null;}delete this._eventListeners[t];}}this._eventListeners=null;}}},{key:"_copyArray",value:function value(t){for(var e=new Array(t.length),n=e.length,r=0;n>r;r++){e[r]=t[r];}return e;}}]),t;}();e.default=f,t.exports=e.default;},function(t,e){"use strict";function n(t,e,n,r,a,i){function u(e){var n=0;do {e[n++]=t[r];}while(++r<M&&n<e.length);return n;}function o(e,n,a){var i=0;do {e[n+i++]=t[r];}while(++r<M&&a>i);return i;}function s(t,e,n,r){var a=4*r,i=o(e,n,a);if(a>i)throw new Error("Error reading raw pixels: got "+i+" bytes, expected "+a);}for(var l=new Array(4),h=null,f=void 0,c=void 0,d=void 0,v=new Array(2),M=t.length;i>0;){if(u(l)<l.length)throw new Error("Error reading bytes: expected "+l.length);if(2!==l[0]||2!==l[1]||0!==(128&l[2]))return e[n++]=l[0],e[n++]=l[1],e[n++]=l[2],e[n++]=l[3],void s(t,e,n,a*i-1);if(((255&l[2])<<8|255&l[3])!==a)throw new Error("Wrong scanline width "+((255&l[2])<<8|255&l[3])+", expected "+a);null===h&&(h=new Array(4*a)),f=0;for(var p=0;4>p;p++){for(c=(p+1)*a;c>f;){if(u(v)<v.length)throw new Error("Error reading 2-byte buffer");if((255&v[0])>128){if(d=(255&v[0])-128,0===d||d>c-f)throw new Error("Bad scanline data");for(;d-->0;){h[f++]=v[1];}}else {if(d=255&v[0],0===d||d>c-f)throw new Error("Bad scanline data");if(h[f++]=v[1],--d>0){if(o(h,f,d)<d)throw new Error("Error reading non-run data");f+=d;}}}}for(var _=0;a>_;_++){e[n+0]=h[_],e[n+1]=h[_+a],e[n+2]=h[_+2*a],e[n+3]=h[_+3*a],n+=4;}i--;}}function r(t){function e(){var e="";do {var n=t[r];if(n===h){++r;break;}e+=String.fromCharCode(n);}while(++r<l);return e;}t instanceof ArrayBuffer&&(t=new Uint8Array(t));for(var r=0,l=t.length,h=10,f=0,c=0,d=1,v=1,M=!1,p=0;20>p;p++){var _=e(),m=void 0;if(m=_.match(a));else if(m=_.match(o))M=!0;else if(m=_.match(u))d=Number(m[1]);else if(m=_.match(i));else if(m=_.match(s)){c=Number(m[1]),f=Number(m[2]);break;}}if(!M)throw new Error("File is not run length encoded!");var x=new Uint8Array(f*c*4),E=f,I=c;n(t,x,0,r,E,I);for(var S=new Float32Array(f*c*4),b=0;b<x.length;b+=4){var g=x[b+0]/255,T=x[b+1]/255,F=x[b+2]/255,y=x[b+3],D=Math.pow(2,y-128);g*=D,T*=D,F*=D;var R=b;S[R+0]=g,S[R+1]=T,S[R+2]=F,S[R+3]=1;}return {shape:[f,c],exposure:d,gamma:v,data:S};}Object.defineProperty(e,"__esModule",{value:!0});var a="#\\?RADIANCE",i="#.*",u="EXPOSURE=\\s*([0-9]*[.][0-9]*)",o="FORMAT=32-bit_rle_rgbe",s="-Y ([0-9]+) \\+X ([0-9]+)";e.default=r,t.exports=e.default;},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t};}Object.defineProperty(e,"__esModule",{value:!0});var a=n(1),i=r(a),u=n(2),o=r(u),s=n(8),l=r(s),h=n(33),f=r(h),c=n(20),d=r(c),v=function v(t,e){var n=e||{};return t.touches?(n.x=t.touches[0].pageX,n.y=t.touches[0].pageY):(n.x=t.clientX,n.y=t.clientY),n;},M=function(){function t(e){var n=this,r=arguments.length<=1||void 0===arguments[1]?window:arguments[1],a=arguments.length<=2||void 0===arguments[2]?.1:arguments[2];(0,i.default)(this,t),this._target=e,this._listenerTarget=r,this.matrix=l.default.mat4.create(),this.m=l.default.mat4.create(),this._vZaxis=l.default.vec3.clone([0,0,0]),this._zAxis=l.default.vec3.clone([0,0,1]),this.preMouse={x:0,y:0},this.mouse={x:0,y:0},this._isMouseDown=!1,this._rotation=l.default.quat.create(),this.tempRotation=l.default.quat.create(),this._rotateZMargin=0,this._offset=.004,this._slerp=-1,this._isLocked=!1,this._diffX=new f.default(0,a),this._diffY=new f.default(0,a),this._listenerTarget.addEventListener("mousedown",function(t){return n._onDown(t);}),this._listenerTarget.addEventListener("touchstart",function(t){return n._onDown(t);}),this._listenerTarget.addEventListener("mousemove",function(t){return n._onMove(t);}),this._listenerTarget.addEventListener("touchmove",function(t){return n._onMove(t);}),window.addEventListener("touchend",function(){return n._onUp();}),window.addEventListener("mouseup",function(){return n._onUp();}),d.default.addEF(function(){return n._loop();});}return (0,o.default)(t,[{key:"inverseControl",value:function value(){var t=arguments.length<=0||void 0===arguments[0]?!0:arguments[0];this._isInvert=t;}},{key:"lock",value:function value(){var t=arguments.length<=0||void 0===arguments[0]?!0:arguments[0];this._isLocked=t;}},{key:"setCameraPos",value:function value(t){var e=arguments.length<=1||void 0===arguments[1]?.1:arguments[1];if(this.easing=e,!(this._slerp>0)){var n=l.default.quat.clone(this._rotation);this._updateRotation(n),this._rotation=l.default.quat.clone(n),this._currDiffX=this.diffX=0,this._currDiffY=this.diffY=0,this._isMouseDown=!1,this._isRotateZ=0,this._targetQuat=l.default.quat.clone(t),this._slerp=1;}}},{key:"resetQuat",value:function value(){this._rotation=l.default.quat.clone([0,0,1,0]),this.tempRotation=l.default.quat.clone([0,0,0,0]),this._targetQuat=void 0,this._slerp=-1;}},{key:"_onDown",value:function value(t){if(!this._isLocked){var e=v(t),n=l.default.quat.clone(this._rotation);this._updateRotation(n),this._rotation=n,this._isMouseDown=!0,this._isRotateZ=0,this.preMouse={x:e.x,y:e.y},e.y<this._rotateZMargin||e.y>window.innerHeight-this._rotateZMargin?this._isRotateZ=1:(e.x<this._rotateZMargin||e.x>window.innerWidth-this._rotateZMargin)&&(this._isRotateZ=2),this._diffX.setTo(0),this._diffY.setTo(0);}}},{key:"_onMove",value:function value(t){this._isLocked||v(t,this.mouse);}},{key:"_onUp",value:function value(){this._isLocked||(this._isMouseDown=!1);}},{key:"_updateRotation",value:function value(t){this._isMouseDown&&!this._isLocked&&(this._diffX.value=-(this.mouse.x-this.preMouse.x),this._diffY.value=this.mouse.y-this.preMouse.y,this._isInvert&&(this._diffX.value=-this._diffX.targetValue,this._diffY.value=-this._diffY.targetValue));var e=void 0,n=void 0;if(this._isRotateZ>0)1===this._isRotateZ?(e=-this._diffX.value*this._offset,e*=this.preMouse.y<this._rotateZMargin?-1:1,n=l.default.quat.clone([0,0,Math.sin(e),Math.cos(e)]),l.default.quat.multiply(n,t,n)):(e=-this._diffY.value*this._offset,e*=this.preMouse.x<this._rotateZMargin?1:-1,n=l.default.quat.clone([0,0,Math.sin(e),Math.cos(e)]),l.default.quat.multiply(n,t,n));else {var r=l.default.vec3.clone([this._diffX.value,this._diffY.value,0]),a=l.default.vec3.create();l.default.vec3.cross(a,r,this._zAxis),l.default.vec3.normalize(a,a),e=l.default.vec3.length(r)*this._offset,n=l.default.quat.clone([Math.sin(e)*a[0],Math.sin(e)*a[1],Math.sin(e)*a[2],Math.cos(e)]),l.default.quat.multiply(t,n,t);}}},{key:"_loop",value:function value(){l.default.mat4.identity(this.m),void 0===this._targetQuat?(l.default.quat.set(this.tempRotation,this._rotation[0],this._rotation[1],this._rotation[2],this._rotation[3]),this._updateRotation(this.tempRotation)):(this._slerp+=.1*(0-this._slerp),this._slerp<5e-4?(l.default.quat.copy(this._rotation,this._targetQuat),l.default.quat.copy(this.tempRotation,this._targetQuat),this._targetQuat=void 0,this._diffX.setTo(0),this._diffY.setTo(0),this._slerp=-1):(l.default.quat.set(this.tempRotation,0,0,0,0),l.default.quat.slerp(this.tempRotation,this._targetQuat,this._rotation,this._slerp))),l.default.vec3.transformQuat(this._vZaxis,this._vZaxis,this.tempRotation),l.default.mat4.fromQuat(this.matrix,this.tempRotation);}},{key:"easing",set:function set(t){this._diffX.easing=t,this._diffY.easing=t;},get:function get(){return this._diffX.easing;}}]),t;}();e.default=M,t.exports=e.default;},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var r=n(48),a=n(70),i=n(72),u=n(71),o=n(69),s=n(74),l=n(73),h={simpleColorFrag:r,bigTriangleVert:a,generalVert:i,copyFrag:u,basicVert:o,skyboxVert:s,skyboxFrag:l};e.default=h,t.exports=e.default;},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t};}function a(t){switch(t){default:case "linear":return f.Linear.None;case "expIn":return f.Exponential.In;case "expOut":return f.Exponential.Out;case "expInOut":return f.Exponential.InOut;case "cubicIn":return f.Cubic.In;case "cubicOut":return f.Cubic.Out;case "cubicInOut":return f.Cubic.InOut;case "quarticIn":return f.Quartic.In;case "quarticOut":return f.Quartic.Out;case "quarticInOut":return f.Quartic.InOut;case "quinticIn":return f.Quintic.In;case "quinticOut":return f.Quintic.Out;case "quinticInOut":return f.Quintic.InOut;case "sinusoidalIn":return f.Sinusoidal.In;case "sinusoidalOut":return f.Sinusoidal.Out;case "sinusoidalInOut":return f.Sinusoidal.InOut;case "circularIn":return f.Circular.In;case "circularOut":return f.Circular.Out;case "circularInOut":return f.Circular.InOut;case "elasticIn":return f.Elastic.In;case "elasticOut":return f.Elastic.Out;case "elasticInOut":return f.Elastic.InOut;case "backIn":return f.Back.In;case "backOut":return f.Back.Out;case "backInOut":return f.Back.InOut;case "bounceIn":return f.Bounce.in;case "bounceOut":return f.Bounce.out;case "bounceInOut":return f.Bounce.inOut;}}Object.defineProperty(e,"__esModule",{value:!0});var i=n(1),u=r(i),o=n(2),s=r(o),l=n(20),h=r(l),f={Linear:{None:function None(t){return t;}},Quadratic:{In:function In(t){return t*t;},Out:function Out(t){return t*(2-t);},InOut:function InOut(t){return (t*=2)<1?.5*t*t:-.5*(--t*(t-2)-1);}},Cubic:{In:function In(t){return t*t*t;},Out:function Out(t){return --t*t*t+1;},InOut:function InOut(t){return (t*=2)<1?.5*t*t*t:.5*((t-=2)*t*t+2);}},Quartic:{In:function In(t){return t*t*t*t;},Out:function Out(t){return 1- --t*t*t*t;},InOut:function InOut(t){return (t*=2)<1?.5*t*t*t*t:-.5*((t-=2)*t*t*t-2);}},Quintic:{In:function In(t){return t*t*t*t*t;},Out:function Out(t){return --t*t*t*t*t+1;},InOut:function InOut(t){return (t*=2)<1?.5*t*t*t*t*t:.5*((t-=2)*t*t*t*t+2);}},Sinusoidal:{In:function In(t){return 1-Math.cos(t*Math.PI/2);},Out:function Out(t){return Math.sin(t*Math.PI/2);},InOut:function InOut(t){return .5*(1-Math.cos(Math.PI*t));}},Exponential:{In:function In(t){return 0===t?0:Math.pow(1024,t-1);},Out:function Out(t){return 1===t?1:1-Math.pow(2,-10*t);},InOut:function InOut(t){return 0===t?0:1===t?1:(t*=2)<1?.5*Math.pow(1024,t-1):.5*(-Math.pow(2,-10*(t-1))+2);}},Circular:{In:function In(t){return 1-Math.sqrt(1-t*t);},Out:function Out(t){return Math.sqrt(1- --t*t);},InOut:function InOut(t){return (t*=2)<1?-.5*(Math.sqrt(1-t*t)-1):.5*(Math.sqrt(1-(t-=2)*t)+1);}},Elastic:{In:function In(t){var e=void 0,n=.1,r=.4;return 0===t?0:1===t?1:(!n||1>n?(n=1,e=r/4):e=r*Math.asin(1/n)/(2*Math.PI),-(n*Math.pow(2,10*(t-=1))*Math.sin((t-e)*(2*Math.PI)/r)));},Out:function Out(t){var e=void 0,n=.1,r=.4;return 0===t?0:1===t?1:(!n||1>n?(n=1,e=r/4):e=r*Math.asin(1/n)/(2*Math.PI),n*Math.pow(2,-10*t)*Math.sin((t-e)*(2*Math.PI)/r)+1);},InOut:function InOut(t){var e=void 0,n=.1,r=.4;return 0===t?0:1===t?1:(!n||1>n?(n=1,e=r/4):e=r*Math.asin(1/n)/(2*Math.PI),(t*=2)<1?-.5*(n*Math.pow(2,10*(t-=1))*Math.sin((t-e)*(2*Math.PI)/r)):n*Math.pow(2,-10*(t-=1))*Math.sin((t-e)*(2*Math.PI)/r)*.5+1);}},Back:{In:function In(t){var e=1.70158;return t*t*((e+1)*t-e);},Out:function Out(t){var e=1.70158;return --t*t*((e+1)*t+e)+1;},InOut:function InOut(t){var e=2.5949095;return (t*=2)<1?.5*(t*t*((e+1)*t-e)):.5*((t-=2)*t*((e+1)*t+e)+2);}},bounce:{"in":function _in(t){return 1-f.Bounce.out(1-t);},out:function out(t){return 1/2.75>t?7.5625*t*t:2/2.75>t?7.5625*(t-=1.5/2.75)*t+.75:2.5/2.75>t?7.5625*(t-=2.25/2.75)*t+.9375:7.5625*(t-=2.625/2.75)*t+.984375;},inOut:function inOut(t){return .5>t?.5*f.Bounce.in(2*t):.5*f.Bounce.out(2*t-1)+.5;}}},c=function(){function t(e){var n=this,r=arguments.length<=1||void 0===arguments[1]?"expOut":arguments[1],a=arguments.length<=2||void 0===arguments[2]?.01:arguments[2];(0,u.default)(this,t),this._value=e,this._startValue=e,this._targetValue=e,this._counter=1,this.speed=a,this.easing=r,this._needUpdate=!0,this._efIndex=h.default.addEF(function(){return n._update();});}return (0,s.default)(t,[{key:"_update",value:function value(){var t=this._counter+this.speed;return t>1&&(t=1),this._counter===t?void (this._needUpdate=!1):(this._counter=t,void (this._needUpdate=!0));}},{key:"limit",value:function value(t,e){return t>e?void this.limit(e,t):(this._min=t,this._max=e,void this._checkLimit());}},{key:"setTo",value:function value(t){this._value=t,this._targetValue=t,this._counter=1;}},{key:"_checkLimit",value:function value(){void 0!==this._min&&this._targetValue<this._min&&(this._targetValue=this._min),void 0!==this._max&&this._targetValue>this._max&&(this._targetValue=this._max);}},{key:"destroy",value:function value(){h.default.removeEF(this._efIndex);}},{key:"value",set:function set(t){this._startValue=this._value,this._targetValue=t,this._checkLimit(),this._counter=0;},get:function get(){if(this._needUpdate){var t=a(this.easing),e=t(this._counter);this._value=this._startValue+e*(this._targetValue-this._startValue),this._needUpdate=!1;}return this._value;}},{key:"targetValue",get:function get(){return this._targetValue;}}]),t;}();e.default=c,t.exports=e.default;},function(t,e,n){t.exports={"default":n(99),__esModule:!0};},function(t,e,n){t.exports={"default":n(100),__esModule:!0};},function(t,e,n){t.exports={"default":n(101),__esModule:!0};},function(t,e,n){t.exports={"default":n(103),__esModule:!0};},function(t,e,n){t.exports={"default":n(104),__esModule:!0};},function(t,e,n){t.exports={"default":n(105),__esModule:!0};},function(t,e,n){n(124);var r=n(7).Object;t.exports=function(t,e){return r.create(t,e);};},function(t,e,n){n(125);var r=n(7).Object;t.exports=function(t,e,n){return r.defineProperty(t,e,n);};},function(t,e,n){n(126);var r=n(7).Object;t.exports=function(t,e){return r.getOwnPropertyDescriptor(t,e);};},function(t,e,n){n(127),t.exports=n(7).Object.getPrototypeOf;},function(t,e,n){n(128),t.exports=n(7).Object.setPrototypeOf;},function(t,e,n){n(131),n(129),n(132),n(133),t.exports=n(7).Symbol;},function(t,e,n){n(130),n(134),t.exports=n(47).f("iterator");},function(t,e){t.exports=function(t){if("function"!=typeof t)throw TypeError(t+" is not a function!");return t;};},function(t,e){t.exports=function(){};},function(t,e,n){var r=n(11),a=n(122),i=n(121);t.exports=function(t){return function(e,n,u){var o,s=r(e),l=a(s.length),h=i(u,l);if(t&&n!=n){for(;l>h;){if(o=s[h++],o!=o)return !0;}}else for(;l>h;h++){if((t||h in s)&&s[h]===n)return t||h||0;}return !t&&-1;};};},function(t,e,n){var r=n(27),a=n(60),i=n(40);t.exports=function(t){var e=r(t),n=a.f;if(n)for(var u,o=n(t),s=i.f,l=0;o.length>l;){s.call(t,u=o[l++])&&e.push(u);}return e;};},function(t,e,n){t.exports=n(10).document&&document.documentElement;},function(t,e,n){var r=n(54);t.exports=Object("z").propertyIsEnumerable(0)?Object:function(t){return "String"==r(t)?t.split(""):Object(t);};},function(t,e,n){var r=n(54);t.exports=Array.isArray||function(t){return "Array"==r(t);};},function(t,e,n){"use strict";var r=n(38),a=n(28),i=n(41),u={};n(18)(u,n(19)("iterator"),function(){return this;}),t.exports=function(t,e,n){t.prototype=r(u,{next:a(1,n)}),i(t,e+" Iterator");};},function(t,e){t.exports=function(t,e){return {value:e,done:!!t};};},function(t,e,n){var r=n(27),a=n(11);t.exports=function(t,e){for(var n,i=a(t),u=r(i),o=u.length,s=0;o>s;){if(i[n=u[s++]]===e)return n;}};},function(t,e,n){var r=n(29)("meta"),a=n(25),i=n(14),u=n(15).f,o=0,s=Object.isExtensible||function(){return !0;},l=!n(24)(function(){return s(Object.preventExtensions({}));}),h=function h(t){u(t,r,{value:{i:"O"+ ++o,w:{}}});},f=function f(t,e){if(!a(t))return "symbol"==(typeof t==="undefined"?"undefined":_typeof(t))?t:("string"==typeof t?"S":"P")+t;if(!i(t,r)){if(!s(t))return "F";if(!e)return "E";h(t);}return t[r].i;},c=function c(t,e){if(!i(t,r)){if(!s(t))return !0;if(!e)return !1;h(t);}return t[r].w;},d=function d(t){return l&&v.NEED&&s(t)&&!i(t,r)&&h(t),t;},v=t.exports={KEY:r,NEED:!1,fastKey:f,getWeak:c,onFreeze:d};},function(t,e,n){var r=n(15),a=n(23),i=n(27);t.exports=n(13)?Object.defineProperties:function(t,e){a(t);for(var n,u=i(e),o=u.length,s=0;o>s;){r.f(t,n=u[s++],e[n]);}return t;};},function(t,e,n){var r=n(11),a=n(59).f,i={}.toString,u="object"==(typeof window==="undefined"?"undefined":_typeof(window))&&window&&Object.getOwnPropertyNames?Object.getOwnPropertyNames(window):[],o=function o(t){try{return a(t);}catch(e){return u.slice();}};t.exports.f=function(t){return u&&"[object Window]"==i.call(t)?o(t):a(r(t));};},function(t,e,n){var r=n(25),a=n(23),i=function i(t,e){if(a(t),!r(e)&&null!==e)throw TypeError(e+": can't set as prototype!");};t.exports={set:Object.setPrototypeOf||("__proto__" in {}?function(t,e,r){try{r=n(55)(Function.call,n(39).f(Object.prototype,"__proto__").set,2),r(t,[]),e=!(t instanceof Array);}catch(a){e=!0;}return function(t,n){return i(t,n),e?t.__proto__=n:r(t,n),t;};}({},!1):void 0),check:i};},function(t,e,n){var r=n(44),a=n(34);t.exports=function(t){return function(e,n){var i,u,o=String(a(e)),s=r(n),l=o.length;return 0>s||s>=l?t?"":void 0:(i=o.charCodeAt(s),55296>i||i>56319||s+1===l||(u=o.charCodeAt(s+1))<56320||u>57343?t?o.charAt(s):i:t?o.slice(s,s+2):(i-55296<<10)+(u-56320)+65536);};};},function(t,e,n){var r=n(44),a=Math.max,i=Math.min;t.exports=function(t,e){return t=r(t),0>t?a(t+e,0):i(t,e);};},function(t,e,n){var r=n(44),a=Math.min;t.exports=function(t){return t>0?a(r(t),9007199254740991):0;};},function(t,e,n){"use strict";var r=n(107),a=n(114),i=n(36),u=n(11);t.exports=n(58)(Array,"Array",function(t,e){this._t=u(t),this._i=0,this._k=e;},function(){var t=this._t,e=this._k,n=this._i++;return !t||n>=t.length?(this._t=void 0,a(1)):"keys"==e?a(0,n):"values"==e?a(0,t[n]):a(0,[n,t[n]]);},"values"),i.Arguments=i.Array,r("keys"),r("values"),r("entries");},function(t,e,n){var r=n(17);r(r.S,"Object",{create:n(38)});},function(t,e,n){var r=n(17);r(r.S+r.F*!n(13),"Object",{defineProperty:n(15).f});},function(t,e,n){var r=n(11),a=n(39).f;n(63)("getOwnPropertyDescriptor",function(){return function(t,e){return a(r(t),e);};});},function(t,e,n){var r=n(65),a=n(61);n(63)("getPrototypeOf",function(){return function(t){return a(r(t));};});},function(t,e,n){var r=n(17);r(r.S,"Object",{setPrototypeOf:n(119).set});},function(t,e){},function(t,e,n){"use strict";var r=n(120)(!0);n(58)(String,"String",function(t){this._t=String(t),this._i=0;},function(){var t,e=this._t,n=this._i;return n>=e.length?{value:void 0,done:!0}:(t=r(e,n),this._i+=t.length,{value:t,done:!1});});},function(t,e,n){"use strict";var r=n(10),a=n(14),i=n(13),u=n(17),o=n(64),s=n(116).KEY,l=n(24),h=n(43),f=n(41),c=n(29),d=n(19),v=n(47),M=n(46),p=n(115),_=n(109),m=n(112),x=n(23),E=n(11),I=n(45),S=n(28),b=n(38),g=n(118),T=n(39),F=n(15),y=n(27),D=T.f,R=F.f,w=g.f,_A=r.Symbol,P=r.JSON,O=P&&P.stringify,L="prototype",k=d("_hidden"),N=d("toPrimitive"),U={}.propertyIsEnumerable,C=h("symbol-registry"),z=h("symbols"),V=h("op-symbols"),B=Object[L],X="function"==typeof _A,j=r.QObject,Y=!j||!j[L]||!j[L].findChild,q=i&&l(function(){return 7!=b(R({},"a",{get:function get(){return R(this,"a",{value:7}).a;}})).a;})?function(t,e,n){var r=D(B,e);r&&delete B[e],R(t,e,n),r&&t!==B&&R(B,e,r);}:R,G=function G(t){var e=z[t]=b(_A[L]);return e._k=t,e;},H=X&&"symbol"==_typeof(_A.iterator)?function(t){return "symbol"==(typeof t==="undefined"?"undefined":_typeof(t));}:function(t){return t instanceof _A;},W=function W(t,e,n){return t===B&&W(V,e,n),x(t),e=I(e,!0),x(n),a(z,e)?(n.enumerable?(a(t,k)&&t[k][e]&&(t[k][e]=!1),n=b(n,{enumerable:S(0,!1)})):(a(t,k)||R(t,k,S(1,{})),t[k][e]=!0),q(t,e,n)):R(t,e,n);},Z=function Z(t,e){x(t);for(var n,r=_(e=E(e)),a=0,i=r.length;i>a;){W(t,n=r[a++],e[n]);}return t;},Q=function Q(t,e){return void 0===e?b(t):Z(b(t),e);},K=function K(t){var e=U.call(this,t=I(t,!0));return this===B&&a(z,t)&&!a(V,t)?!1:e||!a(this,t)||!a(z,t)||a(this,k)&&this[k][t]?e:!0;},J=function J(t,e){if(t=E(t),e=I(e,!0),t!==B||!a(z,e)||a(V,e)){var n=D(t,e);return !n||!a(z,e)||a(t,k)&&t[k][e]||(n.enumerable=!0),n;}},$=function $(t){for(var e,n=w(E(t)),r=[],i=0;n.length>i;){a(z,e=n[i++])||e==k||e==s||r.push(e);}return r;},tt=function tt(t){for(var e,n=t===B,r=w(n?V:E(t)),i=[],u=0;r.length>u;){a(z,e=r[u++])&&(n?a(B,e):!0)&&i.push(z[e]);}return i;};X||(_A=function A(){if(this instanceof _A)throw TypeError("Symbol is not a constructor!");var t=c(arguments.length>0?arguments[0]:void 0),e=function e(n){this===B&&e.call(V,n),a(this,k)&&a(this[k],t)&&(this[k][t]=!1),q(this,t,S(1,n));};return i&&Y&&q(B,t,{configurable:!0,set:e}),G(t);},o(_A[L],"toString",function(){return this._k;}),T.f=J,F.f=W,n(59).f=g.f=$,n(40).f=K,n(60).f=tt,i&&!n(37)&&o(B,"propertyIsEnumerable",K,!0),v.f=function(t){return G(d(t));}),u(u.G+u.W+u.F*!X,{Symbol:_A});for(var et="hasInstance,isConcatSpreadable,iterator,match,replace,search,species,split,toPrimitive,toStringTag,unscopables".split(","),nt=0;et.length>nt;){d(et[nt++]);}for(var et=y(d.store),nt=0;et.length>nt;){M(et[nt++]);}u(u.S+u.F*!X,"Symbol",{"for":function _for(t){return a(C,t+="")?C[t]:C[t]=_A(t);},keyFor:function keyFor(t){if(H(t))return p(C,t);throw TypeError(t+" is not a symbol!");},useSetter:function useSetter(){Y=!0;},useSimple:function useSimple(){Y=!1;}}),u(u.S+u.F*!X,"Object",{create:Q,defineProperty:W,defineProperties:Z,getOwnPropertyDescriptor:J,getOwnPropertyNames:$,getOwnPropertySymbols:tt}),P&&u(u.S+u.F*(!X||l(function(){var t=_A();return "[null]"!=O([t])||"{}"!=O({a:t})||"{}"!=O(Object(t));})),"JSON",{stringify:function stringify(t){if(void 0!==t&&!H(t)){for(var e,n,r=[t],a=1;arguments.length>a;){r.push(arguments[a++]);}return e=r[1],"function"==typeof e&&(n=e),!n&&m(e)||(e=function e(t,_e2){return n&&(_e2=n.call(this,t,_e2)),H(_e2)?void 0:_e2;}),r[1]=e,O.apply(P,r);}}}),_A[L][N]||n(18)(_A[L],N,_A[L].valueOf),f(_A,"Symbol"),f(Math,"Math",!0),f(r.JSON,"JSON",!0);},function(t,e,n){n(46)("asyncIterator");},function(t,e,n){n(46)("observable");},function(t,e,n){n(123);for(var r=n(10),a=n(18),i=n(36),u=n(19)("toStringTag"),o=["NodeList","DOMTokenList","MediaList","StyleSheetList","CSSRuleList"],s=0;5>s;s++){var l=o[s],h=r[l],f=h&&h.prototype;f&&!f[u]&&a(f,u,l),i[l]=i.Array;}},function(t,e,n){var r=n(9),a={};a.create=function(){var t=new r.ARRAY_TYPE(4);return t[0]=1,t[1]=0,t[2]=0,t[3]=1,t;},a.clone=function(t){var e=new r.ARRAY_TYPE(4);return e[0]=t[0],e[1]=t[1],e[2]=t[2],e[3]=t[3],e;},a.copy=function(t,e){return t[0]=e[0],t[1]=e[1],t[2]=e[2],t[3]=e[3],t;},a.identity=function(t){return t[0]=1,t[1]=0,t[2]=0,t[3]=1,t;},a.fromValues=function(t,e,n,a){var i=new r.ARRAY_TYPE(4);return i[0]=t,i[1]=e,i[2]=n,i[3]=a,i;},a.set=function(t,e,n,r,a){return t[0]=e,t[1]=n,t[2]=r,t[3]=a,t;},a.transpose=function(t,e){if(t===e){var n=e[1];t[1]=e[2],t[2]=n;}else t[0]=e[0],t[1]=e[2],t[2]=e[1],t[3]=e[3];return t;},a.invert=function(t,e){var n=e[0],r=e[1],a=e[2],i=e[3],u=n*i-a*r;return u?(u=1/u,t[0]=i*u,t[1]=-r*u,t[2]=-a*u,t[3]=n*u,t):null;},a.adjoint=function(t,e){var n=e[0];return t[0]=e[3],t[1]=-e[1],t[2]=-e[2],t[3]=n,t;},a.determinant=function(t){return t[0]*t[3]-t[2]*t[1];},a.multiply=function(t,e,n){var r=e[0],a=e[1],i=e[2],u=e[3],o=n[0],s=n[1],l=n[2],h=n[3];return t[0]=r*o+i*s,t[1]=a*o+u*s,t[2]=r*l+i*h,t[3]=a*l+u*h,t;},a.mul=a.multiply,a.rotate=function(t,e,n){var r=e[0],a=e[1],i=e[2],u=e[3],o=Math.sin(n),s=Math.cos(n);return t[0]=r*s+i*o,t[1]=a*s+u*o,t[2]=r*-o+i*s,t[3]=a*-o+u*s,t;},a.scale=function(t,e,n){var r=e[0],a=e[1],i=e[2],u=e[3],o=n[0],s=n[1];return t[0]=r*o,t[1]=a*o,t[2]=i*s,t[3]=u*s,t;},a.fromRotation=function(t,e){var n=Math.sin(e),r=Math.cos(e);return t[0]=r,t[1]=n,t[2]=-n,t[3]=r,t;},a.fromScaling=function(t,e){return t[0]=e[0],t[1]=0,t[2]=0,t[3]=e[1],t;},a.str=function(t){return "mat2("+t[0]+", "+t[1]+", "+t[2]+", "+t[3]+")";},a.frob=function(t){return Math.sqrt(Math.pow(t[0],2)+Math.pow(t[1],2)+Math.pow(t[2],2)+Math.pow(t[3],2));},a.LDU=function(t,e,n,r){return t[2]=r[2]/r[0],n[0]=r[0],n[1]=r[1],n[3]=r[3]-t[2]*n[1],[t,e,n];},a.add=function(t,e,n){return t[0]=e[0]+n[0],t[1]=e[1]+n[1],t[2]=e[2]+n[2],t[3]=e[3]+n[3],t;},a.subtract=function(t,e,n){return t[0]=e[0]-n[0],t[1]=e[1]-n[1],t[2]=e[2]-n[2],t[3]=e[3]-n[3],t;},a.sub=a.subtract,a.exactEquals=function(t,e){return t[0]===e[0]&&t[1]===e[1]&&t[2]===e[2]&&t[3]===e[3];},a.equals=function(t,e){var n=t[0],a=t[1],i=t[2],u=t[3],o=e[0],s=e[1],l=e[2],h=e[3];return Math.abs(n-o)<=r.EPSILON*Math.max(1,Math.abs(n),Math.abs(o))&&Math.abs(a-s)<=r.EPSILON*Math.max(1,Math.abs(a),Math.abs(s))&&Math.abs(i-l)<=r.EPSILON*Math.max(1,Math.abs(i),Math.abs(l))&&Math.abs(u-h)<=r.EPSILON*Math.max(1,Math.abs(u),Math.abs(h));},a.multiplyScalar=function(t,e,n){return t[0]=e[0]*n,t[1]=e[1]*n,t[2]=e[2]*n,t[3]=e[3]*n,t;},a.multiplyScalarAndAdd=function(t,e,n,r){return t[0]=e[0]+n[0]*r,t[1]=e[1]+n[1]*r,t[2]=e[2]+n[2]*r,t[3]=e[3]+n[3]*r,t;},t.exports=a;},function(t,e,n){var r=n(9),a={};a.create=function(){var t=new r.ARRAY_TYPE(6);return t[0]=1,t[1]=0,t[2]=0,t[3]=1,t[4]=0,t[5]=0,t;},a.clone=function(t){var e=new r.ARRAY_TYPE(6);return e[0]=t[0],e[1]=t[1],e[2]=t[2],e[3]=t[3],e[4]=t[4],e[5]=t[5],e;},a.copy=function(t,e){return t[0]=e[0],t[1]=e[1],t[2]=e[2],t[3]=e[3],t[4]=e[4],t[5]=e[5],t;},a.identity=function(t){return t[0]=1,t[1]=0,t[2]=0,t[3]=1,t[4]=0,t[5]=0,t;},a.fromValues=function(t,e,n,a,i,u){var o=new r.ARRAY_TYPE(6);return o[0]=t,o[1]=e,o[2]=n,o[3]=a,o[4]=i,o[5]=u,o;},a.set=function(t,e,n,r,a,i,u){return t[0]=e,t[1]=n,t[2]=r,t[3]=a,t[4]=i,t[5]=u,t;},a.invert=function(t,e){var n=e[0],r=e[1],a=e[2],i=e[3],u=e[4],o=e[5],s=n*i-r*a;return s?(s=1/s,t[0]=i*s,t[1]=-r*s,t[2]=-a*s,t[3]=n*s,t[4]=(a*o-i*u)*s,t[5]=(r*u-n*o)*s,t):null;},a.determinant=function(t){return t[0]*t[3]-t[1]*t[2];},a.multiply=function(t,e,n){var r=e[0],a=e[1],i=e[2],u=e[3],o=e[4],s=e[5],l=n[0],h=n[1],f=n[2],c=n[3],d=n[4],v=n[5];return t[0]=r*l+i*h,t[1]=a*l+u*h,t[2]=r*f+i*c,t[3]=a*f+u*c,t[4]=r*d+i*v+o,t[5]=a*d+u*v+s,t;},a.mul=a.multiply,a.rotate=function(t,e,n){var r=e[0],a=e[1],i=e[2],u=e[3],o=e[4],s=e[5],l=Math.sin(n),h=Math.cos(n);return t[0]=r*h+i*l,t[1]=a*h+u*l,t[2]=r*-l+i*h,t[3]=a*-l+u*h,t[4]=o,t[5]=s,t;},a.scale=function(t,e,n){var r=e[0],a=e[1],i=e[2],u=e[3],o=e[4],s=e[5],l=n[0],h=n[1];return t[0]=r*l,t[1]=a*l,t[2]=i*h,t[3]=u*h,t[4]=o,t[5]=s,t;},a.translate=function(t,e,n){var r=e[0],a=e[1],i=e[2],u=e[3],o=e[4],s=e[5],l=n[0],h=n[1];return t[0]=r,t[1]=a,t[2]=i,t[3]=u,t[4]=r*l+i*h+o,t[5]=a*l+u*h+s,t;},a.fromRotation=function(t,e){var n=Math.sin(e),r=Math.cos(e);return t[0]=r,t[1]=n,t[2]=-n,t[3]=r,t[4]=0,t[5]=0,t;},a.fromScaling=function(t,e){return t[0]=e[0],t[1]=0,t[2]=0,t[3]=e[1],t[4]=0,t[5]=0,t;},a.fromTranslation=function(t,e){return t[0]=1,t[1]=0,t[2]=0,t[3]=1,t[4]=e[0],t[5]=e[1],t;},a.str=function(t){return "mat2d("+t[0]+", "+t[1]+", "+t[2]+", "+t[3]+", "+t[4]+", "+t[5]+")";},a.frob=function(t){return Math.sqrt(Math.pow(t[0],2)+Math.pow(t[1],2)+Math.pow(t[2],2)+Math.pow(t[3],2)+Math.pow(t[4],2)+Math.pow(t[5],2)+1);},a.add=function(t,e,n){return t[0]=e[0]+n[0],t[1]=e[1]+n[1],t[2]=e[2]+n[2],t[3]=e[3]+n[3],t[4]=e[4]+n[4],t[5]=e[5]+n[5],t;},a.subtract=function(t,e,n){return t[0]=e[0]-n[0],t[1]=e[1]-n[1],t[2]=e[2]-n[2],t[3]=e[3]-n[3],t[4]=e[4]-n[4],t[5]=e[5]-n[5],t;},a.sub=a.subtract,a.multiplyScalar=function(t,e,n){return t[0]=e[0]*n,t[1]=e[1]*n,t[2]=e[2]*n,t[3]=e[3]*n,t[4]=e[4]*n,t[5]=e[5]*n,t;},a.multiplyScalarAndAdd=function(t,e,n,r){return t[0]=e[0]+n[0]*r,t[1]=e[1]+n[1]*r,t[2]=e[2]+n[2]*r,t[3]=e[3]+n[3]*r,t[4]=e[4]+n[4]*r,t[5]=e[5]+n[5]*r,t;},a.exactEquals=function(t,e){return t[0]===e[0]&&t[1]===e[1]&&t[2]===e[2]&&t[3]===e[3]&&t[4]===e[4]&&t[5]===e[5];},a.equals=function(t,e){var n=t[0],a=t[1],i=t[2],u=t[3],o=t[4],s=t[5],l=e[0],h=e[1],f=e[2],c=e[3],d=e[4],v=e[5];return Math.abs(n-l)<=r.EPSILON*Math.max(1,Math.abs(n),Math.abs(l))&&Math.abs(a-h)<=r.EPSILON*Math.max(1,Math.abs(a),Math.abs(h))&&Math.abs(i-f)<=r.EPSILON*Math.max(1,Math.abs(i),Math.abs(f))&&Math.abs(u-c)<=r.EPSILON*Math.max(1,Math.abs(u),Math.abs(c))&&Math.abs(o-d)<=r.EPSILON*Math.max(1,Math.abs(o),Math.abs(d))&&Math.abs(s-v)<=r.EPSILON*Math.max(1,Math.abs(s),Math.abs(v));},t.exports=a;},function(t,e,n){var r=n(9),a={scalar:{},SIMD:{}};a.create=function(){var t=new r.ARRAY_TYPE(16);return t[0]=1,t[1]=0,t[2]=0,t[3]=0,t[4]=0,t[5]=1,t[6]=0,t[7]=0,t[8]=0,t[9]=0,t[10]=1,t[11]=0,t[12]=0,t[13]=0,t[14]=0,t[15]=1,t;},a.clone=function(t){var e=new r.ARRAY_TYPE(16);return e[0]=t[0],e[1]=t[1],e[2]=t[2],e[3]=t[3],e[4]=t[4],e[5]=t[5],e[6]=t[6],e[7]=t[7],e[8]=t[8],e[9]=t[9],e[10]=t[10],e[11]=t[11],e[12]=t[12],e[13]=t[13],e[14]=t[14],e[15]=t[15],e;},a.copy=function(t,e){return t[0]=e[0],t[1]=e[1],t[2]=e[2],t[3]=e[3],t[4]=e[4],t[5]=e[5],t[6]=e[6],t[7]=e[7],t[8]=e[8],t[9]=e[9],t[10]=e[10],t[11]=e[11],t[12]=e[12],t[13]=e[13],t[14]=e[14],t[15]=e[15],t;},a.fromValues=function(t,e,n,a,i,u,o,s,l,h,f,c,d,v,M,p){var _=new r.ARRAY_TYPE(16);return _[0]=t,_[1]=e,_[2]=n,_[3]=a,_[4]=i,_[5]=u,_[6]=o,_[7]=s,_[8]=l,_[9]=h,_[10]=f,_[11]=c,_[12]=d,_[13]=v,_[14]=M,_[15]=p,_;},a.set=function(t,e,n,r,a,i,u,o,s,l,h,f,c,d,v,M,p){return t[0]=e,t[1]=n,t[2]=r,t[3]=a,t[4]=i,t[5]=u,t[6]=o,t[7]=s,t[8]=l,t[9]=h,t[10]=f,t[11]=c,t[12]=d,t[13]=v,t[14]=M,t[15]=p,t;},a.identity=function(t){return t[0]=1,t[1]=0,t[2]=0,t[3]=0,t[4]=0,t[5]=1,t[6]=0,t[7]=0,t[8]=0,t[9]=0,t[10]=1,t[11]=0,t[12]=0,t[13]=0,t[14]=0,t[15]=1,t;},a.scalar.transpose=function(t,e){if(t===e){var n=e[1],r=e[2],a=e[3],i=e[6],u=e[7],o=e[11];t[1]=e[4],t[2]=e[8],t[3]=e[12],t[4]=n,t[6]=e[9],t[7]=e[13],t[8]=r,t[9]=i,t[11]=e[14],t[12]=a,t[13]=u,t[14]=o;}else t[0]=e[0],t[1]=e[4],t[2]=e[8],t[3]=e[12],t[4]=e[1],t[5]=e[5],t[6]=e[9],t[7]=e[13],t[8]=e[2],t[9]=e[6],t[10]=e[10],t[11]=e[14],t[12]=e[3],t[13]=e[7],t[14]=e[11],t[15]=e[15];return t;},a.SIMD.transpose=function(t,e){var n,r,a,i,u,o,s,l,h,f;return n=SIMD.Float32x4.load(e,0),r=SIMD.Float32x4.load(e,4),a=SIMD.Float32x4.load(e,8),i=SIMD.Float32x4.load(e,12),u=SIMD.Float32x4.shuffle(n,r,0,1,4,5),o=SIMD.Float32x4.shuffle(a,i,0,1,4,5),s=SIMD.Float32x4.shuffle(u,o,0,2,4,6),l=SIMD.Float32x4.shuffle(u,o,1,3,5,7),SIMD.Float32x4.store(t,0,s),SIMD.Float32x4.store(t,4,l),u=SIMD.Float32x4.shuffle(n,r,2,3,6,7),o=SIMD.Float32x4.shuffle(a,i,2,3,6,7),h=SIMD.Float32x4.shuffle(u,o,0,2,4,6),f=SIMD.Float32x4.shuffle(u,o,1,3,5,7),SIMD.Float32x4.store(t,8,h),SIMD.Float32x4.store(t,12,f),t;},a.transpose=r.USE_SIMD?a.SIMD.transpose:a.scalar.transpose,a.scalar.invert=function(t,e){var n=e[0],r=e[1],a=e[2],i=e[3],u=e[4],o=e[5],s=e[6],l=e[7],h=e[8],f=e[9],c=e[10],d=e[11],v=e[12],M=e[13],p=e[14],_=e[15],m=n*o-r*u,x=n*s-a*u,E=n*l-i*u,I=r*s-a*o,S=r*l-i*o,b=a*l-i*s,g=h*M-f*v,T=h*p-c*v,F=h*_-d*v,y=f*p-c*M,D=f*_-d*M,R=c*_-d*p,w=m*R-x*D+E*y+I*F-S*T+b*g;return w?(w=1/w,t[0]=(o*R-s*D+l*y)*w,t[1]=(a*D-r*R-i*y)*w,t[2]=(M*b-p*S+_*I)*w,t[3]=(c*S-f*b-d*I)*w,t[4]=(s*F-u*R-l*T)*w,t[5]=(n*R-a*F+i*T)*w,t[6]=(p*E-v*b-_*x)*w,t[7]=(h*b-c*E+d*x)*w,t[8]=(u*D-o*F+l*g)*w,t[9]=(r*F-n*D-i*g)*w,t[10]=(v*S-M*E+_*m)*w,t[11]=(f*E-h*S-d*m)*w,t[12]=(o*T-u*y-s*g)*w,t[13]=(n*y-r*T+a*g)*w,t[14]=(M*x-v*I-p*m)*w,t[15]=(h*I-f*x+c*m)*w,t):null;},a.SIMD.invert=function(t,e){var n,r,a,i,u,o,s,l,h,f,c=SIMD.Float32x4.load(e,0),d=SIMD.Float32x4.load(e,4),v=SIMD.Float32x4.load(e,8),M=SIMD.Float32x4.load(e,12);return u=SIMD.Float32x4.shuffle(c,d,0,1,4,5),r=SIMD.Float32x4.shuffle(v,M,0,1,4,5),n=SIMD.Float32x4.shuffle(u,r,0,2,4,6),r=SIMD.Float32x4.shuffle(r,u,1,3,5,7),u=SIMD.Float32x4.shuffle(c,d,2,3,6,7),i=SIMD.Float32x4.shuffle(v,M,2,3,6,7),a=SIMD.Float32x4.shuffle(u,i,0,2,4,6),i=SIMD.Float32x4.shuffle(i,u,1,3,5,7),u=SIMD.Float32x4.mul(a,i),u=SIMD.Float32x4.swizzle(u,1,0,3,2),o=SIMD.Float32x4.mul(r,u),s=SIMD.Float32x4.mul(n,u),u=SIMD.Float32x4.swizzle(u,2,3,0,1),o=SIMD.Float32x4.sub(SIMD.Float32x4.mul(r,u),o),s=SIMD.Float32x4.sub(SIMD.Float32x4.mul(n,u),s),s=SIMD.Float32x4.swizzle(s,2,3,0,1),u=SIMD.Float32x4.mul(r,a),u=SIMD.Float32x4.swizzle(u,1,0,3,2),o=SIMD.Float32x4.add(SIMD.Float32x4.mul(i,u),o),h=SIMD.Float32x4.mul(n,u),u=SIMD.Float32x4.swizzle(u,2,3,0,1),o=SIMD.Float32x4.sub(o,SIMD.Float32x4.mul(i,u)),h=SIMD.Float32x4.sub(SIMD.Float32x4.mul(n,u),h),h=SIMD.Float32x4.swizzle(h,2,3,0,1),u=SIMD.Float32x4.mul(SIMD.Float32x4.swizzle(r,2,3,0,1),i),u=SIMD.Float32x4.swizzle(u,1,0,3,2),a=SIMD.Float32x4.swizzle(a,2,3,0,1),o=SIMD.Float32x4.add(SIMD.Float32x4.mul(a,u),o),l=SIMD.Float32x4.mul(n,u),u=SIMD.Float32x4.swizzle(u,2,3,0,1),o=SIMD.Float32x4.sub(o,SIMD.Float32x4.mul(a,u)),l=SIMD.Float32x4.sub(SIMD.Float32x4.mul(n,u),l),l=SIMD.Float32x4.swizzle(l,2,3,0,1),u=SIMD.Float32x4.mul(n,r),u=SIMD.Float32x4.swizzle(u,1,0,3,2),l=SIMD.Float32x4.add(SIMD.Float32x4.mul(i,u),l),h=SIMD.Float32x4.sub(SIMD.Float32x4.mul(a,u),h),u=SIMD.Float32x4.swizzle(u,2,3,0,1),l=SIMD.Float32x4.sub(SIMD.Float32x4.mul(i,u),l),h=SIMD.Float32x4.sub(h,SIMD.Float32x4.mul(a,u)),u=SIMD.Float32x4.mul(n,i),u=SIMD.Float32x4.swizzle(u,1,0,3,2),s=SIMD.Float32x4.sub(s,SIMD.Float32x4.mul(a,u)),l=SIMD.Float32x4.add(SIMD.Float32x4.mul(r,u),l),u=SIMD.Float32x4.swizzle(u,2,3,0,1),s=SIMD.Float32x4.add(SIMD.Float32x4.mul(a,u),s),l=SIMD.Float32x4.sub(l,SIMD.Float32x4.mul(r,u)),u=SIMD.Float32x4.mul(n,a),u=SIMD.Float32x4.swizzle(u,1,0,3,2),s=SIMD.Float32x4.add(SIMD.Float32x4.mul(i,u),s),h=SIMD.Float32x4.sub(h,SIMD.Float32x4.mul(r,u)),u=SIMD.Float32x4.swizzle(u,2,3,0,1),s=SIMD.Float32x4.sub(s,SIMD.Float32x4.mul(i,u)),h=SIMD.Float32x4.add(SIMD.Float32x4.mul(r,u),h),f=SIMD.Float32x4.mul(n,o),f=SIMD.Float32x4.add(SIMD.Float32x4.swizzle(f,2,3,0,1),f),f=SIMD.Float32x4.add(SIMD.Float32x4.swizzle(f,1,0,3,2),f),u=SIMD.Float32x4.reciprocalApproximation(f),f=SIMD.Float32x4.sub(SIMD.Float32x4.add(u,u),SIMD.Float32x4.mul(f,SIMD.Float32x4.mul(u,u))),(f=SIMD.Float32x4.swizzle(f,0,0,0,0))?(SIMD.Float32x4.store(t,0,SIMD.Float32x4.mul(f,o)),SIMD.Float32x4.store(t,4,SIMD.Float32x4.mul(f,s)),SIMD.Float32x4.store(t,8,SIMD.Float32x4.mul(f,l)),SIMD.Float32x4.store(t,12,SIMD.Float32x4.mul(f,h)),t):null;},a.invert=r.USE_SIMD?a.SIMD.invert:a.scalar.invert,a.scalar.adjoint=function(t,e){var n=e[0],r=e[1],a=e[2],i=e[3],u=e[4],o=e[5],s=e[6],l=e[7],h=e[8],f=e[9],c=e[10],d=e[11],v=e[12],M=e[13],p=e[14],_=e[15];return t[0]=o*(c*_-d*p)-f*(s*_-l*p)+M*(s*d-l*c),t[1]=-(r*(c*_-d*p)-f*(a*_-i*p)+M*(a*d-i*c)),t[2]=r*(s*_-l*p)-o*(a*_-i*p)+M*(a*l-i*s),t[3]=-(r*(s*d-l*c)-o*(a*d-i*c)+f*(a*l-i*s)),t[4]=-(u*(c*_-d*p)-h*(s*_-l*p)+v*(s*d-l*c)),t[5]=n*(c*_-d*p)-h*(a*_-i*p)+v*(a*d-i*c),t[6]=-(n*(s*_-l*p)-u*(a*_-i*p)+v*(a*l-i*s)),t[7]=n*(s*d-l*c)-u*(a*d-i*c)+h*(a*l-i*s),t[8]=u*(f*_-d*M)-h*(o*_-l*M)+v*(o*d-l*f),t[9]=-(n*(f*_-d*M)-h*(r*_-i*M)+v*(r*d-i*f)),t[10]=n*(o*_-l*M)-u*(r*_-i*M)+v*(r*l-i*o),t[11]=-(n*(o*d-l*f)-u*(r*d-i*f)+h*(r*l-i*o)),t[12]=-(u*(f*p-c*M)-h*(o*p-s*M)+v*(o*c-s*f)),t[13]=n*(f*p-c*M)-h*(r*p-a*M)+v*(r*c-a*f),t[14]=-(n*(o*p-s*M)-u*(r*p-a*M)+v*(r*s-a*o)),t[15]=n*(o*c-s*f)-u*(r*c-a*f)+h*(r*s-a*o),t;},a.SIMD.adjoint=function(t,e){var n,r,a,i,u,o,s,l,h,f,c,d,v,n=SIMD.Float32x4.load(e,0),r=SIMD.Float32x4.load(e,4),a=SIMD.Float32x4.load(e,8),i=SIMD.Float32x4.load(e,12);return h=SIMD.Float32x4.shuffle(n,r,0,1,4,5),o=SIMD.Float32x4.shuffle(a,i,0,1,4,5),u=SIMD.Float32x4.shuffle(h,o,0,2,4,6),o=SIMD.Float32x4.shuffle(o,h,1,3,5,7),h=SIMD.Float32x4.shuffle(n,r,2,3,6,7),l=SIMD.Float32x4.shuffle(a,i,2,3,6,7),s=SIMD.Float32x4.shuffle(h,l,0,2,4,6),l=SIMD.Float32x4.shuffle(l,h,1,3,5,7),h=SIMD.Float32x4.mul(s,l),h=SIMD.Float32x4.swizzle(h,1,0,3,2),f=SIMD.Float32x4.mul(o,h),c=SIMD.Float32x4.mul(u,h),h=SIMD.Float32x4.swizzle(h,2,3,0,1),f=SIMD.Float32x4.sub(SIMD.Float32x4.mul(o,h),f),c=SIMD.Float32x4.sub(SIMD.Float32x4.mul(u,h),c),c=SIMD.Float32x4.swizzle(c,2,3,0,1),h=SIMD.Float32x4.mul(o,s),h=SIMD.Float32x4.swizzle(h,1,0,3,2),f=SIMD.Float32x4.add(SIMD.Float32x4.mul(l,h),f),v=SIMD.Float32x4.mul(u,h),h=SIMD.Float32x4.swizzle(h,2,3,0,1),f=SIMD.Float32x4.sub(f,SIMD.Float32x4.mul(l,h)),v=SIMD.Float32x4.sub(SIMD.Float32x4.mul(u,h),v),v=SIMD.Float32x4.swizzle(v,2,3,0,1),h=SIMD.Float32x4.mul(SIMD.Float32x4.swizzle(o,2,3,0,1),l),h=SIMD.Float32x4.swizzle(h,1,0,3,2),s=SIMD.Float32x4.swizzle(s,2,3,0,1),f=SIMD.Float32x4.add(SIMD.Float32x4.mul(s,h),f),d=SIMD.Float32x4.mul(u,h),h=SIMD.Float32x4.swizzle(h,2,3,0,1),f=SIMD.Float32x4.sub(f,SIMD.Float32x4.mul(s,h)),d=SIMD.Float32x4.sub(SIMD.Float32x4.mul(u,h),d),d=SIMD.Float32x4.swizzle(d,2,3,0,1),h=SIMD.Float32x4.mul(u,o),h=SIMD.Float32x4.swizzle(h,1,0,3,2),d=SIMD.Float32x4.add(SIMD.Float32x4.mul(l,h),d),v=SIMD.Float32x4.sub(SIMD.Float32x4.mul(s,h),v),h=SIMD.Float32x4.swizzle(h,2,3,0,1),d=SIMD.Float32x4.sub(SIMD.Float32x4.mul(l,h),d),v=SIMD.Float32x4.sub(v,SIMD.Float32x4.mul(s,h)),h=SIMD.Float32x4.mul(u,l),h=SIMD.Float32x4.swizzle(h,1,0,3,2),c=SIMD.Float32x4.sub(c,SIMD.Float32x4.mul(s,h)),d=SIMD.Float32x4.add(SIMD.Float32x4.mul(o,h),d),h=SIMD.Float32x4.swizzle(h,2,3,0,1),c=SIMD.Float32x4.add(SIMD.Float32x4.mul(s,h),c),d=SIMD.Float32x4.sub(d,SIMD.Float32x4.mul(o,h)),h=SIMD.Float32x4.mul(u,s),h=SIMD.Float32x4.swizzle(h,1,0,3,2),c=SIMD.Float32x4.add(SIMD.Float32x4.mul(l,h),c),v=SIMD.Float32x4.sub(v,SIMD.Float32x4.mul(o,h)),h=SIMD.Float32x4.swizzle(h,2,3,0,1),c=SIMD.Float32x4.sub(c,SIMD.Float32x4.mul(l,h)),v=SIMD.Float32x4.add(SIMD.Float32x4.mul(o,h),v),SIMD.Float32x4.store(t,0,f),SIMD.Float32x4.store(t,4,c),SIMD.Float32x4.store(t,8,d),SIMD.Float32x4.store(t,12,v),t;},a.adjoint=r.USE_SIMD?a.SIMD.adjoint:a.scalar.adjoint,a.determinant=function(t){var e=t[0],n=t[1],r=t[2],a=t[3],i=t[4],u=t[5],o=t[6],s=t[7],l=t[8],h=t[9],f=t[10],c=t[11],d=t[12],v=t[13],M=t[14],p=t[15],_=e*u-n*i,m=e*o-r*i,x=e*s-a*i,E=n*o-r*u,I=n*s-a*u,S=r*s-a*o,b=l*v-h*d,g=l*M-f*d,T=l*p-c*d,F=h*M-f*v,y=h*p-c*v,D=f*p-c*M;return _*D-m*y+x*F+E*T-I*g+S*b;},a.SIMD.multiply=function(t,e,n){var r=SIMD.Float32x4.load(e,0),a=SIMD.Float32x4.load(e,4),i=SIMD.Float32x4.load(e,8),u=SIMD.Float32x4.load(e,12),o=SIMD.Float32x4.load(n,0),s=SIMD.Float32x4.add(SIMD.Float32x4.mul(SIMD.Float32x4.swizzle(o,0,0,0,0),r),SIMD.Float32x4.add(SIMD.Float32x4.mul(SIMD.Float32x4.swizzle(o,1,1,1,1),a),SIMD.Float32x4.add(SIMD.Float32x4.mul(SIMD.Float32x4.swizzle(o,2,2,2,2),i),SIMD.Float32x4.mul(SIMD.Float32x4.swizzle(o,3,3,3,3),u))));SIMD.Float32x4.store(t,0,s);var l=SIMD.Float32x4.load(n,4),h=SIMD.Float32x4.add(SIMD.Float32x4.mul(SIMD.Float32x4.swizzle(l,0,0,0,0),r),SIMD.Float32x4.add(SIMD.Float32x4.mul(SIMD.Float32x4.swizzle(l,1,1,1,1),a),SIMD.Float32x4.add(SIMD.Float32x4.mul(SIMD.Float32x4.swizzle(l,2,2,2,2),i),SIMD.Float32x4.mul(SIMD.Float32x4.swizzle(l,3,3,3,3),u))));SIMD.Float32x4.store(t,4,h);var f=SIMD.Float32x4.load(n,8),c=SIMD.Float32x4.add(SIMD.Float32x4.mul(SIMD.Float32x4.swizzle(f,0,0,0,0),r),SIMD.Float32x4.add(SIMD.Float32x4.mul(SIMD.Float32x4.swizzle(f,1,1,1,1),a),SIMD.Float32x4.add(SIMD.Float32x4.mul(SIMD.Float32x4.swizzle(f,2,2,2,2),i),SIMD.Float32x4.mul(SIMD.Float32x4.swizzle(f,3,3,3,3),u))));SIMD.Float32x4.store(t,8,c);var d=SIMD.Float32x4.load(n,12),v=SIMD.Float32x4.add(SIMD.Float32x4.mul(SIMD.Float32x4.swizzle(d,0,0,0,0),r),SIMD.Float32x4.add(SIMD.Float32x4.mul(SIMD.Float32x4.swizzle(d,1,1,1,1),a),SIMD.Float32x4.add(SIMD.Float32x4.mul(SIMD.Float32x4.swizzle(d,2,2,2,2),i),SIMD.Float32x4.mul(SIMD.Float32x4.swizzle(d,3,3,3,3),u))));return SIMD.Float32x4.store(t,12,v),t;},a.scalar.multiply=function(t,e,n){var r=e[0],a=e[1],i=e[2],u=e[3],o=e[4],s=e[5],l=e[6],h=e[7],f=e[8],c=e[9],d=e[10],v=e[11],M=e[12],p=e[13],_=e[14],m=e[15],x=n[0],E=n[1],I=n[2],S=n[3];return t[0]=x*r+E*o+I*f+S*M,t[1]=x*a+E*s+I*c+S*p,t[2]=x*i+E*l+I*d+S*_,t[3]=x*u+E*h+I*v+S*m,x=n[4],E=n[5],I=n[6],S=n[7],t[4]=x*r+E*o+I*f+S*M,t[5]=x*a+E*s+I*c+S*p,t[6]=x*i+E*l+I*d+S*_,t[7]=x*u+E*h+I*v+S*m,x=n[8],E=n[9],I=n[10],S=n[11],t[8]=x*r+E*o+I*f+S*M,t[9]=x*a+E*s+I*c+S*p,t[10]=x*i+E*l+I*d+S*_,t[11]=x*u+E*h+I*v+S*m,x=n[12],E=n[13],I=n[14],S=n[15],t[12]=x*r+E*o+I*f+S*M,t[13]=x*a+E*s+I*c+S*p,t[14]=x*i+E*l+I*d+S*_,t[15]=x*u+E*h+I*v+S*m,t;},a.multiply=r.USE_SIMD?a.SIMD.multiply:a.scalar.multiply,a.mul=a.multiply,a.scalar.translate=function(t,e,n){var r,a,i,u,o,s,l,h,f,c,d,v,M=n[0],p=n[1],_=n[2];return e===t?(t[12]=e[0]*M+e[4]*p+e[8]*_+e[12],t[13]=e[1]*M+e[5]*p+e[9]*_+e[13],t[14]=e[2]*M+e[6]*p+e[10]*_+e[14],t[15]=e[3]*M+e[7]*p+e[11]*_+e[15]):(r=e[0],a=e[1],i=e[2],u=e[3],o=e[4],s=e[5],l=e[6],h=e[7],f=e[8],c=e[9],d=e[10],v=e[11],t[0]=r,t[1]=a,t[2]=i,t[3]=u,t[4]=o,t[5]=s,t[6]=l,t[7]=h,t[8]=f,t[9]=c,t[10]=d,t[11]=v,t[12]=r*M+o*p+f*_+e[12],t[13]=a*M+s*p+c*_+e[13],t[14]=i*M+l*p+d*_+e[14],t[15]=u*M+h*p+v*_+e[15]),t;},a.SIMD.translate=function(t,e,n){var r=SIMD.Float32x4.load(e,0),a=SIMD.Float32x4.load(e,4),i=SIMD.Float32x4.load(e,8),u=SIMD.Float32x4.load(e,12),o=SIMD.Float32x4(n[0],n[1],n[2],0);e!==t&&(t[0]=e[0],t[1]=e[1],t[2]=e[2],t[3]=e[3],t[4]=e[4],t[5]=e[5],t[6]=e[6],t[7]=e[7],t[8]=e[8],t[9]=e[9],t[10]=e[10],t[11]=e[11]),r=SIMD.Float32x4.mul(r,SIMD.Float32x4.swizzle(o,0,0,0,0)),a=SIMD.Float32x4.mul(a,SIMD.Float32x4.swizzle(o,1,1,1,1)),i=SIMD.Float32x4.mul(i,SIMD.Float32x4.swizzle(o,2,2,2,2));var s=SIMD.Float32x4.add(r,SIMD.Float32x4.add(a,SIMD.Float32x4.add(i,u)));return SIMD.Float32x4.store(t,12,s),t;},a.translate=r.USE_SIMD?a.SIMD.translate:a.scalar.translate,a.scalar.scale=function(t,e,n){var r=n[0],a=n[1],i=n[2];return t[0]=e[0]*r,t[1]=e[1]*r,t[2]=e[2]*r,t[3]=e[3]*r,t[4]=e[4]*a,t[5]=e[5]*a,t[6]=e[6]*a,t[7]=e[7]*a,t[8]=e[8]*i,t[9]=e[9]*i,t[10]=e[10]*i,t[11]=e[11]*i,t[12]=e[12],t[13]=e[13],t[14]=e[14],t[15]=e[15],t;},a.SIMD.scale=function(t,e,n){var r,a,i,u=SIMD.Float32x4(n[0],n[1],n[2],0);return r=SIMD.Float32x4.load(e,0),SIMD.Float32x4.store(t,0,SIMD.Float32x4.mul(r,SIMD.Float32x4.swizzle(u,0,0,0,0))),a=SIMD.Float32x4.load(e,4),SIMD.Float32x4.store(t,4,SIMD.Float32x4.mul(a,SIMD.Float32x4.swizzle(u,1,1,1,1))),i=SIMD.Float32x4.load(e,8),SIMD.Float32x4.store(t,8,SIMD.Float32x4.mul(i,SIMD.Float32x4.swizzle(u,2,2,2,2))),t[12]=e[12],t[13]=e[13],t[14]=e[14],t[15]=e[15],t;},a.scale=r.USE_SIMD?a.SIMD.scale:a.scalar.scale,a.rotate=function(t,e,n,a){var i,u,o,s,l,h,f,c,d,v,M,p,_,m,x,E,I,S,b,g,T,F,y,D,R=a[0],w=a[1],A=a[2],P=Math.sqrt(R*R+w*w+A*A);return Math.abs(P)<r.EPSILON?null:(P=1/P,R*=P,w*=P,A*=P,i=Math.sin(n),u=Math.cos(n),o=1-u,s=e[0],l=e[1],h=e[2],f=e[3],c=e[4],d=e[5],v=e[6],M=e[7],p=e[8],_=e[9],m=e[10],x=e[11],E=R*R*o+u,I=w*R*o+A*i,S=A*R*o-w*i,b=R*w*o-A*i,g=w*w*o+u,T=A*w*o+R*i,F=R*A*o+w*i,y=w*A*o-R*i,D=A*A*o+u,t[0]=s*E+c*I+p*S,t[1]=l*E+d*I+_*S,t[2]=h*E+v*I+m*S,t[3]=f*E+M*I+x*S,t[4]=s*b+c*g+p*T,t[5]=l*b+d*g+_*T,t[6]=h*b+v*g+m*T,t[7]=f*b+M*g+x*T,t[8]=s*F+c*y+p*D,t[9]=l*F+d*y+_*D,t[10]=h*F+v*y+m*D,t[11]=f*F+M*y+x*D,e!==t&&(t[12]=e[12],t[13]=e[13],t[14]=e[14],t[15]=e[15]),t);},a.scalar.rotateX=function(t,e,n){var r=Math.sin(n),a=Math.cos(n),i=e[4],u=e[5],o=e[6],s=e[7],l=e[8],h=e[9],f=e[10],c=e[11];return e!==t&&(t[0]=e[0],t[1]=e[1],t[2]=e[2],t[3]=e[3],t[12]=e[12],t[13]=e[13],t[14]=e[14],t[15]=e[15]),t[4]=i*a+l*r,t[5]=u*a+h*r,t[6]=o*a+f*r,t[7]=s*a+c*r,t[8]=l*a-i*r,t[9]=h*a-u*r,t[10]=f*a-o*r,t[11]=c*a-s*r,t;},a.SIMD.rotateX=function(t,e,n){var r=SIMD.Float32x4.splat(Math.sin(n)),a=SIMD.Float32x4.splat(Math.cos(n));e!==t&&(t[0]=e[0],t[1]=e[1],t[2]=e[2],t[3]=e[3],t[12]=e[12],t[13]=e[13],t[14]=e[14],t[15]=e[15]);var i=SIMD.Float32x4.load(e,4),u=SIMD.Float32x4.load(e,8);return SIMD.Float32x4.store(t,4,SIMD.Float32x4.add(SIMD.Float32x4.mul(i,a),SIMD.Float32x4.mul(u,r))),SIMD.Float32x4.store(t,8,SIMD.Float32x4.sub(SIMD.Float32x4.mul(u,a),SIMD.Float32x4.mul(i,r))),t;},a.rotateX=r.USE_SIMD?a.SIMD.rotateX:a.scalar.rotateX,a.scalar.rotateY=function(t,e,n){var r=Math.sin(n),a=Math.cos(n),i=e[0],u=e[1],o=e[2],s=e[3],l=e[8],h=e[9],f=e[10],c=e[11];return e!==t&&(t[4]=e[4],t[5]=e[5],t[6]=e[6],t[7]=e[7],t[12]=e[12],t[13]=e[13],t[14]=e[14],t[15]=e[15]),t[0]=i*a-l*r,t[1]=u*a-h*r,t[2]=o*a-f*r,t[3]=s*a-c*r,t[8]=i*r+l*a,t[9]=u*r+h*a,t[10]=o*r+f*a,t[11]=s*r+c*a,t;},a.SIMD.rotateY=function(t,e,n){var r=SIMD.Float32x4.splat(Math.sin(n)),a=SIMD.Float32x4.splat(Math.cos(n));e!==t&&(t[4]=e[4],t[5]=e[5],t[6]=e[6],t[7]=e[7],t[12]=e[12],t[13]=e[13],t[14]=e[14],t[15]=e[15]);var i=SIMD.Float32x4.load(e,0),u=SIMD.Float32x4.load(e,8);return SIMD.Float32x4.store(t,0,SIMD.Float32x4.sub(SIMD.Float32x4.mul(i,a),SIMD.Float32x4.mul(u,r))),SIMD.Float32x4.store(t,8,SIMD.Float32x4.add(SIMD.Float32x4.mul(i,r),SIMD.Float32x4.mul(u,a))),t;},a.rotateY=r.USE_SIMD?a.SIMD.rotateY:a.scalar.rotateY,a.scalar.rotateZ=function(t,e,n){var r=Math.sin(n),a=Math.cos(n),i=e[0],u=e[1],o=e[2],s=e[3],l=e[4],h=e[5],f=e[6],c=e[7];return e!==t&&(t[8]=e[8],t[9]=e[9],t[10]=e[10],t[11]=e[11],t[12]=e[12],t[13]=e[13],t[14]=e[14],t[15]=e[15]),t[0]=i*a+l*r,t[1]=u*a+h*r,t[2]=o*a+f*r,t[3]=s*a+c*r,t[4]=l*a-i*r,t[5]=h*a-u*r,t[6]=f*a-o*r,t[7]=c*a-s*r,t;},a.SIMD.rotateZ=function(t,e,n){var r=SIMD.Float32x4.splat(Math.sin(n)),a=SIMD.Float32x4.splat(Math.cos(n));e!==t&&(t[8]=e[8],t[9]=e[9],t[10]=e[10],t[11]=e[11],t[12]=e[12],t[13]=e[13],t[14]=e[14],t[15]=e[15]);var i=SIMD.Float32x4.load(e,0),u=SIMD.Float32x4.load(e,4);return SIMD.Float32x4.store(t,0,SIMD.Float32x4.add(SIMD.Float32x4.mul(i,a),SIMD.Float32x4.mul(u,r))),SIMD.Float32x4.store(t,4,SIMD.Float32x4.sub(SIMD.Float32x4.mul(u,a),SIMD.Float32x4.mul(i,r))),t;},a.rotateZ=r.USE_SIMD?a.SIMD.rotateZ:a.scalar.rotateZ,a.fromTranslation=function(t,e){return t[0]=1,t[1]=0,t[2]=0,t[3]=0,t[4]=0,t[5]=1,t[6]=0,t[7]=0,t[8]=0,t[9]=0,t[10]=1,t[11]=0,t[12]=e[0],t[13]=e[1],t[14]=e[2],t[15]=1,t;},a.fromScaling=function(t,e){return t[0]=e[0],t[1]=0,t[2]=0,t[3]=0,t[4]=0,t[5]=e[1],t[6]=0,t[7]=0,t[8]=0,t[9]=0,t[10]=e[2],t[11]=0,t[12]=0,t[13]=0,t[14]=0,t[15]=1,t;},a.fromRotation=function(t,e,n){var a,i,u,o=n[0],s=n[1],l=n[2],h=Math.sqrt(o*o+s*s+l*l);return Math.abs(h)<r.EPSILON?null:(h=1/h,o*=h,s*=h,l*=h,a=Math.sin(e),i=Math.cos(e),u=1-i,t[0]=o*o*u+i,t[1]=s*o*u+l*a,t[2]=l*o*u-s*a,t[3]=0,t[4]=o*s*u-l*a,t[5]=s*s*u+i,t[6]=l*s*u+o*a,t[7]=0,t[8]=o*l*u+s*a,t[9]=s*l*u-o*a,t[10]=l*l*u+i,t[11]=0,t[12]=0,t[13]=0,t[14]=0,t[15]=1,t);},a.fromXRotation=function(t,e){var n=Math.sin(e),r=Math.cos(e);return t[0]=1,t[1]=0,t[2]=0,t[3]=0,t[4]=0,t[5]=r,t[6]=n,t[7]=0,t[8]=0,t[9]=-n,t[10]=r,t[11]=0,t[12]=0,t[13]=0,t[14]=0,t[15]=1,t;},a.fromYRotation=function(t,e){var n=Math.sin(e),r=Math.cos(e);return t[0]=r,t[1]=0,t[2]=-n,t[3]=0,t[4]=0,t[5]=1,t[6]=0,t[7]=0,t[8]=n,t[9]=0,t[10]=r,t[11]=0,t[12]=0,t[13]=0,t[14]=0,t[15]=1,t;},a.fromZRotation=function(t,e){var n=Math.sin(e),r=Math.cos(e);return t[0]=r,t[1]=n,t[2]=0,t[3]=0,t[4]=-n,t[5]=r,t[6]=0,t[7]=0,t[8]=0,t[9]=0,t[10]=1,t[11]=0,t[12]=0,t[13]=0,t[14]=0,t[15]=1,t;},a.fromRotationTranslation=function(t,e,n){var r=e[0],a=e[1],i=e[2],u=e[3],o=r+r,s=a+a,l=i+i,h=r*o,f=r*s,c=r*l,d=a*s,v=a*l,M=i*l,p=u*o,_=u*s,m=u*l;return t[0]=1-(d+M),t[1]=f+m,t[2]=c-_,t[3]=0,t[4]=f-m,t[5]=1-(h+M),t[6]=v+p,t[7]=0,t[8]=c+_,t[9]=v-p,t[10]=1-(h+d),t[11]=0,t[12]=n[0],t[13]=n[1],t[14]=n[2],t[15]=1,t;},a.getTranslation=function(t,e){return t[0]=e[12],t[1]=e[13],t[2]=e[14],t;},a.getRotation=function(t,e){var n=e[0]+e[5]+e[10],r=0;return n>0?(r=2*Math.sqrt(n+1),t[3]=.25*r,t[0]=(e[6]-e[9])/r,t[1]=(e[8]-e[2])/r,t[2]=(e[1]-e[4])/r):e[0]>e[5]&e[0]>e[10]?(r=2*Math.sqrt(1+e[0]-e[5]-e[10]),t[3]=(e[6]-e[9])/r,t[0]=.25*r,t[1]=(e[1]+e[4])/r,t[2]=(e[8]+e[2])/r):e[5]>e[10]?(r=2*Math.sqrt(1+e[5]-e[0]-e[10]),t[3]=(e[8]-e[2])/r,t[0]=(e[1]+e[4])/r,t[1]=.25*r,t[2]=(e[6]+e[9])/r):(r=2*Math.sqrt(1+e[10]-e[0]-e[5]),t[3]=(e[1]-e[4])/r,t[0]=(e[8]+e[2])/r,t[1]=(e[6]+e[9])/r,t[2]=.25*r),t;},a.fromRotationTranslationScale=function(t,e,n,r){var a=e[0],i=e[1],u=e[2],o=e[3],s=a+a,l=i+i,h=u+u,f=a*s,c=a*l,d=a*h,v=i*l,M=i*h,p=u*h,_=o*s,m=o*l,x=o*h,E=r[0],I=r[1],S=r[2];return t[0]=(1-(v+p))*E,t[1]=(c+x)*E,t[2]=(d-m)*E,t[3]=0,t[4]=(c-x)*I,t[5]=(1-(f+p))*I,t[6]=(M+_)*I,t[7]=0,t[8]=(d+m)*S,t[9]=(M-_)*S,t[10]=(1-(f+v))*S,t[11]=0,t[12]=n[0],t[13]=n[1],t[14]=n[2],t[15]=1,t;},a.fromRotationTranslationScaleOrigin=function(t,e,n,r,a){var i=e[0],u=e[1],o=e[2],s=e[3],l=i+i,h=u+u,f=o+o,c=i*l,d=i*h,v=i*f,M=u*h,p=u*f,_=o*f,m=s*l,x=s*h,E=s*f,I=r[0],S=r[1],b=r[2],g=a[0],T=a[1],F=a[2];return t[0]=(1-(M+_))*I,t[1]=(d+E)*I,t[2]=(v-x)*I,t[3]=0,t[4]=(d-E)*S,t[5]=(1-(c+_))*S,t[6]=(p+m)*S,t[7]=0,t[8]=(v+x)*b,t[9]=(p-m)*b,t[10]=(1-(c+M))*b,t[11]=0,t[12]=n[0]+g-(t[0]*g+t[4]*T+t[8]*F),t[13]=n[1]+T-(t[1]*g+t[5]*T+t[9]*F),t[14]=n[2]+F-(t[2]*g+t[6]*T+t[10]*F),t[15]=1,t;},a.fromQuat=function(t,e){var n=e[0],r=e[1],a=e[2],i=e[3],u=n+n,o=r+r,s=a+a,l=n*u,h=r*u,f=r*o,c=a*u,d=a*o,v=a*s,M=i*u,p=i*o,_=i*s;return t[0]=1-f-v,t[1]=h+_,t[2]=c-p,t[3]=0,t[4]=h-_,t[5]=1-l-v,t[6]=d+M,t[7]=0,t[8]=c+p,t[9]=d-M,t[10]=1-l-f,t[11]=0,t[12]=0,t[13]=0,t[14]=0,t[15]=1,t;},a.frustum=function(t,e,n,r,a,i,u){var o=1/(n-e),s=1/(a-r),l=1/(i-u);return t[0]=2*i*o,t[1]=0,t[2]=0,t[3]=0,t[4]=0,t[5]=2*i*s,t[6]=0,t[7]=0,t[8]=(n+e)*o,t[9]=(a+r)*s,t[10]=(u+i)*l,t[11]=-1,t[12]=0,t[13]=0,t[14]=u*i*2*l,t[15]=0,t;},a.perspective=function(t,e,n,r,a){var i=1/Math.tan(e/2),u=1/(r-a);return t[0]=i/n,t[1]=0,t[2]=0,t[3]=0,t[4]=0,t[5]=i,t[6]=0,t[7]=0,t[8]=0,t[9]=0,t[10]=(a+r)*u,t[11]=-1,t[12]=0,t[13]=0,t[14]=2*a*r*u,t[15]=0,t;},a.perspectiveFromFieldOfView=function(t,e,n,r){var a=Math.tan(e.upDegrees*Math.PI/180),i=Math.tan(e.downDegrees*Math.PI/180),u=Math.tan(e.leftDegrees*Math.PI/180),o=Math.tan(e.rightDegrees*Math.PI/180),s=2/(u+o),l=2/(a+i);return t[0]=s,t[1]=0,t[2]=0,t[3]=0,t[4]=0,t[5]=l,t[6]=0,t[7]=0,t[8]=-((u-o)*s*.5),t[9]=(a-i)*l*.5,t[10]=r/(n-r),t[11]=-1,t[12]=0,t[13]=0,t[14]=r*n/(n-r),t[15]=0,t;},a.ortho=function(t,e,n,r,a,i,u){var o=1/(e-n),s=1/(r-a),l=1/(i-u);return t[0]=-2*o,t[1]=0,t[2]=0,t[3]=0,t[4]=0,t[5]=-2*s,t[6]=0,t[7]=0,t[8]=0,t[9]=0,t[10]=2*l,t[11]=0,t[12]=(e+n)*o,t[13]=(a+r)*s,t[14]=(u+i)*l,t[15]=1,t;},a.lookAt=function(t,e,n,i){var u,o,s,l,h,f,c,d,v,M,p=e[0],_=e[1],m=e[2],x=i[0],E=i[1],I=i[2],S=n[0],b=n[1],g=n[2];return Math.abs(p-S)<r.EPSILON&&Math.abs(_-b)<r.EPSILON&&Math.abs(m-g)<r.EPSILON?a.identity(t):(c=p-S,d=_-b,v=m-g,M=1/Math.sqrt(c*c+d*d+v*v),c*=M,d*=M,v*=M,u=E*v-I*d,o=I*c-x*v,s=x*d-E*c,M=Math.sqrt(u*u+o*o+s*s),M?(M=1/M,u*=M,o*=M,s*=M):(u=0,o=0,s=0),l=d*s-v*o,h=v*u-c*s,f=c*o-d*u,M=Math.sqrt(l*l+h*h+f*f),M?(M=1/M,l*=M,h*=M,f*=M):(l=0,h=0,f=0),t[0]=u,t[1]=l,t[2]=c,t[3]=0,t[4]=o,t[5]=h,t[6]=d,t[7]=0,t[8]=s,t[9]=f,t[10]=v,t[11]=0,t[12]=-(u*p+o*_+s*m),t[13]=-(l*p+h*_+f*m),t[14]=-(c*p+d*_+v*m),t[15]=1,t);},a.str=function(t){return "mat4("+t[0]+", "+t[1]+", "+t[2]+", "+t[3]+", "+t[4]+", "+t[5]+", "+t[6]+", "+t[7]+", "+t[8]+", "+t[9]+", "+t[10]+", "+t[11]+", "+t[12]+", "+t[13]+", "+t[14]+", "+t[15]+")";},a.frob=function(t){return Math.sqrt(Math.pow(t[0],2)+Math.pow(t[1],2)+Math.pow(t[2],2)+Math.pow(t[3],2)+Math.pow(t[4],2)+Math.pow(t[5],2)+Math.pow(t[6],2)+Math.pow(t[7],2)+Math.pow(t[8],2)+Math.pow(t[9],2)+Math.pow(t[10],2)+Math.pow(t[11],2)+Math.pow(t[12],2)+Math.pow(t[13],2)+Math.pow(t[14],2)+Math.pow(t[15],2));},a.add=function(t,e,n){return t[0]=e[0]+n[0],t[1]=e[1]+n[1],t[2]=e[2]+n[2],t[3]=e[3]+n[3],t[4]=e[4]+n[4],t[5]=e[5]+n[5],t[6]=e[6]+n[6],t[7]=e[7]+n[7],t[8]=e[8]+n[8],t[9]=e[9]+n[9],t[10]=e[10]+n[10],t[11]=e[11]+n[11],t[12]=e[12]+n[12],t[13]=e[13]+n[13],t[14]=e[14]+n[14],t[15]=e[15]+n[15],t;},a.subtract=function(t,e,n){return t[0]=e[0]-n[0],t[1]=e[1]-n[1],t[2]=e[2]-n[2],t[3]=e[3]-n[3],t[4]=e[4]-n[4],t[5]=e[5]-n[5],t[6]=e[6]-n[6],t[7]=e[7]-n[7],t[8]=e[8]-n[8],t[9]=e[9]-n[9],t[10]=e[10]-n[10],t[11]=e[11]-n[11],t[12]=e[12]-n[12],t[13]=e[13]-n[13],t[14]=e[14]-n[14],t[15]=e[15]-n[15],t;},a.sub=a.subtract,a.multiplyScalar=function(t,e,n){return t[0]=e[0]*n,t[1]=e[1]*n,t[2]=e[2]*n,t[3]=e[3]*n,t[4]=e[4]*n,t[5]=e[5]*n,t[6]=e[6]*n,t[7]=e[7]*n,t[8]=e[8]*n,t[9]=e[9]*n,t[10]=e[10]*n,t[11]=e[11]*n,t[12]=e[12]*n,t[13]=e[13]*n,t[14]=e[14]*n,t[15]=e[15]*n,t;},a.multiplyScalarAndAdd=function(t,e,n,r){return t[0]=e[0]+n[0]*r,t[1]=e[1]+n[1]*r,t[2]=e[2]+n[2]*r,t[3]=e[3]+n[3]*r,t[4]=e[4]+n[4]*r,t[5]=e[5]+n[5]*r,t[6]=e[6]+n[6]*r,t[7]=e[7]+n[7]*r,t[8]=e[8]+n[8]*r,t[9]=e[9]+n[9]*r,t[10]=e[10]+n[10]*r,t[11]=e[11]+n[11]*r,t[12]=e[12]+n[12]*r,t[13]=e[13]+n[13]*r,t[14]=e[14]+n[14]*r,t[15]=e[15]+n[15]*r,t;},a.exactEquals=function(t,e){return t[0]===e[0]&&t[1]===e[1]&&t[2]===e[2]&&t[3]===e[3]&&t[4]===e[4]&&t[5]===e[5]&&t[6]===e[6]&&t[7]===e[7]&&t[8]===e[8]&&t[9]===e[9]&&t[10]===e[10]&&t[11]===e[11]&&t[12]===e[12]&&t[13]===e[13]&&t[14]===e[14]&&t[15]===e[15];},a.equals=function(t,e){var n=t[0],a=t[1],i=t[2],u=t[3],o=t[4],s=t[5],l=t[6],h=t[7],f=t[8],c=t[9],d=t[10],v=t[11],M=t[12],p=t[13],_=t[14],m=t[15],x=e[0],E=e[1],I=e[2],S=e[3],b=e[4],g=e[5],T=e[6],F=e[7],y=e[8],D=e[9],R=e[10],w=e[11],A=e[12],P=e[13],O=e[14],L=e[15];return Math.abs(n-x)<=r.EPSILON*Math.max(1,Math.abs(n),Math.abs(x))&&Math.abs(a-E)<=r.EPSILON*Math.max(1,Math.abs(a),Math.abs(E))&&Math.abs(i-I)<=r.EPSILON*Math.max(1,Math.abs(i),Math.abs(I))&&Math.abs(u-S)<=r.EPSILON*Math.max(1,Math.abs(u),Math.abs(S))&&Math.abs(o-b)<=r.EPSILON*Math.max(1,Math.abs(o),Math.abs(b))&&Math.abs(s-g)<=r.EPSILON*Math.max(1,Math.abs(s),Math.abs(g))&&Math.abs(l-T)<=r.EPSILON*Math.max(1,Math.abs(l),Math.abs(T))&&Math.abs(h-F)<=r.EPSILON*Math.max(1,Math.abs(h),Math.abs(F))&&Math.abs(f-y)<=r.EPSILON*Math.max(1,Math.abs(f),Math.abs(y))&&Math.abs(c-D)<=r.EPSILON*Math.max(1,Math.abs(c),Math.abs(D))&&Math.abs(d-R)<=r.EPSILON*Math.max(1,Math.abs(d),Math.abs(R))&&Math.abs(v-w)<=r.EPSILON*Math.max(1,Math.abs(v),Math.abs(w))&&Math.abs(M-A)<=r.EPSILON*Math.max(1,Math.abs(M),Math.abs(A))&&Math.abs(p-P)<=r.EPSILON*Math.max(1,Math.abs(p),Math.abs(P))&&Math.abs(_-O)<=r.EPSILON*Math.max(1,Math.abs(_),Math.abs(O))&&Math.abs(m-L)<=r.EPSILON*Math.max(1,Math.abs(m),Math.abs(L));},t.exports=a;},function(t,e,n){var r=n(9),a=n(66),i=n(67),u=n(68),o={};o.create=function(){var t=new r.ARRAY_TYPE(4);return t[0]=0,t[1]=0,t[2]=0,t[3]=1,t;},o.rotationTo=function(){var t=i.create(),e=i.fromValues(1,0,0),n=i.fromValues(0,1,0);return function(r,a,u){var s=i.dot(a,u);return -.999999>s?(i.cross(t,e,a),i.length(t)<1e-6&&i.cross(t,n,a),i.normalize(t,t),o.setAxisAngle(r,t,Math.PI),r):s>.999999?(r[0]=0,r[1]=0,r[2]=0,r[3]=1,r):(i.cross(t,a,u),r[0]=t[0],r[1]=t[1],r[2]=t[2],r[3]=1+s,o.normalize(r,r));};}(),o.setAxes=function(){var t=a.create();return function(e,n,r,a){return t[0]=r[0],t[3]=r[1],t[6]=r[2],t[1]=a[0],t[4]=a[1],t[7]=a[2],t[2]=-n[0],t[5]=-n[1],t[8]=-n[2],o.normalize(e,o.fromMat3(e,t));};}(),o.clone=u.clone,o.fromValues=u.fromValues,o.copy=u.copy,o.set=u.set,o.identity=function(t){return t[0]=0,t[1]=0,t[2]=0,t[3]=1,t;},o.setAxisAngle=function(t,e,n){n=.5*n;var r=Math.sin(n);return t[0]=r*e[0],t[1]=r*e[1],t[2]=r*e[2],t[3]=Math.cos(n),t;},o.getAxisAngle=function(t,e){var n=2*Math.acos(e[3]),r=Math.sin(n/2);return 0!=r?(t[0]=e[0]/r,t[1]=e[1]/r,t[2]=e[2]/r):(t[0]=1,t[1]=0,t[2]=0),n;},o.add=u.add,o.multiply=function(t,e,n){var r=e[0],a=e[1],i=e[2],u=e[3],o=n[0],s=n[1],l=n[2],h=n[3];return t[0]=r*h+u*o+a*l-i*s,t[1]=a*h+u*s+i*o-r*l,t[2]=i*h+u*l+r*s-a*o,t[3]=u*h-r*o-a*s-i*l,t;},o.mul=o.multiply,o.scale=u.scale,o.rotateX=function(t,e,n){n*=.5;var r=e[0],a=e[1],i=e[2],u=e[3],o=Math.sin(n),s=Math.cos(n);return t[0]=r*s+u*o,t[1]=a*s+i*o,t[2]=i*s-a*o,t[3]=u*s-r*o,t;},o.rotateY=function(t,e,n){n*=.5;var r=e[0],a=e[1],i=e[2],u=e[3],o=Math.sin(n),s=Math.cos(n);return t[0]=r*s-i*o,t[1]=a*s+u*o,t[2]=i*s+r*o,t[3]=u*s-a*o,t;},o.rotateZ=function(t,e,n){n*=.5;var r=e[0],a=e[1],i=e[2],u=e[3],o=Math.sin(n),s=Math.cos(n);return t[0]=r*s+a*o,t[1]=a*s-r*o,t[2]=i*s+u*o,t[3]=u*s-i*o,t;},o.calculateW=function(t,e){var n=e[0],r=e[1],a=e[2];return t[0]=n,t[1]=r,t[2]=a,t[3]=Math.sqrt(Math.abs(1-n*n-r*r-a*a)),t;},o.dot=u.dot,o.lerp=u.lerp,o.slerp=function(t,e,n,r){var a,i,u,o,s,l=e[0],h=e[1],f=e[2],c=e[3],d=n[0],v=n[1],M=n[2],p=n[3];return i=l*d+h*v+f*M+c*p,0>i&&(i=-i,d=-d,v=-v,M=-M,p=-p),1-i>1e-6?(a=Math.acos(i),u=Math.sin(a),o=Math.sin((1-r)*a)/u,s=Math.sin(r*a)/u):(o=1-r,s=r),t[0]=o*l+s*d,t[1]=o*h+s*v,t[2]=o*f+s*M,t[3]=o*c+s*p,t;},o.sqlerp=function(){var t=o.create(),e=o.create();return function(n,r,a,i,u,s){return o.slerp(t,r,u,s),o.slerp(e,a,i,s),o.slerp(n,t,e,2*s*(1-s)),n;};}(),o.invert=function(t,e){var n=e[0],r=e[1],a=e[2],i=e[3],u=n*n+r*r+a*a+i*i,o=u?1/u:0;return t[0]=-n*o,t[1]=-r*o,t[2]=-a*o,t[3]=i*o,t;},o.conjugate=function(t,e){return t[0]=-e[0],t[1]=-e[1],t[2]=-e[2],t[3]=e[3],t;},o.length=u.length,o.len=o.length,o.squaredLength=u.squaredLength,o.sqrLen=o.squaredLength,o.normalize=u.normalize,o.fromMat3=function(t,e){var n,r=e[0]+e[4]+e[8];if(r>0)n=Math.sqrt(r+1),t[3]=.5*n,n=.5/n,t[0]=(e[5]-e[7])*n,t[1]=(e[6]-e[2])*n,t[2]=(e[1]-e[3])*n;else {var a=0;e[4]>e[0]&&(a=1),e[8]>e[3*a+a]&&(a=2);var i=(a+1)%3,u=(a+2)%3;n=Math.sqrt(e[3*a+a]-e[3*i+i]-e[3*u+u]+1),t[a]=.5*n,n=.5/n,t[3]=(e[3*i+u]-e[3*u+i])*n,t[i]=(e[3*i+a]+e[3*a+i])*n,t[u]=(e[3*u+a]+e[3*a+u])*n;}return t;},o.str=function(t){return "quat("+t[0]+", "+t[1]+", "+t[2]+", "+t[3]+")";},o.exactEquals=u.exactEquals,o.equals=u.equals,t.exports=o;},function(t,e,n){var r=n(9),a={};a.create=function(){var t=new r.ARRAY_TYPE(2);return t[0]=0,t[1]=0,t;},a.clone=function(t){var e=new r.ARRAY_TYPE(2);return e[0]=t[0],e[1]=t[1],e;},a.fromValues=function(t,e){var n=new r.ARRAY_TYPE(2);return n[0]=t,n[1]=e,n;},a.copy=function(t,e){return t[0]=e[0],t[1]=e[1],t;},a.set=function(t,e,n){return t[0]=e,t[1]=n,t;},a.add=function(t,e,n){return t[0]=e[0]+n[0],t[1]=e[1]+n[1],t;},a.subtract=function(t,e,n){return t[0]=e[0]-n[0],t[1]=e[1]-n[1],t;},a.sub=a.subtract,a.multiply=function(t,e,n){return t[0]=e[0]*n[0],t[1]=e[1]*n[1],t;},a.mul=a.multiply,a.divide=function(t,e,n){return t[0]=e[0]/n[0],t[1]=e[1]/n[1],t;},a.div=a.divide,a.ceil=function(t,e){return t[0]=Math.ceil(e[0]),t[1]=Math.ceil(e[1]),t;},a.floor=function(t,e){return t[0]=Math.floor(e[0]),t[1]=Math.floor(e[1]),t;},a.min=function(t,e,n){return t[0]=Math.min(e[0],n[0]),t[1]=Math.min(e[1],n[1]),t;},a.max=function(t,e,n){return t[0]=Math.max(e[0],n[0]),t[1]=Math.max(e[1],n[1]),t;},a.round=function(t,e){return t[0]=Math.round(e[0]),t[1]=Math.round(e[1]),t;},a.scale=function(t,e,n){return t[0]=e[0]*n,t[1]=e[1]*n,t;},a.scaleAndAdd=function(t,e,n,r){return t[0]=e[0]+n[0]*r,t[1]=e[1]+n[1]*r,t;},a.distance=function(t,e){var n=e[0]-t[0],r=e[1]-t[1];return Math.sqrt(n*n+r*r);},a.dist=a.distance,a.squaredDistance=function(t,e){var n=e[0]-t[0],r=e[1]-t[1];return n*n+r*r;},a.sqrDist=a.squaredDistance,a.length=function(t){var e=t[0],n=t[1];return Math.sqrt(e*e+n*n);},a.len=a.length,a.squaredLength=function(t){var e=t[0],n=t[1];return e*e+n*n;},a.sqrLen=a.squaredLength,a.negate=function(t,e){return t[0]=-e[0],t[1]=-e[1],t;},a.inverse=function(t,e){return t[0]=1/e[0],t[1]=1/e[1],t;},a.normalize=function(t,e){var n=e[0],r=e[1],a=n*n+r*r;return a>0&&(a=1/Math.sqrt(a),t[0]=e[0]*a,t[1]=e[1]*a),t;},a.dot=function(t,e){return t[0]*e[0]+t[1]*e[1];},a.cross=function(t,e,n){var r=e[0]*n[1]-e[1]*n[0];return t[0]=t[1]=0,t[2]=r,t;},a.lerp=function(t,e,n,r){var a=e[0],i=e[1];return t[0]=a+r*(n[0]-a),t[1]=i+r*(n[1]-i),t;},a.random=function(t,e){e=e||1;var n=2*r.RANDOM()*Math.PI;return t[0]=Math.cos(n)*e,t[1]=Math.sin(n)*e,t;},a.transformMat2=function(t,e,n){var r=e[0],a=e[1];return t[0]=n[0]*r+n[2]*a,t[1]=n[1]*r+n[3]*a,t;},a.transformMat2d=function(t,e,n){var r=e[0],a=e[1];return t[0]=n[0]*r+n[2]*a+n[4],t[1]=n[1]*r+n[3]*a+n[5],t;},a.transformMat3=function(t,e,n){var r=e[0],a=e[1];return t[0]=n[0]*r+n[3]*a+n[6],t[1]=n[1]*r+n[4]*a+n[7],t;},a.transformMat4=function(t,e,n){var r=e[0],a=e[1];return t[0]=n[0]*r+n[4]*a+n[12],t[1]=n[1]*r+n[5]*a+n[13],t;},a.forEach=function(){var t=a.create();return function(e,n,r,a,i,u){var o,s;for(n||(n=2),r||(r=0),s=a?Math.min(a*n+r,e.length):e.length,o=r;s>o;o+=n){t[0]=e[o],t[1]=e[o+1],i(t,t,u),e[o]=t[0],e[o+1]=t[1];}return e;};}(),a.str=function(t){return "vec2("+t[0]+", "+t[1]+")";},a.exactEquals=function(t,e){return t[0]===e[0]&&t[1]===e[1];},a.equals=function(t,e){var n=t[0],a=t[1],i=e[0],u=e[1];return Math.abs(n-i)<=r.EPSILON*Math.max(1,Math.abs(n),Math.abs(i))&&Math.abs(a-u)<=r.EPSILON*Math.max(1,Math.abs(a),Math.abs(u));},t.exports=a;},function(t,e){t.exports=function(){throw new Error("It appears that you're using glslify in browserify without its transform applied. Make sure that you've set up glslify as a source transform: https://github.com/substack/node-browserify#browserifytransform");};},function(t,e){t.exports="// axis.frag\n\n#define SHADER_NAME SIMPLE_TEXTURE\n\nprecision highp float;\n#define GLSLIFY 1\nvarying vec3 vColor;\n\nvoid main(void) {\n    gl_FragColor = vec4(vColor, 1.0);\n}";},function(t,e){t.exports="// axis.vert\n\n#define SHADER_NAME BASIC_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec3 aColor;\nattribute vec3 aNormal;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvarying vec3 vColor;\nvarying vec3 vNormal;\n\nvoid main(void) {\n    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);\n    vColor = aColor;\n    vNormal = aNormal;\n}";},function(t,e){t.exports="// basic.frag\n\n#define SHADER_NAME BASIC_FRAGMENT\n\nprecision highp float;\n#define GLSLIFY 1\nvarying vec2 vTextureCoord;\nuniform float time;\n// uniform sampler2D texture;\n\nvoid main(void) {\n    gl_FragColor = vec4(vTextureCoord, sin(time) * .5 + .5, 1.0);\n}";},function(t,e){t.exports="// basic.vert\n\n#define SHADER_NAME DOTS_PLANE_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec3 aNormal;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvarying vec3 vNormal;\n\nvoid main(void) {\n    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);\n\n    vNormal = aNormal;\n}";}]);});
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE. */ // END HEADER
-exports.glMatrix=_dereq_("./gl-matrix/common.js");exports.mat2=_dereq_("./gl-matrix/mat2.js");exports.mat2d=_dereq_("./gl-matrix/mat2d.js");exports.mat3=_dereq_("./gl-matrix/mat3.js");exports.mat4=_dereq_("./gl-matrix/mat4.js");exports.quat=_dereq_("./gl-matrix/quat.js");exports.vec2=_dereq_("./gl-matrix/vec2.js");exports.vec3=_dereq_("./gl-matrix/vec3.js");exports.vec4=_dereq_("./gl-matrix/vec4.js");},{"./gl-matrix/common.js":2,"./gl-matrix/mat2.js":3,"./gl-matrix/mat2d.js":4,"./gl-matrix/mat3.js":5,"./gl-matrix/mat4.js":6,"./gl-matrix/quat.js":7,"./gl-matrix/vec2.js":8,"./gl-matrix/vec3.js":9,"./gl-matrix/vec4.js":10}],2:[function(_dereq_,module,exports){ /* Copyright (c) 2015, Brandon Jones, Colin MacKenzie IV.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE. */ /**
- * @class Common utilities
- * @name glMatrix
- */var glMatrix={}; // Constants
-glMatrix.EPSILON=0.000001;glMatrix.ARRAY_TYPE=typeof Float32Array!=='undefined'?Float32Array:Array;glMatrix.RANDOM=Math.random; /**
- * Sets the type of array used when creating new vectors and matrices
- *
- * @param {Type} type Array type, such as Float32Array or Array
- */glMatrix.setMatrixArrayType=function(type){GLMAT_ARRAY_TYPE=type;};var degree=Math.PI/180; /**
-* Convert Degree To Radian
-*
-* @param {Number} Angle in Degrees
-*/glMatrix.toRadian=function(a){return a*degree;};module.exports=glMatrix;},{}],3:[function(_dereq_,module,exports){ /* Copyright (c) 2015, Brandon Jones, Colin MacKenzie IV.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE. */var glMatrix=_dereq_("./common.js"); /**
- * @class 2x2 Matrix
- * @name mat2
- */var mat2={}; /**
- * Creates a new identity mat2
- *
- * @returns {mat2} a new 2x2 matrix
- */mat2.create=function(){var out=new glMatrix.ARRAY_TYPE(4);out[0]=1;out[1]=0;out[2]=0;out[3]=1;return out;}; /**
- * Creates a new mat2 initialized with values from an existing matrix
- *
- * @param {mat2} a matrix to clone
- * @returns {mat2} a new 2x2 matrix
- */mat2.clone=function(a){var out=new glMatrix.ARRAY_TYPE(4);out[0]=a[0];out[1]=a[1];out[2]=a[2];out[3]=a[3];return out;}; /**
- * Copy the values from one mat2 to another
- *
- * @param {mat2} out the receiving matrix
- * @param {mat2} a the source matrix
- * @returns {mat2} out
- */mat2.copy=function(out,a){out[0]=a[0];out[1]=a[1];out[2]=a[2];out[3]=a[3];return out;}; /**
- * Set a mat2 to the identity matrix
- *
- * @param {mat2} out the receiving matrix
- * @returns {mat2} out
- */mat2.identity=function(out){out[0]=1;out[1]=0;out[2]=0;out[3]=1;return out;}; /**
- * Transpose the values of a mat2
- *
- * @param {mat2} out the receiving matrix
- * @param {mat2} a the source matrix
- * @returns {mat2} out
- */mat2.transpose=function(out,a){ // If we are transposing ourselves we can skip a few steps but have to cache some values
-if(out===a){var a1=a[1];out[1]=a[2];out[2]=a1;}else {out[0]=a[0];out[1]=a[2];out[2]=a[1];out[3]=a[3];}return out;}; /**
- * Inverts a mat2
- *
- * @param {mat2} out the receiving matrix
- * @param {mat2} a the source matrix
- * @returns {mat2} out
- */mat2.invert=function(out,a){var a0=a[0],a1=a[1],a2=a[2],a3=a[3], // Calculate the determinant
-det=a0*a3-a2*a1;if(!det){return null;}det=1.0/det;out[0]=a3*det;out[1]=-a1*det;out[2]=-a2*det;out[3]=a0*det;return out;}; /**
- * Calculates the adjugate of a mat2
- *
- * @param {mat2} out the receiving matrix
- * @param {mat2} a the source matrix
- * @returns {mat2} out
- */mat2.adjoint=function(out,a){ // Caching this value is nessecary if out == a
-var a0=a[0];out[0]=a[3];out[1]=-a[1];out[2]=-a[2];out[3]=a0;return out;}; /**
- * Calculates the determinant of a mat2
- *
- * @param {mat2} a the source matrix
- * @returns {Number} determinant of a
- */mat2.determinant=function(a){return a[0]*a[3]-a[2]*a[1];}; /**
- * Multiplies two mat2's
- *
- * @param {mat2} out the receiving matrix
- * @param {mat2} a the first operand
- * @param {mat2} b the second operand
- * @returns {mat2} out
- */mat2.multiply=function(out,a,b){var a0=a[0],a1=a[1],a2=a[2],a3=a[3];var b0=b[0],b1=b[1],b2=b[2],b3=b[3];out[0]=a0*b0+a2*b1;out[1]=a1*b0+a3*b1;out[2]=a0*b2+a2*b3;out[3]=a1*b2+a3*b3;return out;}; /**
- * Alias for {@link mat2.multiply}
- * @function
- */mat2.mul=mat2.multiply; /**
- * Rotates a mat2 by the given angle
- *
- * @param {mat2} out the receiving matrix
- * @param {mat2} a the matrix to rotate
- * @param {Number} rad the angle to rotate the matrix by
- * @returns {mat2} out
- */mat2.rotate=function(out,a,rad){var a0=a[0],a1=a[1],a2=a[2],a3=a[3],s=Math.sin(rad),c=Math.cos(rad);out[0]=a0*c+a2*s;out[1]=a1*c+a3*s;out[2]=a0*-s+a2*c;out[3]=a1*-s+a3*c;return out;}; /**
- * Scales the mat2 by the dimensions in the given vec2
- *
- * @param {mat2} out the receiving matrix
- * @param {mat2} a the matrix to rotate
- * @param {vec2} v the vec2 to scale the matrix by
- * @returns {mat2} out
- **/mat2.scale=function(out,a,v){var a0=a[0],a1=a[1],a2=a[2],a3=a[3],v0=v[0],v1=v[1];out[0]=a0*v0;out[1]=a1*v0;out[2]=a2*v1;out[3]=a3*v1;return out;}; /**
- * Creates a matrix from a given angle
- * This is equivalent to (but much faster than):
- *
- *     mat2.identity(dest);
- *     mat2.rotate(dest, dest, rad);
- *
- * @param {mat2} out mat2 receiving operation result
- * @param {Number} rad the angle to rotate the matrix by
- * @returns {mat2} out
- */mat2.fromRotation=function(out,rad){var s=Math.sin(rad),c=Math.cos(rad);out[0]=c;out[1]=s;out[2]=-s;out[3]=c;return out;}; /**
- * Creates a matrix from a vector scaling
- * This is equivalent to (but much faster than):
- *
- *     mat2.identity(dest);
- *     mat2.scale(dest, dest, vec);
- *
- * @param {mat2} out mat2 receiving operation result
- * @param {vec2} v Scaling vector
- * @returns {mat2} out
- */mat2.fromScaling=function(out,v){out[0]=v[0];out[1]=0;out[2]=0;out[3]=v[1];return out;}; /**
- * Returns a string representation of a mat2
- *
- * @param {mat2} mat matrix to represent as a string
- * @returns {String} string representation of the matrix
- */mat2.str=function(a){return 'mat2('+a[0]+', '+a[1]+', '+a[2]+', '+a[3]+')';}; /**
- * Returns Frobenius norm of a mat2
- *
- * @param {mat2} a the matrix to calculate Frobenius norm of
- * @returns {Number} Frobenius norm
- */mat2.frob=function(a){return Math.sqrt(Math.pow(a[0],2)+Math.pow(a[1],2)+Math.pow(a[2],2)+Math.pow(a[3],2));}; /**
- * Returns L, D and U matrices (Lower triangular, Diagonal and Upper triangular) by factorizing the input matrix
- * @param {mat2} L the lower triangular matrix 
- * @param {mat2} D the diagonal matrix 
- * @param {mat2} U the upper triangular matrix 
- * @param {mat2} a the input matrix to factorize
- */mat2.LDU=function(L,D,U,a){L[2]=a[2]/a[0];U[0]=a[0];U[1]=a[1];U[3]=a[3]-L[2]*U[1];return [L,D,U];};module.exports=mat2;},{"./common.js":2}],4:[function(_dereq_,module,exports){ /* Copyright (c) 2015, Brandon Jones, Colin MacKenzie IV.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE. */var glMatrix=_dereq_("./common.js"); /**
- * @class 2x3 Matrix
- * @name mat2d
- * 
- * @description 
- * A mat2d contains six elements defined as:
- * <pre>
- * [a, c, tx,
- *  b, d, ty]
- * </pre>
- * This is a short form for the 3x3 matrix:
- * <pre>
- * [a, c, tx,
- *  b, d, ty,
- *  0, 0, 1]
- * </pre>
- * The last row is ignored so the array is shorter and operations are faster.
- */var mat2d={}; /**
- * Creates a new identity mat2d
- *
- * @returns {mat2d} a new 2x3 matrix
- */mat2d.create=function(){var out=new glMatrix.ARRAY_TYPE(6);out[0]=1;out[1]=0;out[2]=0;out[3]=1;out[4]=0;out[5]=0;return out;}; /**
- * Creates a new mat2d initialized with values from an existing matrix
- *
- * @param {mat2d} a matrix to clone
- * @returns {mat2d} a new 2x3 matrix
- */mat2d.clone=function(a){var out=new glMatrix.ARRAY_TYPE(6);out[0]=a[0];out[1]=a[1];out[2]=a[2];out[3]=a[3];out[4]=a[4];out[5]=a[5];return out;}; /**
- * Copy the values from one mat2d to another
- *
- * @param {mat2d} out the receiving matrix
- * @param {mat2d} a the source matrix
- * @returns {mat2d} out
- */mat2d.copy=function(out,a){out[0]=a[0];out[1]=a[1];out[2]=a[2];out[3]=a[3];out[4]=a[4];out[5]=a[5];return out;}; /**
- * Set a mat2d to the identity matrix
- *
- * @param {mat2d} out the receiving matrix
- * @returns {mat2d} out
- */mat2d.identity=function(out){out[0]=1;out[1]=0;out[2]=0;out[3]=1;out[4]=0;out[5]=0;return out;}; /**
- * Inverts a mat2d
- *
- * @param {mat2d} out the receiving matrix
- * @param {mat2d} a the source matrix
- * @returns {mat2d} out
- */mat2d.invert=function(out,a){var aa=a[0],ab=a[1],ac=a[2],ad=a[3],atx=a[4],aty=a[5];var det=aa*ad-ab*ac;if(!det){return null;}det=1.0/det;out[0]=ad*det;out[1]=-ab*det;out[2]=-ac*det;out[3]=aa*det;out[4]=(ac*aty-ad*atx)*det;out[5]=(ab*atx-aa*aty)*det;return out;}; /**
- * Calculates the determinant of a mat2d
- *
- * @param {mat2d} a the source matrix
- * @returns {Number} determinant of a
- */mat2d.determinant=function(a){return a[0]*a[3]-a[1]*a[2];}; /**
- * Multiplies two mat2d's
- *
- * @param {mat2d} out the receiving matrix
- * @param {mat2d} a the first operand
- * @param {mat2d} b the second operand
- * @returns {mat2d} out
- */mat2d.multiply=function(out,a,b){var a0=a[0],a1=a[1],a2=a[2],a3=a[3],a4=a[4],a5=a[5],b0=b[0],b1=b[1],b2=b[2],b3=b[3],b4=b[4],b5=b[5];out[0]=a0*b0+a2*b1;out[1]=a1*b0+a3*b1;out[2]=a0*b2+a2*b3;out[3]=a1*b2+a3*b3;out[4]=a0*b4+a2*b5+a4;out[5]=a1*b4+a3*b5+a5;return out;}; /**
- * Alias for {@link mat2d.multiply}
- * @function
- */mat2d.mul=mat2d.multiply; /**
- * Rotates a mat2d by the given angle
- *
- * @param {mat2d} out the receiving matrix
- * @param {mat2d} a the matrix to rotate
- * @param {Number} rad the angle to rotate the matrix by
- * @returns {mat2d} out
- */mat2d.rotate=function(out,a,rad){var a0=a[0],a1=a[1],a2=a[2],a3=a[3],a4=a[4],a5=a[5],s=Math.sin(rad),c=Math.cos(rad);out[0]=a0*c+a2*s;out[1]=a1*c+a3*s;out[2]=a0*-s+a2*c;out[3]=a1*-s+a3*c;out[4]=a4;out[5]=a5;return out;}; /**
- * Scales the mat2d by the dimensions in the given vec2
- *
- * @param {mat2d} out the receiving matrix
- * @param {mat2d} a the matrix to translate
- * @param {vec2} v the vec2 to scale the matrix by
- * @returns {mat2d} out
- **/mat2d.scale=function(out,a,v){var a0=a[0],a1=a[1],a2=a[2],a3=a[3],a4=a[4],a5=a[5],v0=v[0],v1=v[1];out[0]=a0*v0;out[1]=a1*v0;out[2]=a2*v1;out[3]=a3*v1;out[4]=a4;out[5]=a5;return out;}; /**
- * Translates the mat2d by the dimensions in the given vec2
- *
- * @param {mat2d} out the receiving matrix
- * @param {mat2d} a the matrix to translate
- * @param {vec2} v the vec2 to translate the matrix by
- * @returns {mat2d} out
- **/mat2d.translate=function(out,a,v){var a0=a[0],a1=a[1],a2=a[2],a3=a[3],a4=a[4],a5=a[5],v0=v[0],v1=v[1];out[0]=a0;out[1]=a1;out[2]=a2;out[3]=a3;out[4]=a0*v0+a2*v1+a4;out[5]=a1*v0+a3*v1+a5;return out;}; /**
- * Creates a matrix from a given angle
- * This is equivalent to (but much faster than):
- *
- *     mat2d.identity(dest);
- *     mat2d.rotate(dest, dest, rad);
- *
- * @param {mat2d} out mat2d receiving operation result
- * @param {Number} rad the angle to rotate the matrix by
- * @returns {mat2d} out
- */mat2d.fromRotation=function(out,rad){var s=Math.sin(rad),c=Math.cos(rad);out[0]=c;out[1]=s;out[2]=-s;out[3]=c;out[4]=0;out[5]=0;return out;}; /**
- * Creates a matrix from a vector scaling
- * This is equivalent to (but much faster than):
- *
- *     mat2d.identity(dest);
- *     mat2d.scale(dest, dest, vec);
- *
- * @param {mat2d} out mat2d receiving operation result
- * @param {vec2} v Scaling vector
- * @returns {mat2d} out
- */mat2d.fromScaling=function(out,v){out[0]=v[0];out[1]=0;out[2]=0;out[3]=v[1];out[4]=0;out[5]=0;return out;}; /**
- * Creates a matrix from a vector translation
- * This is equivalent to (but much faster than):
- *
- *     mat2d.identity(dest);
- *     mat2d.translate(dest, dest, vec);
- *
- * @param {mat2d} out mat2d receiving operation result
- * @param {vec2} v Translation vector
- * @returns {mat2d} out
- */mat2d.fromTranslation=function(out,v){out[0]=1;out[1]=0;out[2]=0;out[3]=1;out[4]=v[0];out[5]=v[1];return out;}; /**
- * Returns a string representation of a mat2d
- *
- * @param {mat2d} a matrix to represent as a string
- * @returns {String} string representation of the matrix
- */mat2d.str=function(a){return 'mat2d('+a[0]+', '+a[1]+', '+a[2]+', '+a[3]+', '+a[4]+', '+a[5]+')';}; /**
- * Returns Frobenius norm of a mat2d
- *
- * @param {mat2d} a the matrix to calculate Frobenius norm of
- * @returns {Number} Frobenius norm
- */mat2d.frob=function(a){return Math.sqrt(Math.pow(a[0],2)+Math.pow(a[1],2)+Math.pow(a[2],2)+Math.pow(a[3],2)+Math.pow(a[4],2)+Math.pow(a[5],2)+1);};module.exports=mat2d;},{"./common.js":2}],5:[function(_dereq_,module,exports){ /* Copyright (c) 2015, Brandon Jones, Colin MacKenzie IV.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE. */var glMatrix=_dereq_("./common.js"); /**
- * @class 3x3 Matrix
- * @name mat3
- */var mat3={}; /**
- * Creates a new identity mat3
- *
- * @returns {mat3} a new 3x3 matrix
- */mat3.create=function(){var out=new glMatrix.ARRAY_TYPE(9);out[0]=1;out[1]=0;out[2]=0;out[3]=0;out[4]=1;out[5]=0;out[6]=0;out[7]=0;out[8]=1;return out;}; /**
- * Copies the upper-left 3x3 values into the given mat3.
- *
- * @param {mat3} out the receiving 3x3 matrix
- * @param {mat4} a   the source 4x4 matrix
- * @returns {mat3} out
- */mat3.fromMat4=function(out,a){out[0]=a[0];out[1]=a[1];out[2]=a[2];out[3]=a[4];out[4]=a[5];out[5]=a[6];out[6]=a[8];out[7]=a[9];out[8]=a[10];return out;}; /**
- * Creates a new mat3 initialized with values from an existing matrix
- *
- * @param {mat3} a matrix to clone
- * @returns {mat3} a new 3x3 matrix
- */mat3.clone=function(a){var out=new glMatrix.ARRAY_TYPE(9);out[0]=a[0];out[1]=a[1];out[2]=a[2];out[3]=a[3];out[4]=a[4];out[5]=a[5];out[6]=a[6];out[7]=a[7];out[8]=a[8];return out;}; /**
- * Copy the values from one mat3 to another
- *
- * @param {mat3} out the receiving matrix
- * @param {mat3} a the source matrix
- * @returns {mat3} out
- */mat3.copy=function(out,a){out[0]=a[0];out[1]=a[1];out[2]=a[2];out[3]=a[3];out[4]=a[4];out[5]=a[5];out[6]=a[6];out[7]=a[7];out[8]=a[8];return out;}; /**
- * Set a mat3 to the identity matrix
- *
- * @param {mat3} out the receiving matrix
- * @returns {mat3} out
- */mat3.identity=function(out){out[0]=1;out[1]=0;out[2]=0;out[3]=0;out[4]=1;out[5]=0;out[6]=0;out[7]=0;out[8]=1;return out;}; /**
- * Transpose the values of a mat3
- *
- * @param {mat3} out the receiving matrix
- * @param {mat3} a the source matrix
- * @returns {mat3} out
- */mat3.transpose=function(out,a){ // If we are transposing ourselves we can skip a few steps but have to cache some values
-if(out===a){var a01=a[1],a02=a[2],a12=a[5];out[1]=a[3];out[2]=a[6];out[3]=a01;out[5]=a[7];out[6]=a02;out[7]=a12;}else {out[0]=a[0];out[1]=a[3];out[2]=a[6];out[3]=a[1];out[4]=a[4];out[5]=a[7];out[6]=a[2];out[7]=a[5];out[8]=a[8];}return out;}; /**
- * Inverts a mat3
- *
- * @param {mat3} out the receiving matrix
- * @param {mat3} a the source matrix
- * @returns {mat3} out
- */mat3.invert=function(out,a){var a00=a[0],a01=a[1],a02=a[2],a10=a[3],a11=a[4],a12=a[5],a20=a[6],a21=a[7],a22=a[8],b01=a22*a11-a12*a21,b11=-a22*a10+a12*a20,b21=a21*a10-a11*a20, // Calculate the determinant
-det=a00*b01+a01*b11+a02*b21;if(!det){return null;}det=1.0/det;out[0]=b01*det;out[1]=(-a22*a01+a02*a21)*det;out[2]=(a12*a01-a02*a11)*det;out[3]=b11*det;out[4]=(a22*a00-a02*a20)*det;out[5]=(-a12*a00+a02*a10)*det;out[6]=b21*det;out[7]=(-a21*a00+a01*a20)*det;out[8]=(a11*a00-a01*a10)*det;return out;}; /**
- * Calculates the adjugate of a mat3
- *
- * @param {mat3} out the receiving matrix
- * @param {mat3} a the source matrix
- * @returns {mat3} out
- */mat3.adjoint=function(out,a){var a00=a[0],a01=a[1],a02=a[2],a10=a[3],a11=a[4],a12=a[5],a20=a[6],a21=a[7],a22=a[8];out[0]=a11*a22-a12*a21;out[1]=a02*a21-a01*a22;out[2]=a01*a12-a02*a11;out[3]=a12*a20-a10*a22;out[4]=a00*a22-a02*a20;out[5]=a02*a10-a00*a12;out[6]=a10*a21-a11*a20;out[7]=a01*a20-a00*a21;out[8]=a00*a11-a01*a10;return out;}; /**
- * Calculates the determinant of a mat3
- *
- * @param {mat3} a the source matrix
- * @returns {Number} determinant of a
- */mat3.determinant=function(a){var a00=a[0],a01=a[1],a02=a[2],a10=a[3],a11=a[4],a12=a[5],a20=a[6],a21=a[7],a22=a[8];return a00*(a22*a11-a12*a21)+a01*(-a22*a10+a12*a20)+a02*(a21*a10-a11*a20);}; /**
- * Multiplies two mat3's
- *
- * @param {mat3} out the receiving matrix
- * @param {mat3} a the first operand
- * @param {mat3} b the second operand
- * @returns {mat3} out
- */mat3.multiply=function(out,a,b){var a00=a[0],a01=a[1],a02=a[2],a10=a[3],a11=a[4],a12=a[5],a20=a[6],a21=a[7],a22=a[8],b00=b[0],b01=b[1],b02=b[2],b10=b[3],b11=b[4],b12=b[5],b20=b[6],b21=b[7],b22=b[8];out[0]=b00*a00+b01*a10+b02*a20;out[1]=b00*a01+b01*a11+b02*a21;out[2]=b00*a02+b01*a12+b02*a22;out[3]=b10*a00+b11*a10+b12*a20;out[4]=b10*a01+b11*a11+b12*a21;out[5]=b10*a02+b11*a12+b12*a22;out[6]=b20*a00+b21*a10+b22*a20;out[7]=b20*a01+b21*a11+b22*a21;out[8]=b20*a02+b21*a12+b22*a22;return out;}; /**
- * Alias for {@link mat3.multiply}
- * @function
- */mat3.mul=mat3.multiply; /**
- * Translate a mat3 by the given vector
- *
- * @param {mat3} out the receiving matrix
- * @param {mat3} a the matrix to translate
- * @param {vec2} v vector to translate by
- * @returns {mat3} out
- */mat3.translate=function(out,a,v){var a00=a[0],a01=a[1],a02=a[2],a10=a[3],a11=a[4],a12=a[5],a20=a[6],a21=a[7],a22=a[8],x=v[0],y=v[1];out[0]=a00;out[1]=a01;out[2]=a02;out[3]=a10;out[4]=a11;out[5]=a12;out[6]=x*a00+y*a10+a20;out[7]=x*a01+y*a11+a21;out[8]=x*a02+y*a12+a22;return out;}; /**
- * Rotates a mat3 by the given angle
- *
- * @param {mat3} out the receiving matrix
- * @param {mat3} a the matrix to rotate
- * @param {Number} rad the angle to rotate the matrix by
- * @returns {mat3} out
- */mat3.rotate=function(out,a,rad){var a00=a[0],a01=a[1],a02=a[2],a10=a[3],a11=a[4],a12=a[5],a20=a[6],a21=a[7],a22=a[8],s=Math.sin(rad),c=Math.cos(rad);out[0]=c*a00+s*a10;out[1]=c*a01+s*a11;out[2]=c*a02+s*a12;out[3]=c*a10-s*a00;out[4]=c*a11-s*a01;out[5]=c*a12-s*a02;out[6]=a20;out[7]=a21;out[8]=a22;return out;}; /**
- * Scales the mat3 by the dimensions in the given vec2
- *
- * @param {mat3} out the receiving matrix
- * @param {mat3} a the matrix to rotate
- * @param {vec2} v the vec2 to scale the matrix by
- * @returns {mat3} out
- **/mat3.scale=function(out,a,v){var x=v[0],y=v[1];out[0]=x*a[0];out[1]=x*a[1];out[2]=x*a[2];out[3]=y*a[3];out[4]=y*a[4];out[5]=y*a[5];out[6]=a[6];out[7]=a[7];out[8]=a[8];return out;}; /**
- * Creates a matrix from a vector translation
- * This is equivalent to (but much faster than):
- *
- *     mat3.identity(dest);
- *     mat3.translate(dest, dest, vec);
- *
- * @param {mat3} out mat3 receiving operation result
- * @param {vec2} v Translation vector
- * @returns {mat3} out
- */mat3.fromTranslation=function(out,v){out[0]=1;out[1]=0;out[2]=0;out[3]=0;out[4]=1;out[5]=0;out[6]=v[0];out[7]=v[1];out[8]=1;return out;}; /**
- * Creates a matrix from a given angle
- * This is equivalent to (but much faster than):
- *
- *     mat3.identity(dest);
- *     mat3.rotate(dest, dest, rad);
- *
- * @param {mat3} out mat3 receiving operation result
- * @param {Number} rad the angle to rotate the matrix by
- * @returns {mat3} out
- */mat3.fromRotation=function(out,rad){var s=Math.sin(rad),c=Math.cos(rad);out[0]=c;out[1]=s;out[2]=0;out[3]=-s;out[4]=c;out[5]=0;out[6]=0;out[7]=0;out[8]=1;return out;}; /**
- * Creates a matrix from a vector scaling
- * This is equivalent to (but much faster than):
- *
- *     mat3.identity(dest);
- *     mat3.scale(dest, dest, vec);
- *
- * @param {mat3} out mat3 receiving operation result
- * @param {vec2} v Scaling vector
- * @returns {mat3} out
- */mat3.fromScaling=function(out,v){out[0]=v[0];out[1]=0;out[2]=0;out[3]=0;out[4]=v[1];out[5]=0;out[6]=0;out[7]=0;out[8]=1;return out;}; /**
- * Copies the values from a mat2d into a mat3
- *
- * @param {mat3} out the receiving matrix
- * @param {mat2d} a the matrix to copy
- * @returns {mat3} out
- **/mat3.fromMat2d=function(out,a){out[0]=a[0];out[1]=a[1];out[2]=0;out[3]=a[2];out[4]=a[3];out[5]=0;out[6]=a[4];out[7]=a[5];out[8]=1;return out;}; /**
-* Calculates a 3x3 matrix from the given quaternion
-*
-* @param {mat3} out mat3 receiving operation result
-* @param {quat} q Quaternion to create matrix from
-*
-* @returns {mat3} out
-*/mat3.fromQuat=function(out,q){var x=q[0],y=q[1],z=q[2],w=q[3],x2=x+x,y2=y+y,z2=z+z,xx=x*x2,yx=y*x2,yy=y*y2,zx=z*x2,zy=z*y2,zz=z*z2,wx=w*x2,wy=w*y2,wz=w*z2;out[0]=1-yy-zz;out[3]=yx-wz;out[6]=zx+wy;out[1]=yx+wz;out[4]=1-xx-zz;out[7]=zy-wx;out[2]=zx-wy;out[5]=zy+wx;out[8]=1-xx-yy;return out;}; /**
-* Calculates a 3x3 normal matrix (transpose inverse) from the 4x4 matrix
-*
-* @param {mat3} out mat3 receiving operation result
-* @param {mat4} a Mat4 to derive the normal matrix from
-*
-* @returns {mat3} out
-*/mat3.normalFromMat4=function(out,a){var a00=a[0],a01=a[1],a02=a[2],a03=a[3],a10=a[4],a11=a[5],a12=a[6],a13=a[7],a20=a[8],a21=a[9],a22=a[10],a23=a[11],a30=a[12],a31=a[13],a32=a[14],a33=a[15],b00=a00*a11-a01*a10,b01=a00*a12-a02*a10,b02=a00*a13-a03*a10,b03=a01*a12-a02*a11,b04=a01*a13-a03*a11,b05=a02*a13-a03*a12,b06=a20*a31-a21*a30,b07=a20*a32-a22*a30,b08=a20*a33-a23*a30,b09=a21*a32-a22*a31,b10=a21*a33-a23*a31,b11=a22*a33-a23*a32, // Calculate the determinant
-det=b00*b11-b01*b10+b02*b09+b03*b08-b04*b07+b05*b06;if(!det){return null;}det=1.0/det;out[0]=(a11*b11-a12*b10+a13*b09)*det;out[1]=(a12*b08-a10*b11-a13*b07)*det;out[2]=(a10*b10-a11*b08+a13*b06)*det;out[3]=(a02*b10-a01*b11-a03*b09)*det;out[4]=(a00*b11-a02*b08+a03*b07)*det;out[5]=(a01*b08-a00*b10-a03*b06)*det;out[6]=(a31*b05-a32*b04+a33*b03)*det;out[7]=(a32*b02-a30*b05-a33*b01)*det;out[8]=(a30*b04-a31*b02+a33*b00)*det;return out;}; /**
- * Returns a string representation of a mat3
- *
- * @param {mat3} mat matrix to represent as a string
- * @returns {String} string representation of the matrix
- */mat3.str=function(a){return 'mat3('+a[0]+', '+a[1]+', '+a[2]+', '+a[3]+', '+a[4]+', '+a[5]+', '+a[6]+', '+a[7]+', '+a[8]+')';}; /**
- * Returns Frobenius norm of a mat3
- *
- * @param {mat3} a the matrix to calculate Frobenius norm of
- * @returns {Number} Frobenius norm
- */mat3.frob=function(a){return Math.sqrt(Math.pow(a[0],2)+Math.pow(a[1],2)+Math.pow(a[2],2)+Math.pow(a[3],2)+Math.pow(a[4],2)+Math.pow(a[5],2)+Math.pow(a[6],2)+Math.pow(a[7],2)+Math.pow(a[8],2));};module.exports=mat3;},{"./common.js":2}],6:[function(_dereq_,module,exports){ /* Copyright (c) 2015, Brandon Jones, Colin MacKenzie IV.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE. */var glMatrix=_dereq_("./common.js"); /**
- * @class 4x4 Matrix
- * @name mat4
- */var mat4={}; /**
- * Creates a new identity mat4
- *
- * @returns {mat4} a new 4x4 matrix
- */mat4.create=function(){var out=new glMatrix.ARRAY_TYPE(16);out[0]=1;out[1]=0;out[2]=0;out[3]=0;out[4]=0;out[5]=1;out[6]=0;out[7]=0;out[8]=0;out[9]=0;out[10]=1;out[11]=0;out[12]=0;out[13]=0;out[14]=0;out[15]=1;return out;}; /**
- * Creates a new mat4 initialized with values from an existing matrix
- *
- * @param {mat4} a matrix to clone
- * @returns {mat4} a new 4x4 matrix
- */mat4.clone=function(a){var out=new glMatrix.ARRAY_TYPE(16);out[0]=a[0];out[1]=a[1];out[2]=a[2];out[3]=a[3];out[4]=a[4];out[5]=a[5];out[6]=a[6];out[7]=a[7];out[8]=a[8];out[9]=a[9];out[10]=a[10];out[11]=a[11];out[12]=a[12];out[13]=a[13];out[14]=a[14];out[15]=a[15];return out;}; /**
- * Copy the values from one mat4 to another
- *
- * @param {mat4} out the receiving matrix
- * @param {mat4} a the source matrix
- * @returns {mat4} out
- */mat4.copy=function(out,a){out[0]=a[0];out[1]=a[1];out[2]=a[2];out[3]=a[3];out[4]=a[4];out[5]=a[5];out[6]=a[6];out[7]=a[7];out[8]=a[8];out[9]=a[9];out[10]=a[10];out[11]=a[11];out[12]=a[12];out[13]=a[13];out[14]=a[14];out[15]=a[15];return out;}; /**
- * Set a mat4 to the identity matrix
- *
- * @param {mat4} out the receiving matrix
- * @returns {mat4} out
- */mat4.identity=function(out){out[0]=1;out[1]=0;out[2]=0;out[3]=0;out[4]=0;out[5]=1;out[6]=0;out[7]=0;out[8]=0;out[9]=0;out[10]=1;out[11]=0;out[12]=0;out[13]=0;out[14]=0;out[15]=1;return out;}; /**
- * Transpose the values of a mat4
- *
- * @param {mat4} out the receiving matrix
- * @param {mat4} a the source matrix
- * @returns {mat4} out
- */mat4.transpose=function(out,a){ // If we are transposing ourselves we can skip a few steps but have to cache some values
-if(out===a){var a01=a[1],a02=a[2],a03=a[3],a12=a[6],a13=a[7],a23=a[11];out[1]=a[4];out[2]=a[8];out[3]=a[12];out[4]=a01;out[6]=a[9];out[7]=a[13];out[8]=a02;out[9]=a12;out[11]=a[14];out[12]=a03;out[13]=a13;out[14]=a23;}else {out[0]=a[0];out[1]=a[4];out[2]=a[8];out[3]=a[12];out[4]=a[1];out[5]=a[5];out[6]=a[9];out[7]=a[13];out[8]=a[2];out[9]=a[6];out[10]=a[10];out[11]=a[14];out[12]=a[3];out[13]=a[7];out[14]=a[11];out[15]=a[15];}return out;}; /**
- * Inverts a mat4
- *
- * @param {mat4} out the receiving matrix
- * @param {mat4} a the source matrix
- * @returns {mat4} out
- */mat4.invert=function(out,a){var a00=a[0],a01=a[1],a02=a[2],a03=a[3],a10=a[4],a11=a[5],a12=a[6],a13=a[7],a20=a[8],a21=a[9],a22=a[10],a23=a[11],a30=a[12],a31=a[13],a32=a[14],a33=a[15],b00=a00*a11-a01*a10,b01=a00*a12-a02*a10,b02=a00*a13-a03*a10,b03=a01*a12-a02*a11,b04=a01*a13-a03*a11,b05=a02*a13-a03*a12,b06=a20*a31-a21*a30,b07=a20*a32-a22*a30,b08=a20*a33-a23*a30,b09=a21*a32-a22*a31,b10=a21*a33-a23*a31,b11=a22*a33-a23*a32, // Calculate the determinant
-det=b00*b11-b01*b10+b02*b09+b03*b08-b04*b07+b05*b06;if(!det){return null;}det=1.0/det;out[0]=(a11*b11-a12*b10+a13*b09)*det;out[1]=(a02*b10-a01*b11-a03*b09)*det;out[2]=(a31*b05-a32*b04+a33*b03)*det;out[3]=(a22*b04-a21*b05-a23*b03)*det;out[4]=(a12*b08-a10*b11-a13*b07)*det;out[5]=(a00*b11-a02*b08+a03*b07)*det;out[6]=(a32*b02-a30*b05-a33*b01)*det;out[7]=(a20*b05-a22*b02+a23*b01)*det;out[8]=(a10*b10-a11*b08+a13*b06)*det;out[9]=(a01*b08-a00*b10-a03*b06)*det;out[10]=(a30*b04-a31*b02+a33*b00)*det;out[11]=(a21*b02-a20*b04-a23*b00)*det;out[12]=(a11*b07-a10*b09-a12*b06)*det;out[13]=(a00*b09-a01*b07+a02*b06)*det;out[14]=(a31*b01-a30*b03-a32*b00)*det;out[15]=(a20*b03-a21*b01+a22*b00)*det;return out;}; /**
- * Calculates the adjugate of a mat4
- *
- * @param {mat4} out the receiving matrix
- * @param {mat4} a the source matrix
- * @returns {mat4} out
- */mat4.adjoint=function(out,a){var a00=a[0],a01=a[1],a02=a[2],a03=a[3],a10=a[4],a11=a[5],a12=a[6],a13=a[7],a20=a[8],a21=a[9],a22=a[10],a23=a[11],a30=a[12],a31=a[13],a32=a[14],a33=a[15];out[0]=a11*(a22*a33-a23*a32)-a21*(a12*a33-a13*a32)+a31*(a12*a23-a13*a22);out[1]=-(a01*(a22*a33-a23*a32)-a21*(a02*a33-a03*a32)+a31*(a02*a23-a03*a22));out[2]=a01*(a12*a33-a13*a32)-a11*(a02*a33-a03*a32)+a31*(a02*a13-a03*a12);out[3]=-(a01*(a12*a23-a13*a22)-a11*(a02*a23-a03*a22)+a21*(a02*a13-a03*a12));out[4]=-(a10*(a22*a33-a23*a32)-a20*(a12*a33-a13*a32)+a30*(a12*a23-a13*a22));out[5]=a00*(a22*a33-a23*a32)-a20*(a02*a33-a03*a32)+a30*(a02*a23-a03*a22);out[6]=-(a00*(a12*a33-a13*a32)-a10*(a02*a33-a03*a32)+a30*(a02*a13-a03*a12));out[7]=a00*(a12*a23-a13*a22)-a10*(a02*a23-a03*a22)+a20*(a02*a13-a03*a12);out[8]=a10*(a21*a33-a23*a31)-a20*(a11*a33-a13*a31)+a30*(a11*a23-a13*a21);out[9]=-(a00*(a21*a33-a23*a31)-a20*(a01*a33-a03*a31)+a30*(a01*a23-a03*a21));out[10]=a00*(a11*a33-a13*a31)-a10*(a01*a33-a03*a31)+a30*(a01*a13-a03*a11);out[11]=-(a00*(a11*a23-a13*a21)-a10*(a01*a23-a03*a21)+a20*(a01*a13-a03*a11));out[12]=-(a10*(a21*a32-a22*a31)-a20*(a11*a32-a12*a31)+a30*(a11*a22-a12*a21));out[13]=a00*(a21*a32-a22*a31)-a20*(a01*a32-a02*a31)+a30*(a01*a22-a02*a21);out[14]=-(a00*(a11*a32-a12*a31)-a10*(a01*a32-a02*a31)+a30*(a01*a12-a02*a11));out[15]=a00*(a11*a22-a12*a21)-a10*(a01*a22-a02*a21)+a20*(a01*a12-a02*a11);return out;}; /**
- * Calculates the determinant of a mat4
- *
- * @param {mat4} a the source matrix
- * @returns {Number} determinant of a
- */mat4.determinant=function(a){var a00=a[0],a01=a[1],a02=a[2],a03=a[3],a10=a[4],a11=a[5],a12=a[6],a13=a[7],a20=a[8],a21=a[9],a22=a[10],a23=a[11],a30=a[12],a31=a[13],a32=a[14],a33=a[15],b00=a00*a11-a01*a10,b01=a00*a12-a02*a10,b02=a00*a13-a03*a10,b03=a01*a12-a02*a11,b04=a01*a13-a03*a11,b05=a02*a13-a03*a12,b06=a20*a31-a21*a30,b07=a20*a32-a22*a30,b08=a20*a33-a23*a30,b09=a21*a32-a22*a31,b10=a21*a33-a23*a31,b11=a22*a33-a23*a32; // Calculate the determinant
-return b00*b11-b01*b10+b02*b09+b03*b08-b04*b07+b05*b06;}; /**
- * Multiplies two mat4's
- *
- * @param {mat4} out the receiving matrix
- * @param {mat4} a the first operand
- * @param {mat4} b the second operand
- * @returns {mat4} out
- */mat4.multiply=function(out,a,b){var a00=a[0],a01=a[1],a02=a[2],a03=a[3],a10=a[4],a11=a[5],a12=a[6],a13=a[7],a20=a[8],a21=a[9],a22=a[10],a23=a[11],a30=a[12],a31=a[13],a32=a[14],a33=a[15]; // Cache only the current line of the second matrix
-var b0=b[0],b1=b[1],b2=b[2],b3=b[3];out[0]=b0*a00+b1*a10+b2*a20+b3*a30;out[1]=b0*a01+b1*a11+b2*a21+b3*a31;out[2]=b0*a02+b1*a12+b2*a22+b3*a32;out[3]=b0*a03+b1*a13+b2*a23+b3*a33;b0=b[4];b1=b[5];b2=b[6];b3=b[7];out[4]=b0*a00+b1*a10+b2*a20+b3*a30;out[5]=b0*a01+b1*a11+b2*a21+b3*a31;out[6]=b0*a02+b1*a12+b2*a22+b3*a32;out[7]=b0*a03+b1*a13+b2*a23+b3*a33;b0=b[8];b1=b[9];b2=b[10];b3=b[11];out[8]=b0*a00+b1*a10+b2*a20+b3*a30;out[9]=b0*a01+b1*a11+b2*a21+b3*a31;out[10]=b0*a02+b1*a12+b2*a22+b3*a32;out[11]=b0*a03+b1*a13+b2*a23+b3*a33;b0=b[12];b1=b[13];b2=b[14];b3=b[15];out[12]=b0*a00+b1*a10+b2*a20+b3*a30;out[13]=b0*a01+b1*a11+b2*a21+b3*a31;out[14]=b0*a02+b1*a12+b2*a22+b3*a32;out[15]=b0*a03+b1*a13+b2*a23+b3*a33;return out;}; /**
- * Alias for {@link mat4.multiply}
- * @function
- */mat4.mul=mat4.multiply; /**
- * Translate a mat4 by the given vector
- *
- * @param {mat4} out the receiving matrix
- * @param {mat4} a the matrix to translate
- * @param {vec3} v vector to translate by
- * @returns {mat4} out
- */mat4.translate=function(out,a,v){var x=v[0],y=v[1],z=v[2],a00,a01,a02,a03,a10,a11,a12,a13,a20,a21,a22,a23;if(a===out){out[12]=a[0]*x+a[4]*y+a[8]*z+a[12];out[13]=a[1]*x+a[5]*y+a[9]*z+a[13];out[14]=a[2]*x+a[6]*y+a[10]*z+a[14];out[15]=a[3]*x+a[7]*y+a[11]*z+a[15];}else {a00=a[0];a01=a[1];a02=a[2];a03=a[3];a10=a[4];a11=a[5];a12=a[6];a13=a[7];a20=a[8];a21=a[9];a22=a[10];a23=a[11];out[0]=a00;out[1]=a01;out[2]=a02;out[3]=a03;out[4]=a10;out[5]=a11;out[6]=a12;out[7]=a13;out[8]=a20;out[9]=a21;out[10]=a22;out[11]=a23;out[12]=a00*x+a10*y+a20*z+a[12];out[13]=a01*x+a11*y+a21*z+a[13];out[14]=a02*x+a12*y+a22*z+a[14];out[15]=a03*x+a13*y+a23*z+a[15];}return out;}; /**
- * Scales the mat4 by the dimensions in the given vec3
- *
- * @param {mat4} out the receiving matrix
- * @param {mat4} a the matrix to scale
- * @param {vec3} v the vec3 to scale the matrix by
- * @returns {mat4} out
- **/mat4.scale=function(out,a,v){var x=v[0],y=v[1],z=v[2];out[0]=a[0]*x;out[1]=a[1]*x;out[2]=a[2]*x;out[3]=a[3]*x;out[4]=a[4]*y;out[5]=a[5]*y;out[6]=a[6]*y;out[7]=a[7]*y;out[8]=a[8]*z;out[9]=a[9]*z;out[10]=a[10]*z;out[11]=a[11]*z;out[12]=a[12];out[13]=a[13];out[14]=a[14];out[15]=a[15];return out;}; /**
- * Rotates a mat4 by the given angle around the given axis
- *
- * @param {mat4} out the receiving matrix
- * @param {mat4} a the matrix to rotate
- * @param {Number} rad the angle to rotate the matrix by
- * @param {vec3} axis the axis to rotate around
- * @returns {mat4} out
- */mat4.rotate=function(out,a,rad,axis){var x=axis[0],y=axis[1],z=axis[2],len=Math.sqrt(x*x+y*y+z*z),s,c,t,a00,a01,a02,a03,a10,a11,a12,a13,a20,a21,a22,a23,b00,b01,b02,b10,b11,b12,b20,b21,b22;if(Math.abs(len)<glMatrix.EPSILON){return null;}len=1/len;x*=len;y*=len;z*=len;s=Math.sin(rad);c=Math.cos(rad);t=1-c;a00=a[0];a01=a[1];a02=a[2];a03=a[3];a10=a[4];a11=a[5];a12=a[6];a13=a[7];a20=a[8];a21=a[9];a22=a[10];a23=a[11]; // Construct the elements of the rotation matrix
-b00=x*x*t+c;b01=y*x*t+z*s;b02=z*x*t-y*s;b10=x*y*t-z*s;b11=y*y*t+c;b12=z*y*t+x*s;b20=x*z*t+y*s;b21=y*z*t-x*s;b22=z*z*t+c; // Perform rotation-specific matrix multiplication
-out[0]=a00*b00+a10*b01+a20*b02;out[1]=a01*b00+a11*b01+a21*b02;out[2]=a02*b00+a12*b01+a22*b02;out[3]=a03*b00+a13*b01+a23*b02;out[4]=a00*b10+a10*b11+a20*b12;out[5]=a01*b10+a11*b11+a21*b12;out[6]=a02*b10+a12*b11+a22*b12;out[7]=a03*b10+a13*b11+a23*b12;out[8]=a00*b20+a10*b21+a20*b22;out[9]=a01*b20+a11*b21+a21*b22;out[10]=a02*b20+a12*b21+a22*b22;out[11]=a03*b20+a13*b21+a23*b22;if(a!==out){ // If the source and destination differ, copy the unchanged last row
-out[12]=a[12];out[13]=a[13];out[14]=a[14];out[15]=a[15];}return out;}; /**
- * Rotates a matrix by the given angle around the X axis
- *
- * @param {mat4} out the receiving matrix
- * @param {mat4} a the matrix to rotate
- * @param {Number} rad the angle to rotate the matrix by
- * @returns {mat4} out
- */mat4.rotateX=function(out,a,rad){var s=Math.sin(rad),c=Math.cos(rad),a10=a[4],a11=a[5],a12=a[6],a13=a[7],a20=a[8],a21=a[9],a22=a[10],a23=a[11];if(a!==out){ // If the source and destination differ, copy the unchanged rows
-out[0]=a[0];out[1]=a[1];out[2]=a[2];out[3]=a[3];out[12]=a[12];out[13]=a[13];out[14]=a[14];out[15]=a[15];} // Perform axis-specific matrix multiplication
-out[4]=a10*c+a20*s;out[5]=a11*c+a21*s;out[6]=a12*c+a22*s;out[7]=a13*c+a23*s;out[8]=a20*c-a10*s;out[9]=a21*c-a11*s;out[10]=a22*c-a12*s;out[11]=a23*c-a13*s;return out;}; /**
- * Rotates a matrix by the given angle around the Y axis
- *
- * @param {mat4} out the receiving matrix
- * @param {mat4} a the matrix to rotate
- * @param {Number} rad the angle to rotate the matrix by
- * @returns {mat4} out
- */mat4.rotateY=function(out,a,rad){var s=Math.sin(rad),c=Math.cos(rad),a00=a[0],a01=a[1],a02=a[2],a03=a[3],a20=a[8],a21=a[9],a22=a[10],a23=a[11];if(a!==out){ // If the source and destination differ, copy the unchanged rows
-out[4]=a[4];out[5]=a[5];out[6]=a[6];out[7]=a[7];out[12]=a[12];out[13]=a[13];out[14]=a[14];out[15]=a[15];} // Perform axis-specific matrix multiplication
-out[0]=a00*c-a20*s;out[1]=a01*c-a21*s;out[2]=a02*c-a22*s;out[3]=a03*c-a23*s;out[8]=a00*s+a20*c;out[9]=a01*s+a21*c;out[10]=a02*s+a22*c;out[11]=a03*s+a23*c;return out;}; /**
- * Rotates a matrix by the given angle around the Z axis
- *
- * @param {mat4} out the receiving matrix
- * @param {mat4} a the matrix to rotate
- * @param {Number} rad the angle to rotate the matrix by
- * @returns {mat4} out
- */mat4.rotateZ=function(out,a,rad){var s=Math.sin(rad),c=Math.cos(rad),a00=a[0],a01=a[1],a02=a[2],a03=a[3],a10=a[4],a11=a[5],a12=a[6],a13=a[7];if(a!==out){ // If the source and destination differ, copy the unchanged last row
-out[8]=a[8];out[9]=a[9];out[10]=a[10];out[11]=a[11];out[12]=a[12];out[13]=a[13];out[14]=a[14];out[15]=a[15];} // Perform axis-specific matrix multiplication
-out[0]=a00*c+a10*s;out[1]=a01*c+a11*s;out[2]=a02*c+a12*s;out[3]=a03*c+a13*s;out[4]=a10*c-a00*s;out[5]=a11*c-a01*s;out[6]=a12*c-a02*s;out[7]=a13*c-a03*s;return out;}; /**
- * Creates a matrix from a vector translation
- * This is equivalent to (but much faster than):
- *
- *     mat4.identity(dest);
- *     mat4.translate(dest, dest, vec);
- *
- * @param {mat4} out mat4 receiving operation result
- * @param {vec3} v Translation vector
- * @returns {mat4} out
- */mat4.fromTranslation=function(out,v){out[0]=1;out[1]=0;out[2]=0;out[3]=0;out[4]=0;out[5]=1;out[6]=0;out[7]=0;out[8]=0;out[9]=0;out[10]=1;out[11]=0;out[12]=v[0];out[13]=v[1];out[14]=v[2];out[15]=1;return out;}; /**
- * Creates a matrix from a vector scaling
- * This is equivalent to (but much faster than):
- *
- *     mat4.identity(dest);
- *     mat4.scale(dest, dest, vec);
- *
- * @param {mat4} out mat4 receiving operation result
- * @param {vec3} v Scaling vector
- * @returns {mat4} out
- */mat4.fromScaling=function(out,v){out[0]=v[0];out[1]=0;out[2]=0;out[3]=0;out[4]=0;out[5]=v[1];out[6]=0;out[7]=0;out[8]=0;out[9]=0;out[10]=v[2];out[11]=0;out[12]=0;out[13]=0;out[14]=0;out[15]=1;return out;}; /**
- * Creates a matrix from a given angle around a given axis
- * This is equivalent to (but much faster than):
- *
- *     mat4.identity(dest);
- *     mat4.rotate(dest, dest, rad, axis);
- *
- * @param {mat4} out mat4 receiving operation result
- * @param {Number} rad the angle to rotate the matrix by
- * @param {vec3} axis the axis to rotate around
- * @returns {mat4} out
- */mat4.fromRotation=function(out,rad,axis){var x=axis[0],y=axis[1],z=axis[2],len=Math.sqrt(x*x+y*y+z*z),s,c,t;if(Math.abs(len)<glMatrix.EPSILON){return null;}len=1/len;x*=len;y*=len;z*=len;s=Math.sin(rad);c=Math.cos(rad);t=1-c; // Perform rotation-specific matrix multiplication
-out[0]=x*x*t+c;out[1]=y*x*t+z*s;out[2]=z*x*t-y*s;out[3]=0;out[4]=x*y*t-z*s;out[5]=y*y*t+c;out[6]=z*y*t+x*s;out[7]=0;out[8]=x*z*t+y*s;out[9]=y*z*t-x*s;out[10]=z*z*t+c;out[11]=0;out[12]=0;out[13]=0;out[14]=0;out[15]=1;return out;}; /**
- * Creates a matrix from the given angle around the X axis
- * This is equivalent to (but much faster than):
- *
- *     mat4.identity(dest);
- *     mat4.rotateX(dest, dest, rad);
- *
- * @param {mat4} out mat4 receiving operation result
- * @param {Number} rad the angle to rotate the matrix by
- * @returns {mat4} out
- */mat4.fromXRotation=function(out,rad){var s=Math.sin(rad),c=Math.cos(rad); // Perform axis-specific matrix multiplication
-out[0]=1;out[1]=0;out[2]=0;out[3]=0;out[4]=0;out[5]=c;out[6]=s;out[7]=0;out[8]=0;out[9]=-s;out[10]=c;out[11]=0;out[12]=0;out[13]=0;out[14]=0;out[15]=1;return out;}; /**
- * Creates a matrix from the given angle around the Y axis
- * This is equivalent to (but much faster than):
- *
- *     mat4.identity(dest);
- *     mat4.rotateY(dest, dest, rad);
- *
- * @param {mat4} out mat4 receiving operation result
- * @param {Number} rad the angle to rotate the matrix by
- * @returns {mat4} out
- */mat4.fromYRotation=function(out,rad){var s=Math.sin(rad),c=Math.cos(rad); // Perform axis-specific matrix multiplication
-out[0]=c;out[1]=0;out[2]=-s;out[3]=0;out[4]=0;out[5]=1;out[6]=0;out[7]=0;out[8]=s;out[9]=0;out[10]=c;out[11]=0;out[12]=0;out[13]=0;out[14]=0;out[15]=1;return out;}; /**
- * Creates a matrix from the given angle around the Z axis
- * This is equivalent to (but much faster than):
- *
- *     mat4.identity(dest);
- *     mat4.rotateZ(dest, dest, rad);
- *
- * @param {mat4} out mat4 receiving operation result
- * @param {Number} rad the angle to rotate the matrix by
- * @returns {mat4} out
- */mat4.fromZRotation=function(out,rad){var s=Math.sin(rad),c=Math.cos(rad); // Perform axis-specific matrix multiplication
-out[0]=c;out[1]=s;out[2]=0;out[3]=0;out[4]=-s;out[5]=c;out[6]=0;out[7]=0;out[8]=0;out[9]=0;out[10]=1;out[11]=0;out[12]=0;out[13]=0;out[14]=0;out[15]=1;return out;}; /**
- * Creates a matrix from a quaternion rotation and vector translation
- * This is equivalent to (but much faster than):
- *
- *     mat4.identity(dest);
- *     mat4.translate(dest, vec);
- *     var quatMat = mat4.create();
- *     quat4.toMat4(quat, quatMat);
- *     mat4.multiply(dest, quatMat);
- *
- * @param {mat4} out mat4 receiving operation result
- * @param {quat4} q Rotation quaternion
- * @param {vec3} v Translation vector
- * @returns {mat4} out
- */mat4.fromRotationTranslation=function(out,q,v){ // Quaternion math
-var x=q[0],y=q[1],z=q[2],w=q[3],x2=x+x,y2=y+y,z2=z+z,xx=x*x2,xy=x*y2,xz=x*z2,yy=y*y2,yz=y*z2,zz=z*z2,wx=w*x2,wy=w*y2,wz=w*z2;out[0]=1-(yy+zz);out[1]=xy+wz;out[2]=xz-wy;out[3]=0;out[4]=xy-wz;out[5]=1-(xx+zz);out[6]=yz+wx;out[7]=0;out[8]=xz+wy;out[9]=yz-wx;out[10]=1-(xx+yy);out[11]=0;out[12]=v[0];out[13]=v[1];out[14]=v[2];out[15]=1;return out;}; /**
- * Creates a matrix from a quaternion rotation, vector translation and vector scale
- * This is equivalent to (but much faster than):
- *
- *     mat4.identity(dest);
- *     mat4.translate(dest, vec);
- *     var quatMat = mat4.create();
- *     quat4.toMat4(quat, quatMat);
- *     mat4.multiply(dest, quatMat);
- *     mat4.scale(dest, scale)
- *
- * @param {mat4} out mat4 receiving operation result
- * @param {quat4} q Rotation quaternion
- * @param {vec3} v Translation vector
- * @param {vec3} s Scaling vector
- * @returns {mat4} out
- */mat4.fromRotationTranslationScale=function(out,q,v,s){ // Quaternion math
-var x=q[0],y=q[1],z=q[2],w=q[3],x2=x+x,y2=y+y,z2=z+z,xx=x*x2,xy=x*y2,xz=x*z2,yy=y*y2,yz=y*z2,zz=z*z2,wx=w*x2,wy=w*y2,wz=w*z2,sx=s[0],sy=s[1],sz=s[2];out[0]=(1-(yy+zz))*sx;out[1]=(xy+wz)*sx;out[2]=(xz-wy)*sx;out[3]=0;out[4]=(xy-wz)*sy;out[5]=(1-(xx+zz))*sy;out[6]=(yz+wx)*sy;out[7]=0;out[8]=(xz+wy)*sz;out[9]=(yz-wx)*sz;out[10]=(1-(xx+yy))*sz;out[11]=0;out[12]=v[0];out[13]=v[1];out[14]=v[2];out[15]=1;return out;}; /**
- * Creates a matrix from a quaternion rotation, vector translation and vector scale, rotating and scaling around the given origin
- * This is equivalent to (but much faster than):
- *
- *     mat4.identity(dest);
- *     mat4.translate(dest, vec);
- *     mat4.translate(dest, origin);
- *     var quatMat = mat4.create();
- *     quat4.toMat4(quat, quatMat);
- *     mat4.multiply(dest, quatMat);
- *     mat4.scale(dest, scale)
- *     mat4.translate(dest, negativeOrigin);
- *
- * @param {mat4} out mat4 receiving operation result
- * @param {quat4} q Rotation quaternion
- * @param {vec3} v Translation vector
- * @param {vec3} s Scaling vector
- * @param {vec3} o The origin vector around which to scale and rotate
- * @returns {mat4} out
- */mat4.fromRotationTranslationScaleOrigin=function(out,q,v,s,o){ // Quaternion math
-var x=q[0],y=q[1],z=q[2],w=q[3],x2=x+x,y2=y+y,z2=z+z,xx=x*x2,xy=x*y2,xz=x*z2,yy=y*y2,yz=y*z2,zz=z*z2,wx=w*x2,wy=w*y2,wz=w*z2,sx=s[0],sy=s[1],sz=s[2],ox=o[0],oy=o[1],oz=o[2];out[0]=(1-(yy+zz))*sx;out[1]=(xy+wz)*sx;out[2]=(xz-wy)*sx;out[3]=0;out[4]=(xy-wz)*sy;out[5]=(1-(xx+zz))*sy;out[6]=(yz+wx)*sy;out[7]=0;out[8]=(xz+wy)*sz;out[9]=(yz-wx)*sz;out[10]=(1-(xx+yy))*sz;out[11]=0;out[12]=v[0]+ox-(out[0]*ox+out[4]*oy+out[8]*oz);out[13]=v[1]+oy-(out[1]*ox+out[5]*oy+out[9]*oz);out[14]=v[2]+oz-(out[2]*ox+out[6]*oy+out[10]*oz);out[15]=1;return out;};mat4.fromQuat=function(out,q){var x=q[0],y=q[1],z=q[2],w=q[3],x2=x+x,y2=y+y,z2=z+z,xx=x*x2,yx=y*x2,yy=y*y2,zx=z*x2,zy=z*y2,zz=z*z2,wx=w*x2,wy=w*y2,wz=w*z2;out[0]=1-yy-zz;out[1]=yx+wz;out[2]=zx-wy;out[3]=0;out[4]=yx-wz;out[5]=1-xx-zz;out[6]=zy+wx;out[7]=0;out[8]=zx+wy;out[9]=zy-wx;out[10]=1-xx-yy;out[11]=0;out[12]=0;out[13]=0;out[14]=0;out[15]=1;return out;}; /**
- * Generates a frustum matrix with the given bounds
- *
- * @param {mat4} out mat4 frustum matrix will be written into
- * @param {Number} left Left bound of the frustum
- * @param {Number} right Right bound of the frustum
- * @param {Number} bottom Bottom bound of the frustum
- * @param {Number} top Top bound of the frustum
- * @param {Number} near Near bound of the frustum
- * @param {Number} far Far bound of the frustum
- * @returns {mat4} out
- */mat4.frustum=function(out,left,right,bottom,top,near,far){var rl=1/(right-left),tb=1/(top-bottom),nf=1/(near-far);out[0]=near*2*rl;out[1]=0;out[2]=0;out[3]=0;out[4]=0;out[5]=near*2*tb;out[6]=0;out[7]=0;out[8]=(right+left)*rl;out[9]=(top+bottom)*tb;out[10]=(far+near)*nf;out[11]=-1;out[12]=0;out[13]=0;out[14]=far*near*2*nf;out[15]=0;return out;}; /**
- * Generates a perspective projection matrix with the given bounds
- *
- * @param {mat4} out mat4 frustum matrix will be written into
- * @param {number} fovy Vertical field of view in radians
- * @param {number} aspect Aspect ratio. typically viewport width/height
- * @param {number} near Near bound of the frustum
- * @param {number} far Far bound of the frustum
- * @returns {mat4} out
- */mat4.perspective=function(out,fovy,aspect,near,far){var f=1.0/Math.tan(fovy/2),nf=1/(near-far);out[0]=f/aspect;out[1]=0;out[2]=0;out[3]=0;out[4]=0;out[5]=f;out[6]=0;out[7]=0;out[8]=0;out[9]=0;out[10]=(far+near)*nf;out[11]=-1;out[12]=0;out[13]=0;out[14]=2*far*near*nf;out[15]=0;return out;}; /**
- * Generates a perspective projection matrix with the given field of view.
- * This is primarily useful for generating projection matrices to be used
- * with the still experiemental WebVR API.
- *
- * @param {mat4} out mat4 frustum matrix will be written into
- * @param {number} fov Object containing the following values: upDegrees, downDegrees, leftDegrees, rightDegrees
- * @param {number} near Near bound of the frustum
- * @param {number} far Far bound of the frustum
- * @returns {mat4} out
- */mat4.perspectiveFromFieldOfView=function(out,fov,near,far){var upTan=Math.tan(fov.upDegrees*Math.PI/180.0),downTan=Math.tan(fov.downDegrees*Math.PI/180.0),leftTan=Math.tan(fov.leftDegrees*Math.PI/180.0),rightTan=Math.tan(fov.rightDegrees*Math.PI/180.0),xScale=2.0/(leftTan+rightTan),yScale=2.0/(upTan+downTan);out[0]=xScale;out[1]=0.0;out[2]=0.0;out[3]=0.0;out[4]=0.0;out[5]=yScale;out[6]=0.0;out[7]=0.0;out[8]=-((leftTan-rightTan)*xScale*0.5);out[9]=(upTan-downTan)*yScale*0.5;out[10]=far/(near-far);out[11]=-1.0;out[12]=0.0;out[13]=0.0;out[14]=far*near/(near-far);out[15]=0.0;return out;}; /**
- * Generates a orthogonal projection matrix with the given bounds
- *
- * @param {mat4} out mat4 frustum matrix will be written into
- * @param {number} left Left bound of the frustum
- * @param {number} right Right bound of the frustum
- * @param {number} bottom Bottom bound of the frustum
- * @param {number} top Top bound of the frustum
- * @param {number} near Near bound of the frustum
- * @param {number} far Far bound of the frustum
- * @returns {mat4} out
- */mat4.ortho=function(out,left,right,bottom,top,near,far){var lr=1/(left-right),bt=1/(bottom-top),nf=1/(near-far);out[0]=-2*lr;out[1]=0;out[2]=0;out[3]=0;out[4]=0;out[5]=-2*bt;out[6]=0;out[7]=0;out[8]=0;out[9]=0;out[10]=2*nf;out[11]=0;out[12]=(left+right)*lr;out[13]=(top+bottom)*bt;out[14]=(far+near)*nf;out[15]=1;return out;}; /**
- * Generates a look-at matrix with the given eye position, focal point, and up axis
- *
- * @param {mat4} out mat4 frustum matrix will be written into
- * @param {vec3} eye Position of the viewer
- * @param {vec3} center Point the viewer is looking at
- * @param {vec3} up vec3 pointing up
- * @returns {mat4} out
- */mat4.lookAt=function(out,eye,center,up){var x0,x1,x2,y0,y1,y2,z0,z1,z2,len,eyex=eye[0],eyey=eye[1],eyez=eye[2],upx=up[0],upy=up[1],upz=up[2],centerx=center[0],centery=center[1],centerz=center[2];if(Math.abs(eyex-centerx)<glMatrix.EPSILON&&Math.abs(eyey-centery)<glMatrix.EPSILON&&Math.abs(eyez-centerz)<glMatrix.EPSILON){return mat4.identity(out);}z0=eyex-centerx;z1=eyey-centery;z2=eyez-centerz;len=1/Math.sqrt(z0*z0+z1*z1+z2*z2);z0*=len;z1*=len;z2*=len;x0=upy*z2-upz*z1;x1=upz*z0-upx*z2;x2=upx*z1-upy*z0;len=Math.sqrt(x0*x0+x1*x1+x2*x2);if(!len){x0=0;x1=0;x2=0;}else {len=1/len;x0*=len;x1*=len;x2*=len;}y0=z1*x2-z2*x1;y1=z2*x0-z0*x2;y2=z0*x1-z1*x0;len=Math.sqrt(y0*y0+y1*y1+y2*y2);if(!len){y0=0;y1=0;y2=0;}else {len=1/len;y0*=len;y1*=len;y2*=len;}out[0]=x0;out[1]=y0;out[2]=z0;out[3]=0;out[4]=x1;out[5]=y1;out[6]=z1;out[7]=0;out[8]=x2;out[9]=y2;out[10]=z2;out[11]=0;out[12]=-(x0*eyex+x1*eyey+x2*eyez);out[13]=-(y0*eyex+y1*eyey+y2*eyez);out[14]=-(z0*eyex+z1*eyey+z2*eyez);out[15]=1;return out;}; /**
- * Returns a string representation of a mat4
- *
- * @param {mat4} mat matrix to represent as a string
- * @returns {String} string representation of the matrix
- */mat4.str=function(a){return 'mat4('+a[0]+', '+a[1]+', '+a[2]+', '+a[3]+', '+a[4]+', '+a[5]+', '+a[6]+', '+a[7]+', '+a[8]+', '+a[9]+', '+a[10]+', '+a[11]+', '+a[12]+', '+a[13]+', '+a[14]+', '+a[15]+')';}; /**
- * Returns Frobenius norm of a mat4
- *
- * @param {mat4} a the matrix to calculate Frobenius norm of
- * @returns {Number} Frobenius norm
- */mat4.frob=function(a){return Math.sqrt(Math.pow(a[0],2)+Math.pow(a[1],2)+Math.pow(a[2],2)+Math.pow(a[3],2)+Math.pow(a[4],2)+Math.pow(a[5],2)+Math.pow(a[6],2)+Math.pow(a[7],2)+Math.pow(a[8],2)+Math.pow(a[9],2)+Math.pow(a[10],2)+Math.pow(a[11],2)+Math.pow(a[12],2)+Math.pow(a[13],2)+Math.pow(a[14],2)+Math.pow(a[15],2));};module.exports=mat4;},{"./common.js":2}],7:[function(_dereq_,module,exports){ /* Copyright (c) 2015, Brandon Jones, Colin MacKenzie IV.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE. */var glMatrix=_dereq_("./common.js");var mat3=_dereq_("./mat3.js");var vec3=_dereq_("./vec3.js");var vec4=_dereq_("./vec4.js"); /**
- * @class Quaternion
- * @name quat
- */var quat={}; /**
- * Creates a new identity quat
- *
- * @returns {quat} a new quaternion
- */quat.create=function(){var out=new glMatrix.ARRAY_TYPE(4);out[0]=0;out[1]=0;out[2]=0;out[3]=1;return out;}; /**
- * Sets a quaternion to represent the shortest rotation from one
- * vector to another.
- *
- * Both vectors are assumed to be unit length.
- *
- * @param {quat} out the receiving quaternion.
- * @param {vec3} a the initial vector
- * @param {vec3} b the destination vector
- * @returns {quat} out
- */quat.rotationTo=function(){var tmpvec3=vec3.create();var xUnitVec3=vec3.fromValues(1,0,0);var yUnitVec3=vec3.fromValues(0,1,0);return function(out,a,b){var dot=vec3.dot(a,b);if(dot<-0.999999){vec3.cross(tmpvec3,xUnitVec3,a);if(vec3.length(tmpvec3)<0.000001)vec3.cross(tmpvec3,yUnitVec3,a);vec3.normalize(tmpvec3,tmpvec3);quat.setAxisAngle(out,tmpvec3,Math.PI);return out;}else if(dot>0.999999){out[0]=0;out[1]=0;out[2]=0;out[3]=1;return out;}else {vec3.cross(tmpvec3,a,b);out[0]=tmpvec3[0];out[1]=tmpvec3[1];out[2]=tmpvec3[2];out[3]=1+dot;return quat.normalize(out,out);}};}(); /**
- * Sets the specified quaternion with values corresponding to the given
- * axes. Each axis is a vec3 and is expected to be unit length and
- * perpendicular to all other specified axes.
- *
- * @param {vec3} view  the vector representing the viewing direction
- * @param {vec3} right the vector representing the local "right" direction
- * @param {vec3} up    the vector representing the local "up" direction
- * @returns {quat} out
- */quat.setAxes=function(){var matr=mat3.create();return function(out,view,right,up){matr[0]=right[0];matr[3]=right[1];matr[6]=right[2];matr[1]=up[0];matr[4]=up[1];matr[7]=up[2];matr[2]=-view[0];matr[5]=-view[1];matr[8]=-view[2];return quat.normalize(out,quat.fromMat3(out,matr));};}(); /**
- * Creates a new quat initialized with values from an existing quaternion
- *
- * @param {quat} a quaternion to clone
- * @returns {quat} a new quaternion
- * @function
- */quat.clone=vec4.clone; /**
- * Creates a new quat initialized with the given values
- *
- * @param {Number} x X component
- * @param {Number} y Y component
- * @param {Number} z Z component
- * @param {Number} w W component
- * @returns {quat} a new quaternion
- * @function
- */quat.fromValues=vec4.fromValues; /**
- * Copy the values from one quat to another
- *
- * @param {quat} out the receiving quaternion
- * @param {quat} a the source quaternion
- * @returns {quat} out
- * @function
- */quat.copy=vec4.copy; /**
- * Set the components of a quat to the given values
- *
- * @param {quat} out the receiving quaternion
- * @param {Number} x X component
- * @param {Number} y Y component
- * @param {Number} z Z component
- * @param {Number} w W component
- * @returns {quat} out
- * @function
- */quat.set=vec4.set; /**
- * Set a quat to the identity quaternion
- *
- * @param {quat} out the receiving quaternion
- * @returns {quat} out
- */quat.identity=function(out){out[0]=0;out[1]=0;out[2]=0;out[3]=1;return out;}; /**
- * Sets a quat from the given angle and rotation axis,
- * then returns it.
- *
- * @param {quat} out the receiving quaternion
- * @param {vec3} axis the axis around which to rotate
- * @param {Number} rad the angle in radians
- * @returns {quat} out
- **/quat.setAxisAngle=function(out,axis,rad){rad=rad*0.5;var s=Math.sin(rad);out[0]=s*axis[0];out[1]=s*axis[1];out[2]=s*axis[2];out[3]=Math.cos(rad);return out;}; /**
- * Adds two quat's
- *
- * @param {quat} out the receiving quaternion
- * @param {quat} a the first operand
- * @param {quat} b the second operand
- * @returns {quat} out
- * @function
- */quat.add=vec4.add; /**
- * Multiplies two quat's
- *
- * @param {quat} out the receiving quaternion
- * @param {quat} a the first operand
- * @param {quat} b the second operand
- * @returns {quat} out
- */quat.multiply=function(out,a,b){var ax=a[0],ay=a[1],az=a[2],aw=a[3],bx=b[0],by=b[1],bz=b[2],bw=b[3];out[0]=ax*bw+aw*bx+ay*bz-az*by;out[1]=ay*bw+aw*by+az*bx-ax*bz;out[2]=az*bw+aw*bz+ax*by-ay*bx;out[3]=aw*bw-ax*bx-ay*by-az*bz;return out;}; /**
- * Alias for {@link quat.multiply}
- * @function
- */quat.mul=quat.multiply; /**
- * Scales a quat by a scalar number
- *
- * @param {quat} out the receiving vector
- * @param {quat} a the vector to scale
- * @param {Number} b amount to scale the vector by
- * @returns {quat} out
- * @function
- */quat.scale=vec4.scale; /**
- * Rotates a quaternion by the given angle about the X axis
- *
- * @param {quat} out quat receiving operation result
- * @param {quat} a quat to rotate
- * @param {number} rad angle (in radians) to rotate
- * @returns {quat} out
- */quat.rotateX=function(out,a,rad){rad*=0.5;var ax=a[0],ay=a[1],az=a[2],aw=a[3],bx=Math.sin(rad),bw=Math.cos(rad);out[0]=ax*bw+aw*bx;out[1]=ay*bw+az*bx;out[2]=az*bw-ay*bx;out[3]=aw*bw-ax*bx;return out;}; /**
- * Rotates a quaternion by the given angle about the Y axis
- *
- * @param {quat} out quat receiving operation result
- * @param {quat} a quat to rotate
- * @param {number} rad angle (in radians) to rotate
- * @returns {quat} out
- */quat.rotateY=function(out,a,rad){rad*=0.5;var ax=a[0],ay=a[1],az=a[2],aw=a[3],by=Math.sin(rad),bw=Math.cos(rad);out[0]=ax*bw-az*by;out[1]=ay*bw+aw*by;out[2]=az*bw+ax*by;out[3]=aw*bw-ay*by;return out;}; /**
- * Rotates a quaternion by the given angle about the Z axis
- *
- * @param {quat} out quat receiving operation result
- * @param {quat} a quat to rotate
- * @param {number} rad angle (in radians) to rotate
- * @returns {quat} out
- */quat.rotateZ=function(out,a,rad){rad*=0.5;var ax=a[0],ay=a[1],az=a[2],aw=a[3],bz=Math.sin(rad),bw=Math.cos(rad);out[0]=ax*bw+ay*bz;out[1]=ay*bw-ax*bz;out[2]=az*bw+aw*bz;out[3]=aw*bw-az*bz;return out;}; /**
- * Calculates the W component of a quat from the X, Y, and Z components.
- * Assumes that quaternion is 1 unit in length.
- * Any existing W component will be ignored.
- *
- * @param {quat} out the receiving quaternion
- * @param {quat} a quat to calculate W component of
- * @returns {quat} out
- */quat.calculateW=function(out,a){var x=a[0],y=a[1],z=a[2];out[0]=x;out[1]=y;out[2]=z;out[3]=Math.sqrt(Math.abs(1.0-x*x-y*y-z*z));return out;}; /**
- * Calculates the dot product of two quat's
- *
- * @param {quat} a the first operand
- * @param {quat} b the second operand
- * @returns {Number} dot product of a and b
- * @function
- */quat.dot=vec4.dot; /**
- * Performs a linear interpolation between two quat's
- *
- * @param {quat} out the receiving quaternion
- * @param {quat} a the first operand
- * @param {quat} b the second operand
- * @param {Number} t interpolation amount between the two inputs
- * @returns {quat} out
- * @function
- */quat.lerp=vec4.lerp; /**
- * Performs a spherical linear interpolation between two quat
- *
- * @param {quat} out the receiving quaternion
- * @param {quat} a the first operand
- * @param {quat} b the second operand
- * @param {Number} t interpolation amount between the two inputs
- * @returns {quat} out
- */quat.slerp=function(out,a,b,t){ // benchmarks:
-//    http://jsperf.com/quaternion-slerp-implementations
-var ax=a[0],ay=a[1],az=a[2],aw=a[3],bx=b[0],by=b[1],bz=b[2],bw=b[3];var omega,cosom,sinom,scale0,scale1; // calc cosine
-cosom=ax*bx+ay*by+az*bz+aw*bw; // adjust signs (if necessary)
-if(cosom<0.0){cosom=-cosom;bx=-bx;by=-by;bz=-bz;bw=-bw;} // calculate coefficients
-if(1.0-cosom>0.000001){ // standard case (slerp)
-omega=Math.acos(cosom);sinom=Math.sin(omega);scale0=Math.sin((1.0-t)*omega)/sinom;scale1=Math.sin(t*omega)/sinom;}else { // "from" and "to" quaternions are very close 
-//  ... so we can do a linear interpolation
-scale0=1.0-t;scale1=t;} // calculate final values
-out[0]=scale0*ax+scale1*bx;out[1]=scale0*ay+scale1*by;out[2]=scale0*az+scale1*bz;out[3]=scale0*aw+scale1*bw;return out;}; /**
- * Performs a spherical linear interpolation with two control points
- *
- * @param {quat} out the receiving quaternion
- * @param {quat} a the first operand
- * @param {quat} b the second operand
- * @param {quat} c the third operand
- * @param {quat} d the fourth operand
- * @param {Number} t interpolation amount
- * @returns {quat} out
- */quat.sqlerp=function(){var temp1=quat.create();var temp2=quat.create();return function(out,a,b,c,d,t){quat.slerp(temp1,a,d,t);quat.slerp(temp2,b,c,t);quat.slerp(out,temp1,temp2,2*t*(1-t));return out;};}(); /**
- * Calculates the inverse of a quat
- *
- * @param {quat} out the receiving quaternion
- * @param {quat} a quat to calculate inverse of
- * @returns {quat} out
- */quat.invert=function(out,a){var a0=a[0],a1=a[1],a2=a[2],a3=a[3],dot=a0*a0+a1*a1+a2*a2+a3*a3,invDot=dot?1.0/dot:0; // TODO: Would be faster to return [0,0,0,0] immediately if dot == 0
-out[0]=-a0*invDot;out[1]=-a1*invDot;out[2]=-a2*invDot;out[3]=a3*invDot;return out;}; /**
- * Calculates the conjugate of a quat
- * If the quaternion is normalized, this function is faster than quat.inverse and produces the same result.
- *
- * @param {quat} out the receiving quaternion
- * @param {quat} a quat to calculate conjugate of
- * @returns {quat} out
- */quat.conjugate=function(out,a){out[0]=-a[0];out[1]=-a[1];out[2]=-a[2];out[3]=a[3];return out;}; /**
- * Calculates the length of a quat
- *
- * @param {quat} a vector to calculate length of
- * @returns {Number} length of a
- * @function
- */quat.length=vec4.length; /**
- * Alias for {@link quat.length}
- * @function
- */quat.len=quat.length; /**
- * Calculates the squared length of a quat
- *
- * @param {quat} a vector to calculate squared length of
- * @returns {Number} squared length of a
- * @function
- */quat.squaredLength=vec4.squaredLength; /**
- * Alias for {@link quat.squaredLength}
- * @function
- */quat.sqrLen=quat.squaredLength; /**
- * Normalize a quat
- *
- * @param {quat} out the receiving quaternion
- * @param {quat} a quaternion to normalize
- * @returns {quat} out
- * @function
- */quat.normalize=vec4.normalize; /**
- * Creates a quaternion from the given 3x3 rotation matrix.
- *
- * NOTE: The resultant quaternion is not normalized, so you should be sure
- * to renormalize the quaternion yourself where necessary.
- *
- * @param {quat} out the receiving quaternion
- * @param {mat3} m rotation matrix
- * @returns {quat} out
- * @function
- */quat.fromMat3=function(out,m){ // Algorithm in Ken Shoemake's article in 1987 SIGGRAPH course notes
-// article "Quaternion Calculus and Fast Animation".
-var fTrace=m[0]+m[4]+m[8];var fRoot;if(fTrace>0.0){ // |w| > 1/2, may as well choose w > 1/2
-fRoot=Math.sqrt(fTrace+1.0); // 2w
-out[3]=0.5*fRoot;fRoot=0.5/fRoot; // 1/(4w)
-out[0]=(m[5]-m[7])*fRoot;out[1]=(m[6]-m[2])*fRoot;out[2]=(m[1]-m[3])*fRoot;}else { // |w| <= 1/2
-var i=0;if(m[4]>m[0])i=1;if(m[8]>m[i*3+i])i=2;var j=(i+1)%3;var k=(i+2)%3;fRoot=Math.sqrt(m[i*3+i]-m[j*3+j]-m[k*3+k]+1.0);out[i]=0.5*fRoot;fRoot=0.5/fRoot;out[3]=(m[j*3+k]-m[k*3+j])*fRoot;out[j]=(m[j*3+i]+m[i*3+j])*fRoot;out[k]=(m[k*3+i]+m[i*3+k])*fRoot;}return out;}; /**
- * Returns a string representation of a quatenion
- *
- * @param {quat} vec vector to represent as a string
- * @returns {String} string representation of the vector
- */quat.str=function(a){return 'quat('+a[0]+', '+a[1]+', '+a[2]+', '+a[3]+')';};module.exports=quat;},{"./common.js":2,"./mat3.js":5,"./vec3.js":9,"./vec4.js":10}],8:[function(_dereq_,module,exports){ /* Copyright (c) 2015, Brandon Jones, Colin MacKenzie IV.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE. */var glMatrix=_dereq_("./common.js"); /**
- * @class 2 Dimensional Vector
- * @name vec2
- */var vec2={}; /**
- * Creates a new, empty vec2
- *
- * @returns {vec2} a new 2D vector
- */vec2.create=function(){var out=new glMatrix.ARRAY_TYPE(2);out[0]=0;out[1]=0;return out;}; /**
- * Creates a new vec2 initialized with values from an existing vector
- *
- * @param {vec2} a vector to clone
- * @returns {vec2} a new 2D vector
- */vec2.clone=function(a){var out=new glMatrix.ARRAY_TYPE(2);out[0]=a[0];out[1]=a[1];return out;}; /**
- * Creates a new vec2 initialized with the given values
- *
- * @param {Number} x X component
- * @param {Number} y Y component
- * @returns {vec2} a new 2D vector
- */vec2.fromValues=function(x,y){var out=new glMatrix.ARRAY_TYPE(2);out[0]=x;out[1]=y;return out;}; /**
- * Copy the values from one vec2 to another
- *
- * @param {vec2} out the receiving vector
- * @param {vec2} a the source vector
- * @returns {vec2} out
- */vec2.copy=function(out,a){out[0]=a[0];out[1]=a[1];return out;}; /**
- * Set the components of a vec2 to the given values
- *
- * @param {vec2} out the receiving vector
- * @param {Number} x X component
- * @param {Number} y Y component
- * @returns {vec2} out
- */vec2.set=function(out,x,y){out[0]=x;out[1]=y;return out;}; /**
- * Adds two vec2's
- *
- * @param {vec2} out the receiving vector
- * @param {vec2} a the first operand
- * @param {vec2} b the second operand
- * @returns {vec2} out
- */vec2.add=function(out,a,b){out[0]=a[0]+b[0];out[1]=a[1]+b[1];return out;}; /**
- * Subtracts vector b from vector a
- *
- * @param {vec2} out the receiving vector
- * @param {vec2} a the first operand
- * @param {vec2} b the second operand
- * @returns {vec2} out
- */vec2.subtract=function(out,a,b){out[0]=a[0]-b[0];out[1]=a[1]-b[1];return out;}; /**
- * Alias for {@link vec2.subtract}
- * @function
- */vec2.sub=vec2.subtract; /**
- * Multiplies two vec2's
- *
- * @param {vec2} out the receiving vector
- * @param {vec2} a the first operand
- * @param {vec2} b the second operand
- * @returns {vec2} out
- */vec2.multiply=function(out,a,b){out[0]=a[0]*b[0];out[1]=a[1]*b[1];return out;}; /**
- * Alias for {@link vec2.multiply}
- * @function
- */vec2.mul=vec2.multiply; /**
- * Divides two vec2's
- *
- * @param {vec2} out the receiving vector
- * @param {vec2} a the first operand
- * @param {vec2} b the second operand
- * @returns {vec2} out
- */vec2.divide=function(out,a,b){out[0]=a[0]/b[0];out[1]=a[1]/b[1];return out;}; /**
- * Alias for {@link vec2.divide}
- * @function
- */vec2.div=vec2.divide; /**
- * Returns the minimum of two vec2's
- *
- * @param {vec2} out the receiving vector
- * @param {vec2} a the first operand
- * @param {vec2} b the second operand
- * @returns {vec2} out
- */vec2.min=function(out,a,b){out[0]=Math.min(a[0],b[0]);out[1]=Math.min(a[1],b[1]);return out;}; /**
- * Returns the maximum of two vec2's
- *
- * @param {vec2} out the receiving vector
- * @param {vec2} a the first operand
- * @param {vec2} b the second operand
- * @returns {vec2} out
- */vec2.max=function(out,a,b){out[0]=Math.max(a[0],b[0]);out[1]=Math.max(a[1],b[1]);return out;}; /**
- * Scales a vec2 by a scalar number
- *
- * @param {vec2} out the receiving vector
- * @param {vec2} a the vector to scale
- * @param {Number} b amount to scale the vector by
- * @returns {vec2} out
- */vec2.scale=function(out,a,b){out[0]=a[0]*b;out[1]=a[1]*b;return out;}; /**
- * Adds two vec2's after scaling the second operand by a scalar value
- *
- * @param {vec2} out the receiving vector
- * @param {vec2} a the first operand
- * @param {vec2} b the second operand
- * @param {Number} scale the amount to scale b by before adding
- * @returns {vec2} out
- */vec2.scaleAndAdd=function(out,a,b,scale){out[0]=a[0]+b[0]*scale;out[1]=a[1]+b[1]*scale;return out;}; /**
- * Calculates the euclidian distance between two vec2's
- *
- * @param {vec2} a the first operand
- * @param {vec2} b the second operand
- * @returns {Number} distance between a and b
- */vec2.distance=function(a,b){var x=b[0]-a[0],y=b[1]-a[1];return Math.sqrt(x*x+y*y);}; /**
- * Alias for {@link vec2.distance}
- * @function
- */vec2.dist=vec2.distance; /**
- * Calculates the squared euclidian distance between two vec2's
- *
- * @param {vec2} a the first operand
- * @param {vec2} b the second operand
- * @returns {Number} squared distance between a and b
- */vec2.squaredDistance=function(a,b){var x=b[0]-a[0],y=b[1]-a[1];return x*x+y*y;}; /**
- * Alias for {@link vec2.squaredDistance}
- * @function
- */vec2.sqrDist=vec2.squaredDistance; /**
- * Calculates the length of a vec2
- *
- * @param {vec2} a vector to calculate length of
- * @returns {Number} length of a
- */vec2.length=function(a){var x=a[0],y=a[1];return Math.sqrt(x*x+y*y);}; /**
- * Alias for {@link vec2.length}
- * @function
- */vec2.len=vec2.length; /**
- * Calculates the squared length of a vec2
- *
- * @param {vec2} a vector to calculate squared length of
- * @returns {Number} squared length of a
- */vec2.squaredLength=function(a){var x=a[0],y=a[1];return x*x+y*y;}; /**
- * Alias for {@link vec2.squaredLength}
- * @function
- */vec2.sqrLen=vec2.squaredLength; /**
- * Negates the components of a vec2
- *
- * @param {vec2} out the receiving vector
- * @param {vec2} a vector to negate
- * @returns {vec2} out
- */vec2.negate=function(out,a){out[0]=-a[0];out[1]=-a[1];return out;}; /**
- * Returns the inverse of the components of a vec2
- *
- * @param {vec2} out the receiving vector
- * @param {vec2} a vector to invert
- * @returns {vec2} out
- */vec2.inverse=function(out,a){out[0]=1.0/a[0];out[1]=1.0/a[1];return out;}; /**
- * Normalize a vec2
- *
- * @param {vec2} out the receiving vector
- * @param {vec2} a vector to normalize
- * @returns {vec2} out
- */vec2.normalize=function(out,a){var x=a[0],y=a[1];var len=x*x+y*y;if(len>0){ //TODO: evaluate use of glm_invsqrt here?
-len=1/Math.sqrt(len);out[0]=a[0]*len;out[1]=a[1]*len;}return out;}; /**
- * Calculates the dot product of two vec2's
- *
- * @param {vec2} a the first operand
- * @param {vec2} b the second operand
- * @returns {Number} dot product of a and b
- */vec2.dot=function(a,b){return a[0]*b[0]+a[1]*b[1];}; /**
- * Computes the cross product of two vec2's
- * Note that the cross product must by definition produce a 3D vector
- *
- * @param {vec3} out the receiving vector
- * @param {vec2} a the first operand
- * @param {vec2} b the second operand
- * @returns {vec3} out
- */vec2.cross=function(out,a,b){var z=a[0]*b[1]-a[1]*b[0];out[0]=out[1]=0;out[2]=z;return out;}; /**
- * Performs a linear interpolation between two vec2's
- *
- * @param {vec2} out the receiving vector
- * @param {vec2} a the first operand
- * @param {vec2} b the second operand
- * @param {Number} t interpolation amount between the two inputs
- * @returns {vec2} out
- */vec2.lerp=function(out,a,b,t){var ax=a[0],ay=a[1];out[0]=ax+t*(b[0]-ax);out[1]=ay+t*(b[1]-ay);return out;}; /**
- * Generates a random vector with the given scale
- *
- * @param {vec2} out the receiving vector
- * @param {Number} [scale] Length of the resulting vector. If ommitted, a unit vector will be returned
- * @returns {vec2} out
- */vec2.random=function(out,scale){scale=scale||1.0;var r=glMatrix.RANDOM()*2.0*Math.PI;out[0]=Math.cos(r)*scale;out[1]=Math.sin(r)*scale;return out;}; /**
- * Transforms the vec2 with a mat2
- *
- * @param {vec2} out the receiving vector
- * @param {vec2} a the vector to transform
- * @param {mat2} m matrix to transform with
- * @returns {vec2} out
- */vec2.transformMat2=function(out,a,m){var x=a[0],y=a[1];out[0]=m[0]*x+m[2]*y;out[1]=m[1]*x+m[3]*y;return out;}; /**
- * Transforms the vec2 with a mat2d
- *
- * @param {vec2} out the receiving vector
- * @param {vec2} a the vector to transform
- * @param {mat2d} m matrix to transform with
- * @returns {vec2} out
- */vec2.transformMat2d=function(out,a,m){var x=a[0],y=a[1];out[0]=m[0]*x+m[2]*y+m[4];out[1]=m[1]*x+m[3]*y+m[5];return out;}; /**
- * Transforms the vec2 with a mat3
- * 3rd vector component is implicitly '1'
- *
- * @param {vec2} out the receiving vector
- * @param {vec2} a the vector to transform
- * @param {mat3} m matrix to transform with
- * @returns {vec2} out
- */vec2.transformMat3=function(out,a,m){var x=a[0],y=a[1];out[0]=m[0]*x+m[3]*y+m[6];out[1]=m[1]*x+m[4]*y+m[7];return out;}; /**
- * Transforms the vec2 with a mat4
- * 3rd vector component is implicitly '0'
- * 4th vector component is implicitly '1'
- *
- * @param {vec2} out the receiving vector
- * @param {vec2} a the vector to transform
- * @param {mat4} m matrix to transform with
- * @returns {vec2} out
- */vec2.transformMat4=function(out,a,m){var x=a[0],y=a[1];out[0]=m[0]*x+m[4]*y+m[12];out[1]=m[1]*x+m[5]*y+m[13];return out;}; /**
- * Perform some operation over an array of vec2s.
- *
- * @param {Array} a the array of vectors to iterate over
- * @param {Number} stride Number of elements between the start of each vec2. If 0 assumes tightly packed
- * @param {Number} offset Number of elements to skip at the beginning of the array
- * @param {Number} count Number of vec2s to iterate over. If 0 iterates over entire array
- * @param {Function} fn Function to call for each vector in the array
- * @param {Object} [arg] additional argument to pass to fn
- * @returns {Array} a
- * @function
- */vec2.forEach=function(){var vec=vec2.create();return function(a,stride,offset,count,fn,arg){var i,l;if(!stride){stride=2;}if(!offset){offset=0;}if(count){l=Math.min(count*stride+offset,a.length);}else {l=a.length;}for(i=offset;i<l;i+=stride){vec[0]=a[i];vec[1]=a[i+1];fn(vec,vec,arg);a[i]=vec[0];a[i+1]=vec[1];}return a;};}(); /**
- * Returns a string representation of a vector
- *
- * @param {vec2} vec vector to represent as a string
- * @returns {String} string representation of the vector
- */vec2.str=function(a){return 'vec2('+a[0]+', '+a[1]+')';};module.exports=vec2;},{"./common.js":2}],9:[function(_dereq_,module,exports){ /* Copyright (c) 2015, Brandon Jones, Colin MacKenzie IV.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE. */var glMatrix=_dereq_("./common.js"); /**
- * @class 3 Dimensional Vector
- * @name vec3
- */var vec3={}; /**
- * Creates a new, empty vec3
- *
- * @returns {vec3} a new 3D vector
- */vec3.create=function(){var out=new glMatrix.ARRAY_TYPE(3);out[0]=0;out[1]=0;out[2]=0;return out;}; /**
- * Creates a new vec3 initialized with values from an existing vector
- *
- * @param {vec3} a vector to clone
- * @returns {vec3} a new 3D vector
- */vec3.clone=function(a){var out=new glMatrix.ARRAY_TYPE(3);out[0]=a[0];out[1]=a[1];out[2]=a[2];return out;}; /**
- * Creates a new vec3 initialized with the given values
- *
- * @param {Number} x X component
- * @param {Number} y Y component
- * @param {Number} z Z component
- * @returns {vec3} a new 3D vector
- */vec3.fromValues=function(x,y,z){var out=new glMatrix.ARRAY_TYPE(3);out[0]=x;out[1]=y;out[2]=z;return out;}; /**
- * Copy the values from one vec3 to another
- *
- * @param {vec3} out the receiving vector
- * @param {vec3} a the source vector
- * @returns {vec3} out
- */vec3.copy=function(out,a){out[0]=a[0];out[1]=a[1];out[2]=a[2];return out;}; /**
- * Set the components of a vec3 to the given values
- *
- * @param {vec3} out the receiving vector
- * @param {Number} x X component
- * @param {Number} y Y component
- * @param {Number} z Z component
- * @returns {vec3} out
- */vec3.set=function(out,x,y,z){out[0]=x;out[1]=y;out[2]=z;return out;}; /**
- * Adds two vec3's
- *
- * @param {vec3} out the receiving vector
- * @param {vec3} a the first operand
- * @param {vec3} b the second operand
- * @returns {vec3} out
- */vec3.add=function(out,a,b){out[0]=a[0]+b[0];out[1]=a[1]+b[1];out[2]=a[2]+b[2];return out;}; /**
- * Subtracts vector b from vector a
- *
- * @param {vec3} out the receiving vector
- * @param {vec3} a the first operand
- * @param {vec3} b the second operand
- * @returns {vec3} out
- */vec3.subtract=function(out,a,b){out[0]=a[0]-b[0];out[1]=a[1]-b[1];out[2]=a[2]-b[2];return out;}; /**
- * Alias for {@link vec3.subtract}
- * @function
- */vec3.sub=vec3.subtract; /**
- * Multiplies two vec3's
- *
- * @param {vec3} out the receiving vector
- * @param {vec3} a the first operand
- * @param {vec3} b the second operand
- * @returns {vec3} out
- */vec3.multiply=function(out,a,b){out[0]=a[0]*b[0];out[1]=a[1]*b[1];out[2]=a[2]*b[2];return out;}; /**
- * Alias for {@link vec3.multiply}
- * @function
- */vec3.mul=vec3.multiply; /**
- * Divides two vec3's
- *
- * @param {vec3} out the receiving vector
- * @param {vec3} a the first operand
- * @param {vec3} b the second operand
- * @returns {vec3} out
- */vec3.divide=function(out,a,b){out[0]=a[0]/b[0];out[1]=a[1]/b[1];out[2]=a[2]/b[2];return out;}; /**
- * Alias for {@link vec3.divide}
- * @function
- */vec3.div=vec3.divide; /**
- * Returns the minimum of two vec3's
- *
- * @param {vec3} out the receiving vector
- * @param {vec3} a the first operand
- * @param {vec3} b the second operand
- * @returns {vec3} out
- */vec3.min=function(out,a,b){out[0]=Math.min(a[0],b[0]);out[1]=Math.min(a[1],b[1]);out[2]=Math.min(a[2],b[2]);return out;}; /**
- * Returns the maximum of two vec3's
- *
- * @param {vec3} out the receiving vector
- * @param {vec3} a the first operand
- * @param {vec3} b the second operand
- * @returns {vec3} out
- */vec3.max=function(out,a,b){out[0]=Math.max(a[0],b[0]);out[1]=Math.max(a[1],b[1]);out[2]=Math.max(a[2],b[2]);return out;}; /**
- * Scales a vec3 by a scalar number
- *
- * @param {vec3} out the receiving vector
- * @param {vec3} a the vector to scale
- * @param {Number} b amount to scale the vector by
- * @returns {vec3} out
- */vec3.scale=function(out,a,b){out[0]=a[0]*b;out[1]=a[1]*b;out[2]=a[2]*b;return out;}; /**
- * Adds two vec3's after scaling the second operand by a scalar value
- *
- * @param {vec3} out the receiving vector
- * @param {vec3} a the first operand
- * @param {vec3} b the second operand
- * @param {Number} scale the amount to scale b by before adding
- * @returns {vec3} out
- */vec3.scaleAndAdd=function(out,a,b,scale){out[0]=a[0]+b[0]*scale;out[1]=a[1]+b[1]*scale;out[2]=a[2]+b[2]*scale;return out;}; /**
- * Calculates the euclidian distance between two vec3's
- *
- * @param {vec3} a the first operand
- * @param {vec3} b the second operand
- * @returns {Number} distance between a and b
- */vec3.distance=function(a,b){var x=b[0]-a[0],y=b[1]-a[1],z=b[2]-a[2];return Math.sqrt(x*x+y*y+z*z);}; /**
- * Alias for {@link vec3.distance}
- * @function
- */vec3.dist=vec3.distance; /**
- * Calculates the squared euclidian distance between two vec3's
- *
- * @param {vec3} a the first operand
- * @param {vec3} b the second operand
- * @returns {Number} squared distance between a and b
- */vec3.squaredDistance=function(a,b){var x=b[0]-a[0],y=b[1]-a[1],z=b[2]-a[2];return x*x+y*y+z*z;}; /**
- * Alias for {@link vec3.squaredDistance}
- * @function
- */vec3.sqrDist=vec3.squaredDistance; /**
- * Calculates the length of a vec3
- *
- * @param {vec3} a vector to calculate length of
- * @returns {Number} length of a
- */vec3.length=function(a){var x=a[0],y=a[1],z=a[2];return Math.sqrt(x*x+y*y+z*z);}; /**
- * Alias for {@link vec3.length}
- * @function
- */vec3.len=vec3.length; /**
- * Calculates the squared length of a vec3
- *
- * @param {vec3} a vector to calculate squared length of
- * @returns {Number} squared length of a
- */vec3.squaredLength=function(a){var x=a[0],y=a[1],z=a[2];return x*x+y*y+z*z;}; /**
- * Alias for {@link vec3.squaredLength}
- * @function
- */vec3.sqrLen=vec3.squaredLength; /**
- * Negates the components of a vec3
- *
- * @param {vec3} out the receiving vector
- * @param {vec3} a vector to negate
- * @returns {vec3} out
- */vec3.negate=function(out,a){out[0]=-a[0];out[1]=-a[1];out[2]=-a[2];return out;}; /**
- * Returns the inverse of the components of a vec3
- *
- * @param {vec3} out the receiving vector
- * @param {vec3} a vector to invert
- * @returns {vec3} out
- */vec3.inverse=function(out,a){out[0]=1.0/a[0];out[1]=1.0/a[1];out[2]=1.0/a[2];return out;}; /**
- * Normalize a vec3
- *
- * @param {vec3} out the receiving vector
- * @param {vec3} a vector to normalize
- * @returns {vec3} out
- */vec3.normalize=function(out,a){var x=a[0],y=a[1],z=a[2];var len=x*x+y*y+z*z;if(len>0){ //TODO: evaluate use of glm_invsqrt here?
-len=1/Math.sqrt(len);out[0]=a[0]*len;out[1]=a[1]*len;out[2]=a[2]*len;}return out;}; /**
- * Calculates the dot product of two vec3's
- *
- * @param {vec3} a the first operand
- * @param {vec3} b the second operand
- * @returns {Number} dot product of a and b
- */vec3.dot=function(a,b){return a[0]*b[0]+a[1]*b[1]+a[2]*b[2];}; /**
- * Computes the cross product of two vec3's
- *
- * @param {vec3} out the receiving vector
- * @param {vec3} a the first operand
- * @param {vec3} b the second operand
- * @returns {vec3} out
- */vec3.cross=function(out,a,b){var ax=a[0],ay=a[1],az=a[2],bx=b[0],by=b[1],bz=b[2];out[0]=ay*bz-az*by;out[1]=az*bx-ax*bz;out[2]=ax*by-ay*bx;return out;}; /**
- * Performs a linear interpolation between two vec3's
- *
- * @param {vec3} out the receiving vector
- * @param {vec3} a the first operand
- * @param {vec3} b the second operand
- * @param {Number} t interpolation amount between the two inputs
- * @returns {vec3} out
- */vec3.lerp=function(out,a,b,t){var ax=a[0],ay=a[1],az=a[2];out[0]=ax+t*(b[0]-ax);out[1]=ay+t*(b[1]-ay);out[2]=az+t*(b[2]-az);return out;}; /**
- * Performs a hermite interpolation with two control points
- *
- * @param {vec3} out the receiving vector
- * @param {vec3} a the first operand
- * @param {vec3} b the second operand
- * @param {vec3} c the third operand
- * @param {vec3} d the fourth operand
- * @param {Number} t interpolation amount between the two inputs
- * @returns {vec3} out
- */vec3.hermite=function(out,a,b,c,d,t){var factorTimes2=t*t,factor1=factorTimes2*(2*t-3)+1,factor2=factorTimes2*(t-2)+t,factor3=factorTimes2*(t-1),factor4=factorTimes2*(3-2*t);out[0]=a[0]*factor1+b[0]*factor2+c[0]*factor3+d[0]*factor4;out[1]=a[1]*factor1+b[1]*factor2+c[1]*factor3+d[1]*factor4;out[2]=a[2]*factor1+b[2]*factor2+c[2]*factor3+d[2]*factor4;return out;}; /**
- * Performs a bezier interpolation with two control points
- *
- * @param {vec3} out the receiving vector
- * @param {vec3} a the first operand
- * @param {vec3} b the second operand
- * @param {vec3} c the third operand
- * @param {vec3} d the fourth operand
- * @param {Number} t interpolation amount between the two inputs
- * @returns {vec3} out
- */vec3.bezier=function(out,a,b,c,d,t){var inverseFactor=1-t,inverseFactorTimesTwo=inverseFactor*inverseFactor,factorTimes2=t*t,factor1=inverseFactorTimesTwo*inverseFactor,factor2=3*t*inverseFactorTimesTwo,factor3=3*factorTimes2*inverseFactor,factor4=factorTimes2*t;out[0]=a[0]*factor1+b[0]*factor2+c[0]*factor3+d[0]*factor4;out[1]=a[1]*factor1+b[1]*factor2+c[1]*factor3+d[1]*factor4;out[2]=a[2]*factor1+b[2]*factor2+c[2]*factor3+d[2]*factor4;return out;}; /**
- * Generates a random vector with the given scale
- *
- * @param {vec3} out the receiving vector
- * @param {Number} [scale] Length of the resulting vector. If ommitted, a unit vector will be returned
- * @returns {vec3} out
- */vec3.random=function(out,scale){scale=scale||1.0;var r=glMatrix.RANDOM()*2.0*Math.PI;var z=glMatrix.RANDOM()*2.0-1.0;var zScale=Math.sqrt(1.0-z*z)*scale;out[0]=Math.cos(r)*zScale;out[1]=Math.sin(r)*zScale;out[2]=z*scale;return out;}; /**
- * Transforms the vec3 with a mat4.
- * 4th vector component is implicitly '1'
- *
- * @param {vec3} out the receiving vector
- * @param {vec3} a the vector to transform
- * @param {mat4} m matrix to transform with
- * @returns {vec3} out
- */vec3.transformMat4=function(out,a,m){var x=a[0],y=a[1],z=a[2],w=m[3]*x+m[7]*y+m[11]*z+m[15];w=w||1.0;out[0]=(m[0]*x+m[4]*y+m[8]*z+m[12])/w;out[1]=(m[1]*x+m[5]*y+m[9]*z+m[13])/w;out[2]=(m[2]*x+m[6]*y+m[10]*z+m[14])/w;return out;}; /**
- * Transforms the vec3 with a mat3.
- *
- * @param {vec3} out the receiving vector
- * @param {vec3} a the vector to transform
- * @param {mat4} m the 3x3 matrix to transform with
- * @returns {vec3} out
- */vec3.transformMat3=function(out,a,m){var x=a[0],y=a[1],z=a[2];out[0]=x*m[0]+y*m[3]+z*m[6];out[1]=x*m[1]+y*m[4]+z*m[7];out[2]=x*m[2]+y*m[5]+z*m[8];return out;}; /**
- * Transforms the vec3 with a quat
- *
- * @param {vec3} out the receiving vector
- * @param {vec3} a the vector to transform
- * @param {quat} q quaternion to transform with
- * @returns {vec3} out
- */vec3.transformQuat=function(out,a,q){ // benchmarks: http://jsperf.com/quaternion-transform-vec3-implementations
-var x=a[0],y=a[1],z=a[2],qx=q[0],qy=q[1],qz=q[2],qw=q[3], // calculate quat * vec
-ix=qw*x+qy*z-qz*y,iy=qw*y+qz*x-qx*z,iz=qw*z+qx*y-qy*x,iw=-qx*x-qy*y-qz*z; // calculate result * inverse quat
-out[0]=ix*qw+iw*-qx+iy*-qz-iz*-qy;out[1]=iy*qw+iw*-qy+iz*-qx-ix*-qz;out[2]=iz*qw+iw*-qz+ix*-qy-iy*-qx;return out;}; /**
- * Rotate a 3D vector around the x-axis
- * @param {vec3} out The receiving vec3
- * @param {vec3} a The vec3 point to rotate
- * @param {vec3} b The origin of the rotation
- * @param {Number} c The angle of rotation
- * @returns {vec3} out
- */vec3.rotateX=function(out,a,b,c){var p=[],r=[]; //Translate point to the origin
-p[0]=a[0]-b[0];p[1]=a[1]-b[1];p[2]=a[2]-b[2]; //perform rotation
-r[0]=p[0];r[1]=p[1]*Math.cos(c)-p[2]*Math.sin(c);r[2]=p[1]*Math.sin(c)+p[2]*Math.cos(c); //translate to correct position
-out[0]=r[0]+b[0];out[1]=r[1]+b[1];out[2]=r[2]+b[2];return out;}; /**
- * Rotate a 3D vector around the y-axis
- * @param {vec3} out The receiving vec3
- * @param {vec3} a The vec3 point to rotate
- * @param {vec3} b The origin of the rotation
- * @param {Number} c The angle of rotation
- * @returns {vec3} out
- */vec3.rotateY=function(out,a,b,c){var p=[],r=[]; //Translate point to the origin
-p[0]=a[0]-b[0];p[1]=a[1]-b[1];p[2]=a[2]-b[2]; //perform rotation
-r[0]=p[2]*Math.sin(c)+p[0]*Math.cos(c);r[1]=p[1];r[2]=p[2]*Math.cos(c)-p[0]*Math.sin(c); //translate to correct position
-out[0]=r[0]+b[0];out[1]=r[1]+b[1];out[2]=r[2]+b[2];return out;}; /**
- * Rotate a 3D vector around the z-axis
- * @param {vec3} out The receiving vec3
- * @param {vec3} a The vec3 point to rotate
- * @param {vec3} b The origin of the rotation
- * @param {Number} c The angle of rotation
- * @returns {vec3} out
- */vec3.rotateZ=function(out,a,b,c){var p=[],r=[]; //Translate point to the origin
-p[0]=a[0]-b[0];p[1]=a[1]-b[1];p[2]=a[2]-b[2]; //perform rotation
-r[0]=p[0]*Math.cos(c)-p[1]*Math.sin(c);r[1]=p[0]*Math.sin(c)+p[1]*Math.cos(c);r[2]=p[2]; //translate to correct position
-out[0]=r[0]+b[0];out[1]=r[1]+b[1];out[2]=r[2]+b[2];return out;}; /**
- * Perform some operation over an array of vec3s.
- *
- * @param {Array} a the array of vectors to iterate over
- * @param {Number} stride Number of elements between the start of each vec3. If 0 assumes tightly packed
- * @param {Number} offset Number of elements to skip at the beginning of the array
- * @param {Number} count Number of vec3s to iterate over. If 0 iterates over entire array
- * @param {Function} fn Function to call for each vector in the array
- * @param {Object} [arg] additional argument to pass to fn
- * @returns {Array} a
- * @function
- */vec3.forEach=function(){var vec=vec3.create();return function(a,stride,offset,count,fn,arg){var i,l;if(!stride){stride=3;}if(!offset){offset=0;}if(count){l=Math.min(count*stride+offset,a.length);}else {l=a.length;}for(i=offset;i<l;i+=stride){vec[0]=a[i];vec[1]=a[i+1];vec[2]=a[i+2];fn(vec,vec,arg);a[i]=vec[0];a[i+1]=vec[1];a[i+2]=vec[2];}return a;};}(); /**
- * Get the angle between two 3D vectors
- * @param {vec3} a The first operand
- * @param {vec3} b The second operand
- * @returns {Number} The angle in radians
- */vec3.angle=function(a,b){var tempA=vec3.fromValues(a[0],a[1],a[2]);var tempB=vec3.fromValues(b[0],b[1],b[2]);vec3.normalize(tempA,tempA);vec3.normalize(tempB,tempB);var cosine=vec3.dot(tempA,tempB);if(cosine>1.0){return 0;}else {return Math.acos(cosine);}}; /**
- * Returns a string representation of a vector
- *
- * @param {vec3} vec vector to represent as a string
- * @returns {String} string representation of the vector
- */vec3.str=function(a){return 'vec3('+a[0]+', '+a[1]+', '+a[2]+')';};module.exports=vec3;},{"./common.js":2}],10:[function(_dereq_,module,exports){ /* Copyright (c) 2015, Brandon Jones, Colin MacKenzie IV.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE. */var glMatrix=_dereq_("./common.js"); /**
- * @class 4 Dimensional Vector
- * @name vec4
- */var vec4={}; /**
- * Creates a new, empty vec4
- *
- * @returns {vec4} a new 4D vector
- */vec4.create=function(){var out=new glMatrix.ARRAY_TYPE(4);out[0]=0;out[1]=0;out[2]=0;out[3]=0;return out;}; /**
- * Creates a new vec4 initialized with values from an existing vector
- *
- * @param {vec4} a vector to clone
- * @returns {vec4} a new 4D vector
- */vec4.clone=function(a){var out=new glMatrix.ARRAY_TYPE(4);out[0]=a[0];out[1]=a[1];out[2]=a[2];out[3]=a[3];return out;}; /**
- * Creates a new vec4 initialized with the given values
- *
- * @param {Number} x X component
- * @param {Number} y Y component
- * @param {Number} z Z component
- * @param {Number} w W component
- * @returns {vec4} a new 4D vector
- */vec4.fromValues=function(x,y,z,w){var out=new glMatrix.ARRAY_TYPE(4);out[0]=x;out[1]=y;out[2]=z;out[3]=w;return out;}; /**
- * Copy the values from one vec4 to another
- *
- * @param {vec4} out the receiving vector
- * @param {vec4} a the source vector
- * @returns {vec4} out
- */vec4.copy=function(out,a){out[0]=a[0];out[1]=a[1];out[2]=a[2];out[3]=a[3];return out;}; /**
- * Set the components of a vec4 to the given values
- *
- * @param {vec4} out the receiving vector
- * @param {Number} x X component
- * @param {Number} y Y component
- * @param {Number} z Z component
- * @param {Number} w W component
- * @returns {vec4} out
- */vec4.set=function(out,x,y,z,w){out[0]=x;out[1]=y;out[2]=z;out[3]=w;return out;}; /**
- * Adds two vec4's
- *
- * @param {vec4} out the receiving vector
- * @param {vec4} a the first operand
- * @param {vec4} b the second operand
- * @returns {vec4} out
- */vec4.add=function(out,a,b){out[0]=a[0]+b[0];out[1]=a[1]+b[1];out[2]=a[2]+b[2];out[3]=a[3]+b[3];return out;}; /**
- * Subtracts vector b from vector a
- *
- * @param {vec4} out the receiving vector
- * @param {vec4} a the first operand
- * @param {vec4} b the second operand
- * @returns {vec4} out
- */vec4.subtract=function(out,a,b){out[0]=a[0]-b[0];out[1]=a[1]-b[1];out[2]=a[2]-b[2];out[3]=a[3]-b[3];return out;}; /**
- * Alias for {@link vec4.subtract}
- * @function
- */vec4.sub=vec4.subtract; /**
- * Multiplies two vec4's
- *
- * @param {vec4} out the receiving vector
- * @param {vec4} a the first operand
- * @param {vec4} b the second operand
- * @returns {vec4} out
- */vec4.multiply=function(out,a,b){out[0]=a[0]*b[0];out[1]=a[1]*b[1];out[2]=a[2]*b[2];out[3]=a[3]*b[3];return out;}; /**
- * Alias for {@link vec4.multiply}
- * @function
- */vec4.mul=vec4.multiply; /**
- * Divides two vec4's
- *
- * @param {vec4} out the receiving vector
- * @param {vec4} a the first operand
- * @param {vec4} b the second operand
- * @returns {vec4} out
- */vec4.divide=function(out,a,b){out[0]=a[0]/b[0];out[1]=a[1]/b[1];out[2]=a[2]/b[2];out[3]=a[3]/b[3];return out;}; /**
- * Alias for {@link vec4.divide}
- * @function
- */vec4.div=vec4.divide; /**
- * Returns the minimum of two vec4's
- *
- * @param {vec4} out the receiving vector
- * @param {vec4} a the first operand
- * @param {vec4} b the second operand
- * @returns {vec4} out
- */vec4.min=function(out,a,b){out[0]=Math.min(a[0],b[0]);out[1]=Math.min(a[1],b[1]);out[2]=Math.min(a[2],b[2]);out[3]=Math.min(a[3],b[3]);return out;}; /**
- * Returns the maximum of two vec4's
- *
- * @param {vec4} out the receiving vector
- * @param {vec4} a the first operand
- * @param {vec4} b the second operand
- * @returns {vec4} out
- */vec4.max=function(out,a,b){out[0]=Math.max(a[0],b[0]);out[1]=Math.max(a[1],b[1]);out[2]=Math.max(a[2],b[2]);out[3]=Math.max(a[3],b[3]);return out;}; /**
- * Scales a vec4 by a scalar number
- *
- * @param {vec4} out the receiving vector
- * @param {vec4} a the vector to scale
- * @param {Number} b amount to scale the vector by
- * @returns {vec4} out
- */vec4.scale=function(out,a,b){out[0]=a[0]*b;out[1]=a[1]*b;out[2]=a[2]*b;out[3]=a[3]*b;return out;}; /**
- * Adds two vec4's after scaling the second operand by a scalar value
- *
- * @param {vec4} out the receiving vector
- * @param {vec4} a the first operand
- * @param {vec4} b the second operand
- * @param {Number} scale the amount to scale b by before adding
- * @returns {vec4} out
- */vec4.scaleAndAdd=function(out,a,b,scale){out[0]=a[0]+b[0]*scale;out[1]=a[1]+b[1]*scale;out[2]=a[2]+b[2]*scale;out[3]=a[3]+b[3]*scale;return out;}; /**
- * Calculates the euclidian distance between two vec4's
- *
- * @param {vec4} a the first operand
- * @param {vec4} b the second operand
- * @returns {Number} distance between a and b
- */vec4.distance=function(a,b){var x=b[0]-a[0],y=b[1]-a[1],z=b[2]-a[2],w=b[3]-a[3];return Math.sqrt(x*x+y*y+z*z+w*w);}; /**
- * Alias for {@link vec4.distance}
- * @function
- */vec4.dist=vec4.distance; /**
- * Calculates the squared euclidian distance between two vec4's
- *
- * @param {vec4} a the first operand
- * @param {vec4} b the second operand
- * @returns {Number} squared distance between a and b
- */vec4.squaredDistance=function(a,b){var x=b[0]-a[0],y=b[1]-a[1],z=b[2]-a[2],w=b[3]-a[3];return x*x+y*y+z*z+w*w;}; /**
- * Alias for {@link vec4.squaredDistance}
- * @function
- */vec4.sqrDist=vec4.squaredDistance; /**
- * Calculates the length of a vec4
- *
- * @param {vec4} a vector to calculate length of
- * @returns {Number} length of a
- */vec4.length=function(a){var x=a[0],y=a[1],z=a[2],w=a[3];return Math.sqrt(x*x+y*y+z*z+w*w);}; /**
- * Alias for {@link vec4.length}
- * @function
- */vec4.len=vec4.length; /**
- * Calculates the squared length of a vec4
- *
- * @param {vec4} a vector to calculate squared length of
- * @returns {Number} squared length of a
- */vec4.squaredLength=function(a){var x=a[0],y=a[1],z=a[2],w=a[3];return x*x+y*y+z*z+w*w;}; /**
- * Alias for {@link vec4.squaredLength}
- * @function
- */vec4.sqrLen=vec4.squaredLength; /**
- * Negates the components of a vec4
- *
- * @param {vec4} out the receiving vector
- * @param {vec4} a vector to negate
- * @returns {vec4} out
- */vec4.negate=function(out,a){out[0]=-a[0];out[1]=-a[1];out[2]=-a[2];out[3]=-a[3];return out;}; /**
- * Returns the inverse of the components of a vec4
- *
- * @param {vec4} out the receiving vector
- * @param {vec4} a vector to invert
- * @returns {vec4} out
- */vec4.inverse=function(out,a){out[0]=1.0/a[0];out[1]=1.0/a[1];out[2]=1.0/a[2];out[3]=1.0/a[3];return out;}; /**
- * Normalize a vec4
- *
- * @param {vec4} out the receiving vector
- * @param {vec4} a vector to normalize
- * @returns {vec4} out
- */vec4.normalize=function(out,a){var x=a[0],y=a[1],z=a[2],w=a[3];var len=x*x+y*y+z*z+w*w;if(len>0){len=1/Math.sqrt(len);out[0]=x*len;out[1]=y*len;out[2]=z*len;out[3]=w*len;}return out;}; /**
- * Calculates the dot product of two vec4's
- *
- * @param {vec4} a the first operand
- * @param {vec4} b the second operand
- * @returns {Number} dot product of a and b
- */vec4.dot=function(a,b){return a[0]*b[0]+a[1]*b[1]+a[2]*b[2]+a[3]*b[3];}; /**
- * Performs a linear interpolation between two vec4's
- *
- * @param {vec4} out the receiving vector
- * @param {vec4} a the first operand
- * @param {vec4} b the second operand
- * @param {Number} t interpolation amount between the two inputs
- * @returns {vec4} out
- */vec4.lerp=function(out,a,b,t){var ax=a[0],ay=a[1],az=a[2],aw=a[3];out[0]=ax+t*(b[0]-ax);out[1]=ay+t*(b[1]-ay);out[2]=az+t*(b[2]-az);out[3]=aw+t*(b[3]-aw);return out;}; /**
- * Generates a random vector with the given scale
- *
- * @param {vec4} out the receiving vector
- * @param {Number} [scale] Length of the resulting vector. If ommitted, a unit vector will be returned
- * @returns {vec4} out
- */vec4.random=function(out,scale){scale=scale||1.0; //TODO: This is a pretty awful way of doing this. Find something better.
-out[0]=glMatrix.RANDOM();out[1]=glMatrix.RANDOM();out[2]=glMatrix.RANDOM();out[3]=glMatrix.RANDOM();vec4.normalize(out,out);vec4.scale(out,out,scale);return out;}; /**
- * Transforms the vec4 with a mat4.
- *
- * @param {vec4} out the receiving vector
- * @param {vec4} a the vector to transform
- * @param {mat4} m matrix to transform with
- * @returns {vec4} out
- */vec4.transformMat4=function(out,a,m){var x=a[0],y=a[1],z=a[2],w=a[3];out[0]=m[0]*x+m[4]*y+m[8]*z+m[12]*w;out[1]=m[1]*x+m[5]*y+m[9]*z+m[13]*w;out[2]=m[2]*x+m[6]*y+m[10]*z+m[14]*w;out[3]=m[3]*x+m[7]*y+m[11]*z+m[15]*w;return out;}; /**
- * Transforms the vec4 with a quat
- *
- * @param {vec4} out the receiving vector
- * @param {vec4} a the vector to transform
- * @param {quat} q quaternion to transform with
- * @returns {vec4} out
- */vec4.transformQuat=function(out,a,q){var x=a[0],y=a[1],z=a[2],qx=q[0],qy=q[1],qz=q[2],qw=q[3], // calculate quat * vec
-ix=qw*x+qy*z-qz*y,iy=qw*y+qz*x-qx*z,iz=qw*z+qx*y-qy*x,iw=-qx*x-qy*y-qz*z; // calculate result * inverse quat
-out[0]=ix*qw+iw*-qx+iy*-qz-iz*-qy;out[1]=iy*qw+iw*-qy+iz*-qx-ix*-qz;out[2]=iz*qw+iw*-qz+ix*-qy-iy*-qx;out[3]=a[3];return out;}; /**
- * Perform some operation over an array of vec4s.
- *
- * @param {Array} a the array of vectors to iterate over
- * @param {Number} stride Number of elements between the start of each vec4. If 0 assumes tightly packed
- * @param {Number} offset Number of elements to skip at the beginning of the array
- * @param {Number} count Number of vec4s to iterate over. If 0 iterates over entire array
- * @param {Function} fn Function to call for each vector in the array
- * @param {Object} [arg] additional argument to pass to fn
- * @returns {Array} a
- * @function
- */vec4.forEach=function(){var vec=vec4.create();return function(a,stride,offset,count,fn,arg){var i,l;if(!stride){stride=4;}if(!offset){offset=0;}if(count){l=Math.min(count*stride+offset,a.length);}else {l=a.length;}for(i=offset;i<l;i+=stride){vec[0]=a[i];vec[1]=a[i+1];vec[2]=a[i+2];vec[3]=a[i+3];fn(vec,vec,arg);a[i]=vec[0];a[i+1]=vec[1];a[i+2]=vec[2];a[i+3]=vec[3];}return a;};}(); /**
- * Returns a string representation of a vector
- *
- * @param {vec4} vec vector to represent as a string
- * @returns {String} string representation of the vector
- */vec4.str=function(a){return 'vec4('+a[0]+', '+a[1]+', '+a[2]+', '+a[3]+')';};module.exports=vec4;},{"./common.js":2}],11:[function(_dereq_,module,exports){'use strict';var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||false;descriptor.configurable=true;if("value" in descriptor)descriptor.writable=true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};}(); // alfrid.js
-//	TOOLS
-//	CAMERAS
-//	LOADERS
-//	HELPERS
-var _glMatrix=_dereq_('gl-matrix');var _glMatrix2=_interopRequireDefault(_glMatrix);var _GLTool=_dereq_('./alfrid/GLTool');var _GLTool2=_interopRequireDefault(_GLTool);var _GLShader=_dereq_('./alfrid/GLShader');var _GLShader2=_interopRequireDefault(_GLShader);var _GLTexture=_dereq_('./alfrid/GLTexture');var _GLTexture2=_interopRequireDefault(_GLTexture);var _GLCubeTexture=_dereq_('./alfrid/GLCubeTexture');var _GLCubeTexture2=_interopRequireDefault(_GLCubeTexture);var _Mesh=_dereq_('./alfrid/Mesh');var _Mesh2=_interopRequireDefault(_Mesh);var _Geom=_dereq_('./alfrid/Geom');var _Geom2=_interopRequireDefault(_Geom);var _Batch=_dereq_('./alfrid/Batch');var _Batch2=_interopRequireDefault(_Batch);var _FrameBuffer=_dereq_('./alfrid/FrameBuffer');var _FrameBuffer2=_interopRequireDefault(_FrameBuffer);var _CubeFrameBuffer=_dereq_('./alfrid/CubeFrameBuffer');var _CubeFrameBuffer2=_interopRequireDefault(_CubeFrameBuffer);var _Scheduler=_dereq_('./alfrid/tools/Scheduler');var _Scheduler2=_interopRequireDefault(_Scheduler);var _EventDispatcher=_dereq_('./alfrid/tools/EventDispatcher');var _EventDispatcher2=_interopRequireDefault(_EventDispatcher);var _EaseNumber=_dereq_('./alfrid/tools/EaseNumber');var _EaseNumber2=_interopRequireDefault(_EaseNumber);var _OrbitalControl=_dereq_('./alfrid/tools/OrbitalControl');var _OrbitalControl2=_interopRequireDefault(_OrbitalControl);var _QuatRotation=_dereq_('./alfrid/tools/QuatRotation');var _QuatRotation2=_interopRequireDefault(_QuatRotation);var _Camera=_dereq_('./alfrid/cameras/Camera');var _Camera2=_interopRequireDefault(_Camera);var _CameraOrtho=_dereq_('./alfrid/cameras/CameraOrtho');var _CameraOrtho2=_interopRequireDefault(_CameraOrtho);var _CameraPerspective=_dereq_('./alfrid/cameras/CameraPerspective');var _CameraPerspective2=_interopRequireDefault(_CameraPerspective);var _CameraCube=_dereq_('./alfrid/cameras/CameraCube');var _CameraCube2=_interopRequireDefault(_CameraCube);var _BinaryLoader=_dereq_('./alfrid/loaders/BinaryLoader');var _BinaryLoader2=_interopRequireDefault(_BinaryLoader);var _ObjLoader=_dereq_('./alfrid/loaders/ObjLoader');var _ObjLoader2=_interopRequireDefault(_ObjLoader);var _HDRLoader=_dereq_('./alfrid/loaders/HDRLoader');var _HDRLoader2=_interopRequireDefault(_HDRLoader);var _BatchCopy=_dereq_('./alfrid/helpers/BatchCopy');var _BatchCopy2=_interopRequireDefault(_BatchCopy);var _BatchAxis=_dereq_('./alfrid/helpers/BatchAxis');var _BatchAxis2=_interopRequireDefault(_BatchAxis);var _BatchDotsPlane=_dereq_('./alfrid/helpers/BatchDotsPlane');var _BatchDotsPlane2=_interopRequireDefault(_BatchDotsPlane);var _Scene=_dereq_('./alfrid/helpers/Scene');var _Scene2=_interopRequireDefault(_Scene);var _View=_dereq_('./alfrid/helpers/View');var _View2=_interopRequireDefault(_View);var _ShaderLibs=_dereq_('./alfrid/tools/ShaderLibs');var _ShaderLibs2=_interopRequireDefault(_ShaderLibs);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}var VERSION='1.0.0';var alfrid=function(){function alfrid(){_classCallCheck(this,alfrid);this.glm=_glMatrix2.default;this.GL=_GLTool2.default;this.GLTool=_GLTool2.default;this.GLShader=_GLShader2.default;this.GLTexture=_GLTexture2.default;this.GLCubeTexture=_GLCubeTexture2.default;this.Mesh=_Mesh2.default;this.Geom=_Geom2.default;this.Batch=_Batch2.default;this.FrameBuffer=_FrameBuffer2.default;this.CubeFrameBuffer=_CubeFrameBuffer2.default;this.Scheduler=_Scheduler2.default;this.EventDispatcher=_EventDispatcher2.default;this.EaseNumber=_EaseNumber2.default;this.Camera=_Camera2.default;this.CameraOrtho=_CameraOrtho2.default;this.CameraPerspective=_CameraPerspective2.default;this.CameraCube=_CameraCube2.default;this.OrbitalControl=_OrbitalControl2.default;this.QuatRotation=_QuatRotation2.default;this.BinaryLoader=_BinaryLoader2.default;this.ObjLoader=_ObjLoader2.default;this.HDRLoader=_HDRLoader2.default;this.BatchCopy=_BatchCopy2.default;this.BatchAxis=_BatchAxis2.default;this.BatchDotsPlane=_BatchDotsPlane2.default;this.Scene=_Scene2.default;this.View=_View2.default;this.ShaderLibs=_ShaderLibs2.default; //	NOT SUPER SURE I'VE DONE THIS IS A GOOD WAY
-for(var s in _glMatrix2.default){if(_glMatrix2.default[s]){window[s]=_glMatrix2.default[s];}} //	TESTING CODES
-}_createClass(alfrid,[{key:'log',value:function log(){if(navigator.userAgent.indexOf('Chrome')>-1){console.log('%clib alfrid : VERSION '+VERSION,'background: #193441; color: #FCFFF5');}else {console.log('lib alfrid : VERSION ',VERSION);}console.log('%cClasses : ','color: #193441');for(var s in this){if(this[s]){console.log('%c - '+s,'color: #3E606F');}}}}]);return alfrid;}();var b=new alfrid();module.exports=b;},{"./alfrid/Batch":12,"./alfrid/CubeFrameBuffer":13,"./alfrid/FrameBuffer":14,"./alfrid/GLCubeTexture":15,"./alfrid/GLShader":16,"./alfrid/GLTexture":17,"./alfrid/GLTool":18,"./alfrid/Geom":19,"./alfrid/Mesh":20,"./alfrid/cameras/Camera":21,"./alfrid/cameras/CameraCube":22,"./alfrid/cameras/CameraOrtho":23,"./alfrid/cameras/CameraPerspective":24,"./alfrid/helpers/BatchAxis":25,"./alfrid/helpers/BatchCopy":26,"./alfrid/helpers/BatchDotsPlane":27,"./alfrid/helpers/Scene":28,"./alfrid/helpers/View":29,"./alfrid/loaders/BinaryLoader":30,"./alfrid/loaders/HDRLoader":31,"./alfrid/loaders/ObjLoader":32,"./alfrid/tools/EaseNumber":33,"./alfrid/tools/EventDispatcher":34,"./alfrid/tools/OrbitalControl":36,"./alfrid/tools/QuatRotation":37,"./alfrid/tools/Scheduler":38,"./alfrid/tools/ShaderLibs":39,"gl-matrix":1}],12:[function(_dereq_,module,exports){'use strict';var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||false;descriptor.configurable=true;if("value" in descriptor)descriptor.writable=true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};}(); // Batch.js
-Object.defineProperty(exports,"__esModule",{value:true});var _GLTool=_dereq_('./GLTool');var _GLTool2=_interopRequireDefault(_GLTool);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}var Batch=function(){function Batch(mMesh,mShader){_classCallCheck(this,Batch);this._mesh=mMesh;this._shader=mShader;} //	PUBLIC METHODS
-_createClass(Batch,[{key:'draw',value:function draw(){this._shader.bind();_GLTool2.default.draw(this.mesh);} //	GETTER AND SETTER
-},{key:'mesh',get:function get(){return this._mesh;}},{key:'shader',get:function get(){return this._shader;}}]);return Batch;}();exports.default=Batch;},{"./GLTool":18}],13:[function(_dereq_,module,exports){ // CubeFrameBuffer.js
-'use strict';var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||false;descriptor.configurable=true;if("value" in descriptor)descriptor.writable=true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};}();Object.defineProperty(exports,"__esModule",{value:true});var _GLTool=_dereq_('./GLTool');var _GLTool2=_interopRequireDefault(_GLTool);var _GLCubeTexture=_dereq_('./GLCubeTexture');var _GLCubeTexture2=_interopRequireDefault(_GLCubeTexture);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}var gl=undefined;var CubeFrameBuffer=function(){function CubeFrameBuffer(size){var mParameters=arguments.length<=1||arguments[1]===undefined?{}:arguments[1];_classCallCheck(this,CubeFrameBuffer);gl=_GLTool2.default.gl;this._size=size;this.magFilter=mParameters.magFilter||gl.LINEAR;this.minFilter=mParameters.minFilter||gl.LINEAR;this.wrapS=mParameters.wrapS||gl.CLAMP_TO_EDGE;this.wrapT=mParameters.wrapT||gl.CLAMP_TO_EDGE;this._init();}_createClass(CubeFrameBuffer,[{key:'_init',value:function _init(){this.texture=gl.createTexture();this.glTexture=new _GLCubeTexture2.default(this.texture,{},true);gl.bindTexture(gl.TEXTURE_CUBE_MAP,this.texture);gl.texParameteri(gl.TEXTURE_CUBE_MAP,gl.TEXTURE_MAG_FILTER,this.magFilter);gl.texParameteri(gl.TEXTURE_CUBE_MAP,gl.TEXTURE_MIN_FILTER,this.minFilter);gl.texParameteri(gl.TEXTURE_CUBE_MAP,gl.TEXTURE_WRAP_S,this.wrapS);gl.texParameteri(gl.TEXTURE_CUBE_MAP,gl.TEXTURE_WRAP_T,this.wrapT);var targets=[gl.TEXTURE_CUBE_MAP_POSITIVE_X,gl.TEXTURE_CUBE_MAP_NEGATIVE_X,gl.TEXTURE_CUBE_MAP_POSITIVE_Y,gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,gl.TEXTURE_CUBE_MAP_POSITIVE_Z,gl.TEXTURE_CUBE_MAP_NEGATIVE_Z];for(var i=0;i<targets.length;i++){gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,false);gl.texImage2D(targets[i],0,gl.RGBA,this.width,this.height,0,gl.RGBA,gl.FLOAT,null);}this._frameBuffers=[];for(var i=0;i<targets.length;i++){var frameBuffer=gl.createFramebuffer();gl.bindFramebuffer(gl.FRAMEBUFFER,frameBuffer);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,targets[i],this.texture,0);var status=gl.checkFramebufferStatus(gl.FRAMEBUFFER);if(status!==gl.FRAMEBUFFER_COMPLETE){console.log('gl.checkFramebufferStatus() returned '+status);}this._frameBuffers.push(frameBuffer);} // gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
-gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.bindRenderbuffer(gl.RENDERBUFFER,null);gl.bindTexture(gl.TEXTURE_CUBE_MAP,null);}},{key:'bind',value:function bind(mTargetIndex){ // if(Math.random() > .99) console.log('bind :', mTargetIndex, this._frameBuffers[mTargetIndex]);
-_GLTool2.default.viewport(0,0,this.width,this.height);gl.bindFramebuffer(gl.FRAMEBUFFER,this._frameBuffers[mTargetIndex]);}},{key:'unbind',value:function unbind(){gl.bindFramebuffer(gl.FRAMEBUFFER,null);_GLTool2.default.viewport(0,0,_GLTool2.default.width,_GLTool2.default.height);} //	TEXTURES
-},{key:'getTexture',value:function getTexture(){return this.glTexture;} //	GETTERS AND SETTERS
-},{key:'width',get:function get(){return this._size;}},{key:'height',get:function get(){return this._size;}}]);return CubeFrameBuffer;}();exports.default=CubeFrameBuffer;},{"./GLCubeTexture":15,"./GLTool":18}],14:[function(_dereq_,module,exports){ // FrameBuffer.js
-'use strict';var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||false;descriptor.configurable=true;if("value" in descriptor)descriptor.writable=true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};}();Object.defineProperty(exports,"__esModule",{value:true});var _GLTool=_dereq_('./GLTool');var _GLTool2=_interopRequireDefault(_GLTool);var _GLTexture=_dereq_('./GLTexture');var _GLTexture2=_interopRequireDefault(_GLTexture);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}var isPowerOfTwo=function isPowerOfTwo(x){return x!==0&&!(x&x-1);};var gl=undefined;var WEBGL_depth_texture=undefined;var FrameBuffer=function(){function FrameBuffer(mWidth,mHeight){var mParameters=arguments.length<=2||arguments[2]===undefined?{}:arguments[2];_classCallCheck(this,FrameBuffer);gl=_GLTool2.default.gl;WEBGL_depth_texture=_GLTool2.default.checkExtension('WEBGL_depth_texture');this.width=mWidth;this.height=mHeight;this.magFilter=mParameters.magFilter||gl.LINEAR;this.minFilter=mParameters.minFilter||gl.LINEAR;this.wrapS=mParameters.wrapS||gl.CLAMP_TO_EDGE;this.wrapT=mParameters.wrapT||gl.CLAMP_TO_EDGE;this.useDepth=mParameters.useDepth||true;this.useStencil=mParameters.useStencil||false;if(!isPowerOfTwo(this.width)||!isPowerOfTwo(this.height)){this.wrapS=this.wrapT=gl.CLAMP_TO_EDGE;if(this.minFilter===gl.LINEAR_MIPMAP_NEAREST){this.minFilter=gl.LINEAR;}}this._init();}_createClass(FrameBuffer,[{key:'_init',value:function _init(){this.texture=gl.createTexture();this.glTexture=new _GLTexture2.default(this.texture,true);this.depthTexture=gl.createTexture();this.glDepthTexture=new _GLTexture2.default(this.depthTexture,true);this.frameBuffer=gl.createFramebuffer();gl.bindFramebuffer(gl.FRAMEBUFFER,this.frameBuffer); //	SETUP TEXTURE MIPMAP, WRAP
-gl.bindTexture(gl.TEXTURE_2D,this.texture);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,this.magFilter);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,this.minFilter);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,this.wrapS);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,this.wrapT);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,this.width,this.height,0,gl.RGBA,gl.FLOAT,null);if(WEBGL_depth_texture){gl.bindTexture(gl.TEXTURE_2D,this.depthTexture);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,this.magFilter);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,this.minFilter);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,this.wrapS);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,this.wrapT);gl.texImage2D(gl.TEXTURE_2D,0,gl.DEPTH_COMPONENT,this.width,this.height,0,gl.DEPTH_COMPONENT,gl.UNSIGNED_SHORT,null);} //	GET COLOUR
-gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,this.texture,0); //	GET DEPTH
-gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.DEPTH_ATTACHMENT,gl.TEXTURE_2D,this.depthTexture,0);if(this.minFilter===gl.LINEAR_MIPMAP_NEAREST){gl.bindTexture(gl.TEXTURE_2D,this.texture);gl.generateMipmap(gl.TEXTURE_2D);} //	UNBIND
-gl.bindTexture(gl.TEXTURE_2D,null);gl.bindRenderbuffer(gl.RENDERBUFFER,null);gl.bindFramebuffer(gl.FRAMEBUFFER,null);} //	PUBLIC METHODS
-},{key:'bind',value:function bind(){_GLTool2.default.viewport(0,0,this.width,this.height);gl.bindFramebuffer(gl.FRAMEBUFFER,this.frameBuffer);}},{key:'unbind',value:function unbind(){gl.bindFramebuffer(gl.FRAMEBUFFER,null);_GLTool2.default.viewport(0,0,_GLTool2.default.width,_GLTool2.default.height);} //	TEXTURES
-},{key:'getTexture',value:function getTexture(){return this.glTexture;}},{key:'getDepthTexture',value:function getDepthTexture(){return this.glDepthTexture;} //	MIPMAP FILTER
-},{key:'minFilter',value:function minFilter(mValue){if(mValue!==gl.LINEAR&&mValue!==gl.NEAREST&&mValue!==gl.LINEAR_MIPMAP_NEAREST){return this;}this.minFilter=mValue;return this;}},{key:'magFilter',value:function magFilter(mValue){if(mValue!==gl.LINEAR&&mValue!==gl.NEAREST&&mValue!==gl.LINEAR_MIPMAP_NEAREST){return this;}this.magFilter=mValue;return this;} //	WRAP
-},{key:'wrapS',value:function wrapS(mValue){if(mValue!==gl.CLAMP_TO_EDGE&&mValue!==gl.REPEAT&&mValue!==gl.MIRRORED_REPEAT){return this;}this.wrapS=mValue;return this;}},{key:'wrapT',value:function wrapT(mValue){if(mValue!==gl.CLAMP_TO_EDGE&&mValue!==gl.REPEAT&&mValue!==gl.MIRRORED_REPEAT){return this;}this.wrapT=mValue;return this;}}]);return FrameBuffer;}();exports.default=FrameBuffer;},{"./GLTexture":17,"./GLTool":18}],15:[function(_dereq_,module,exports){ // GLCubeTexture.js
-'use strict';var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||false;descriptor.configurable=true;if("value" in descriptor)descriptor.writable=true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};}();Object.defineProperty(exports,"__esModule",{value:true});var _GLTool=_dereq_('./GLTool');var _GLTool2=_interopRequireDefault(_GLTool);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}var gl=undefined;var GLCubeTexture=function(){function GLCubeTexture(mSource){var mParameters=arguments.length<=1||arguments[1]===undefined?{}:arguments[1];var isCubeTexture=arguments.length<=2||arguments[2]===undefined?false:arguments[2];_classCallCheck(this,GLCubeTexture); // console.log(typeof(mSource));
-gl=_GLTool2.default.gl;if(isCubeTexture){this.texture=mSource;return;}this.texture=gl.createTexture();this.magFilter=mParameters.magFilter||gl.LINEAR;this.minFilter=mParameters.minFilter||gl.LINEAR_MIPMAP_NEAREST;this.wrapS=mParameters.wrapS||gl.CLAMP_TO_EDGE;this.wrapT=mParameters.wrapT||gl.CLAMP_TO_EDGE;gl.bindTexture(gl.TEXTURE_CUBE_MAP,this.texture);var targets=[gl.TEXTURE_CUBE_MAP_POSITIVE_X,gl.TEXTURE_CUBE_MAP_NEGATIVE_X,gl.TEXTURE_CUBE_MAP_POSITIVE_Y,gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,gl.TEXTURE_CUBE_MAP_POSITIVE_Z,gl.TEXTURE_CUBE_MAP_NEGATIVE_Z];for(var j=0;j<6;j++){gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,false); // gl.texImage2D(targets[j], 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, mSource[j]);	
-if(mSource[j].exposure){gl.texImage2D(targets[j],0,gl.RGBA,mSource[j].shape[0],mSource[j].shape[1],0,gl.RGBA,gl.FLOAT,mSource[j].data);}else {gl.texImage2D(targets[j],0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,mSource[j]);}gl.texParameteri(gl.TEXTURE_CUBE_MAP,gl.TEXTURE_WRAP_S,this.wrapS);gl.texParameteri(gl.TEXTURE_CUBE_MAP,gl.TEXTURE_WRAP_T,this.wrapT);gl.texParameteri(gl.TEXTURE_CUBE_MAP,gl.TEXTURE_MAG_FILTER,this.magFilter);gl.texParameteri(gl.TEXTURE_CUBE_MAP,gl.TEXTURE_MIN_FILTER,this.minFilter);}gl.generateMipmap(gl.TEXTURE_CUBE_MAP);gl.bindTexture(gl.TEXTURE_CUBE_MAP,null);} //	PUBLIC METHOD
-_createClass(GLCubeTexture,[{key:'bind',value:function bind(){var index=arguments.length<=0||arguments[0]===undefined?0:arguments[0];if(!_GLTool2.default.shader){return;}gl.activeTexture(gl.TEXTURE0+index);gl.bindTexture(gl.TEXTURE_CUBE_MAP,this.texture);gl.uniform1i(_GLTool2.default.shader.uniformTextures[index],index);this._bindIndex=index;}},{key:'unbind',value:function unbind(){gl.bindTexture(gl.TEXTURE_CUBE_MAP,null);}}]);return GLCubeTexture;}();exports.default=GLCubeTexture;},{"./GLTool":18}],16:[function(_dereq_,module,exports){ // GLShader.js
-'use strict';var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||false;descriptor.configurable=true;if("value" in descriptor)descriptor.writable=true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};}();Object.defineProperty(exports,"__esModule",{value:true});var _GLTool=_dereq_('./GLTool');var _GLTool2=_interopRequireDefault(_GLTool);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}var addLineNumbers=function addLineNumbers(string){var lines=string.split('\n');for(var i=0;i<lines.length;i++){lines[i]=i+1+': '+lines[i];}return lines.join('\n');};var gl=undefined;var defaultVertexShader="#define GLSLIFY 1\n// basic.vert\n\n#define SHADER_NAME BASIC_VERTEX\n\nprecision highp float;\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvarying vec2 vTextureCoord;\n\nvoid main(void) {\n    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);\n    vTextureCoord = aTextureCoord;\n}";var defaultFragmentShader="#define GLSLIFY 1\n// basic.frag\n\n#define SHADER_NAME BASIC_FRAGMENT\n\nprecision highp float;\nvarying vec2 vTextureCoord;\nuniform float time;\n// uniform sampler2D texture;\n\nvoid main(void) {\n    gl_FragColor = vec4(vTextureCoord, sin(time) * .5 + .5, 1.0);\n}";var GLShader=function(){function GLShader(){var strVertexShader=arguments.length<=0||arguments[0]===undefined?defaultVertexShader:arguments[0];var strFragmentShader=arguments.length<=1||arguments[1]===undefined?defaultFragmentShader:arguments[1];_classCallCheck(this,GLShader);gl=_GLTool2.default.gl;this.parameters=[];this.uniformValues={};this.uniformTextures=[];if(!strVertexShader){strVertexShader=defaultVertexShader;}if(!strFragmentShader){strFragmentShader=defaultVertexShader;}var vsShader=this._createShaderProgram(strVertexShader,true);var fsShader=this._createShaderProgram(strFragmentShader,false);this._attachShaderProgram(vsShader,fsShader);}_createClass(GLShader,[{key:'bind',value:function bind(){gl.useProgram(this.shaderProgram);_GLTool2.default.useShader(this);this.uniformTextures=[];}},{key:'uniform',value:function uniform(mName,mType,mValue){var hasUniform=false;var oUniform=undefined;for(var i=0;i<this.parameters.length;i++){oUniform=this.parameters[i];if(oUniform.name===mName){oUniform.value=mValue;hasUniform=true;break;}}if(!hasUniform){this.shaderProgram[mName]=gl.getUniformLocation(this.shaderProgram,mName);this.parameters.push({name:mName,type:mType,value:mValue,uniformLoc:this.shaderProgram[mName]});}else {this.shaderProgram[mName]=oUniform.uniformLoc;}if(mType.indexOf('Matrix')===-1){gl[mType](this.shaderProgram[mName],mValue);}else {gl[mType](this.shaderProgram[mName],false,mValue);this.uniformValues[mName]=mValue;}}},{key:'_createShaderProgram',value:function _createShaderProgram(mShaderStr,isVertexShader){var shaderType=isVertexShader?_GLTool2.default.VERTEX_SHADER:_GLTool2.default.FRAGMENT_SHADER;var shader=gl.createShader(shaderType);gl.shaderSource(shader,mShaderStr);gl.compileShader(shader);if(!gl.getShaderParameter(shader,gl.COMPILE_STATUS)){console.warn('Error in Shader : ',gl.getShaderInfoLog(shader));console.log(addLineNumbers(mShaderStr));return null;}return shader;}},{key:'_attachShaderProgram',value:function _attachShaderProgram(mVertexShader,mFragmentShader){this.shaderProgram=gl.createProgram();gl.attachShader(this.shaderProgram,mVertexShader);gl.attachShader(this.shaderProgram,mFragmentShader);gl.linkProgram(this.shaderProgram);}}]);return GLShader;}();exports.default=GLShader;},{"./GLTool":18}],17:[function(_dereq_,module,exports){ // GLTexture.js
-'use strict';var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||false;descriptor.configurable=true;if("value" in descriptor)descriptor.writable=true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};}();Object.defineProperty(exports,"__esModule",{value:true});var _GLTool=_dereq_('./GLTool');var _GLTool2=_interopRequireDefault(_GLTool);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}var isPowerOfTwo=function isPowerOfTwo(x){return x!==0&&!(x&x-1);};var isSourcePowerOfTwo=function isSourcePowerOfTwo(obj){var w=obj.width||obj.videoWidth;var h=obj.height||obj.videoHeight;if(!w||!h){return false;}return isPowerOfTwo(w)&&isPowerOfTwo(h);};var gl=undefined;var GLTexture=function(){function GLTexture(mSource){var isTexture=arguments.length<=1||arguments[1]===undefined?false:arguments[1];var mParameters=arguments.length<=2||arguments[2]===undefined?{}:arguments[2];_classCallCheck(this,GLTexture);gl=_GLTool2.default.gl;if(isTexture){this.texture=mSource;}else {this._mSource=mSource;this.texture=gl.createTexture();this._isVideo=mSource.tagName==='VIDEO';this.magFilter=mParameters.magFilter||gl.LINEAR;this.minFilter=mParameters.minFilter||gl.LINEAR_MIPMAP_NEAREST;this.wrapS=mParameters.wrapS||gl.MIRRORED_REPEAT;this.wrapT=mParameters.wrapT||gl.MIRRORED_REPEAT;var width=mSource.width||mSource.videoWidth;if(width){if(!isSourcePowerOfTwo(mSource)){this.wrapS=this.wrapT=gl.CLAMP_TO_EDGE;if(this.minFilter===gl.LINEAR_MIPMAP_NEAREST){this.minFilter=gl.LINEAR;}}}else {this.wrapS=this.wrapT=gl.CLAMP_TO_EDGE;if(this.minFilter===gl.LINEAR_MIPMAP_NEAREST){this.minFilter=gl.LINEAR;}}gl.bindTexture(gl.TEXTURE_2D,this.texture);gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);if(mSource.exposure){gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,mSource.shape[0],mSource.shape[1],0,gl.RGBA,gl.FLOAT,mSource.data);}else {gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,mSource);}gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,this.magFilter);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,this.minFilter);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,this.wrapS);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,this.wrapT);if(this.minFilter===gl.LINEAR_MIPMAP_NEAREST){gl.generateMipmap(gl.TEXTURE_2D);}gl.bindTexture(gl.TEXTURE_2D,null);}} //	MIPMAP FILTER
-_createClass(GLTexture,[{key:'minFilter',value:function minFilter(mValue){if(mValue!==gl.LINEAR&&mValue!==gl.NEAREST&&mValue!==gl.LINEAR_MIPMAP_NEAREST){return this;}this.minFilter=mValue;return this;}},{key:'magFilter',value:function magFilter(mValue){if(mValue!==gl.LINEAR&&mValue!==gl.NEAREST&&mValue!==gl.LINEAR_MIPMAP_NEAREST){return this;}this.magFilter=mValue;return this;} //	WRAP
-},{key:'wrapS',value:function wrapS(mValue){if(mValue!==gl.CLAMP_TO_EDGE&&mValue!==gl.REPEAT&&mValue!==gl.MIRRORED_REPEAT){return this;}this.wrapS=mValue;return this;}},{key:'wrapT',value:function wrapT(mValue){if(mValue!==gl.CLAMP_TO_EDGE&&mValue!==gl.REPEAT&&mValue!==gl.MIRRORED_REPEAT){return this;}this.wrapT=mValue;return this;} //	UPDATE TEXTURE
-},{key:'updateTexture',value:function updateTexture(mSource){if(mSource){this._mSource=mSource;}gl.bindTexture(gl.TEXTURE_2D,this.texture);gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,this._mSource);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,this.magFilter);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,this.minFilter);if(this.minFilter===gl.LINEAR_MIPMAP_NEAREST){gl.generateMipmap(gl.TEXTURE_2D);}gl.bindTexture(gl.TEXTURE_2D,null);}},{key:'bind',value:function bind(index){if(index===undefined){index=0;}if(!_GLTool2.default.shader){return;}gl.activeTexture(gl.TEXTURE0+index);gl.bindTexture(gl.TEXTURE_2D,this.texture);gl.uniform1i(_GLTool2.default.shader.uniformTextures[index],index);this._bindIndex=index;}}]);return GLTexture;}();exports.default=GLTexture;},{"./GLTool":18}],18:[function(_dereq_,module,exports){'use strict';var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||false;descriptor.configurable=true;if("value" in descriptor)descriptor.writable=true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};}(); // GLTool.js
-Object.defineProperty(exports,"__esModule",{value:true});var _glMatrix=_dereq_('gl-matrix');var _glMatrix2=_interopRequireDefault(_glMatrix);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}var GLTool=function(){function GLTool(){_classCallCheck(this,GLTool);this.canvas;this._viewport=[0,0,0,0];this._enabledVertexAttribute=[];this.identityMatrix=_glMatrix2.default.mat4.create();this._normalMatrix=_glMatrix2.default.mat3.create();this._inverseModelViewMatrix=_glMatrix2.default.mat3.create();this._modelMatrix=_glMatrix2.default.mat4.create();this._matrix=_glMatrix2.default.mat4.create();_glMatrix2.default.mat4.identity(this.identityMatrix,this.identityMatrix);} //	INITIALIZE
-_createClass(GLTool,[{key:'init',value:function init(mCanvas){var mParameters=arguments.length<=1||arguments[1]===undefined?{}:arguments[1];if(this.canvas!==undefined){this.destroy();}this.canvas=mCanvas;this.setSize(window.innerWidth,window.innerHeight);this.gl=this.canvas.getContext('webgl',mParameters)||this.canvas.getContext('experimental-webgl',mParameters); //	extensions
-var extensions=['EXT_shader_texture_lod','EXT_shader_texture_lod','EXT_sRGB','EXT_frag_depth','OES_texture_float','OES_texture_half_float','OES_texture_float_linear','OES_texture_half_float_linear','OES_standard_derivatives','WEBGL_depth_texture'];this.extensions={};for(var i=0;i<extensions.length;i++){this.extensions[extensions[i]]=this.gl.getExtension(extensions[i]);} //	Copy gl Attributes
-var gl=this.gl;this.VERTEX_SHADER=gl.VERTEX_SHADER;this.FRAGMENT_SHADER=gl.FRAGMENT_SHADER;this.COMPILE_STATUS=gl.COMPILE_STATUS;this.DEPTH_TEST=gl.DEPTH_TEST;this.CULL_FACE=gl.CULL_FACE;this.BLEND=gl.BLEND;this.POINTS=gl.POINTS;this.LINES=gl.LINES;this.TRIANGLES=gl.TRIANGLES;this.LINEAR=gl.LINEAR;this.NEAREST=gl.NEAREST;this.LINEAR_MIPMAP_NEAREST=gl.LINEAR_MIPMAP_NEAREST;this.MIRRORED_REPEAT=gl.MIRRORED_REPEAT;this.CLAMP_TO_EDGE=gl.CLAMP_TO_EDGE;this.enable(this.DEPTH_TEST);this.enable(this.CULL_FACE);this.enable(this.BLEND);} //	PUBLIC METHODS
-},{key:'setViewport',value:function setViewport(x,y,w,h){var hasChanged=false;if(x!==this._viewport[0]){hasChanged=true;}if(y!==this._viewport[1]){hasChanged=true;}if(w!==this._viewport[2]){hasChanged=true;}if(h!==this._viewport[3]){hasChanged=true;}if(hasChanged){this.gl.viewport(x,y,w,h);this._viewport=[x,y,w,h];}}},{key:'clear',value:function clear(r,g,b,a){this.gl.clearColor(r,g,b,a);this.gl.clear(this.gl.COLOR_BUFFER_BIT|this.gl.DEPTH_BUFFER_BIT);}},{key:'setMatrices',value:function setMatrices(mCamera){this.camera=mCamera;this.rotate(this.identityMatrix);}},{key:'useShader',value:function useShader(mShader){this.shader=mShader;this.shaderProgram=this.shader.shaderProgram;}},{key:'rotate',value:function rotate(mRotation){_glMatrix2.default.mat4.copy(this._modelMatrix,mRotation);_glMatrix2.default.mat4.multiply(this._matrix,this.camera.matrix,this._modelMatrix);_glMatrix2.default.mat3.fromMat4(this._normalMatrix,this._matrix);_glMatrix2.default.mat3.invert(this._normalMatrix,this._normalMatrix);_glMatrix2.default.mat3.transpose(this._normalMatrix,this._normalMatrix);_glMatrix2.default.mat3.fromMat4(this._inverseModelViewMatrix,this._matrix);_glMatrix2.default.mat3.invert(this._inverseModelViewMatrix,this._inverseModelViewMatrix);}},{key:'draw',value:function draw(mMesh){if(mMesh.length){for(var i=0;i<mMesh.length;i++){this.draw(mMesh[i]);}return;}function getAttribLoc(gl,shaderProgram,name){if(shaderProgram.cacheAttribLoc===undefined){shaderProgram.cacheAttribLoc={};}if(shaderProgram.cacheAttribLoc[name]===undefined){shaderProgram.cacheAttribLoc[name]=gl.getAttribLocation(shaderProgram,name);}return shaderProgram.cacheAttribLoc[name];} //	ATTRIBUTES
-for(var i=0;i<mMesh.attributes.length;i++){var attribute=mMesh.attributes[i];this.gl.bindBuffer(this.gl.ARRAY_BUFFER,attribute.buffer);var attrPosition=getAttribLoc(this.gl,this.shaderProgram,attribute.name);this.gl.vertexAttribPointer(attrPosition,attribute.itemSize,this.gl.FLOAT,false,0,0);if(this._enabledVertexAttribute.indexOf(attrPosition)===-1){this.gl.enableVertexAttribArray(attrPosition);this._enabledVertexAttribute.push(attrPosition);}} //	BIND INDEX BUFFER
-this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER,mMesh.iBuffer); //	DEFAULT MATRICES
-this.shader.uniform('uProjectionMatrix','uniformMatrix4fv',this.camera.projection);this.shader.uniform('uModelMatrix','uniformMatrix4fv',this._modelMatrix);this.shader.uniform('uViewMatrix','uniformMatrix4fv',this.camera.matrix);this.shader.uniform('uNormalMatrix','uniformMatrix3fv',this._normalMatrix);this.shader.uniform('uModelViewMatrixInverse','uniformMatrix3fv',this._inverseModelViewMatrix); //	DRAWING
-if(mMesh.drawType===this.gl.POINTS){this.gl.drawArrays(mMesh.drawType,0,mMesh.vertexSize);}else {this.gl.drawElements(mMesh.drawType,mMesh.iBuffer.numItems,this.gl.UNSIGNED_SHORT,0);}}},{key:'setSize',value:function setSize(mWidth,mHeight){this._width=mWidth;this._height=mHeight;this.canvas.width=this._width;this.canvas.height=this._height;this._aspectRatio=this._width/this._height;if(this.gl){this.viewport(0,0,this._width,this._height);}}},{key:'showExtensions',value:function showExtensions(){console.log('Extensions : ',this.extensions);for(var ext in this.extensions){if(this.extensions[ext]){console.log(ext,':',this.extensions[ext]);}}}},{key:'checkExtension',value:function checkExtension(mExtension){return !!this.extensions[mExtension];}},{key:'getExtension',value:function getExtension(mExtension){return this.extensions[mExtension];} //	BLEND MODES
-},{key:'enableAlphaBlending',value:function enableAlphaBlending(){this.gl.blendFunc(this.gl.SRC_ALPHA,this.gl.ONE_MINUS_SRC_ALPHA);}},{key:'enableAdditiveBlending',value:function enableAdditiveBlending(){this.gl.blendFunc(this.gl.ONE,this.gl.ONE);} //	GL NATIVE FUNCTIONS
-},{key:'enable',value:function enable(mParameter){this.gl.enable(mParameter);}},{key:'disable',value:function disable(mParameter){this.gl.disable(mParameter);}},{key:'viewport',value:function viewport(x,y,w,h){this.setViewport(x,y,w,h);} //	GETTER AND SETTERS
-},{key:'destroy', //	DESTROY
-value:function destroy(){this.canvas=null;if(this.canvas.parentNode){try{this.canvas.parentNode.removeChild(this.canvas);}catch(e){console.log('Error : ',e);}}}},{key:'width',get:function get(){return this._width;}},{key:'height',get:function get(){return this._height;}},{key:'aspectRatio',get:function get(){return this._aspectRatio;}}]);return GLTool;}();var GL=new GLTool();exports.default=GL;},{"gl-matrix":1}],19:[function(_dereq_,module,exports){ // Geom.js
-'use strict';Object.defineProperty(exports,"__esModule",{value:true});var _Mesh=_dereq_('./Mesh');var _Mesh2=_interopRequireDefault(_Mesh);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}var Geom={};Geom.plane=function(width,height,numSegments){var withNormals=arguments.length<=3||arguments[3]===undefined?false:arguments[3];var axis=arguments.length<=4||arguments[4]===undefined?'xy':arguments[4];var drawType=arguments.length<=5||arguments[5]===undefined?4:arguments[5];var positions=[];var coords=[];var indices=[];var normals=[];var gapX=width/numSegments;var gapY=height/numSegments;var gapUV=1/numSegments;var index=0;var sx=-width*0.5;var sy=-height*0.5;for(var i=0;i<numSegments;i++){for(var j=0;j<numSegments;j++){var tx=gapX*i+sx;var ty=gapY*j+sy;if(axis==='xz'){positions.push([tx,0,-ty+gapY]);positions.push([tx+gapX,0,-ty+gapY]);positions.push([tx+gapX,0,-ty]);positions.push([tx,0,-ty]);normals.push([0,1,0]);normals.push([0,1,0]);normals.push([0,1,0]);normals.push([0,1,0]);}else if(axis==='yz'){positions.push([0,tx,ty]);positions.push([0,tx+gapX,ty]);positions.push([0,tx+gapX,ty+gapY]);positions.push([0,tx,ty+gapY]);normals.push([1,0,0]);normals.push([1,0,0]);normals.push([1,0,0]);normals.push([1,0,0]);}else {positions.push([tx,ty,0]);positions.push([tx+gapX,ty,0]);positions.push([tx+gapX,ty+gapY,0]);positions.push([tx,ty+gapY,0]);normals.push([0,0,1]);normals.push([0,0,1]);normals.push([0,0,1]);normals.push([0,0,1]);}var u=i/numSegments;var v=j/numSegments;coords.push([u,v]);coords.push([u+gapUV,v]);coords.push([u+gapUV,v+gapUV]);coords.push([u,v+gapUV]);indices.push(index*4+0);indices.push(index*4+1);indices.push(index*4+2);indices.push(index*4+0);indices.push(index*4+2);indices.push(index*4+3);index++;}}var mesh=new _Mesh2.default(drawType);mesh.bufferVertex(positions);mesh.bufferTexCoords(coords);mesh.bufferIndices(indices);if(withNormals){mesh.bufferNormal(normals);}return mesh;};Geom.sphere=function(size,numSegments){var withNormals=arguments.length<=2||arguments[2]===undefined?false:arguments[2];var isInvert=arguments.length<=3||arguments[3]===undefined?false:arguments[3];var drawType=arguments.length<=4||arguments[4]===undefined?4:arguments[4];var positions=[];var coords=[];var indices=[];var normals=[];var index=0;var gapUV=1/numSegments;var getPosition=function getPosition(i,j){var isNormal=arguments.length<=2||arguments[2]===undefined?false:arguments[2]; //	rx : -90 ~ 90 , ry : 0 ~ 360
-var rx=i/numSegments*Math.PI-Math.PI*0.5;var ry=j/numSegments*Math.PI*2;var r=isNormal?1:size;var pos=[];pos[1]=Math.sin(rx)*r;var t=Math.cos(rx)*r;pos[0]=Math.cos(ry)*t;pos[2]=Math.sin(ry)*t;var precision=10000;pos[0]=Math.floor(pos[0]*precision)/precision;pos[1]=Math.floor(pos[1]*precision)/precision;pos[2]=Math.floor(pos[2]*precision)/precision;return pos;};for(var i=0;i<numSegments;i++){for(var j=0;j<numSegments;j++){positions.push(getPosition(i,j));positions.push(getPosition(i+1,j));positions.push(getPosition(i+1,j+1));positions.push(getPosition(i,j+1));if(withNormals){normals.push(getPosition(i,j,true));normals.push(getPosition(i+1,j,true));normals.push(getPosition(i+1,j+1,true));normals.push(getPosition(i,j+1,true));}var u=j/numSegments;var v=i/numSegments;coords.push([1.0-u,v]);coords.push([1.0-u,v+gapUV]);coords.push([1.0-u-gapUV,v+gapUV]);coords.push([1.0-u-gapUV,v]);indices.push(index*4+0);indices.push(index*4+1);indices.push(index*4+2);indices.push(index*4+0);indices.push(index*4+2);indices.push(index*4+3);index++;}}if(isInvert){indices.reverse();}var mesh=new _Mesh2.default(drawType);mesh.bufferVertex(positions);mesh.bufferTexCoords(coords);mesh.bufferIndices(indices);if(withNormals){mesh.bufferNormal(normals);}return mesh;};Geom.cube=function(w,h,d){var withNormals=arguments.length<=3||arguments[3]===undefined?false:arguments[3];var drawType=arguments.length<=4||arguments[4]===undefined?4:arguments[4];h=h||w;d=d||w;var x=w/2;var y=h/2;var z=d/2;var positions=[];var coords=[];var indices=[];var normals=[];var count=0; // BACK
-positions.push([-x,y,-z]);positions.push([x,y,-z]);positions.push([x,-y,-z]);positions.push([-x,-y,-z]);normals.push([0,0,-1]);normals.push([0,0,-1]);normals.push([0,0,-1]);normals.push([0,0,-1]);coords.push([0,0]);coords.push([1,0]);coords.push([1,1]);coords.push([0,1]);indices.push(count*4+0);indices.push(count*4+1);indices.push(count*4+2);indices.push(count*4+0);indices.push(count*4+2);indices.push(count*4+3);count++; // RIGHT
-positions.push([x,y,-z]);positions.push([x,y,z]);positions.push([x,-y,z]);positions.push([x,-y,-z]);normals.push([1,0,0]);normals.push([1,0,0]);normals.push([1,0,0]);normals.push([1,0,0]);coords.push([0,0]);coords.push([1,0]);coords.push([1,1]);coords.push([0,1]);indices.push(count*4+0);indices.push(count*4+1);indices.push(count*4+2);indices.push(count*4+0);indices.push(count*4+2);indices.push(count*4+3);count++; // FRONT
-positions.push([x,y,z]);positions.push([-x,y,z]);positions.push([-x,-y,z]);positions.push([x,-y,z]);normals.push([0,0,1]);normals.push([0,0,1]);normals.push([0,0,1]);normals.push([0,0,1]);coords.push([0,0]);coords.push([1,0]);coords.push([1,1]);coords.push([0,1]);indices.push(count*4+0);indices.push(count*4+1);indices.push(count*4+2);indices.push(count*4+0);indices.push(count*4+2);indices.push(count*4+3);count++; // LEFT
-positions.push([-x,y,z]);positions.push([-x,y,-z]);positions.push([-x,-y,-z]);positions.push([-x,-y,z]);normals.push([-1,0,0]);normals.push([-1,0,0]);normals.push([-1,0,0]);normals.push([-1,0,0]);coords.push([0,0]);coords.push([1,0]);coords.push([1,1]);coords.push([0,1]);indices.push(count*4+0);indices.push(count*4+1);indices.push(count*4+2);indices.push(count*4+0);indices.push(count*4+2);indices.push(count*4+3);count++; // TOP
-positions.push([-x,y,z]);positions.push([x,y,z]);positions.push([x,y,-z]);positions.push([-x,y,-z]);normals.push([0,1,0]);normals.push([0,1,0]);normals.push([0,1,0]);normals.push([0,1,0]);coords.push([0,0]);coords.push([1,0]);coords.push([1,1]);coords.push([0,1]);indices.push(count*4+0);indices.push(count*4+1);indices.push(count*4+2);indices.push(count*4+0);indices.push(count*4+2);indices.push(count*4+3);count++; // BOTTOM
-positions.push([-x,-y,-z]);positions.push([x,-y,-z]);positions.push([x,-y,z]);positions.push([-x,-y,z]);normals.push([0,-1,0]);normals.push([0,-1,0]);normals.push([0,-1,0]);normals.push([0,-1,0]);coords.push([0,0]);coords.push([1,0]);coords.push([1,1]);coords.push([0,1]);indices.push(count*4+0);indices.push(count*4+1);indices.push(count*4+2);indices.push(count*4+0);indices.push(count*4+2);indices.push(count*4+3);count++;var mesh=new _Mesh2.default(drawType);mesh.bufferVertex(positions);mesh.bufferTexCoords(coords);mesh.bufferIndices(indices);if(withNormals){mesh.bufferNormal(normals);}return mesh;};Geom.skybox=function(size){var withNormals=arguments.length<=1||arguments[1]===undefined?false:arguments[1];var drawType=arguments.length<=2||arguments[2]===undefined?4:arguments[2];var positions=[];var coords=[];var indices=[];var normals=[];var count=0; // BACK
-positions.push([size,size,-size]);positions.push([-size,size,-size]);positions.push([-size,-size,-size]);positions.push([size,-size,-size]);normals.push([0,0,-1]);normals.push([0,0,-1]);normals.push([0,0,-1]);normals.push([0,0,-1]);coords.push([0,0]);coords.push([1,0]);coords.push([1,1]);coords.push([0,1]);indices.push(count*4+0);indices.push(count*4+1);indices.push(count*4+2);indices.push(count*4+0);indices.push(count*4+2);indices.push(count*4+3);count++; // RIGHT
-positions.push([size,-size,-size]);positions.push([size,-size,size]);positions.push([size,size,size]);positions.push([size,size,-size]);normals.push([1,0,0]);normals.push([1,0,0]);normals.push([1,0,0]);normals.push([1,0,0]);coords.push([0,0]);coords.push([1,0]);coords.push([1,1]);coords.push([0,1]);indices.push(count*4+0);indices.push(count*4+1);indices.push(count*4+2);indices.push(count*4+0);indices.push(count*4+2);indices.push(count*4+3);count++; // FRONT
-positions.push([-size,size,size]);positions.push([size,size,size]);positions.push([size,-size,size]);positions.push([-size,-size,size]);normals.push([0,0,1]);normals.push([0,0,1]);normals.push([0,0,1]);normals.push([0,0,1]);coords.push([0,0]);coords.push([1,0]);coords.push([1,1]);coords.push([0,1]);indices.push(count*4+0);indices.push(count*4+1);indices.push(count*4+2);indices.push(count*4+0);indices.push(count*4+2);indices.push(count*4+3);count++; // LEFT
-positions.push([-size,-size,size]);positions.push([-size,-size,-size]);positions.push([-size,size,-size]);positions.push([-size,size,size]);normals.push([-1,0,0]);normals.push([-1,0,0]);normals.push([-1,0,0]);normals.push([-1,0,0]);coords.push([0,0]);coords.push([1,0]);coords.push([1,1]);coords.push([0,1]);indices.push(count*4+0);indices.push(count*4+1);indices.push(count*4+2);indices.push(count*4+0);indices.push(count*4+2);indices.push(count*4+3);count++; // TOP
-positions.push([size,size,size]);positions.push([-size,size,size]);positions.push([-size,size,-size]);positions.push([size,size,-size]);normals.push([0,1,0]);normals.push([0,1,0]);normals.push([0,1,0]);normals.push([0,1,0]);coords.push([0,0]);coords.push([1,0]);coords.push([1,1]);coords.push([0,1]);indices.push(count*4+0);indices.push(count*4+1);indices.push(count*4+2);indices.push(count*4+0);indices.push(count*4+2);indices.push(count*4+3);count++; // BOTTOM
-positions.push([size,-size,-size]);positions.push([-size,-size,-size]);positions.push([-size,-size,size]);positions.push([size,-size,size]);normals.push([0,-1,0]);normals.push([0,-1,0]);normals.push([0,-1,0]);normals.push([0,-1,0]);coords.push([0,0]);coords.push([1,0]);coords.push([1,1]);coords.push([0,1]);indices.push(count*4+0);indices.push(count*4+1);indices.push(count*4+2);indices.push(count*4+0);indices.push(count*4+2);indices.push(count*4+3);var mesh=new _Mesh2.default(drawType);mesh.bufferVertex(positions);mesh.bufferTexCoords(coords);mesh.bufferIndices(indices);if(withNormals){mesh.bufferNormal(normals);}return mesh;};Geom.bigTriangle=function(){var indices=[2,1,0];var positions=[[-1,-1],[-1,4],[4,-1]];var mesh=new _Mesh2.default();mesh.bufferData(positions,'aPosition',2);mesh.bufferIndices(indices);return mesh;};exports.default=Geom;},{"./Mesh":20}],20:[function(_dereq_,module,exports){ // Mesh.js
-'use strict';var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||false;descriptor.configurable=true;if("value" in descriptor)descriptor.writable=true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};}();Object.defineProperty(exports,"__esModule",{value:true});var _GLTool=_dereq_('./GLTool');var _GLTool2=_interopRequireDefault(_GLTool);var _glMatrix=_dereq_('gl-matrix');var _glMatrix2=_interopRequireDefault(_glMatrix);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}var gl=undefined;var vec3=_glMatrix2.default.vec3;var Mesh=function(){function Mesh(){var mDrawType=arguments.length<=0||arguments[0]===undefined?_GLTool2.default.gl.TRIANGLES:arguments[0];_classCallCheck(this,Mesh);gl=_GLTool2.default.gl;this.drawType=mDrawType;this._attributes=[];this._vertexSize=0;this._vertices=[];this._texCoords=[];this._normals=[];this._faceNormals=[];this._tangents=[];this._indices=[];this._faces=[];}_createClass(Mesh,[{key:'bufferVertex',value:function bufferVertex(mArrayVertices){var isDynamic=arguments.length<=1||arguments[1]===undefined?false:arguments[1];this._vertexSize=mArrayVertices.length;this.bufferData(mArrayVertices,'aVertexPosition',3,isDynamic);this._vertices=mArrayVertices;}},{key:'bufferTexCoords',value:function bufferTexCoords(mArrayTexCoords){var isDynamic=arguments.length<=1||arguments[1]===undefined?false:arguments[1];this.bufferData(mArrayTexCoords,'aTextureCoord',2,isDynamic);this._texCoords=mArrayTexCoords;}},{key:'bufferNormal',value:function bufferNormal(mNormals){var isDynamic=arguments.length<=1||arguments[1]===undefined?false:arguments[1];this.bufferData(mNormals,'aNormal',3,isDynamic);this._normals=mNormals;}},{key:'bufferIndices',value:function bufferIndices(mArrayIndices){var isDynamic=arguments.length<=1||arguments[1]===undefined?false:arguments[1];var drawType=isDynamic?gl.DYNAMIC_DRAW:gl.STATIC_DRAW;this._indices=mArrayIndices;this.iBuffer=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,this.iBuffer);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint16Array(mArrayIndices),drawType);this.iBuffer.itemSize=1;this.iBuffer.numItems=mArrayIndices.length;this._indices=mArrayIndices;}},{key:'bufferData',value:function bufferData(mData,mName,mItemSize){var isDynamic=arguments.length<=3||arguments[3]===undefined?false:arguments[3];var index=-1,i=0;var drawType=isDynamic?gl.DYNAMIC_DRAW:gl.STATIC_DRAW;var bufferData=[];var buffer=undefined,dataArray=undefined; //	Check for existing attributes
-for(i=0;i<this._attributes.length;i++){if(this._attributes[i].name===mName){this._attributes[i].data=mData;index=i;break;}} //	flatten buffer data		
-for(i=0;i<mData.length;i++){for(var j=0;j<mData[i].length;j++){bufferData.push(mData[i][j]);}}if(index===-1){ //	attribute not exist yet, create new buffer
-buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);dataArray=new Float32Array(bufferData);gl.bufferData(gl.ARRAY_BUFFER,dataArray,drawType);this._attributes.push({name:mName,data:mData,itemSize:mItemSize,buffer:buffer,dataArray:dataArray});}else { //	attribute existed, replace with new data
-buffer=this._attributes[index].buffer;gl.bindBuffer(gl.ARRAY_BUFFER,buffer);dataArray=this._attributes[index].dataArray;for(i=0;i<bufferData.length;i++){dataArray[i]=bufferData[i];}gl.bufferData(gl.ARRAY_BUFFER,dataArray,drawType);}}},{key:'computeNormals',value:function computeNormals(){var usingFaceNormals=arguments.length<=0||arguments[0]===undefined?false:arguments[0];this._generateFaces();if(usingFaceNormals){this._computeFaceNormals();}else {this._computeVertexNormals();}}},{key:'computeTangents',value:function computeTangents(){} //	PRIVATE METHODS
-},{key:'_computeFaceNormals',value:function _computeFaceNormals(){var faceIndex=undefined;var face=undefined;var normals=[];for(var i=0;i<this._indices.length;i+=3){faceIndex=i/3;face=this._faces[faceIndex];var N=face.normal;normals[face.indices[0]]=N;normals[face.indices[1]]=N;normals[face.indices[2]]=N;}this.bufferNormal(normals);}},{key:'_computeVertexNormals',value:function _computeVertexNormals(){ //	loop through all vertices
-var sumNormal=vec3.create();var face=undefined;var normals=[];for(var i=0;i<this._vertices.length;i++){vec3.set(sumNormal,0,0,0);for(var j=0;j<this._faces.length;j++){face=this._faces[j]; //	if vertex exist in the face, add the normal to sum normal
-if(face.indices.indexOf(i)>=0){sumNormal[0]+=face.normal[0];sumNormal[1]+=face.normal[1];sumNormal[2]+=face.normal[2];}}vec3.normalize(sumNormal,sumNormal);normals.push([sumNormal[0],sumNormal[1],sumNormal[2]]);}this.bufferNormal(normals);}},{key:'_generateFaces',value:function _generateFaces(){var ia=undefined,ib=undefined,ic=undefined;var a=undefined,b=undefined,c=undefined,vba=vec3.create(),vca=vec3.create(),vNormal=vec3.create();for(var i=0;i<this._indices.length;i+=3){ia=this._indices[i];ib=this._indices[i+1];ic=this._indices[i+2];a=vec3.clone(this._vertices[ia]);b=vec3.clone(this._vertices[ib]);c=vec3.clone(this._vertices[ic]);vec3.sub(vba,b,a);vec3.sub(vca,c,a);vec3.cross(vNormal,vba,vca);vec3.normalize(vNormal,vNormal);var N=[vNormal[0],vNormal[1],vNormal[2]];var face={indices:[ia,ib,ic],normal:N};this._faces.push(face);}} //	GETTER AND SETTERS
-<<<<<<< HEAD
-},{key:'attributes',get:function get(){return this._attributes;}},{key:'vertexSize',get:function get(){return this._vertexSize;}},{key:'hasNormals',get:function get(){if(this._normals.length===0){return false;}return true;}},{key:'hasTangents',get:function get(){if(this._tangents.length===0){return false;}return true;}}]);return Mesh;}();exports.default=Mesh;},{"./GLTool":18,"gl-matrix":1}],21:[function(_dereq_,module,exports){'use strict';var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||false;descriptor.configurable=true;if("value" in descriptor)descriptor.writable=true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};}(); // Camera.js
-=======
-},{key:'vertices',get:function get(){return this._vertices;}},{key:'attributes',get:function get(){return this._attributes;}},{key:'vertexSize',get:function get(){return this._vertexSize;}},{key:'hasNormals',get:function get(){if(this._normals.length===0){return false;}return true;}},{key:'hasTangents',get:function get(){if(this._tangents.length===0){return false;}return true;}}]);return Mesh;}();exports.default=Mesh;},{"./GLTool":18,"gl-matrix":1}],21:[function(_dereq_,module,exports){'use strict';var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||false;descriptor.configurable=true;if("value" in descriptor)descriptor.writable=true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};}(); // Camera.js
->>>>>>> 7ab135ecd6b8fb7d133f2d1cfb4e4849bdc83ba7
-Object.defineProperty(exports,"__esModule",{value:true});var _glMatrix=_dereq_('gl-matrix');var _glMatrix2=_interopRequireDefault(_glMatrix);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}var Camera=function(){function Camera(){_classCallCheck(this,Camera); //	VIEW MATRIX
-this._matrix=_glMatrix2.default.mat4.create(); //	PROJECTION MATRIX
-this._projection=_glMatrix2.default.mat4.create(); //	POSITION OF CAMERA
-this.position=_glMatrix2.default.vec3.create();}_createClass(Camera,[{key:'lookAt',value:function lookAt(aEye,aCenter,aUp){_glMatrix2.default.vec3.copy(this.position,aEye);_glMatrix2.default.mat4.identity(this._matrix);_glMatrix2.default.mat4.lookAt(this._matrix,aEye,aCenter,aUp);} //	GETTERS
-},{key:'matrix',get:function get(){return this._matrix;}},{key:'viewMatrix',get:function get(){return this._matrix;}},{key:'projection',get:function get(){return this._projection;}},{key:'projectionMatrix',get:function get(){return this._projection;}}]);return Camera;}();exports.default=Camera;},{"gl-matrix":1}],22:[function(_dereq_,module,exports){ // CameraCube.js
-'use strict';var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||false;descriptor.configurable=true;if("value" in descriptor)descriptor.writable=true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};}();Object.defineProperty(exports,"__esModule",{value:true});var _CameraPerspective2=_dereq_('./CameraPerspective');var _CameraPerspective3=_interopRequireDefault(_CameraPerspective2);var _glMatrix=_dereq_('gl-matrix');var _glMatrix2=_interopRequireDefault(_glMatrix);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self,call){if(!self){throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call&&((typeof call==="undefined"?"undefined":_typeof(call))==="object"||typeof call==="function")?call:self;}function _inherits(subClass,superClass){if(typeof superClass!=="function"&&superClass!==null){throw new TypeError("Super expression must either be null or a function, not "+(typeof superClass==="undefined"?"undefined":_typeof(superClass)));}subClass.prototype=Object.create(superClass&&superClass.prototype,{constructor:{value:subClass,enumerable:false,writable:true,configurable:true}});if(superClass)Object.setPrototypeOf?Object.setPrototypeOf(subClass,superClass):subClass.__proto__=superClass;}var vec3=_glMatrix2.default.vec3;var CAMERA_SETTINGS=[[vec3.fromValues(0,0,0),vec3.fromValues(1,0,0),vec3.fromValues(0,-1,0)],[vec3.fromValues(0,0,0),vec3.fromValues(-1,0,0),vec3.fromValues(0,-1,0)],[vec3.fromValues(0,0,0),vec3.fromValues(0,1,0),vec3.fromValues(0,0,1)],[vec3.fromValues(0,0,0),vec3.fromValues(0,-1,0),vec3.fromValues(0,0,-1)],[vec3.fromValues(0,0,0),vec3.fromValues(0,0,1),vec3.fromValues(0,-1,0)],[vec3.fromValues(0,0,0),vec3.fromValues(0,0,-1),vec3.fromValues(0,-1,0)]];var CameraCube=function(_CameraPerspective){_inherits(CameraCube,_CameraPerspective);function CameraCube(){_classCallCheck(this,CameraCube);var _this=_possibleConstructorReturn(this,Object.getPrototypeOf(CameraCube).call(this));_this.setPerspective(Math.PI/2,1,0.1,1000);return _this;}_createClass(CameraCube,[{key:'face',value:function face(mIndex){var o=CAMERA_SETTINGS[mIndex];this.lookAt(o[0],o[1],o[2]);}}]);return CameraCube;}(_CameraPerspective3.default);exports.default=CameraCube;},{"./CameraPerspective":24,"gl-matrix":1}],23:[function(_dereq_,module,exports){'use strict';var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||false;descriptor.configurable=true;if("value" in descriptor)descriptor.writable=true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};}();Object.defineProperty(exports,"__esModule",{value:true});var _Camera2=_dereq_('./Camera');var _Camera3=_interopRequireDefault(_Camera2);var _glMatrix=_dereq_('gl-matrix');var _glMatrix2=_interopRequireDefault(_glMatrix);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self,call){if(!self){throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call&&((typeof call==="undefined"?"undefined":_typeof(call))==="object"||typeof call==="function")?call:self;}function _inherits(subClass,superClass){if(typeof superClass!=="function"&&superClass!==null){throw new TypeError("Super expression must either be null or a function, not "+(typeof superClass==="undefined"?"undefined":_typeof(superClass)));}subClass.prototype=Object.create(superClass&&superClass.prototype,{constructor:{value:subClass,enumerable:false,writable:true,configurable:true}});if(superClass)Object.setPrototypeOf?Object.setPrototypeOf(subClass,superClass):subClass.__proto__=superClass;} // CameraOrtho.js
-var CameraOrtho=function(_Camera){_inherits(CameraOrtho,_Camera);function CameraOrtho(){_classCallCheck(this,CameraOrtho);var _this=_possibleConstructorReturn(this,Object.getPrototypeOf(CameraOrtho).call(this));var eye=_glMatrix2.default.vec3.clone([0,0,5]);var center=_glMatrix2.default.vec3.create();var up=_glMatrix2.default.vec3.clone([0,-1,0]);_this.lookAt(eye,center,up);_this.ortho(1,-1,1,-1);return _this;}_createClass(CameraOrtho,[{key:'setBoundary',value:function setBoundary(left,right,top,bottom){this.ortho(left,right,top,bottom);}},{key:'ortho',value:function ortho(left,right,top,bottom){this.left=left;this.right=right;this.top=top;this.bottom=bottom;_glMatrix2.default.mat4.ortho(this._projection,left,right,top,bottom,0,10000);}}]);return CameraOrtho;}(_Camera3.default);exports.default=CameraOrtho;},{"./Camera":21,"gl-matrix":1}],24:[function(_dereq_,module,exports){'use strict';var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||false;descriptor.configurable=true;if("value" in descriptor)descriptor.writable=true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};}();Object.defineProperty(exports,"__esModule",{value:true});var _Camera2=_dereq_('./Camera');var _Camera3=_interopRequireDefault(_Camera2);var _glMatrix=_dereq_('gl-matrix');var _glMatrix2=_interopRequireDefault(_glMatrix);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self,call){if(!self){throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call&&((typeof call==="undefined"?"undefined":_typeof(call))==="object"||typeof call==="function")?call:self;}function _inherits(subClass,superClass){if(typeof superClass!=="function"&&superClass!==null){throw new TypeError("Super expression must either be null or a function, not "+(typeof superClass==="undefined"?"undefined":_typeof(superClass)));}subClass.prototype=Object.create(superClass&&superClass.prototype,{constructor:{value:subClass,enumerable:false,writable:true,configurable:true}});if(superClass)Object.setPrototypeOf?Object.setPrototypeOf(subClass,superClass):subClass.__proto__=superClass;} // CameraPerspective.js
-var CameraPerspective=function(_Camera){_inherits(CameraPerspective,_Camera);function CameraPerspective(){_classCallCheck(this,CameraPerspective);return _possibleConstructorReturn(this,Object.getPrototypeOf(CameraPerspective).call(this));}_createClass(CameraPerspective,[{key:'setPerspective',value:function setPerspective(mFov,mAspectRatio,mNear,mFar){this._fov=mFov;this._near=mNear;this._far=mFar;this._aspectRatio=mAspectRatio;_glMatrix2.default.mat4.perspective(this._projection,mFov,mAspectRatio,mNear,mFar);}},{key:'setAspectRatio',value:function setAspectRatio(mAspectRatio){this._aspectRatio=mAspectRatio;_glMatrix2.default.mat4.perspective(this.projection,this._fov,mAspectRatio,this._near,this._far);}}]);return CameraPerspective;}(_Camera3.default);exports.default=CameraPerspective;},{"./Camera":21,"gl-matrix":1}],25:[function(_dereq_,module,exports){'use strict';Object.defineProperty(exports,"__esModule",{value:true});var _GLTool=_dereq_('../GLTool');var _GLTool2=_interopRequireDefault(_GLTool);var _Mesh=_dereq_('../Mesh');var _Mesh2=_interopRequireDefault(_Mesh);var _GLShader=_dereq_('../GLShader');var _GLShader2=_interopRequireDefault(_GLShader);var _Batch2=_dereq_('../Batch');var _Batch3=_interopRequireDefault(_Batch2);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self,call){if(!self){throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call&&((typeof call==="undefined"?"undefined":_typeof(call))==="object"||typeof call==="function")?call:self;}function _inherits(subClass,superClass){if(typeof superClass!=="function"&&superClass!==null){throw new TypeError("Super expression must either be null or a function, not "+(typeof superClass==="undefined"?"undefined":_typeof(superClass)));}subClass.prototype=Object.create(superClass&&superClass.prototype,{constructor:{value:subClass,enumerable:false,writable:true,configurable:true}});if(superClass)Object.setPrototypeOf?Object.setPrototypeOf(subClass,superClass):subClass.__proto__=superClass;} // BatchAxis.js
-var BatchAxis=function(_Batch){_inherits(BatchAxis,_Batch);function BatchAxis(){_classCallCheck(this,BatchAxis);var positions=[];var colors=[];var indices=[0,1,2,3,4,5];var r=9999;positions.push([-r,0,0]);positions.push([r,0,0]);positions.push([0,-r,0]);positions.push([0,r,0]);positions.push([0,0,-r]);positions.push([0,0,r]);colors.push([1,0,0]);colors.push([1,0,0]);colors.push([0,1,0]);colors.push([0,1,0]);colors.push([0,0,1]);colors.push([0,0,1]);var mesh=new _Mesh2.default(_GLTool2.default.LINES);mesh.bufferVertex(positions);mesh.bufferIndices(indices);mesh.bufferData(colors,'aColor',3);var shader=new _GLShader2.default("#define GLSLIFY 1\n// axis.vert\n\n#define SHADER_NAME BASIC_VERTEX\n\nprecision highp float;\nattribute vec3 aVertexPosition;\nattribute vec3 aColor;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvarying vec3 vColor;\n\nvoid main(void) {\n    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);\n    vColor = aColor;\n}","#define GLSLIFY 1\n// axis.frag\n\n#define SHADER_NAME SIMPLE_TEXTURE\n\nprecision highp float;\nvarying vec3 vColor;\n\nvoid main(void) {\n    gl_FragColor = vec4(vColor, 1.0);\n}");return _possibleConstructorReturn(this,Object.getPrototypeOf(BatchAxis).call(this,mesh,shader));}return BatchAxis;}(_Batch3.default);exports.default=BatchAxis;},{"../Batch":12,"../GLShader":16,"../GLTool":18,"../Mesh":20}],26:[function(_dereq_,module,exports){'use strict';var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||false;descriptor.configurable=true;if("value" in descriptor)descriptor.writable=true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};}();var _get=function get(object,property,receiver){if(object===null)object=Function.prototype;var desc=Object.getOwnPropertyDescriptor(object,property);if(desc===undefined){var parent=Object.getPrototypeOf(object);if(parent===null){return undefined;}else {return get(parent,property,receiver);}}else if("value" in desc){return desc.value;}else {var getter=desc.get;if(getter===undefined){return undefined;}return getter.call(receiver);}};Object.defineProperty(exports,"__esModule",{value:true});var _Geom=_dereq_('../Geom');var _Geom2=_interopRequireDefault(_Geom);var _GLShader=_dereq_('../GLShader');var _GLShader2=_interopRequireDefault(_GLShader);var _Batch2=_dereq_('../Batch');var _Batch3=_interopRequireDefault(_Batch2);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self,call){if(!self){throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call&&((typeof call==="undefined"?"undefined":_typeof(call))==="object"||typeof call==="function")?call:self;}function _inherits(subClass,superClass){if(typeof superClass!=="function"&&superClass!==null){throw new TypeError("Super expression must either be null or a function, not "+(typeof superClass==="undefined"?"undefined":_typeof(superClass)));}subClass.prototype=Object.create(superClass&&superClass.prototype,{constructor:{value:subClass,enumerable:false,writable:true,configurable:true}});if(superClass)Object.setPrototypeOf?Object.setPrototypeOf(subClass,superClass):subClass.__proto__=superClass;} // BatchCopy.js
-var BatchCopy=function(_Batch){_inherits(BatchCopy,_Batch);function BatchCopy(){_classCallCheck(this,BatchCopy);var mesh=_Geom2.default.bigTriangle();var shader=new _GLShader2.default("#define GLSLIFY 1\n// bigTriangle.vert\n\n#define SHADER_NAME BIG_TRIANGLE_VERTEX\n\nprecision highp float;\nattribute vec2 aPosition;\nvarying vec2 vTextureCoord;\n\nvoid main(void) {\n    gl_Position = vec4(aPosition, 0.0, 1.0);\n    vTextureCoord = aPosition * .5 + .5;\n}","#define GLSLIFY 1\n// copy.frag\n\n#define SHADER_NAME COPY_FRAGMENT\n\nprecision highp float;\n\nvarying vec2 vTextureCoord;\nuniform sampler2D texture;\n\nvoid main(void) {\n    gl_FragColor = texture2D(texture, vTextureCoord);\n}");var _this=_possibleConstructorReturn(this,Object.getPrototypeOf(BatchCopy).call(this,mesh,shader));shader.bind();shader.uniform('texture','uniform1i',0);return _this;}_createClass(BatchCopy,[{key:'draw',value:function draw(texture){this.shader.bind();texture.bind(0);_get(Object.getPrototypeOf(BatchCopy.prototype),'draw',this).call(this);}}]);return BatchCopy;}(_Batch3.default);exports.default=BatchCopy;},{"../Batch":12,"../GLShader":16,"../Geom":19}],27:[function(_dereq_,module,exports){'use strict';var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||false;descriptor.configurable=true;if("value" in descriptor)descriptor.writable=true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};}();var _get=function get(object,property,receiver){if(object===null)object=Function.prototype;var desc=Object.getOwnPropertyDescriptor(object,property);if(desc===undefined){var parent=Object.getPrototypeOf(object);if(parent===null){return undefined;}else {return get(parent,property,receiver);}}else if("value" in desc){return desc.value;}else {var getter=desc.get;if(getter===undefined){return undefined;}return getter.call(receiver);}};Object.defineProperty(exports,"__esModule",{value:true});var _GLTool=_dereq_('../GLTool');var _GLTool2=_interopRequireDefault(_GLTool);var _Mesh=_dereq_('../Mesh');var _Mesh2=_interopRequireDefault(_Mesh);var _GLShader=_dereq_('../GLShader');var _GLShader2=_interopRequireDefault(_GLShader);var _Batch2=_dereq_('../Batch');var _Batch3=_interopRequireDefault(_Batch2);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self,call){if(!self){throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call&&((typeof call==="undefined"?"undefined":_typeof(call))==="object"||typeof call==="function")?call:self;}function _inherits(subClass,superClass){if(typeof superClass!=="function"&&superClass!==null){throw new TypeError("Super expression must either be null or a function, not "+(typeof superClass==="undefined"?"undefined":_typeof(superClass)));}subClass.prototype=Object.create(superClass&&superClass.prototype,{constructor:{value:subClass,enumerable:false,writable:true,configurable:true}});if(superClass)Object.setPrototypeOf?Object.setPrototypeOf(subClass,superClass):subClass.__proto__=superClass;} // BatchDotsPlane.js
-var BatchDotsPlane=function(_Batch){_inherits(BatchDotsPlane,_Batch);function BatchDotsPlane(){_classCallCheck(this,BatchDotsPlane);var positions=[];var indices=[];var index=0;var numDots=100;var size=50;var gap=size/numDots;var i=undefined,j=undefined;for(i=-size/2;i<size;i+=gap){for(j=-size/2;j<size;j+=gap){positions.push([i,j,0]);indices.push(index);index++;positions.push([i,0,j]);indices.push(index);index++;}}var mesh=new _Mesh2.default(_GLTool2.default.POINTS);mesh.bufferVertex(positions);mesh.bufferIndices(indices);var shader=new _GLShader2.default("#define GLSLIFY 1\n// basic.vert\n\n#define SHADER_NAME DOTS_PLANE_VERTEX\n\nprecision highp float;\nattribute vec3 aVertexPosition;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvoid main(void) {\n    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);\n}","#define GLSLIFY 1\n// simpleColor.frag\n\n#define SHADER_NAME SIMPLE_COLOR\n\nprecision highp float;\n\nuniform vec3 color;\nuniform float opacity;\n\nvoid main(void) {\n    gl_FragColor = vec4(color, opacity);\n}");var _this=_possibleConstructorReturn(this,Object.getPrototypeOf(BatchDotsPlane).call(this,mesh,shader));_this.color=[1,1,1];_this.opacity=0.5;return _this;}_createClass(BatchDotsPlane,[{key:'draw',value:function draw(){this.shader.bind();this.shader.uniform('color','uniform3fv',this.color);this.shader.uniform('opacity','uniform1f',this.opacity); // GL.draw(this.mesh);
-_get(Object.getPrototypeOf(BatchDotsPlane.prototype),'draw',this).call(this);}}]);return BatchDotsPlane;}(_Batch3.default);exports.default=BatchDotsPlane;},{"../Batch":12,"../GLShader":16,"../GLTool":18,"../Mesh":20}],28:[function(_dereq_,module,exports){'use strict';var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||false;descriptor.configurable=true;if("value" in descriptor)descriptor.writable=true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};}(); // Scene.js
-Object.defineProperty(exports,"__esModule",{value:true});var _GLTool=_dereq_('../GLTool');var _GLTool2=_interopRequireDefault(_GLTool);var _Scheduler=_dereq_('../tools/Scheduler');var _Scheduler2=_interopRequireDefault(_Scheduler);var _CameraPerspective=_dereq_('../cameras/CameraPerspective');var _CameraPerspective2=_interopRequireDefault(_CameraPerspective);var _CameraOrtho=_dereq_('../cameras/CameraOrtho');var _CameraOrtho2=_interopRequireDefault(_CameraOrtho);var _OrbitalControl=_dereq_('../tools/OrbitalControl');var _OrbitalControl2=_interopRequireDefault(_OrbitalControl);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}var Scene=function(){function Scene(){var _this=this;_classCallCheck(this,Scene);this._init();this._initTextures();this._initViews();this._efIndex=_Scheduler2.default.addEF(function(){return _this._loop();});window.addEventListener('resize',function(){return _this.resize();});} //	PUBLIC METHODS
-_createClass(Scene,[{key:'render',value:function render(){}},{key:'stop',value:function stop(){if(this._efIndex===-1){return;}this._efIndex=_Scheduler2.default.removeEF(this._efIndex);}},{key:'start',value:function start(){var _this2=this;if(this._efIndex!==-1){return;}this._efIndex=_Scheduler2.default.addEF(function(){return _this2._loop();});}},{key:'resize',value:function resize(){_GLTool2.default.setSize(window.innerWidth,window.innerHeight);this.camera.setAspectRatio(_GLTool2.default.aspectRatio);} //	PROTECTED METHODS TO BE OVERRIDEN BY CHILDREN
-},{key:'_initTextures',value:function _initTextures(){}},{key:'_initViews',value:function _initViews(){} //	PRIVATE METHODS
-},{key:'_init',value:function _init(){this.camera=new _CameraPerspective2.default();this.camera.setPerspective(45*Math.PI/180,_GLTool2.default.aspectRatio,0.1,100);this.orbitalControl=new _OrbitalControl2.default(this.camera,window,15);this.orbitalControl.radius.value=10;this.cameraOrtho=new _CameraOrtho2.default();}},{key:'_loop',value:function _loop(){ //	RESET VIEWPORT
-_GLTool2.default.viewport(0,0,_GLTool2.default.width,_GLTool2.default.height); //	RESET CAMERA
-_GLTool2.default.setMatrices(this.camera);this.render();}}]);return Scene;}();exports.default=Scene;},{"../GLTool":18,"../cameras/CameraOrtho":23,"../cameras/CameraPerspective":24,"../tools/OrbitalControl":36,"../tools/Scheduler":38}],29:[function(_dereq_,module,exports){'use strict';var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||false;descriptor.configurable=true;if("value" in descriptor)descriptor.writable=true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};}(); // View.js
-Object.defineProperty(exports,"__esModule",{value:true});var _GLShader=_dereq_('../GLShader');var _GLShader2=_interopRequireDefault(_GLShader);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}var View=function(){function View(mStrVertex,mStrFrag){_classCallCheck(this,View);this.shader=new _GLShader2.default(mStrVertex,mStrFrag);this._init();} //	PROTECTED METHODS
-_createClass(View,[{key:'_init',value:function _init(){} // 	PUBLIC METHODS
-},{key:'render',value:function render(){}}]);return View;}();exports.default=View;},{"../GLShader":16}],30:[function(_dereq_,module,exports){'use strict';var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||false;descriptor.configurable=true;if("value" in descriptor)descriptor.writable=true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};}();Object.defineProperty(exports,"__esModule",{value:true});function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}} // BinaryLoader.js
-var BinaryLoader=function(){function BinaryLoader(){var _this=this;var isArrayBuffer=arguments.length<=0||arguments[0]===undefined?false:arguments[0];_classCallCheck(this,BinaryLoader);this._req=new XMLHttpRequest();this._req.addEventListener('load',function(e){return _this._onLoaded(e);});this._req.addEventListener('progress',function(e){return _this._onProgress(e);});if(isArrayBuffer){this._req.responseType='arraybuffer';}}_createClass(BinaryLoader,[{key:'load',value:function load(url,callback){console.log('Loading : ',url);this._callback=callback;this._req.open('GET',url);this._req.send();}},{key:'_onLoaded',value:function _onLoaded(){this._callback(this._req.response);}},{key:'_onProgress',value:function _onProgress() /*e*/{ // console.log('on Progress:', (e.loaded/e.total*100).toFixed(2));
-}}]);return BinaryLoader;}();exports.default=BinaryLoader;},{}],31:[function(_dereq_,module,exports){ // HDRLoader.js
-'use strict';var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||false;descriptor.configurable=true;if("value" in descriptor)descriptor.writable=true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};}();Object.defineProperty(exports,"__esModule",{value:true});var _BinaryLoader2=_dereq_('./BinaryLoader');var _BinaryLoader3=_interopRequireDefault(_BinaryLoader2);var _HDRParser=_dereq_('../tools/HDRParser');var _HDRParser2=_interopRequireDefault(_HDRParser);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self,call){if(!self){throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call&&((typeof call==="undefined"?"undefined":_typeof(call))==="object"||typeof call==="function")?call:self;}function _inherits(subClass,superClass){if(typeof superClass!=="function"&&superClass!==null){throw new TypeError("Super expression must either be null or a function, not "+(typeof superClass==="undefined"?"undefined":_typeof(superClass)));}subClass.prototype=Object.create(superClass&&superClass.prototype,{constructor:{value:subClass,enumerable:false,writable:true,configurable:true}});if(superClass)Object.setPrototypeOf?Object.setPrototypeOf(subClass,superClass):subClass.__proto__=superClass;}var HDRLoader=function(_BinaryLoader){_inherits(HDRLoader,_BinaryLoader);function HDRLoader(){_classCallCheck(this,HDRLoader);return _possibleConstructorReturn(this,Object.getPrototypeOf(HDRLoader).call(this,true));}_createClass(HDRLoader,[{key:'parse',value:function parse(mArrayBuffer){return (0,_HDRParser2.default)(mArrayBuffer);}},{key:'_onLoaded',value:function _onLoaded(){var o=this.parse(this._req.response);if(this._callback){this._callback(o);}}}]);return HDRLoader;}(_BinaryLoader3.default);HDRLoader.parse=function(mArrayBuffer){return (0,_HDRParser2.default)(mArrayBuffer);};exports.default=HDRLoader;},{"../tools/HDRParser":35,"./BinaryLoader":30}],32:[function(_dereq_,module,exports){ // ObjLoader.js
-'use strict';var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||false;descriptor.configurable=true;if("value" in descriptor)descriptor.writable=true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};}();var _get=function get(object,property,receiver){if(object===null)object=Function.prototype;var desc=Object.getOwnPropertyDescriptor(object,property);if(desc===undefined){var parent=Object.getPrototypeOf(object);if(parent===null){return undefined;}else {return get(parent,property,receiver);}}else if("value" in desc){return desc.value;}else {var getter=desc.get;if(getter===undefined){return undefined;}return getter.call(receiver);}};Object.defineProperty(exports,"__esModule",{value:true});var _BinaryLoader2=_dereq_('./BinaryLoader');var _BinaryLoader3=_interopRequireDefault(_BinaryLoader2);var _Mesh=_dereq_('../Mesh');var _Mesh2=_interopRequireDefault(_Mesh);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self,call){if(!self){throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call&&((typeof call==="undefined"?"undefined":_typeof(call))==="object"||typeof call==="function")?call:self;}function _inherits(subClass,superClass){if(typeof superClass!=="function"&&superClass!==null){throw new TypeError("Super expression must either be null or a function, not "+(typeof superClass==="undefined"?"undefined":_typeof(superClass)));}subClass.prototype=Object.create(superClass&&superClass.prototype,{constructor:{value:subClass,enumerable:false,writable:true,configurable:true}});if(superClass)Object.setPrototypeOf?Object.setPrototypeOf(subClass,superClass):subClass.__proto__=superClass;}var ObjLoader=function(_BinaryLoader){_inherits(ObjLoader,_BinaryLoader);function ObjLoader(){_classCallCheck(this,ObjLoader);return _possibleConstructorReturn(this,Object.getPrototypeOf(ObjLoader).call(this));}_createClass(ObjLoader,[{key:'load',value:function load(url,callback){var ignoreNormals=arguments.length<=2||arguments[2]===undefined?true:arguments[2];var drawType=arguments.length<=3||arguments[3]===undefined?4:arguments[3];this._ignoreNormals=ignoreNormals;this._drawType=drawType;_get(Object.getPrototypeOf(ObjLoader.prototype),'load',this).call(this,url,callback);}},{key:'_onLoaded',value:function _onLoaded(){this._parseObj(this._req.response);}},{key:'_parseObj',value:function _parseObj(objStr){var lines=objStr.split('\n');var positions=[];var coords=[];var finalNormals=[];var vertices=[];var normals=[];var uvs=[];var indices=[];var count=0;var result=undefined; // v float float float
-var vertex_pattern=/v( +[\d|\.|\+|\-|e|E]+)( +[\d|\.|\+|\-|e|E]+)( +[\d|\.|\+|\-|e|E]+)/; // vn float float float
-var normal_pattern=/vn( +[\d|\.|\+|\-|e|E]+)( +[\d|\.|\+|\-|e|E]+)( +[\d|\.|\+|\-|e|E]+)/; // vt float float
-var uv_pattern=/vt( +[\d|\.|\+|\-|e|E]+)( +[\d|\.|\+|\-|e|E]+)/; // f vertex vertex vertex ...
-var face_pattern1=/f( +-?\d+)( +-?\d+)( +-?\d+)( +-?\d+)?/; // f vertex/uv vertex/uv vertex/uv ...
-var face_pattern2=/f( +(-?\d+)\/(-?\d+))( +(-?\d+)\/(-?\d+))( +(-?\d+)\/(-?\d+))( +(-?\d+)\/(-?\d+))?/; // f vertex/uv/normal vertex/uv/normal vertex/uv/normal ...
-var face_pattern3=/f( +(-?\d+)\/(-?\d+)\/(-?\d+))( +(-?\d+)\/(-?\d+)\/(-?\d+))( +(-?\d+)\/(-?\d+)\/(-?\d+))( +(-?\d+)\/(-?\d+)\/(-?\d+))?/; // f vertex//normal vertex//normal vertex//normal ...
-var face_pattern4=/f( +(-?\d+)\/\/(-?\d+))( +(-?\d+)\/\/(-?\d+))( +(-?\d+)\/\/(-?\d+))( +(-?\d+)\/\/(-?\d+))?/;function parseVertexIndex(value){var index=parseInt(value);return (index>=0?index-1:index+vertices.length/3)*3;}function parseNormalIndex(value){var index=parseInt(value);return (index>=0?index-1:index+normals.length/3)*3;}function parseUVIndex(value){var index=parseInt(value);return (index>=0?index-1:index+uvs.length/2)*2;}function addVertex(a,b,c){positions.push([vertices[a],vertices[a+1],vertices[a+2]]);positions.push([vertices[b],vertices[b+1],vertices[b+2]]);positions.push([vertices[c],vertices[c+1],vertices[c+2]]);indices.push(count*3+0);indices.push(count*3+1);indices.push(count*3+2);count++;}function addUV(a,b,c){coords.push([uvs[a],uvs[a+1]]);coords.push([uvs[b],uvs[b+1]]);coords.push([uvs[c],uvs[c+1]]);}function addNormal(a,b,c){finalNormals.push([normals[a],normals[a+1],normals[a+2]]);finalNormals.push([normals[b],normals[b+1],normals[b+2]]);finalNormals.push([normals[c],normals[c+1],normals[c+2]]);}function addFace(a,b,c,d,ua,ub,uc,ud,na,nb,nc,nd){var ia=parseVertexIndex(a);var ib=parseVertexIndex(b);var ic=parseVertexIndex(c);var id=undefined;if(d===undefined){addVertex(ia,ib,ic);}else {id=parseVertexIndex(d);addVertex(ia,ib,id);addVertex(ib,ic,id);}if(ua!==undefined){ia=parseUVIndex(ua);ib=parseUVIndex(ub);ic=parseUVIndex(uc);if(d===undefined){addUV(ia,ib,ic);}else {id=parseUVIndex(ud);addUV(ia,ib,id);addUV(ib,ic,id);}}if(na!==undefined){ia=parseNormalIndex(na);ib=parseNormalIndex(nb);ic=parseNormalIndex(nc);if(d===undefined){addNormal(ia,ib,ic);}else {id=parseNormalIndex(nd);addNormal(ia,ib,id);addNormal(ib,ic,id);}}}for(var i=0;i<lines.length;i++){var line=lines[i];line=line.trim();if(line.length===0||line.charAt(0)==='#'){continue;}else if((result=vertex_pattern.exec(line))!==null){vertices.push(parseFloat(result[1]),parseFloat(result[2]),parseFloat(result[3]));}else if((result=normal_pattern.exec(line))!==null){normals.push(parseFloat(result[1]),parseFloat(result[2]),parseFloat(result[3]));}else if((result=uv_pattern.exec(line))!==null){uvs.push(parseFloat(result[1]),parseFloat(result[2]));}else if((result=face_pattern1.exec(line))!==null){addFace(result[1],result[2],result[3],result[4]);}else if((result=face_pattern2.exec(line))!==null){addFace(result[2],result[5],result[8],result[11],result[3],result[6],result[9],result[12]);}else if((result=face_pattern3.exec(line))!==null){addFace(result[2],result[6],result[10],result[14],result[3],result[7],result[11],result[15],result[4],result[8],result[12],result[16]);}else if((result=face_pattern4.exec(line))!==null){addFace(result[2],result[5],result[8],result[11],undefined,undefined,undefined,undefined,result[3],result[6],result[9],result[12]);}}this._generateMeshes({positions:positions,coords:coords,normals:finalNormals,indices:indices});}},{key:'_generateMeshes',value:function _generateMeshes(o){var maxNumVertices=65535;if(o.positions.length>maxNumVertices){var meshes=[];var lastIndex=0;var oCopy={};oCopy.positions=o.positions.concat();oCopy.coords=o.coords.concat();oCopy.indices=o.indices.concat();oCopy.normals=o.normals.concat();while(o.indices.length>0){var sliceNum=Math.min(maxNumVertices,o.positions.length);var indices=o.indices.splice(0,sliceNum);var positions=[];var coords=[];var normals=[];var index=undefined,tmpIndex=0;for(var i=0;i<indices.length;i++){if(indices[i]>tmpIndex){tmpIndex=indices[i];}index=indices[i];positions.push(oCopy.positions[index]);coords.push(oCopy.coords[index]);normals.push(oCopy.normals[index]);indices[i]-=lastIndex;}lastIndex=tmpIndex+1;var mesh=new _Mesh2.default(this._drawType);mesh.bufferVertex(positions);mesh.bufferTexCoords(coords);mesh.bufferIndices(indices);if(!this._ignoreNormals){mesh.bufferNormal(normals);}meshes.push(mesh);}if(this._callback){this._callback(meshes,oCopy);}}else {var mesh=new _Mesh2.default(this._drawType);mesh.bufferVertex(o.positions);mesh.bufferTexCoords(o.coords);mesh.bufferIndices(o.indices);if(!this._ignoreNormals){mesh.bufferNormal(o.normals);}if(this._callback){this._callback(mesh,o);}}}}]);return ObjLoader;}(_BinaryLoader3.default);exports.default=ObjLoader;},{"../Mesh":20,"./BinaryLoader":30}],33:[function(_dereq_,module,exports){'use strict';var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||false;descriptor.configurable=true;if("value" in descriptor)descriptor.writable=true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};}(); // EaseNumber.js
-Object.defineProperty(exports,"__esModule",{value:true});var _Scheduler=_dereq_('./Scheduler');var _Scheduler2=_interopRequireDefault(_Scheduler);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}var EaseNumber=function(){function EaseNumber(mValue){var _this=this;var mEasing=arguments.length<=1||arguments[1]===undefined?0.1:arguments[1];_classCallCheck(this,EaseNumber);this.easing=mEasing;this._value=mValue;this._targetValue=mValue;_Scheduler2.default.addEF(function(){return _this._update();});}_createClass(EaseNumber,[{key:'_update',value:function _update(){this._checkLimit();this._value+=(this._targetValue-this._value)*this.easing;}},{key:'setTo',value:function setTo(mValue){this._targetValue=this._value=mValue;}},{key:'add',value:function add(mAdd){this._targetValue+=mAdd;}},{key:'limit',value:function limit(mMin,mMax){if(mMin>mMax){this.limit(mMax,mMin);return;}this._min=mMin;this._max=mMax;this._checkLimit();}},{key:'_checkLimit',value:function _checkLimit(){if(this._min!==undefined&&this._targetValue<this._min){this._targetValue=this._min;}if(this._max!==undefined&&this._targetValue>this._max){this._targetValue=this._max;}} //	GETTERS / SETTERS
-},{key:'value',set:function set(mValue){this._targetValue=mValue;},get:function get(){return this._value;}},{key:'targetValue',get:function get(){return this._targetValue;}}]);return EaseNumber;}();exports.default=EaseNumber;},{"./Scheduler":38}],34:[function(_dereq_,module,exports){'use strict';var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||false;descriptor.configurable=true;if("value" in descriptor)descriptor.writable=true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};}();Object.defineProperty(exports,"__esModule",{value:true});function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}} // EventDispatcher.js
-var supportsCustomEvents=true;try{var newTestCustomEvent=document.createEvent('CustomEvent');newTestCustomEvent=null;}catch(e){supportsCustomEvents=false;}var EventDispatcher=function(){function EventDispatcher(){_classCallCheck(this,EventDispatcher);}_createClass(EventDispatcher,[{key:'addEventListener',value:function addEventListener(aEventType,aFunction){if(this._eventListeners===null){this._eventListeners={};}if(!this._eventListeners[aEventType]){this._eventListeners[aEventType]=[];}this._eventListeners[aEventType].push(aFunction);return this;}},{key:'removeEventListener',value:function removeEventListener(aEventType,aFunction){if(this._eventListeners===null){this._eventListeners={};}var currentArray=this._eventListeners[aEventType];if(typeof currentArray==='undefined'){return this;}var currentArrayLength=currentArray.length;for(var i=0;i<currentArrayLength;i++){if(currentArray[i]===aFunction){currentArray.splice(i,1);i--;currentArrayLength--;}}return this;}},{key:'dispatchEvent',value:function dispatchEvent(aEvent){if(this._eventListeners===null){this._eventListeners={};}var eventType=aEvent.type;try{if(aEvent.target===null){aEvent.target=this;}aEvent.currentTarget=this;}catch(theError){var newEvent={'type':eventType,'detail':aEvent.detail,'dispatcher':this};return this.dispatchEvent(newEvent);}var currentEventListeners=this._eventListeners[eventType];if(currentEventListeners!==null&&currentEventListeners!==undefined){var currentArray=this._copyArray(currentEventListeners);var currentArrayLength=currentArray.length;for(var i=0;i<currentArrayLength;i++){var currentFunction=currentArray[i];currentFunction.call(this,aEvent);}}return this;}},{key:'dispatchCustomEvent',value:function dispatchCustomEvent(aEventType,aDetail){var newEvent=undefined;if(supportsCustomEvents){newEvent=document.createEvent('CustomEvent');newEvent.dispatcher=this;newEvent.initCustomEvent(aEventType,false,false,aDetail);}else {newEvent={'type':aEventType,'detail':aDetail,'dispatcher':this};}return this.dispatchEvent(newEvent);}},{key:'_destroy',value:function _destroy(){if(this._eventListeners!==null){for(var objectName in this._eventListeners){if(this._eventListeners.hasOwnProperty(objectName)){var currentArray=this._eventListeners[objectName];var currentArrayLength=currentArray.length;for(var i=0;i<currentArrayLength;i++){currentArray[i]=null;}delete this._eventListeners[objectName];}}this._eventListeners=null;}}},{key:'_copyArray',value:function _copyArray(aArray){var currentArray=new Array(aArray.length);var currentArrayLength=currentArray.length;for(var i=0;i<currentArrayLength;i++){currentArray[i]=aArray[i];}return currentArray;}}]);return EventDispatcher;}();exports.default=EventDispatcher;},{}],35:[function(_dereq_,module,exports){ // HDRParser.js
-'use strict'; //Code ported by Marcin Ignac (2014)
-//Based on Java implementation from
-//https://code.google.com/r/cys12345-research/source/browse/hdr/image_processor/RGBE.java?r=7d84e9fd866b24079dbe61fa0a966ce8365f5726
-Object.defineProperty(exports,"__esModule",{value:true});var radiancePattern='#\\?RADIANCE';var commentPattern='#.*'; // let gammaPattern = 'GAMMA=';
-var exposurePattern='EXPOSURE=\\s*([0-9]*[.][0-9]*)';var formatPattern='FORMAT=32-bit_rle_rgbe';var widthHeightPattern='-Y ([0-9]+) \\+X ([0-9]+)'; //http://croquetweak.blogspot.co.uk/2014/08/deconstructing-floats-frexp-and-ldexp.html
-// function ldexp(mantissa, exponent) {
-//     return exponent > 1023 ? mantissa * Math.pow(2, 1023) * Math.pow(2, exponent - 1023) : exponent < -1074 ? mantissa * Math.pow(2, -1074) * Math.pow(2, exponent + 1074) : mantissa * Math.pow(2, exponent);
-// }
-function readPixelsRawRLE(buffer,data,offset,fileOffset,scanline_width,num_scanlines){var rgbe=new Array(4);var scanline_buffer=null;var ptr=undefined;var ptr_end=undefined;var count=undefined;var buf=new Array(2);var bufferLength=buffer.length;function readBuf(buf){var bytesRead=0;do {buf[bytesRead++]=buffer[fileOffset];}while(++fileOffset<bufferLength&&bytesRead<buf.length);return bytesRead;}function readBufOffset(buf,offset,length){var bytesRead=0;do {buf[offset+bytesRead++]=buffer[fileOffset];}while(++fileOffset<bufferLength&&bytesRead<length);return bytesRead;}function readPixelsRaw(buffer,data,offset,numpixels){var numExpected=4*numpixels;var numRead=readBufOffset(data,offset,numExpected);if(numRead<numExpected){throw new Error('Error reading raw pixels: got '+numRead+' bytes, expected '+numExpected);}}while(num_scanlines>0){if(readBuf(rgbe)<rgbe.length){throw new Error('Error reading bytes: expected '+rgbe.length);}if(rgbe[0]!==2||rgbe[1]!==2||(rgbe[2]&0x80)!==0){ //this file is not run length encoded
-data[offset++]=rgbe[0];data[offset++]=rgbe[1];data[offset++]=rgbe[2];data[offset++]=rgbe[3];readPixelsRaw(buffer,data,offset,scanline_width*num_scanlines-1);return;}if(((rgbe[2]&0xFF)<<8|rgbe[3]&0xFF)!==scanline_width){throw new Error('Wrong scanline width '+((rgbe[2]&0xFF)<<8|rgbe[3]&0xFF)+', expected '+scanline_width);}if(scanline_buffer===null){scanline_buffer=new Array(4*scanline_width);}ptr=0; /* read each of the four channels for the scanline into the buffer */for(var i=0;i<4;i++){ptr_end=(i+1)*scanline_width;while(ptr<ptr_end){if(readBuf(buf)<buf.length){throw new Error('Error reading 2-byte buffer');}if((buf[0]&0xFF)>128){ /* a run of the same value */count=(buf[0]&0xFF)-128;if(count===0||count>ptr_end-ptr){throw new Error('Bad scanline data');}while(count-->0){scanline_buffer[ptr++]=buf[1];}}else { /* a non-run */count=buf[0]&0xFF;if(count===0||count>ptr_end-ptr){throw new Error('Bad scanline data');}scanline_buffer[ptr++]=buf[1];if(--count>0){if(readBufOffset(scanline_buffer,ptr,count)<count){throw new Error('Error reading non-run data');}ptr+=count;}}}} /* copy byte data to output */for(var i=0;i<scanline_width;i++){data[offset+0]=scanline_buffer[i];data[offset+1]=scanline_buffer[i+scanline_width];data[offset+2]=scanline_buffer[i+2*scanline_width];data[offset+3]=scanline_buffer[i+3*scanline_width];offset+=4;}num_scanlines--;}} //Returns data as floats and flipped along Y by default
-function parseHdr(buffer){if(buffer instanceof ArrayBuffer){buffer=new Uint8Array(buffer);}var fileOffset=0;var bufferLength=buffer.length;var NEW_LINE=10;function readLine(){var buf='';do {var b=buffer[fileOffset];if(b===NEW_LINE){++fileOffset;break;}buf+=String.fromCharCode(b);}while(++fileOffset<bufferLength);return buf;}var width=0;var height=0;var exposure=1;var gamma=1;var rle=false;for(var i=0;i<20;i++){var line=readLine();var match=undefined;if(match=line.match(radiancePattern)){}else if(match=line.match(formatPattern)){rle=true;}else if(match=line.match(exposurePattern)){exposure=Number(match[1]);}else if(match=line.match(commentPattern)){}else if(match=line.match(widthHeightPattern)){height=Number(match[1]);width=Number(match[2]);break;}}if(!rle){throw new Error('File is not run length encoded!');}var data=new Uint8Array(width*height*4);var scanline_width=width;var num_scanlines=height;readPixelsRawRLE(buffer,data,0,fileOffset,scanline_width,num_scanlines); //TODO: Should be Float16
-var floatData=new Float32Array(width*height*4);for(var offset=0;offset<data.length;offset+=4){var r=data[offset+0]/255;var g=data[offset+1]/255;var b=data[offset+2]/255;var e=data[offset+3];var f=Math.pow(2.0,e-128.0);r*=f;g*=f;b*=f;var floatOffset=offset;floatData[floatOffset+0]=r;floatData[floatOffset+1]=g;floatData[floatOffset+2]=b;floatData[floatOffset+3]=1.0;}return {shape:[width,height],exposure:exposure,gamma:gamma,data:floatData};}exports.default=parseHdr;},{}],36:[function(_dereq_,module,exports){ // OrbitalControl.js
-'use strict';var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||false;descriptor.configurable=true;if("value" in descriptor)descriptor.writable=true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};}();Object.defineProperty(exports,"__esModule",{value:true});var _EaseNumber=_dereq_('./EaseNumber');var _EaseNumber2=_interopRequireDefault(_EaseNumber);var _Scheduler=_dereq_('./Scheduler');var _Scheduler2=_interopRequireDefault(_Scheduler);var _glMatrix=_dereq_('gl-matrix');var _glMatrix2=_interopRequireDefault(_glMatrix);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}var getMouse=function getMouse(mEvent,mTarget){var o=mTarget||{};if(mEvent.touches){o.x=mEvent.touches[0].pageX;o.y=mEvent.touches[0].pageY;}else {o.x=mEvent.clientX;o.y=mEvent.clientY;}return o;};var OrbitalControl=function(){function OrbitalControl(mTarget){var _this=this;var mListenerTarget=arguments.length<=1||arguments[1]===undefined?window:arguments[1];var mRadius=arguments.length<=2||arguments[2]===undefined?500:arguments[2];_classCallCheck(this,OrbitalControl);this._target=mTarget;this._listenerTarget=mListenerTarget;this._mouse={};this._preMouse={};this.center=_glMatrix2.default.vec3.create();this._up=_glMatrix2.default.vec3.fromValues(0,1,0);this.radius=new _EaseNumber2.default(mRadius);this.position=_glMatrix2.default.vec3.fromValues(0,0,this.radius.value);this.positionOffset=_glMatrix2.default.vec3.create();this._rx=new _EaseNumber2.default(0);this._rx.limit(-Math.PI/2,Math.PI/2);this._ry=new _EaseNumber2.default(0);this._preRX=0;this._preRY=0;this._isLockZoom=false;this._isLockRotation=false;this._isInvert=false;this._listenerTarget.addEventListener('mousewheel',function(e){return _this._onWheel(e);});this._listenerTarget.addEventListener('DOMMouseScroll',function(e){return _this._onWheel(e);});this._listenerTarget.addEventListener('mousedown',function(e){return _this._onDown(e);});this._listenerTarget.addEventListener('touchstart',function(e){return _this._onDown(e);});this._listenerTarget.addEventListener('mousemove',function(e){return _this._onMove(e);});this._listenerTarget.addEventListener('touchmove',function(e){return _this._onMove(e);});window.addEventListener('touchend',function(){return _this._onUp();});window.addEventListener('mouseup',function(){return _this._onUp();});_Scheduler2.default.addEF(function(){return _this._loop();});} //	PUBLIC METHODS
-_createClass(OrbitalControl,[{key:'lock',value:function lock(){var mValue=arguments.length<=0||arguments[0]===undefined?true:arguments[0];this._isLockZoom=mValue;this._isLockRotation=mValue;}},{key:'lockZoom',value:function lockZoom(){var mValue=arguments.length<=0||arguments[0]===undefined?true:arguments[0];this._isLockZoom=mValue;}},{key:'lockRotation',value:function lockRotation(){var mValue=arguments.length<=0||arguments[0]===undefined?true:arguments[0];this._isLockRotation=mValue;}},{key:'inverseControl',value:function inverseControl(){var isInvert=arguments.length<=0||arguments[0]===undefined?true:arguments[0];this._isInvert=isInvert;} //	EVENT HANDLERES
-},{key:'_onDown',value:function _onDown(mEvent){if(this._isLockRotation){return;}this._isMouseDown=true;getMouse(mEvent,this._mouse);getMouse(mEvent,this._preMouse);this._preRX=this._rx.targetValue;this._preRY=this._ry.targetValue;}},{key:'_onMove',value:function _onMove(mEvent){if(this._isLockRotation){return;}getMouse(mEvent,this._mouse);if(mEvent.touches){mEvent.preventDefault();}if(this._isMouseDown){var diffX=-(this._mouse.x-this._preMouse.x);if(this._isInvert){diffX*=-1;}this._ry.value=this._preRY-diffX*0.01;var diffY=-(this._mouse.y-this._preMouse.y);if(this._isInvert){diffY*=-1;}this._rx.value=this._preRX-diffY*0.01;}}},{key:'_onUp',value:function _onUp(){if(this._isLockRotation){return;}this._isMouseDown=false;}},{key:'_onWheel',value:function _onWheel(mEvent){if(this._isLockZoom){return;}var w=mEvent.wheelDelta;var d=mEvent.detail;var value=0;if(d){if(w){value=w/d/40*d>0?1:-1; // Opera
-}else {value=-d/3; // Firefox;         TODO: do not /3 for OS X
-}}else {value=w/120;}this.radius.add(-value*2);} //	PRIVATE METHODS
-},{key:'_loop',value:function _loop(){this._updatePosition();if(this._target){this._updateCamera();}}},{key:'_updatePosition',value:function _updatePosition(){this.position[1]=Math.sin(this._rx.value)*this.radius.value;var tr=Math.cos(this._rx.value)*this.radius.value;this.position[0]=Math.cos(this._ry.value+Math.PI*0.5)*tr;this.position[2]=Math.sin(this._ry.value+Math.PI*0.5)*tr;_glMatrix2.default.vec3.add(this.position,this.position,this.positionOffset);}},{key:'_updateCamera',value:function _updateCamera(){this._target.lookAt(this.position,this.center,this._up);}}]);return OrbitalControl;}();exports.default=OrbitalControl;},{"./EaseNumber":33,"./Scheduler":38,"gl-matrix":1}],37:[function(_dereq_,module,exports){ // QuatRotation.js
-'use strict';var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||false;descriptor.configurable=true;if("value" in descriptor)descriptor.writable=true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};}();Object.defineProperty(exports,"__esModule",{value:true});var _glMatrix=_dereq_('gl-matrix');var _glMatrix2=_interopRequireDefault(_glMatrix);var _EaseNumber=_dereq_('./EaseNumber');var _EaseNumber2=_interopRequireDefault(_EaseNumber);var _Scheduler=_dereq_('./Scheduler');var _Scheduler2=_interopRequireDefault(_Scheduler);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}var getMouse=function getMouse(mEvent,mTarget){var o=mTarget||{};if(mEvent.touches){o.x=mEvent.touches[0].pageX;o.y=mEvent.touches[0].pageY;}else {o.x=mEvent.clientX;o.y=mEvent.clientY;}return o;};var QuatRotation=function(){function QuatRotation(mTarget){var _this=this;var mListenerTarget=arguments.length<=1||arguments[1]===undefined?window:arguments[1];var mEasing=arguments.length<=2||arguments[2]===undefined?0.1:arguments[2];_classCallCheck(this,QuatRotation);this._target=mTarget;this._listenerTarget=mListenerTarget;this.matrix=_glMatrix2.default.mat4.create();this.m=_glMatrix2.default.mat4.create();this._vZaxis=_glMatrix2.default.vec3.clone([0,0,0]);this._zAxis=_glMatrix2.default.vec3.clone([0,0,1]);this.preMouse={x:0,y:0};this.mouse={x:0,y:0};this._isMouseDown=false;this._rotation=_glMatrix2.default.quat.create();this.tempRotation=_glMatrix2.default.quat.create();this._rotateZMargin=0;this._offset=0.004;this._slerp=-1;this._isLocked=false;this._diffX=new _EaseNumber2.default(0,mEasing);this._diffY=new _EaseNumber2.default(0,mEasing);this._listenerTarget.addEventListener('mousedown',function(e){return _this._onDown(e);});this._listenerTarget.addEventListener('touchstart',function(e){return _this._onDown(e);});this._listenerTarget.addEventListener('mousemove',function(e){return _this._onMove(e);});this._listenerTarget.addEventListener('touchmove',function(e){return _this._onMove(e);});window.addEventListener('touchend',function(){return _this._onUp();});window.addEventListener('mouseup',function(){return _this._onUp();});_Scheduler2.default.addEF(function(){return _this._loop();});} // 	PUBLIC METHODS
-_createClass(QuatRotation,[{key:'inverseControl',value:function inverseControl(){var isInvert=arguments.length<=0||arguments[0]===undefined?true:arguments[0];this._isInvert=isInvert;}},{key:'lock',value:function lock(){var mValue=arguments.length<=0||arguments[0]===undefined?true:arguments[0];this._isLocked=mValue;}},{key:'setCameraPos',value:function setCameraPos(mQuat){var speed=arguments.length<=1||arguments[1]===undefined?0.1:arguments[1];this.easing=speed;if(this._slerp>0){return;}var tempRotation=_glMatrix2.default.quat.clone(this._rotation);this._updateRotation(tempRotation);this._rotation=_glMatrix2.default.quat.clone(tempRotation);this._currDiffX=this.diffX=0;this._currDiffY=this.diffY=0;this._isMouseDown=false;this._isRotateZ=0;this._targetQuat=_glMatrix2.default.quat.clone(mQuat);this._slerp=1;}},{key:'resetQuat',value:function resetQuat(){this._rotation=_glMatrix2.default.quat.clone([0,0,1,0]);this.tempRotation=_glMatrix2.default.quat.clone([0,0,0,0]);this._targetQuat=undefined;this._slerp=-1;} //	EVENT HANDLER
-},{key:'_onDown',value:function _onDown(mEvent){if(this._isLocked){return;}var mouse=getMouse(mEvent);var tempRotation=_glMatrix2.default.quat.clone(this._rotation);this._updateRotation(tempRotation);this._rotation=tempRotation;this._isMouseDown=true;this._isRotateZ=0;this.preMouse={x:mouse.x,y:mouse.y};if(mouse.y<this._rotateZMargin||mouse.y>window.innerHeight-this._rotateZMargin){this._isRotateZ=1;}else if(mouse.x<this._rotateZMargin||mouse.x>window.innerWidth-this._rotateZMargin){this._isRotateZ=2;}this._diffX.setTo(0);this._diffY.setTo(0);}},{key:'_onMove',value:function _onMove(mEvent){if(this._isLocked){return;}getMouse(mEvent,this.mouse);}},{key:'_onUp',value:function _onUp(){if(this._isLocked){return;}this._isMouseDown=false;} //	PRIVATE METHODS
-},{key:'_updateRotation',value:function _updateRotation(mTempRotation){if(this._isMouseDown&&!this._isLocked){this._diffX.value=-(this.mouse.x-this.preMouse.x);this._diffY.value=this.mouse.y-this.preMouse.y;if(this._isInvert){this._diffX.value=-this._diffX.targetValue;this._diffY.value=-this._diffY.targetValue;}}var angle=undefined,_quat=undefined;if(this._isRotateZ>0){if(this._isRotateZ===1){angle=-this._diffX.value*this._offset;angle*=this.preMouse.y<this._rotateZMargin?-1:1;_quat=_glMatrix2.default.quat.clone([0,0,Math.sin(angle),Math.cos(angle)]);_glMatrix2.default.quat.multiply(_quat,mTempRotation,_quat);}else {angle=-this._diffY.value*this._offset;angle*=this.preMouse.x<this._rotateZMargin?1:-1;_quat=_glMatrix2.default.quat.clone([0,0,Math.sin(angle),Math.cos(angle)]);_glMatrix2.default.quat.multiply(_quat,mTempRotation,_quat);}}else {var v=_glMatrix2.default.vec3.clone([this._diffX.value,this._diffY.value,0]);var axis=_glMatrix2.default.vec3.create();_glMatrix2.default.vec3.cross(axis,v,this._zAxis);_glMatrix2.default.vec3.normalize(axis,axis);angle=_glMatrix2.default.vec3.length(v)*this._offset;_quat=_glMatrix2.default.quat.clone([Math.sin(angle)*axis[0],Math.sin(angle)*axis[1],Math.sin(angle)*axis[2],Math.cos(angle)]);_glMatrix2.default.quat.multiply(mTempRotation,_quat,mTempRotation);}}},{key:'_loop',value:function _loop(){_glMatrix2.default.mat4.identity(this.m);if(this._targetQuat===undefined){_glMatrix2.default.quat.set(this.tempRotation,this._rotation[0],this._rotation[1],this._rotation[2],this._rotation[3]);this._updateRotation(this.tempRotation);}else {this._slerp+=(0-this._slerp)*0.1;if(this._slerp<0.001){_glMatrix2.default.quat.set(this._rotation,this._targetQuat[0],this._targetQuat[1],this._targetQuat[2],this._targetQuat[3]);this._targetQuat=undefined;this._slerp=-1;}else {_glMatrix2.default.quat.set(this.tempRotation,0,0,0,0);_glMatrix2.default.quat.slerp(this.tempRotation,this._targetQuat,this._rotation,this._slerp);}}_glMatrix2.default.vec3.transformQuat(this._vZaxis,this._vZaxis,this.tempRotation);_glMatrix2.default.mat4.fromQuat(this.matrix,this.tempRotation);} //	GETTER AND SETTER
-},{key:'easing',set:function set(mValue){this._diffX.easing=mValue;this._diffY.easing=mValue;},get:function get(){return this._diffX.easing;}}]);return QuatRotation;}();exports.default=QuatRotation;},{"./EaseNumber":33,"./Scheduler":38,"gl-matrix":1}],38:[function(_dereq_,module,exports){ // Scheduler.js
-'use strict';var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||false;descriptor.configurable=true;if("value" in descriptor)descriptor.writable=true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};}();Object.defineProperty(exports,"__esModule",{value:true});function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}if(window.requestAnimFrame===undefined){window.requestAnimFrame=function(){return window.requestAnimationFrame||window.webkitRequestAnimationFrame||window.mozRequestAnimationFrame||window.oRequestAnimationFrame||window.msRequestAnimationFrame||function(callback){window.setTimeout(callback,1000/60);};}();}var FRAMERATE=60;var Scheduler=function(){function Scheduler(){_classCallCheck(this,Scheduler);this._delayTasks=[];this._nextTasks=[];this._deferTasks=[];this._highTasks=[];this._usurpTask=[];this._enterframeTasks=[];this._idTable=0;this._loop();} //	PUBLIC METHODS
-_createClass(Scheduler,[{key:'addEF',value:function addEF(func,params){params=params||[];var id=this._idTable;this._enterframeTasks[id]={func:func,params:params};this._idTable++;return id;}},{key:'removeEF',value:function removeEF(id){if(this._enterframeTasks[id]!==undefined){this._enterframeTasks[id]=null;}return -1;}},{key:'delay',value:function delay(func,params,_delay){var time=new Date().getTime();var t={func:func,params:params,delay:_delay,time:time};this._delayTasks.push(t);}},{key:'defer',value:function defer(func,params){var t={func:func,params:params};this._deferTasks.push(t);}},{key:'next',value:function next(func,params){var t={func:func,params:params};this._nextTasks.push(t);}},{key:'usurp',value:function usurp(func,params){var t={func:func,params:params};this._usurpTask.push(t);} //	PRIVATE METHODS
-},{key:'_process',value:function _process(){var i=0,task=undefined,interval=undefined,current=undefined;for(i=0;i<this._enterframeTasks.length;i++){task=this._enterframeTasks[i];if(task!==null&&task!==undefined){ // task.func.apply(task.scope, task.params);
-// console.log(task.func());
-task.func(task.params);}}while(this._highTasks.length>0){task=this._highTasks.pop();task.func(task.params); // task.func.apply(task.scope, task.params);
-}var startTime=new Date().getTime();for(i=0;i<this._delayTasks.length;i++){task=this._delayTasks[i];if(startTime-task.time>task.delay){ // task.func.apply(task.scope, task.params);
-task.func(task.params);this._delayTasks.splice(i,1);}}startTime=new Date().getTime();interval=1000/FRAMERATE;while(this._deferTasks.length>0){task=this._deferTasks.shift();current=new Date().getTime();if(current-startTime<interval){ // task.func.apply(task.scope, task.params);
-task.func(task.params);}else {this._deferTasks.unshift(task);break;}}startTime=new Date().getTime();interval=1000/FRAMERATE;while(this._usurpTask.length>0){task=this._usurpTask.shift();current=new Date().getTime();if(current-startTime<interval){ // task.func.apply(task.scope, task.params);
-task.func(task.params);}else { // this._usurpTask.unshift(task);
-break;}}this._highTasks=this._highTasks.concat(this._nextTasks);this._nextTasks=[];this._usurpTask=[];}},{key:'_loop',value:function _loop(){var _this=this;this._process();window.requestAnimFrame(function(){return _this._loop();});}}]);return Scheduler;}();var scheduler=new Scheduler();exports.default=scheduler;},{}],39:[function(_dereq_,module,exports){ // ShaderLbs.js
-'use strict';Object.defineProperty(exports,"__esModule",{value:true});var ShaderLibs={simpleColorFrag:"#define GLSLIFY 1\n// simpleColor.frag\n\n#define SHADER_NAME SIMPLE_COLOR\n\nprecision highp float;\n\nuniform vec3 color;\nuniform float opacity;\n\nvoid main(void) {\n    gl_FragColor = vec4(color, opacity);\n}",bigTriangleVert:"#define GLSLIFY 1\n// bigTriangle.vert\n\n#define SHADER_NAME BIG_TRIANGLE_VERTEX\n\nprecision highp float;\nattribute vec2 aPosition;\nvarying vec2 vTextureCoord;\n\nvoid main(void) {\n    gl_Position = vec4(aPosition, 0.0, 1.0);\n    vTextureCoord = aPosition * .5 + .5;\n}",generalVert:"#define GLSLIFY 1\n// general.vert\n\n#define SHADER_NAME GENERAL_VERTEX\n\nprecision highp float;\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nuniform vec3 position;\nuniform vec3 scale;\n\nvarying vec2 vTextureCoord;\n\nvoid main(void) {\n\tvec3 pos      = aVertexPosition * scale;\n\tpos           += position;\n\tgl_Position   = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(pos, 1.0);\n\tvTextureCoord = aTextureCoord;\n}",generalNormalVert:"#define GLSLIFY 1\n// generalWithNormal.vert\n\n#define SHADER_NAME GENERAL_VERTEX\n\nprecision highp float;\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec3 aNormal;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\nuniform mat3 uNormalMatrix;\n\nuniform vec3 position;\nuniform vec3 scale;\n\nvarying vec2 vTextureCoord;\nvarying vec3 vNormal;\n\nvoid main(void) {\n\tvec3 pos      = aVertexPosition * scale;\n\tpos           += position;\n\tgl_Position   = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(pos, 1.0);\n\t\n\tvTextureCoord = aTextureCoord;\n\tvNormal       = normalize(uNormalMatrix * aNormal);\n}"};exports.default=ShaderLibs;},{}]},{},[11])(11);}); 
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],2:[function(require,module,exports){
 module.exports = require('./vendor/dat.gui')
 module.exports.color = require('./vendor/dat.color')
@@ -6363,11 +4424,11 @@ dat.utils.common);
 },{}],5:[function(require,module,exports){
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _alfrid = require('../../../../build/alfrid.js');
 
@@ -6405,7 +4466,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // SceneApp.js
 
-var GL = undefined;
+
+var GL = void 0;
 
 var SceneApp = function (_alfrid$Scene) {
 	_inherits(SceneApp, _alfrid$Scene);
@@ -6508,7 +4570,7 @@ var SceneApp = function (_alfrid$Scene) {
 	}, {
 		key: 'render',
 		value: function render() {
-
+			// this.lightPosition[0] = 0.5 + this._count * .1;
 			var p = 0;
 
 			if (this._count % params.skipCount === 0) {
@@ -6518,7 +4580,7 @@ var SceneApp = function (_alfrid$Scene) {
 			p = this._count / params.skipCount;
 			this._count++;
 
-			this.orbitalControl._ry.value += -.01;
+			// this.orbitalControl._ry.value += -.02;
 
 			//	DRAW SHADOW MAP
 
@@ -6538,7 +4600,7 @@ var SceneApp = function (_alfrid$Scene) {
 			// this._bAxis.draw();
 			// this._bDotsPlane.draw();
 			// this._vLight.render();
-			this._vFloor.render(this.shadowMatrix, this.lightPosition, this._fboShadowMap.getTexture());
+			// this._vFloor.render(this.shadowMatrix, this.lightPosition, this._fboShadowMap.getTexture());
 			this._vShadowRender.render(this._fboTarget.getTexture(), this._fboCurrent.getTexture(), p, this._fboShadowMap.getTexture(), this.shadowMatrix, this.lightPosition);
 
 			/*/
@@ -6562,11 +4624,11 @@ exports.default = SceneApp;
 },{"../../../../build/alfrid.js":1,"./ViewCube":6,"./ViewRender":7,"./ViewSave":8,"./ViewShadowRender":9,"./ViewSimulation":10,"./ViewTestRender":11}],6:[function(require,module,exports){
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _alfrid = require('../../../../build/alfrid.js');
 
@@ -6579,6 +4641,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // ViewCube.js
+
 
 var GL = _alfrid2.default.GL;
 
@@ -6594,11 +4657,7 @@ var ViewCube = function (_alfrid$View) {
 		_this.color = color;
 		_this.size = size;
 		_this.position = position;
-<<<<<<< HEAD
-		_this.shaderShadow = new _alfrid2.default.GLShader("#define GLSLIFY 1\n// generalShadow.vert\n\n// shadow.vert\n\n#define SHADER_NAME SHADOW_VERTEX\n\nprecision highp float;\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\nuniform mat4 uShadowMatrix;\nuniform mat3 uNormalMatrix;\n\nuniform vec3 position;\nuniform vec3 scale;\n\nvarying vec2 vTextureCoord;\nvarying vec4 vShadowCoord;\nvarying vec4 vPosition;\n\nconst mat4 biasMatrix = mat4( 0.5, 0.0, 0.0, 0.0,\n\t\t\t\t\t\t\t  0.0, 0.5, 0.0, 0.0,\n\t\t\t\t\t\t\t  0.0, 0.0, 0.5, 0.0,\n\t\t\t\t\t\t\t  0.5, 0.5, 0.5, 1.0 );\n\nvoid main(void) {\n\tvec3 pos        = aVertexPosition * scale;\n\tpos \t\t\t+= position;\n\tvec4 mvPosition = uViewMatrix * uModelMatrix * vec4(pos, 1.0);\n\tgl_Position     = uProjectionMatrix * mvPosition;\n\tvPosition       = mvPosition;\n\tvTextureCoord   = aTextureCoord;\n\tvShadowCoord    = ( biasMatrix * uShadowMatrix * uModelMatrix ) * vec4(pos, 1.0);;\n}", "#define GLSLIFY 1\n// shadow.frag\n\nprecision highp float;\nvarying vec2 vTextureCoord;\nvarying vec4 vPosition;\nvarying vec4 vShadowCoord;\n\nuniform vec3 color;\nuniform sampler2D textureDepth;\n\nvoid main(void) {\n\t\n\tvec4 ShadowCoord\t= vShadowCoord / vShadowCoord.w;\n\tvec4 Shadow\t\t= vec4(1.0);\n\n\tif ( ShadowCoord.z > -1.0 && ShadowCoord.z < 1.0 ) {\n\t\tShadow = texture2DProj( textureDepth, ShadowCoord,  0.00005 );\t\t\n\t}\n\n/*\n\tfloat bias = .0001;\n\tfloat visibility = 1.0;\n\tfloat descrease = .1;\n\n\tif ( texture2D( textureDepth, ShadowCoord.xy + vec2( -0.94201624, -0.39906216 )/700.0 ).z  <  ShadowCoord.z-bias ){\t\tvisibility-=descrease;}\n\tif ( texture2D( textureDepth, ShadowCoord.xy + vec2( 0.94558609, -0.768907256 )/700.0 ).z  <  ShadowCoord.z-bias ){\t\tvisibility-=descrease;}\n\tif ( texture2D( textureDepth, ShadowCoord.xy + vec2( -0.094184101, -0.92938870 )/700.0 ).z  <  ShadowCoord.z-bias ){\tvisibility-=descrease;}\n\tif ( texture2D( textureDepth, ShadowCoord.xy + vec2( 0.34495938, 0.29387760 )/700.0 ).z  <  ShadowCoord.z-bias ){\t\tvisibility-=descrease;}\n*/\n\tgl_FragColor = vec4( color, 1.0) * Shadow;\n\n/*\n\tfloat bias = 0.005*tan(acos(NdotL)); // cosTheta is dot( n,l ), clamped between 0 and 1\n\tbias = clamp(bias, 0.0, 0.01);\n\tfloat visibility = 1.0;\n\tif ( texture2D( textureDepth, ShadowCoord.xy ).z  <  ShadowCoord.z-bias){\n\t\tvisibility = 0.5;\n\t}\n\n    gl_FragColor = vec4(( Diffuse * visibility + Ambient ) * color, 1.0);\n*/  \n}");
-=======
-		_this.shaderShadow = new _alfrid2.default.GLShader("#define GLSLIFY 1\n// generalShadow.vert\n\n// shadow.vert\n\n#define SHADER_NAME SHADOW_VERTEX\n\nprecision highp float;\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\nuniform mat4 uShadowMatrix;\nuniform mat3 uNormalMatrix;\n\nuniform vec3 position;\nuniform vec3 scale;\n\nvarying vec2 vTextureCoord;\nvarying vec4 vShadowCoord;\nvarying vec4 vPosition;\n\nconst mat4 biasMatrix = mat4( 0.5, 0.0, 0.0, 0.0,\n\t\t\t\t\t\t\t  0.0, 0.5, 0.0, 0.0,\n\t\t\t\t\t\t\t  0.0, 0.0, 0.5, 0.0,\n\t\t\t\t\t\t\t  0.5, 0.5, 0.5, 1.0 );\n\nvoid main(void) {\n\tvec3 pos        = aVertexPosition * scale;\n\tpos \t\t\t+= position;\n\tvec4 mvPosition = uViewMatrix * uModelMatrix * vec4(pos, 1.0);\n\tgl_Position     = uProjectionMatrix * mvPosition;\n\tvPosition       = mvPosition;\n\tvTextureCoord   = aTextureCoord;\n\tvShadowCoord    = ( biasMatrix * uShadowMatrix * uModelMatrix ) * vec4(pos, 1.0);;\n}", "#define GLSLIFY 1\n// shadow.frag\n\nprecision highp float;\nvarying vec2 vTextureCoord;\nvarying vec4 vPosition;\nvarying vec4 vShadowCoord;\n\nuniform vec3 color;\nuniform sampler2D textureDepth;\n\nfloat pcfSoftShadow(sampler2D shadowMap) {\n\tconst float shadowMapSize  = 1024.0;\n\tconst float shadowBias     = .00005;\n\tconst float shadowDarkness = .2;\n\tfloat shadow = 0.0;\n\tfloat texelSizeX =  1.0 / shadowMapSize;\n\tfloat texelSizeY =  1.0 / shadowMapSize;\n\tvec4 shadowCoord\t= vShadowCoord / vShadowCoord.w;\n\n\tbvec4 inFrustumVec = bvec4 ( shadowCoord.x >= 0.0, shadowCoord.x <= 1.0, shadowCoord.y >= 0.0, shadowCoord.y <= 1.0 );\n\tbool inFrustum = all( inFrustumVec );\n\n\tbvec2 frustumTestVec = bvec2( inFrustum, shadowCoord.z <= 1.0 );\n\n\tbool frustumTest = all( frustumTestVec );\n\t\n\n\tif ( frustumTest ) {\n\t\tshadowCoord.z += shadowBias;\n\t\tfloat xPixelOffset = texelSizeX;\n\t\tfloat yPixelOffset = texelSizeY;\n\n\t\tfloat dx0 = - 1.0 * xPixelOffset;\n\t\tfloat dy0 = - 1.0 * yPixelOffset;\n\t\tfloat dx1 = 1.0 * xPixelOffset;\n\t\tfloat dy1 = 1.0 * yPixelOffset;\n\n\t\tmat3 shadowKernel;\n\t\tmat3 depthKernel;\n\n\t\tdepthKernel[ 0 ][ 0 ] = texture2D( shadowMap, shadowCoord.xy + vec2( dx0, dy0 ) ).r ;\n\t\tdepthKernel[ 0 ][ 1 ] = texture2D( shadowMap, shadowCoord.xy + vec2( dx0, 0.0 ) ).r ;\n\t\tdepthKernel[ 0 ][ 2 ] = texture2D( shadowMap, shadowCoord.xy + vec2( dx0, dy1 ) ).r ;\n\t\tdepthKernel[ 1 ][ 0 ] = texture2D( shadowMap, shadowCoord.xy + vec2( 0.0, dy0 ) ).r ;\n\t\tdepthKernel[ 1 ][ 1 ] = texture2D( shadowMap, shadowCoord.xy ).r ;\n\t\tdepthKernel[ 1 ][ 2 ] = texture2D( shadowMap, shadowCoord.xy + vec2( 0.0, dy1 ) ).r ;\n\t\tdepthKernel[ 2 ][ 0 ] = texture2D( shadowMap, shadowCoord.xy + vec2( dx1, dy0 ) ).r ;\n\t\tdepthKernel[ 2 ][ 1 ] = texture2D( shadowMap, shadowCoord.xy + vec2( dx1, 0.0 ) ).r ;\n\t\tdepthKernel[ 2 ][ 2 ] = texture2D( shadowMap, shadowCoord.xy + vec2( dx1, dy1 ) ).r ;\n\n\t\tvec3 shadowZ = vec3( shadowCoord.z );\n\t\tshadowKernel[ 0 ] = vec3( lessThan( depthKernel[ 0 ], shadowZ ) );\n\t\tshadowKernel[ 0 ] *= vec3( 0.25 );\n\n\t\tshadowKernel[ 1 ] = vec3( lessThan( depthKernel[ 1 ], shadowZ ) );\n\t\tshadowKernel[ 1 ] *= vec3( 0.25 );\n\n\t\tshadowKernel[ 2 ] = vec3( lessThan( depthKernel[ 2 ], shadowZ ) );\n\t\tshadowKernel[ 2 ] *= vec3( 0.25 );\n\n\t\tvec2 fractionalCoord = 1.0 - fract( shadowCoord.xy * shadowMapSize );\n\n\t\tshadowKernel[ 0 ] = mix( shadowKernel[ 1 ], shadowKernel[ 0 ], fractionalCoord.x );\n\t\tshadowKernel[ 1 ] = mix( shadowKernel[ 2 ], shadowKernel[ 1 ], fractionalCoord.x );\n\n\t\tvec4 shadowValues;\n\t\tshadowValues.x = mix( shadowKernel[ 0 ][ 1 ], shadowKernel[ 0 ][ 0 ], fractionalCoord.y );\n\t\tshadowValues.y = mix( shadowKernel[ 0 ][ 2 ], shadowKernel[ 0 ][ 1 ], fractionalCoord.y );\n\t\tshadowValues.z = mix( shadowKernel[ 1 ][ 1 ], shadowKernel[ 1 ][ 0 ], fractionalCoord.y );\n\t\tshadowValues.w = mix( shadowKernel[ 1 ][ 2 ], shadowKernel[ 1 ][ 1 ], fractionalCoord.y );\n\n\t\tshadow = dot( shadowValues, vec4( 1.0 ) ) * shadowDarkness;\n\n\t}\n\n\treturn shadow;\n}\n\nvec4 textureProjOffset(sampler2D uShadowMap, vec4 sc, vec2 offset) {\n\tconst float shadowBias     = .00005;\n\tvec4 scCopy = sc;\n\tscCopy.xy += offset;\n\treturn texture2DProj(uShadowMap, scCopy, shadowBias);\n}\n\nvec4 pcfShadow(sampler2D uShadowMap) {\n\tvec4 sc                   = vShadowCoord / vShadowCoord.w;\n\tconst float shadowMapSize = 1024.0;\n\tconst float s             = 1.0/shadowMapSize;\n\tvec4 shadow              = vec4(0.0);\n\tshadow += textureProjOffset( uShadowMap, sc, vec2(-s,-s) );\n\tshadow += textureProjOffset( uShadowMap, sc, vec2(-s, 0) );\n\tshadow += textureProjOffset( uShadowMap, sc, vec2(-s, s) );\n\tshadow += textureProjOffset( uShadowMap, sc, vec2( 0,-s) );\n\tshadow += textureProjOffset( uShadowMap, sc, vec2( 0, 0) );\n\tshadow += textureProjOffset( uShadowMap, sc, vec2( 0, s) );\n\tshadow += textureProjOffset( uShadowMap, sc, vec2( s,-s) );\n\tshadow += textureProjOffset( uShadowMap, sc, vec2( s, 0) );\n\tshadow += textureProjOffset( uShadowMap, sc, vec2( s, s) );\n\treturn shadow/9.0;\n}\n\nvoid main(void) {\n\tfloat pcf = pcfSoftShadow(textureDepth);\n\tpcf = 1.0 - smoothstep(0.0, .55, pcf);\n\tgl_FragColor = vec4( color*pcf, 1.0);\n\n\t// vec4 ShadowCoord\t= vShadowCoord / vShadowCoord.w;\n\t// vec4 Shadow\t\t= vec4(1.0);\n\n\t// if ( ShadowCoord.z > -1.0 && ShadowCoord.z < 1.0 ) {\n\t// \tShadow = texture2DProj( textureDepth, ShadowCoord, -0.00005 );\t\t\n\t// }\n\n\t// gl_FragColor = vec4( color, 1.0) * Shadow;\n\n\t// vec4 shadow = pcfShadow(textureDepth);\n\t// gl_FragColor = vec4( color, 1.0)*shadow;\n}");
->>>>>>> 7ab135ecd6b8fb7d133f2d1cfb4e4849bdc83ba7
+		_this.shaderShadow = new _alfrid2.default.GLShader("// generalShadow.vert\n\n// shadow.vert\n\n#define SHADER_NAME SHADOW_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\nuniform mat4 uShadowMatrix;\nuniform mat3 uNormalMatrix;\n\nuniform vec3 position;\nuniform vec3 scale;\n\nvarying vec2 vTextureCoord;\nvarying vec4 vShadowCoord;\nvarying vec4 vPosition;\n\nconst mat4 biasMatrix = mat4( 0.5, 0.0, 0.0, 0.0,\n\t\t\t\t\t\t\t  0.0, 0.5, 0.0, 0.0,\n\t\t\t\t\t\t\t  0.0, 0.0, 0.5, 0.0,\n\t\t\t\t\t\t\t  0.5, 0.5, 0.5, 1.0 );\n\nvoid main(void) {\n\tvec3 pos        = aVertexPosition * scale;\n\tpos \t\t\t+= position;\n\tvec4 mvPosition = uViewMatrix * uModelMatrix * vec4(pos, 1.0);\n\tgl_Position     = uProjectionMatrix * mvPosition;\n\tvPosition       = mvPosition;\n\tvTextureCoord   = aTextureCoord;\n\tvShadowCoord    = ( biasMatrix * uShadowMatrix * uModelMatrix ) * vec4(pos, 1.0);;\n}", "// shadow.frag\n\nprecision highp float;\n#define GLSLIFY 1\nvarying vec2 vTextureCoord;\nvarying vec4 vPosition;\nvarying vec4 vShadowCoord;\n\nuniform vec3 color;\nuniform sampler2D textureDepth;\n\nvoid main(void) {\n\t\n\tvec4 ShadowCoord\t= vShadowCoord / vShadowCoord.w;\n\tvec4 Shadow\t\t= vec4(1.0);\n\n\tif ( ShadowCoord.z > -1.0 && ShadowCoord.z < 1.0 ) {\n\t\tShadow = texture2DProj( textureDepth, ShadowCoord,  0.00005 );\t\t\n\t}\n\n/*\n\tfloat bias = .0001;\n\tfloat visibility = 1.0;\n\tfloat descrease = .1;\n\n\tif ( texture2D( textureDepth, ShadowCoord.xy + vec2( -0.94201624, -0.39906216 )/700.0 ).z  <  ShadowCoord.z-bias ){\t\tvisibility-=descrease;}\n\tif ( texture2D( textureDepth, ShadowCoord.xy + vec2( 0.94558609, -0.768907256 )/700.0 ).z  <  ShadowCoord.z-bias ){\t\tvisibility-=descrease;}\n\tif ( texture2D( textureDepth, ShadowCoord.xy + vec2( -0.094184101, -0.92938870 )/700.0 ).z  <  ShadowCoord.z-bias ){\tvisibility-=descrease;}\n\tif ( texture2D( textureDepth, ShadowCoord.xy + vec2( 0.34495938, 0.29387760 )/700.0 ).z  <  ShadowCoord.z-bias ){\t\tvisibility-=descrease;}\n*/\n\tgl_FragColor = vec4( color, 1.0) * Shadow;\n\n/*\n\tfloat bias = 0.005*tan(acos(NdotL)); // cosTheta is dot( n,l ), clamped between 0 and 1\n\tbias = clamp(bias, 0.0, 0.01);\n\tfloat visibility = 1.0;\n\tif ( texture2D( textureDepth, ShadowCoord.xy ).z  <  ShadowCoord.z-bias){\n\t\tvisibility = 0.5;\n\t}\n\n    gl_FragColor = vec4(( Diffuse * visibility + Ambient ) * color, 1.0);\n*/  \n}");
 		return _this;
 	}
 
@@ -6638,11 +4697,11 @@ exports.default = ViewCube;
 },{"../../../../build/alfrid.js":1}],7:[function(require,module,exports){
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _alfrid = require('../../../../build/alfrid.js');
 
@@ -6658,7 +4717,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 
-var GL = undefined;
+var GL = void 0;
 
 var ViewRender = function (_alfrid$View) {
 	_inherits(ViewRender, _alfrid$View);
@@ -6667,7 +4726,7 @@ var ViewRender = function (_alfrid$View) {
 		_classCallCheck(this, ViewRender);
 
 		GL = _alfrid2.default.GL;
-		return _possibleConstructorReturn(this, Object.getPrototypeOf(ViewRender).call(this, "#define GLSLIFY 1\n// render.vert\n\nprecision highp float;\nattribute vec3 aVertexPosition;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nuniform sampler2D texture;\nuniform sampler2D textureNext;\nuniform float percent;\nvarying vec4 vColor;\n\nvoid main(void) {\n\tvec2 uv      = aVertexPosition.xy * .5;\n\tvec3 currPos = texture2D(texture, uv).rgb;\n\tvec3 nextPos = texture2D(textureNext, uv).rgb;\n\tvec3 pos     = mix(currPos, nextPos, percent);\n\tvec4 V       = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(pos, 1.0);\n\tgl_Position  = V;\n\tgl_PointSize = 2.0;\n\n\tfloat d \t = V.z/V.w;\n\td \t\t\t = d*.5 + .5;\n\tvColor       = vec4(d, d, d, 1.0);\n\n\tif(length(currPos) - length(nextPos) > 1.0) vColor.a = 0.0;\n}", "#define GLSLIFY 1\n// render.frag\n\n// save.frag\n\nprecision highp float;\n\nvarying vec4 vColor;\n\nvoid main(void) {\n\tif(vColor.a <= 0.01) {\n\t\tdiscard;\n\t}\n    gl_FragColor = vColor;\n}"));
+		return _possibleConstructorReturn(this, Object.getPrototypeOf(ViewRender).call(this, "// render.vert\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec3 aNormal;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nuniform sampler2D texture;\nuniform sampler2D textureNext;\nuniform float percent;\nvarying vec4 vColor;\nvarying vec3 vNormal;\n\nvoid main(void) {\n\tvec2 uv      = aVertexPosition.xy * .5;\n\tvec3 currPos = texture2D(texture, uv).rgb;\n\tvec3 nextPos = texture2D(textureNext, uv).rgb;\n\tvec3 pos     = mix(currPos, nextPos, percent);\n\tvec4 V       = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(pos, 1.0);\n\tgl_Position  = V;\n\tgl_PointSize = 2.0;\n\n\tfloat d \t = V.z/V.w;\n\td \t\t\t = d*.5 + .5;\n\tvColor       = vec4(d, d, d, 1.0);\n\n\tif(length(currPos) - length(nextPos) > 1.0) vColor.a = 0.0;\n\tvNormal = aNormal;\n}", "// render.frag\n\n// save.frag\n\nprecision highp float;\n#define GLSLIFY 1\n\nvarying vec4 vColor;\n\nvoid main(void) {\n\tif(vColor.a <= 0.01) {\n\t\tdiscard;\n\t}\n    gl_FragColor = vColor;\n}"));
 	}
 
 	_createClass(ViewRender, [{
@@ -6678,8 +4737,8 @@ var ViewRender = function (_alfrid$View) {
 			var indices = [];
 			var count = 0;
 			var numParticles = params.numParticles;
-			var ux = undefined,
-			    uy = undefined;
+			var ux = void 0,
+			    uy = void 0;
 
 			for (var j = 0; j < numParticles; j++) {
 				for (var i = 0; i < numParticles; i++) {
@@ -6693,7 +4752,7 @@ var ViewRender = function (_alfrid$View) {
 
 			this.mesh = new _alfrid2.default.Mesh(GL.POINTS);
 			this.mesh.bufferVertex(positions);
-			this.mesh.bufferIndices(indices);
+			this.mesh.bufferIndex(indices);
 		}
 	}, {
 		key: 'render',
@@ -6716,11 +4775,11 @@ exports.default = ViewRender;
 },{"../../../../build/alfrid.js":1}],8:[function(require,module,exports){
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _alfrid = require('../../../../build/alfrid.js');
 
@@ -6740,7 +4799,7 @@ var random = function random(min, max) {
 	return min + Math.random() * (max - min);
 };
 
-var GL = undefined;
+var GL = void 0;
 
 var ViewSave = function (_alfrid$View) {
 	_inherits(ViewSave, _alfrid$View);
@@ -6750,7 +4809,7 @@ var ViewSave = function (_alfrid$View) {
 
 		GL = _alfrid2.default.GL;
 
-		return _possibleConstructorReturn(this, Object.getPrototypeOf(ViewSave).call(this, "#define GLSLIFY 1\n// save.vert\n\nprecision highp float;\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvarying vec2 vTextureCoord;\nvarying vec3 vColor;\n\nvoid main(void) {\n\tvColor      = aVertexPosition;\n\tvec3 pos    = vec3(aTextureCoord, 0.0);\n\tgl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(pos, 1.0);\n\n    gl_PointSize = 1.0;\n}", "#define GLSLIFY 1\n// save.frag\n\nprecision highp float;\n\nvarying vec3 vColor;\n\nvoid main(void) {\n    gl_FragColor = vec4(vColor, 1.0);\n}"));
+		return _possibleConstructorReturn(this, Object.getPrototypeOf(ViewSave).call(this, "// save.vert\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec3 aNormal;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvarying vec2 vTextureCoord;\nvarying vec3 vColor;\nvarying vec3 vNormal;\n\nvoid main(void) {\n\tvColor      = aVertexPosition;\n\tvec3 pos    = vec3(aTextureCoord, 0.0);\n\tgl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(pos, 1.0);\n\n    gl_PointSize = 1.0;\n\n    vNormal = aNormal;\n}", "// save.frag\n\nprecision highp float;\n#define GLSLIFY 1\n\nvarying vec3 vColor;\n\nvoid main(void) {\n    gl_FragColor = vec4(vColor, 1.0);\n}"));
 	}
 
 	_createClass(ViewSave, [{
@@ -6786,8 +4845,8 @@ var ViewSave = function (_alfrid$View) {
 
 			this.mesh = new _alfrid2.default.Mesh(GL.POINTS);
 			this.mesh.bufferVertex(positions);
-			this.mesh.bufferTexCoords(coords);
-			this.mesh.bufferIndices(indices);
+			this.mesh.bufferTexCoord(coords);
+			this.mesh.bufferIndex(indices);
 		}
 	}, {
 		key: 'render',
@@ -6806,11 +4865,11 @@ exports.default = ViewSave;
 },{"../../../../build/alfrid.js":1}],9:[function(require,module,exports){
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _alfrid = require('../../../../build/alfrid.js');
 
@@ -6824,6 +4883,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // ViewShadowRender.js
 
+
 var GL = _alfrid2.default.GL;
 
 
@@ -6833,11 +4893,7 @@ var ViewShadowRender = function (_alfrid$View) {
 	function ViewShadowRender() {
 		_classCallCheck(this, ViewShadowRender);
 
-<<<<<<< HEAD
-		return _possibleConstructorReturn(this, Object.getPrototypeOf(ViewShadowRender).call(this, "#define GLSLIFY 1\n// shadow.vert\n\n// render.vert\n\nprecision highp float;\nattribute vec3 aVertexPosition;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\nuniform mat4 uShadowMatrix;\n\nuniform sampler2D texture;\nuniform sampler2D textureNext;\nuniform float percent;\nvarying vec4 vColor;\n\nvarying vec4 vShadowCoord;\nvarying vec4 vPosition;\n\nconst mat4 biasMatrix = mat4( 0.5, 0.0, 0.0, 0.0,\n\t\t\t\t\t\t\t  0.0, 0.5, 0.0, 0.0,\n\t\t\t\t\t\t\t  0.0, 0.0, 0.5, 0.0,\n\t\t\t\t\t\t\t  0.5, 0.5, 0.5, 1.0 );\n\nvoid main(void) {\n\tvec2 uv      = aVertexPosition.xy * .5;\n\tvec3 currPos = texture2D(texture, uv).rgb;\n\tvec3 nextPos = texture2D(textureNext, uv).rgb;\n\tvec3 pos     = mix(currPos, nextPos, percent);\n\n\tvec4 mvPosition = uViewMatrix * uModelMatrix * vec4(pos, 1.0);\n\n\tgl_Position     = uProjectionMatrix * mvPosition;\n\tvPosition       = mvPosition;\n\tvShadowCoord    = ( biasMatrix * uShadowMatrix ) * vec4(pos, 1.0);;\n\t\n\tfloat d      = length(pos);\n\tfloat a      = smoothstep(3.0, 4.5, d);\n\tvColor       = vec4(1.0, 1.0, 1.0, 1.0);\n\n\tgl_PointSize = 2.0;\n\n\tif(length(currPos) - length(nextPos) > 1.0) vColor.a = 0.0;\n}", "#define GLSLIFY 1\n// shadow.frag\n\n#define SHADER_NAME SIMPLE_TEXTURE\n\nprecision highp float;\nvarying vec4 vPosition;\nvarying vec4 vShadowCoord;\nvarying vec4 vColor;\n\nuniform vec3 color;\nuniform sampler2D textureDepth;\n\nconst float shadowMapSize = 1024.0;\n/*\nconst vec2 poissonDisk[4] = vec2[](\n\tvec2( -0.94201624, -0.39906216 ),\n\tvec2( 0.94558609, -0.76890725 ),\n\tvec2( -0.094184101, -0.92938870 ),\n\tvec2( 0.34495938, 0.29387760 )\n);\n*/\n\nconst float near = .5;\nconst float far = 100.0;\n\nfloat getDepth(float z, float n, float f) {\n\treturn (2.0 * n) / (f + n - z*(f-n));\n}\n\nfloat getDepthValue(vec2 uv) {\n\tconst float tmp = 700.0;\n\tfloat d = texture2D( textureDepth, uv ).z;\n\treturn d;\n\t// return getDepth(d, near, far);\n}\n\nfloat getDepthProjValue(vec4 uv) {\n\treturn 0.0;\n}\n\nvec4 getShadowCoord( vec4 sc, vec2 offset) {\n\tvec4 s = sc;\n\ts.xy += offset;\n\n\treturn s;\n}\n\nfloat samplePCF3x3( vec4 sc )\n{\n\tconst float s = 2.0/700.0;\n\t\n\tfloat shadow = 0.0;\n\tfloat bias = .0001;\n\n\tshadow += texture2DProj( textureDepth, getShadowCoord(sc, vec2(-s,-s) )).r;\n\tshadow += texture2DProj( textureDepth, getShadowCoord(sc, vec2(-s, 0) )).r;\n\tshadow += texture2DProj( textureDepth, getShadowCoord(sc, vec2(-s, s) )).r;\n\tshadow += texture2DProj( textureDepth, getShadowCoord(sc, vec2( 0,-s) )).r;\n\tshadow += texture2DProj( textureDepth, getShadowCoord(sc, vec2( 0, 0) )).r;\n\tshadow += texture2DProj( textureDepth, getShadowCoord(sc, vec2( 0, s) )).r;\n\tshadow += texture2DProj( textureDepth, getShadowCoord(sc, vec2( s,-s) )).r;\n\tshadow += texture2DProj( textureDepth, getShadowCoord(sc, vec2( s, 0) )).r;\n\tshadow += texture2DProj( textureDepth, getShadowCoord(sc, vec2( s, s) )).r;\n\treturn shadow/9.0;;\n}\n\nvoid main(void) {\n\tif(vColor.a <= 0.0) discard;\n\n\tvec4 ShadowCoord\t= vShadowCoord / vShadowCoord.w;\n\tvec4 Shadow\t\t= vec4(1.0);\n\n\tif ( ShadowCoord.z > -1.0 && ShadowCoord.z < 1.0 ) {\n\t\tShadow = texture2DProj( textureDepth, ShadowCoord,  0.00005 );\t\t\n\t}\n\n\tfloat bias = .0001;\n\tfloat visibility = 1.0;\n\tfloat descrease = .1;\n\n\tconst float tmp = 700.0;\n\n\tif ( getDepthValue( ShadowCoord.xy + vec2( -0.94201624, -0.39906216 )/ tmp )  <  ShadowCoord.z-bias ){\t\tvisibility-=descrease;}\n\tif ( getDepthValue( ShadowCoord.xy + vec2( 0.94558609, -0.768907256 )/ tmp )  <  ShadowCoord.z-bias ){\t\tvisibility-=descrease;}\n\tif ( getDepthValue( ShadowCoord.xy + vec2( -0.094184101, -0.92938870 )/ tmp )  <  ShadowCoord.z-bias ){\tvisibility-=descrease;}\n\tif ( getDepthValue( ShadowCoord.xy + vec2( 0.34495938, 0.29387760 )/ tmp )  <  ShadowCoord.z-bias ){\t\tvisibility-=descrease;}\n\n\t// visibility = mix(visibility, 1.0, .25);\t\t\n\n\tfloat _pcf = samplePCF3x3(vShadowCoord);\n\n\tvec4 color = vColor;\n\tcolor.rgb *= visibility;\n\t// color.rgb *= _pcf;\n\tgl_FragColor = color;\n\t// gl_FragColor.rgb = vec3(_pcf);\n}"));
-=======
-		return _possibleConstructorReturn(this, Object.getPrototypeOf(ViewShadowRender).call(this, "#define GLSLIFY 1\n// shadow.vert\n\n// render.vert\n\nprecision highp float;\nattribute vec3 aVertexPosition;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\nuniform mat4 uShadowMatrix;\n\nuniform sampler2D texture;\nuniform sampler2D textureNext;\nuniform float percent;\nvarying vec4 vColor;\n\nvarying vec4 vShadowCoord;\nvarying vec4 vPosition;\n\nconst mat4 biasMatrix = mat4( 0.5, 0.0, 0.0, 0.0,\n\t\t\t\t\t\t\t  0.0, 0.5, 0.0, 0.0,\n\t\t\t\t\t\t\t  0.0, 0.0, 0.5, 0.0,\n\t\t\t\t\t\t\t  0.5, 0.5, 0.5, 1.0 );\n\nvoid main(void) {\n\tvec2 uv      = aVertexPosition.xy * .5;\n\tvec3 currPos = texture2D(texture, uv).rgb;\n\tvec3 nextPos = texture2D(textureNext, uv).rgb;\n\tvec3 pos     = mix(currPos, nextPos, percent);\n\n\tvec4 mvPosition = uViewMatrix * uModelMatrix * vec4(pos, 1.0);\n\n\tgl_Position     = uProjectionMatrix * mvPosition;\n\tvPosition       = mvPosition;\n\tvShadowCoord    = ( biasMatrix * uShadowMatrix ) * vec4(pos, 1.0);;\n\t\n\tfloat d      = length(pos);\n\tfloat a      = smoothstep(3.0, 4.5, d);\n\tvColor       = vec4(1.0, 1.0, 1.0, 1.0);\n\n\tgl_PointSize = 2.0;\n\n\tif(length(currPos) - length(nextPos) > 1.0) vColor.a = 0.0;\n}", "#define GLSLIFY 1\n// shadow.frag\n\n#define SHADER_NAME SIMPLE_TEXTURE\n\nprecision highp float;\nvarying vec4 vPosition;\nvarying vec4 vShadowCoord;\nvarying vec4 vColor;\n\nuniform vec3 color;\nuniform mat4 uViewMatrix;\nuniform mat4 uModelMatrix;\nuniform vec3 lightPosition;\nuniform sampler2D textureDepth;\nuniform float uShadowStrength;\nuniform float uShadowThreshold;\n\nfloat pcfSoftShadow(sampler2D shadowMap) {\n\tconst float shadowMapSize  = 1024.0;\n\tconst float shadowBias     = .00005;\n\tfloat shadow = 0.0;\n\tfloat texelSizeX =  1.0 / shadowMapSize;\n\tfloat texelSizeY =  1.0 / shadowMapSize;\n\tvec4 shadowCoord\t= vShadowCoord / vShadowCoord.w;\n\n\tbvec4 inFrustumVec = bvec4 ( shadowCoord.x >= 0.0, shadowCoord.x <= 1.0, shadowCoord.y >= 0.0, shadowCoord.y <= 1.0 );\n\tbool inFrustum = all( inFrustumVec );\n\n\tbvec2 frustumTestVec = bvec2( inFrustum, shadowCoord.z <= 1.0 );\n\n\tbool frustumTest = all( frustumTestVec );\n\t\n\n\tif ( frustumTest ) {\n\t\tshadowCoord.z += shadowBias;\n\t\tfloat xPixelOffset = texelSizeX;\n\t\tfloat yPixelOffset = texelSizeY;\n\n\t\tfloat dx0 = - 1.0 * xPixelOffset;\n\t\tfloat dy0 = - 1.0 * yPixelOffset;\n\t\tfloat dx1 = 1.0 * xPixelOffset;\n\t\tfloat dy1 = 1.0 * yPixelOffset;\n\n\t\tmat3 shadowKernel;\n\t\tmat3 depthKernel;\n\n\t\tdepthKernel[ 0 ][ 0 ] = texture2D( shadowMap, shadowCoord.xy + vec2( dx0, dy0 ) ).r ;\n\t\tdepthKernel[ 0 ][ 1 ] = texture2D( shadowMap, shadowCoord.xy + vec2( dx0, 0.0 ) ).r ;\n\t\tdepthKernel[ 0 ][ 2 ] = texture2D( shadowMap, shadowCoord.xy + vec2( dx0, dy1 ) ).r ;\n\t\tdepthKernel[ 1 ][ 0 ] = texture2D( shadowMap, shadowCoord.xy + vec2( 0.0, dy0 ) ).r ;\n\t\tdepthKernel[ 1 ][ 1 ] = texture2D( shadowMap, shadowCoord.xy ).r ;\n\t\tdepthKernel[ 1 ][ 2 ] = texture2D( shadowMap, shadowCoord.xy + vec2( 0.0, dy1 ) ).r ;\n\t\tdepthKernel[ 2 ][ 0 ] = texture2D( shadowMap, shadowCoord.xy + vec2( dx1, dy0 ) ).r ;\n\t\tdepthKernel[ 2 ][ 1 ] = texture2D( shadowMap, shadowCoord.xy + vec2( dx1, 0.0 ) ).r ;\n\t\tdepthKernel[ 2 ][ 2 ] = texture2D( shadowMap, shadowCoord.xy + vec2( dx1, dy1 ) ).r ;\n\n\t\tvec3 shadowZ = vec3( shadowCoord.z );\n\t\tshadowKernel[ 0 ] = vec3( lessThan( depthKernel[ 0 ], shadowZ ) );\n\t\tshadowKernel[ 0 ] *= vec3( 0.25 );\n\n\t\tshadowKernel[ 1 ] = vec3( lessThan( depthKernel[ 1 ], shadowZ ) );\n\t\tshadowKernel[ 1 ] *= vec3( 0.25 );\n\n\t\tshadowKernel[ 2 ] = vec3( lessThan( depthKernel[ 2 ], shadowZ ) );\n\t\tshadowKernel[ 2 ] *= vec3( 0.25 );\n\n\t\tvec2 fractionalCoord = 1.0 - fract( shadowCoord.xy * shadowMapSize );\n\n\t\tshadowKernel[ 0 ] = mix( shadowKernel[ 1 ], shadowKernel[ 0 ], fractionalCoord.x );\n\t\tshadowKernel[ 1 ] = mix( shadowKernel[ 2 ], shadowKernel[ 1 ], fractionalCoord.x );\n\n\t\tvec4 shadowValues;\n\t\tshadowValues.x = mix( shadowKernel[ 0 ][ 1 ], shadowKernel[ 0 ][ 0 ], fractionalCoord.y );\n\t\tshadowValues.y = mix( shadowKernel[ 0 ][ 2 ], shadowKernel[ 0 ][ 1 ], fractionalCoord.y );\n\t\tshadowValues.z = mix( shadowKernel[ 1 ][ 1 ], shadowKernel[ 1 ][ 0 ], fractionalCoord.y );\n\t\tshadowValues.w = mix( shadowKernel[ 1 ][ 2 ], shadowKernel[ 1 ][ 1 ], fractionalCoord.y );\n\n\t\tshadow = dot( shadowValues, vec4( 1.0 ) ) * uShadowStrength;\n\n\t}\n\n\treturn shadow;\n}\n\nvec4 textureProjOffset(sampler2D uShadowMap, vec4 sc, vec2 offset) {\n\tconst float shadowBias     = .00005;\n\tvec4 scCopy = sc;\n\tscCopy.xy += offset;\n\treturn texture2DProj(uShadowMap, scCopy, shadowBias);\n}\n\nvec4 pcfShadow(sampler2D uShadowMap) {\n\tvec4 sc                   = vShadowCoord / vShadowCoord.w;\n\tconst float shadowMapSize = 1024.0;\n\tconst float s             = 1.0/shadowMapSize;\n\tvec4 shadow              = vec4(0.0);\n\tshadow += textureProjOffset( uShadowMap, sc, vec2(-s,-s) );\n\tshadow += textureProjOffset( uShadowMap, sc, vec2(-s, 0) );\n\tshadow += textureProjOffset( uShadowMap, sc, vec2(-s, s) );\n\tshadow += textureProjOffset( uShadowMap, sc, vec2( 0,-s) );\n\tshadow += textureProjOffset( uShadowMap, sc, vec2( 0, 0) );\n\tshadow += textureProjOffset( uShadowMap, sc, vec2( 0, s) );\n\tshadow += textureProjOffset( uShadowMap, sc, vec2( s,-s) );\n\tshadow += textureProjOffset( uShadowMap, sc, vec2( s, 0) );\n\tshadow += textureProjOffset( uShadowMap, sc, vec2( s, s) );\n\treturn shadow/9.0;\n}\n\nvoid main(void) {\n\tif(vColor.a <= 0.0) discard;\n\tfloat pcf    = pcfSoftShadow(textureDepth);\n\tpcf = 1.0 - smoothstep(0.0, uShadowThreshold, pcf);\n\n\t// float pcf = pcfShadow(textureDepth).r;\n\t// pcf = 1.0 - smoothstep(0.0, uShadowThreshold, pcf);\n\t// pcf = smoothstep(1.0, .9, pcf);\n\t\n\tvec4 color   = vColor;\n\tcolor.rgb *= pcf;\n\tgl_FragColor = color;\n\n}"));
->>>>>>> 7ab135ecd6b8fb7d133f2d1cfb4e4849bdc83ba7
+		return _possibleConstructorReturn(this, Object.getPrototypeOf(ViewShadowRender).call(this, "// shadow.vert\n\n// render.vert\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec3 aNormal;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\nuniform mat4 uShadowMatrix;\n\nuniform sampler2D texture;\nuniform sampler2D textureNext;\nuniform float percent;\nvarying vec4 vColor;\n\nvarying vec4 vShadowCoord;\nvarying vec4 vPosition;\nvarying vec3 vNormal;\n\nconst mat4 biasMatrix = mat4( 0.5, 0.0, 0.0, 0.0,\n\t\t\t\t\t\t\t  0.0, 0.5, 0.0, 0.0,\n\t\t\t\t\t\t\t  0.0, 0.0, 0.5, 0.0,\n\t\t\t\t\t\t\t  0.5, 0.5, 0.5, 1.0 );\n\nvoid main(void) {\n\tvec2 uv      = aVertexPosition.xy * .5;\n\tvec3 currPos = texture2D(texture, uv).rgb;\n\tvec3 nextPos = texture2D(textureNext, uv).rgb;\n\tvec3 pos     = mix(currPos, nextPos, percent);\n\n\tvec4 mvPosition = uViewMatrix * uModelMatrix * vec4(pos, 1.0);\n\n\tgl_Position     = uProjectionMatrix * mvPosition;\n\tvPosition       = mvPosition;\n\tvShadowCoord    = ( biasMatrix * uShadowMatrix ) * vec4(pos, 1.0);;\n\t\n\tfloat d      = length(pos);\n\tfloat a      = smoothstep(3.0, 4.5, d);\n\tvColor       = vec4(1.0, 1.0, 1.0, 1.0);\n\n\tgl_PointSize = 2.0;\n\n\tif(length(currPos) - length(nextPos) > 1.0) vColor.a = 0.0;\n\tvNormal = aNormal;\n}", "// shadow.frag\n\n#define SHADER_NAME SIMPLE_TEXTURE\n\nprecision highp float;\n#define GLSLIFY 1\nvarying vec4 vPosition;\nvarying vec4 vShadowCoord;\nvarying vec4 vColor;\n\nuniform vec3 color;\nuniform sampler2D textureDepth;\n\nconst float shadowMapSize = 1024.0;\n/*\nconst vec2 poissonDisk[4] = vec2[](\n\tvec2( -0.94201624, -0.39906216 ),\n\tvec2( 0.94558609, -0.76890725 ),\n\tvec2( -0.094184101, -0.92938870 ),\n\tvec2( 0.34495938, 0.29387760 )\n);\n*/\n\nconst float near = .5;\nconst float far = 100.0;\n\nfloat getDepth(float z, float n, float f) {\n\treturn (2.0 * n) / (f + n - z*(f-n));\n}\n\nfloat getDepthValue(vec2 uv) {\n\tconst float tmp = 700.0;\n\tfloat d = texture2D( textureDepth, uv ).z;\n\treturn d;\n\t// return getDepth(d, near, far);\n}\n\nfloat getDepthProjValue(vec4 uv) {\n\treturn 0.0;\n}\n\nvec4 getShadowCoord( vec4 sc, vec2 offset) {\n\tvec4 s = sc;\n\ts.xy += offset;\n\n\treturn s;\n}\n\nfloat samplePCF3x3( vec4 sc )\n{\n\tconst float s = 2.0/700.0;\n\t\n\tfloat shadow = 0.0;\n\tfloat bias = .0001;\n\n\tshadow += texture2DProj( textureDepth, getShadowCoord(sc, vec2(-s,-s) )).r;\n\tshadow += texture2DProj( textureDepth, getShadowCoord(sc, vec2(-s, 0) )).r;\n\tshadow += texture2DProj( textureDepth, getShadowCoord(sc, vec2(-s, s) )).r;\n\tshadow += texture2DProj( textureDepth, getShadowCoord(sc, vec2( 0,-s) )).r;\n\tshadow += texture2DProj( textureDepth, getShadowCoord(sc, vec2( 0, 0) )).r;\n\tshadow += texture2DProj( textureDepth, getShadowCoord(sc, vec2( 0, s) )).r;\n\tshadow += texture2DProj( textureDepth, getShadowCoord(sc, vec2( s,-s) )).r;\n\tshadow += texture2DProj( textureDepth, getShadowCoord(sc, vec2( s, 0) )).r;\n\tshadow += texture2DProj( textureDepth, getShadowCoord(sc, vec2( s, s) )).r;\n\treturn shadow/9.0;;\n}\n\nvoid main(void) {\n\tif(vColor.a <= 0.0) discard;\n\n\tvec4 ShadowCoord\t= vShadowCoord / vShadowCoord.w;\n\tvec4 Shadow\t\t= vec4(1.0);\n\n\tif ( ShadowCoord.z > -1.0 && ShadowCoord.z < 1.0 ) {\n\t\tShadow = texture2DProj( textureDepth, ShadowCoord,  0.00005 );\t\t\n\t}\n\n\tfloat bias = .0001;\n\tfloat visibility = 1.0;\n\tfloat descrease = .1;\n\n\tconst float tmp = 700.0;\n\n\tif ( getDepthValue( ShadowCoord.xy + vec2( -0.94201624, -0.39906216 )/ tmp )  <  ShadowCoord.z-bias ){\t\tvisibility-=descrease;}\n\tif ( getDepthValue( ShadowCoord.xy + vec2( 0.94558609, -0.768907256 )/ tmp )  <  ShadowCoord.z-bias ){\t\tvisibility-=descrease;}\n\tif ( getDepthValue( ShadowCoord.xy + vec2( -0.094184101, -0.92938870 )/ tmp )  <  ShadowCoord.z-bias ){\tvisibility-=descrease;}\n\tif ( getDepthValue( ShadowCoord.xy + vec2( 0.34495938, 0.29387760 )/ tmp )  <  ShadowCoord.z-bias ){\t\tvisibility-=descrease;}\n\n\t// visibility = mix(visibility, 1.0, .25);\t\t\n\n\tfloat _pcf = samplePCF3x3(vShadowCoord);\n\n\tvec4 color = vColor;\n\tcolor.rgb *= visibility;\n\t// color.rgb *= _pcf;\n\tgl_FragColor = color;\n\t// gl_FragColor.rgb = vec3(_pcf);\n}"));
 	}
 
 	_createClass(ViewShadowRender, [{
@@ -6848,8 +4904,8 @@ var ViewShadowRender = function (_alfrid$View) {
 			var indices = [];
 			var count = 0;
 			var numParticles = params.numParticles;
-			var ux = undefined,
-			    uy = undefined;
+			var ux = void 0,
+			    uy = void 0;
 
 			for (var j = 0; j < numParticles; j++) {
 				for (var i = 0; i < numParticles; i++) {
@@ -6863,7 +4919,7 @@ var ViewShadowRender = function (_alfrid$View) {
 
 			this.mesh = new _alfrid2.default.Mesh(GL.POINTS);
 			this.mesh.bufferVertex(positions);
-			this.mesh.bufferIndices(indices);
+			this.mesh.bufferIndex(indices);
 		}
 	}, {
 		key: 'render',
@@ -6879,8 +4935,8 @@ var ViewShadowRender = function (_alfrid$View) {
 			this.shader.uniform("lightPosition", "uniform3fv", lightPosition);
 			this.shader.uniform("uShadowMatrix", "uniformMatrix4fv", shadowMatrix);
 			this.shader.uniform("textureDepth", "uniform1i", 2);
-			this.shader.uniform("uShadowStrength", "uniform1f", params.shadowStrength);
-			this.shader.uniform("uShadowThreshold", "uniform1f", params.shadowThreshold);
+			// this.shader.uniform("uShadowStrength", "uniform1f", params.shadowStrength);
+			// this.shader.uniform("uShadowThreshold", "uniform1f", params.shadowThreshold);
 			textureDepth.bind(2);
 		}
 	}]);
@@ -6893,11 +4949,11 @@ exports.default = ViewShadowRender;
 },{"../../../../build/alfrid.js":1}],10:[function(require,module,exports){
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _alfrid = require('../../../../build/alfrid.js');
 
@@ -6921,7 +4977,7 @@ var ViewSimulation = function (_alfrid$View) {
 	function ViewSimulation() {
 		_classCallCheck(this, ViewSimulation);
 
-		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ViewSimulation).call(this, _alfrid2.default.ShaderLibs.bigTriangleVert, "#define GLSLIFY 1\n// sim.frag\n\n#define SHADER_NAME SIMPLE_TEXTURE\n\nprecision highp float;\nvarying vec2 vTextureCoord;\nuniform sampler2D texture;\nuniform float time;\nuniform float skipCount;\n\nvec3 mod289(vec3 x) {\treturn x - floor(x * (1.0 / 289.0)) * 289.0;\t}\n\nvec4 mod289(vec4 x) {\treturn x - floor(x * (1.0 / 289.0)) * 289.0;\t}\n\nvec4 permute(vec4 x) {\treturn mod289(((x*34.0)+1.0)*x);\t}\n\nvec4 taylorInvSqrt(vec4 r) {\treturn 1.79284291400159 - 0.85373472095314 * r;}\n\nfloat snoise(vec3 v) { \n  const vec2  C = vec2(1.0/6.0, 1.0/3.0) ;\n  const vec4  D = vec4(0.0, 0.5, 1.0, 2.0);\n\n// First corner\n  vec3 i  = floor(v + dot(v, C.yyy) );\n  vec3 x0 =   v - i + dot(i, C.xxx) ;\n\n// Other corners\n  vec3 g = step(x0.yzx, x0.xyz);\n  vec3 l = 1.0 - g;\n  vec3 i1 = min( g.xyz, l.zxy );\n  vec3 i2 = max( g.xyz, l.zxy );\n\n  //   x0 = x0 - 0.0 + 0.0 * C.xxx;\n  //   x1 = x0 - i1  + 1.0 * C.xxx;\n  //   x2 = x0 - i2  + 2.0 * C.xxx;\n  //   x3 = x0 - 1.0 + 3.0 * C.xxx;\n  vec3 x1 = x0 - i1 + C.xxx;\n  vec3 x2 = x0 - i2 + C.yyy; // 2.0*C.x = 1/3 = C.y\n  vec3 x3 = x0 - D.yyy;      // -1.0+3.0*C.x = -0.5 = -D.y\n\n// Permutations\n  i = mod289(i); \n  vec4 p = permute( permute( permute( \n             i.z + vec4(0.0, i1.z, i2.z, 1.0 ))\n           + i.y + vec4(0.0, i1.y, i2.y, 1.0 )) \n           + i.x + vec4(0.0, i1.x, i2.x, 1.0 ));\n\n// Gradients: 7x7 points over a square, mapped onto an octahedron.\n// The ring size 17*17 = 289 is close to a multiple of 49 (49*6 = 294)\n  float n_ = 0.142857142857; // 1.0/7.0\n  vec3  ns = n_ * D.wyz - D.xzx;\n\n  vec4 j = p - 49.0 * floor(p * ns.z * ns.z);  //  mod(p,7*7)\n\n  vec4 x_ = floor(j * ns.z);\n  vec4 y_ = floor(j - 7.0 * x_ );    // mod(j,N)\n\n  vec4 x = x_ *ns.x + ns.yyyy;\n  vec4 y = y_ *ns.x + ns.yyyy;\n  vec4 h = 1.0 - abs(x) - abs(y);\n\n  vec4 b0 = vec4( x.xy, y.xy );\n  vec4 b1 = vec4( x.zw, y.zw );\n\n  //vec4 s0 = vec4(lessThan(b0,0.0))*2.0 - 1.0;\n  //vec4 s1 = vec4(lessThan(b1,0.0))*2.0 - 1.0;\n  vec4 s0 = floor(b0)*2.0 + 1.0;\n  vec4 s1 = floor(b1)*2.0 + 1.0;\n  vec4 sh = -step(h, vec4(0.0));\n\n  vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy ;\n  vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww ;\n\n  vec3 p0 = vec3(a0.xy,h.x);\n  vec3 p1 = vec3(a0.zw,h.y);\n  vec3 p2 = vec3(a1.xy,h.z);\n  vec3 p3 = vec3(a1.zw,h.w);\n\n//Normalise gradients\n  vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3)));\n  p0 *= norm.x;\n  p1 *= norm.y;\n  p2 *= norm.z;\n  p3 *= norm.w;\n\n// Mix final noise value\n  vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);\n  m = m * m;\n  return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1), \n                                dot(p2,x2), dot(p3,x3) ) );\n}\n\nvec3 snoiseVec3( vec3 x ){\n\n  float s  = snoise(vec3( x ));\n  float s1 = snoise(vec3( x.y - 19.1 , x.z + 33.4 , x.x + 47.2 ));\n  float s2 = snoise(vec3( x.z + 74.2 , x.x - 124.5 , x.y + 99.4 ));\n  vec3 c = vec3( s , s1 , s2 );\n  return c;\n\n}\n\nvec3 curlNoise( vec3 p ){\n  \n  const float e = .1;\n  vec3 dx = vec3( e   , 0.0 , 0.0 );\n  vec3 dy = vec3( 0.0 , e   , 0.0 );\n  vec3 dz = vec3( 0.0 , 0.0 , e   );\n\n  vec3 p_x0 = snoiseVec3( p - dx );\n  vec3 p_x1 = snoiseVec3( p + dx );\n  vec3 p_y0 = snoiseVec3( p - dy );\n  vec3 p_y1 = snoiseVec3( p + dy );\n  vec3 p_z0 = snoiseVec3( p - dz );\n  vec3 p_z1 = snoiseVec3( p + dz );\n\n  float x = p_y1.z - p_y0.z - p_z1.y + p_z0.y;\n  float y = p_z1.x - p_z0.x - p_x1.z + p_x0.z;\n  float z = p_x1.y - p_x0.y - p_y1.x + p_y0.x;\n\n  const float divisor = 1.0 / ( 2.0 * e );\n  return normalize( vec3( x , y , z ) * divisor );\n\n}\n\nvoid main(void) {\n\n    if(vTextureCoord.y < .5) {\n    \tif(vTextureCoord.x < .5) {\n        vec2 uvVel   = vTextureCoord + vec2(.5, .0);\n        vec2 uvExtra = vTextureCoord + vec2(.5, .5);\n        vec3 pos     = texture2D(texture, vTextureCoord).rgb;\n        vec3 vel     = texture2D(texture, uvVel).rgb;\n        vec3 extra   = texture2D(texture, uvExtra).rgb;\n    \t\tpos += vel;\n    \t\t// \n    \t\t// if(length(pos) > maxRadius) {\n    \t\t// \t// pos *= .001;\n      //     pos = curlNoise(pos*extra) * .1 * extra.b;\n    \t\t// }\n    \t\tgl_FragColor = vec4(pos, 1.0);\n\t\t} else {\n\t\t\t\n      vec2 uvPos      = vTextureCoord - vec2(.5, .0);\n      vec2 uvExtra    = vTextureCoord + vec2(-.5, .5);\n      vec3 pos        = texture2D(texture, uvPos).rgb;\n      vec3 vel        = texture2D(texture, vTextureCoord).rgb;\n      vec3 extra      = texture2D(texture, uvExtra).rgb;\n      float posOffset = (0.5 + extra.r * 0.25) * .15;\n\n\t\t\t/*/\n\t\t\tfloat ax = snoise(pos.xyz * posOffset + time * .1);\n\t\t\tfloat ay = snoise(pos.yzx * posOffset + time * .01);\n\t\t\tfloat az = snoise(pos.zxy * posOffset + time * .001);\n\t\t\tvec3 acc = vec3(ax, ay, az);\n\t\t\t/*/\n\t\t\tvec3 acc = curlNoise(pos * posOffset + time * .3);\n\t\t\t//*/\n\n      const float maxRadius = 2.5;\n      float d = length(pos);\n      if(d > maxRadius) {\n        vec3 dir = normalize(pos);\n        float f = d * .1;\n        acc -= dir * f;\n      }\n\n\t\t\tvel += acc * .003 * (skipCount+1.0);\n\n\t\t\tconst float decrease = .9;\n\t\t\tvel *= decrease;\n\n\t\t\tgl_FragColor = vec4(vel, 1.0);\n\t\t}\n\t} else {\n\t\tgl_FragColor = texture2D(texture, vTextureCoord);\n\t}\n}"));
+		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ViewSimulation).call(this, _alfrid2.default.ShaderLibs.bigTriangleVert, "// sim.frag\n\n#define SHADER_NAME SIMPLE_TEXTURE\n\nprecision highp float;\n#define GLSLIFY 1\nvarying vec2 vTextureCoord;\nuniform sampler2D texture;\nuniform float time;\nuniform float skipCount;\n\nvec3 mod289(vec3 x) {\treturn x - floor(x * (1.0 / 289.0)) * 289.0;\t}\n\nvec4 mod289(vec4 x) {\treturn x - floor(x * (1.0 / 289.0)) * 289.0;\t}\n\nvec4 permute(vec4 x) {\treturn mod289(((x*34.0)+1.0)*x);\t}\n\nvec4 taylorInvSqrt(vec4 r) {\treturn 1.79284291400159 - 0.85373472095314 * r;}\n\nfloat snoise(vec3 v) { \n  const vec2  C = vec2(1.0/6.0, 1.0/3.0) ;\n  const vec4  D = vec4(0.0, 0.5, 1.0, 2.0);\n\n// First corner\n  vec3 i  = floor(v + dot(v, C.yyy) );\n  vec3 x0 =   v - i + dot(i, C.xxx) ;\n\n// Other corners\n  vec3 g = step(x0.yzx, x0.xyz);\n  vec3 l = 1.0 - g;\n  vec3 i1 = min( g.xyz, l.zxy );\n  vec3 i2 = max( g.xyz, l.zxy );\n\n  //   x0 = x0 - 0.0 + 0.0 * C.xxx;\n  //   x1 = x0 - i1  + 1.0 * C.xxx;\n  //   x2 = x0 - i2  + 2.0 * C.xxx;\n  //   x3 = x0 - 1.0 + 3.0 * C.xxx;\n  vec3 x1 = x0 - i1 + C.xxx;\n  vec3 x2 = x0 - i2 + C.yyy; // 2.0*C.x = 1/3 = C.y\n  vec3 x3 = x0 - D.yyy;      // -1.0+3.0*C.x = -0.5 = -D.y\n\n// Permutations\n  i = mod289(i); \n  vec4 p = permute( permute( permute( \n             i.z + vec4(0.0, i1.z, i2.z, 1.0 ))\n           + i.y + vec4(0.0, i1.y, i2.y, 1.0 )) \n           + i.x + vec4(0.0, i1.x, i2.x, 1.0 ));\n\n// Gradients: 7x7 points over a square, mapped onto an octahedron.\n// The ring size 17*17 = 289 is close to a multiple of 49 (49*6 = 294)\n  float n_ = 0.142857142857; // 1.0/7.0\n  vec3  ns = n_ * D.wyz - D.xzx;\n\n  vec4 j = p - 49.0 * floor(p * ns.z * ns.z);  //  mod(p,7*7)\n\n  vec4 x_ = floor(j * ns.z);\n  vec4 y_ = floor(j - 7.0 * x_ );    // mod(j,N)\n\n  vec4 x = x_ *ns.x + ns.yyyy;\n  vec4 y = y_ *ns.x + ns.yyyy;\n  vec4 h = 1.0 - abs(x) - abs(y);\n\n  vec4 b0 = vec4( x.xy, y.xy );\n  vec4 b1 = vec4( x.zw, y.zw );\n\n  //vec4 s0 = vec4(lessThan(b0,0.0))*2.0 - 1.0;\n  //vec4 s1 = vec4(lessThan(b1,0.0))*2.0 - 1.0;\n  vec4 s0 = floor(b0)*2.0 + 1.0;\n  vec4 s1 = floor(b1)*2.0 + 1.0;\n  vec4 sh = -step(h, vec4(0.0));\n\n  vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy ;\n  vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww ;\n\n  vec3 p0 = vec3(a0.xy,h.x);\n  vec3 p1 = vec3(a0.zw,h.y);\n  vec3 p2 = vec3(a1.xy,h.z);\n  vec3 p3 = vec3(a1.zw,h.w);\n\n//Normalise gradients\n  vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3)));\n  p0 *= norm.x;\n  p1 *= norm.y;\n  p2 *= norm.z;\n  p3 *= norm.w;\n\n// Mix final noise value\n  vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);\n  m = m * m;\n  return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1), \n                                dot(p2,x2), dot(p3,x3) ) );\n}\n\nvec3 snoiseVec3( vec3 x ){\n\n  float s  = snoise(vec3( x ));\n  float s1 = snoise(vec3( x.y - 19.1 , x.z + 33.4 , x.x + 47.2 ));\n  float s2 = snoise(vec3( x.z + 74.2 , x.x - 124.5 , x.y + 99.4 ));\n  vec3 c = vec3( s , s1 , s2 );\n  return c;\n\n}\n\nvec3 curlNoise( vec3 p ){\n  \n  const float e = .1;\n  vec3 dx = vec3( e   , 0.0 , 0.0 );\n  vec3 dy = vec3( 0.0 , e   , 0.0 );\n  vec3 dz = vec3( 0.0 , 0.0 , e   );\n\n  vec3 p_x0 = snoiseVec3( p - dx );\n  vec3 p_x1 = snoiseVec3( p + dx );\n  vec3 p_y0 = snoiseVec3( p - dy );\n  vec3 p_y1 = snoiseVec3( p + dy );\n  vec3 p_z0 = snoiseVec3( p - dz );\n  vec3 p_z1 = snoiseVec3( p + dz );\n\n  float x = p_y1.z - p_y0.z - p_z1.y + p_z0.y;\n  float y = p_z1.x - p_z0.x - p_x1.z + p_x0.z;\n  float z = p_x1.y - p_x0.y - p_y1.x + p_y0.x;\n\n  const float divisor = 1.0 / ( 2.0 * e );\n  return normalize( vec3( x , y , z ) * divisor );\n\n}\n\nvoid main(void) {\n\n    if(vTextureCoord.y < .5) {\n    \tif(vTextureCoord.x < .5) {\n        vec2 uvVel   = vTextureCoord + vec2(.5, .0);\n        vec2 uvExtra = vTextureCoord + vec2(.5, .5);\n        vec3 pos     = texture2D(texture, vTextureCoord).rgb;\n        vec3 vel     = texture2D(texture, uvVel).rgb;\n        vec3 extra   = texture2D(texture, uvExtra).rgb;\n    \t\tpos += vel;\n    \t\t// \n    \t\t// if(length(pos) > maxRadius) {\n    \t\t// \t// pos *= .001;\n      //     pos = curlNoise(pos*extra) * .1 * extra.b;\n    \t\t// }\n    \t\tgl_FragColor = vec4(pos, 1.0);\n\t\t} else {\n\t\t\t\n      vec2 uvPos      = vTextureCoord - vec2(.5, .0);\n      vec2 uvExtra    = vTextureCoord + vec2(-.5, .5);\n      vec3 pos        = texture2D(texture, uvPos).rgb;\n      vec3 vel        = texture2D(texture, vTextureCoord).rgb;\n      vec3 extra      = texture2D(texture, uvExtra).rgb;\n      float posOffset = (0.5 + extra.r * 0.25) * .15;\n\n\t\t\t/*/\n\t\t\tfloat ax = snoise(pos.xyz * posOffset + time * .1);\n\t\t\tfloat ay = snoise(pos.yzx * posOffset + time * .01);\n\t\t\tfloat az = snoise(pos.zxy * posOffset + time * .001);\n\t\t\tvec3 acc = vec3(ax, ay, az);\n\t\t\t/*/\n\t\t\tvec3 acc = curlNoise(pos * posOffset + time * .3);\n\t\t\t//*/\n\n      const float maxRadius = 2.5;\n      float d = length(pos);\n      if(d > maxRadius) {\n        vec3 dir = normalize(pos);\n        float f = d * .1;\n        acc -= dir * f;\n      }\n\n\t\t\tvel += acc * .003 * (skipCount+1.0);\n\n\t\t\tconst float decrease = .9;\n\t\t\tvel *= decrease;\n\n\t\t\tgl_FragColor = vec4(vel, 1.0);\n\t\t}\n\t} else {\n\t\tgl_FragColor = texture2D(texture, vTextureCoord);\n\t}\n}"));
 
 		_this.time = Math.random() * 0xFF;
 
@@ -6957,11 +5013,11 @@ exports.default = ViewSimulation;
 },{"../../../../build/alfrid.js":1}],11:[function(require,module,exports){
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _alfrid = require('../../../../build/alfrid.js');
 
@@ -6985,7 +5041,7 @@ var ViewTestRender = function (_alfrid$View) {
 	function ViewTestRender() {
 		_classCallCheck(this, ViewTestRender);
 
-		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ViewTestRender).call(this, "#define GLSLIFY 1\n// testRender.vert\n\nprecision highp float;\n\nattribute vec3 aVertexPosition;\nattribute vec3 aFlipPosition;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\nuniform mat3 uModelViewMatrixInverse;\n\nuniform float flipValue;\nvarying vec4 vColor;\n\nvoid main(void) {\n\n\tvec3 pos = aVertexPosition + (aFlipPosition - aVertexPosition) * flipValue;\n\tpos = uModelViewMatrixInverse * pos;\n\n    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(pos, 1.0);\n    vColor = vec4(1.0, 0.0, 0.0, 1.0);\n}", "#define GLSLIFY 1\n// render.frag\n\n// save.frag\n\nprecision highp float;\n\nvarying vec4 vColor;\n\nvoid main(void) {\n\tif(vColor.a <= 0.01) {\n\t\tdiscard;\n\t}\n    gl_FragColor = vColor;\n}"));
+		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ViewTestRender).call(this, "// testRender.vert\n\nprecision highp float;\n#define GLSLIFY 1\n\nattribute vec3 aVertexPosition;\nattribute vec3 aFlipPosition;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\nuniform mat3 uModelViewMatrixInverse;\n\nuniform float flipValue;\nvarying vec4 vColor;\n\nvoid main(void) {\n\n\tvec3 pos = aVertexPosition + (aFlipPosition - aVertexPosition) * flipValue;\n\tpos = uModelViewMatrixInverse * pos;\n\n    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(pos, 1.0);\n    vColor = vec4(1.0, 0.0, 0.0, 1.0);\n}", "// render.frag\n\n// save.frag\n\nprecision highp float;\n#define GLSLIFY 1\n\nvarying vec4 vColor;\n\nvoid main(void) {\n\tif(vColor.a <= 0.01) {\n\t\tdiscard;\n\t}\n    gl_FragColor = vColor;\n}"));
 
 		_this.time = 0;
 
@@ -7014,7 +5070,7 @@ var ViewTestRender = function (_alfrid$View) {
 			this.mesh = new _alfrid2.default.Mesh();
 			this.mesh.bufferVertex(positions);
 			this.mesh.bufferData(flipPositions, 'aFlipPosition', 3);
-			this.mesh.bufferIndices(indices);
+			this.mesh.bufferIndex(indices);
 		}
 	}, {
 		key: 'render',
@@ -7051,18 +5107,9 @@ var _datGui2 = _interopRequireDefault(_datGui);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-window.alfrid = _alfrid2.default;
-
 window.params = {
-<<<<<<< HEAD
 	numParticles: 512,
 	skipCount: 5
-=======
-	numParticles: 512 * 2,
-	skipCount: 5,
-	shadowStrength: .35,
-	shadowThreshold: .55
->>>>>>> 7ab135ecd6b8fb7d133f2d1cfb4e4849bdc83ba7
 };
 
 if (document.body) {
@@ -7087,9 +5134,7 @@ function _init() {
 	//	INIT SCENE
 	var scene = new _SceneApp2.default();
 
-	var gui = new _datGui2.default.GUI({ width: 300 });
-	gui.add(params, 'shadowStrength', 0, 1);
-	gui.add(params, 'shadowThreshold', 0, 1);
+	// let gui = new dat.GUI({width:300});
 }
 
 },{"../../../../build/alfrid.js":1,"./SceneApp":5,"dat-gui":2}]},{},[12]);

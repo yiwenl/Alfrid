@@ -11,6 +11,7 @@ let mesh, shader, cameraOrtho, cameraPersp, meshPlane, meshSphere, batchSphere, 
 let texture;
 let batchCopy, batch, batch2;
 let fbo;
+let tweenNumber = new alfrid.TweenNumber(0, 'expOut');
 
 let img = new Image();
 img.onload = function() {
@@ -23,7 +24,13 @@ img.onload = function() {
 img.src ='./assets/image.jpg';
 
 window.addEventListener('resize', () => resize());
-
+window.addEventListener('keydown', (e) => {
+	// console.log(e.keyCode);
+	tweenNumber.limit(0, window.innerWidth/2-200);
+	if(e.keyCode == 40) {	//	down
+		tweenNumber.value = Math.random() * (window.innerWidth - 200);
+	}
+});
 
 let dispatcher = new DispatcherTest();
 
@@ -43,7 +50,7 @@ function _init() {
 	document.body.appendChild(canvas);
 
 	GL.init(canvas);
-	// alfrid.GL.showExtensions();
+	alfrid.GL.showExtensions();
 
 	//	LOOPING
 	alfrid.Scheduler.addEF(loop);
@@ -104,14 +111,15 @@ function _init() {
 
 	mesh = new alfrid.Mesh();
 	mesh.bufferVertex(positions);
-	mesh.bufferTexCoords(coords);
-	mesh.bufferIndices(indices);
+	mesh.bufferTexCoord(coords);
+	mesh.bufferIndex(indices);
 
 
 	
 	//	MESH VIA GEOM
 
 	meshPlane  = alfrid.Geom.plane(7, 7*983/736, 12, false, 'xz');
+	// meshPlane  = alfrid.Geom.plane(5, 5, 5, false, 'xz');
 	meshPlane2 = alfrid.Geom.plane(1.5, 1.5*983/736, 1);
 	meshSphere = alfrid.Geom.sphere(1, 48);
 
@@ -128,11 +136,14 @@ function _init() {
 		minFilter:GL.LINEAR_MIPMAP_LINEAR,
 		magFilter:GL.LINEAR
 	});
+
+
+	tweenNumber.value = 100;
 }
 
 
 function loop() {
-	/*
+	
 	const max = 60 * 5;
 	let gray = 0;
 
@@ -146,14 +157,14 @@ function loop() {
 
 	//	WITHOUT BATCH : BIND SHADER THEN DRAW MESH
 
-	shader.bind();
-	GL.draw(mesh);
+	// shader.bind();
+	// GL.draw(mesh);
 
 
 	//	DRAWING USING BATCH
 
-	batch.draw();
-	batch2.draw();
+	// batch.draw();
+	// batch2.draw();
 	shader.uniform("time", "float", cnt*.1);
 	
 
@@ -170,11 +181,11 @@ function loop() {
 	GL.viewport(0, 0, GL.width, GL.height);
 	batchCopy.draw(fbo.getTexture());
 
-	GL.viewport(0, 0, 200, 200/GL.aspectRatio);
+	GL.viewport(tweenNumber.value, 0, 200, 200/GL.aspectRatio);
 	batchCopy.draw(fbo.getDepthTexture());
 
 	GL.viewport(200, 0, 100, 100 *983/736);
-	batchCopy.draw(texture);
+	// batchCopy.draw(texture);
 
 
 
@@ -182,7 +193,6 @@ function loop() {
 		// window.location.href = './';
 	}
 
-	*/
 }
 
 function resize() {

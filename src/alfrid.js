@@ -15,6 +15,7 @@ import CubeFrameBuffer		from './alfrid/CubeFrameBuffer';
 import Scheduler 			from 'scheduling';
 import EventDispatcher 		from './alfrid/tools/EventDispatcher';
 import EaseNumber 			from './alfrid/tools/EaseNumber';
+import TweenNumber 			from './alfrid/tools/TweenNumber';
 import OrbitalControl		from './alfrid/tools/OrbitalControl';
 import QuatRotation			from './alfrid/tools/QuatRotation';
 
@@ -34,19 +35,16 @@ import BatchCopy			from './alfrid/helpers/BatchCopy';
 import BatchAxis			from './alfrid/helpers/BatchAxis';
 import BatchBall			from './alfrid/helpers/BatchBall';
 import BatchDotsPlane		from './alfrid/helpers/BatchDotsPlane';
+import BatchLine 			from './alfrid/helpers/BatchLine';
+import BatchSkybox			from './alfrid/helpers/BatchSkybox';
 import Scene				from './alfrid/helpers/Scene';
 import View					from './alfrid/helpers/View';
 import ShaderLibs			from './alfrid/tools/ShaderLibs';
 
-//	POST
-import EffectComposer		from './alfrid/post/EffectComposer';
+const VERSION = '0.1.1';
 
-const VERSION = '0.0.1';
-
-class alfrid {
-
+class Alfrid {
 	constructor() {
-		
 		this.glm               = GLM;
 		this.GL                = GLTool;
 		this.GLTool            = GLTool;
@@ -61,6 +59,7 @@ class alfrid {
 		this.Scheduler         = Scheduler;
 		this.EventDispatcher   = EventDispatcher;
 		this.EaseNumber        = EaseNumber;
+		this.TweenNumber       = TweenNumber;
 		this.Camera            = Camera;
 		this.CameraOrtho       = CameraOrtho;
 		this.CameraPerspective = CameraPerspective;
@@ -74,41 +73,39 @@ class alfrid {
 		this.BatchAxis         = BatchAxis;
 		this.BatchBall         = BatchBall;
 		this.BatchBall         = BatchBall;
+		this.BatchLine         = BatchLine;
+		this.BatchSkybox       = BatchSkybox;
 		this.BatchDotsPlane    = BatchDotsPlane;
 		this.Scene             = Scene;
 		this.View              = View;
-		this.EffectComposer    = EffectComposer;
 		this.ShaderLibs        = ShaderLibs;
 
 
 		//	NOT SUPER SURE I'VE DONE THIS IS A GOOD WAY
 
-		for( let s in GLM) {
+		for(const s in GLM) {
 			if(GLM[s]) {
 				window[s] = GLM[s];
 			}
 		}
-
 	}
-
 
 	log() {
 		if(navigator.userAgent.indexOf('Chrome') > -1) {
-            console.log('%clib alfrid : VERSION ' + VERSION, 'background: #193441; color: #FCFFF5');
-        } else {
-        	console.log('lib alfrid : VERSION ', VERSION);
-        }
+			console.log(`%clib alfrid : VERSION ${VERSION}`, 'background: #193441; color: #FCFFF5');
+		} else {
+			console.log('lib alfrid : VERSION ', VERSION);
+		}
 		console.log('%cClasses : ', 'color: #193441');
 
-		for(let s in this) {
+		for(const s in this) {
 			if(this[s]) {
-				console.log('%c - '+s, 'color: #3E606F');
+				console.log(`%c - ${s}`, 'color: #3E606F');
 			}
 		}
 	}
-
 }
 
-let b = new alfrid();
+const al = new Alfrid();
 
-module.exports = b;
+export default al;

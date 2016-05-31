@@ -3,7 +3,7 @@
 import Scheduler from 'scheduling';
 import GL from '../GLTool';
 import CameraPerspective from '../cameras/CameraPerspective';
-import cameraOrtho from '../cameras/CameraOrtho';
+import CameraOrtho from '../cameras/CameraOrtho';
 import OrbitalControl from '../tools/OrbitalControl';
 
 
@@ -15,7 +15,7 @@ class Scene {
 		this._initTextures();
 		this._initViews();
 
-		this._efIndex = Scheduler.addEF( ()=>this._loop());
+		this._efIndex = Scheduler.addEF(()=>this._loop());
 		window.addEventListener('resize', ()=>this.resize());
 	}
 
@@ -39,7 +39,7 @@ class Scene {
 			return;
 		} 
 
-		this._efIndex = Scheduler.addEF( ()=>this._loop());
+		this._efIndex = Scheduler.addEF(()=>this._loop());
 	}
 
 
@@ -65,11 +65,11 @@ class Scene {
 
 	_init() {
 		this.camera                 = new CameraPerspective();
-		this.camera.setPerspective(45*Math.PI/180, GL.aspectRatio, 0.1, 100);
+		this.camera.setPerspective(45 * Math.PI / 180, GL.aspectRatio, 0.1, 100);
 		this.orbitalControl          = new OrbitalControl(this.camera, window, 15);
 		this.orbitalControl.radius.value = 10;
 		
-		this.cameraOrtho            = new cameraOrtho();
+		this.cameraOrtho            = new CameraOrtho();
 	}
 
 	_loop() {

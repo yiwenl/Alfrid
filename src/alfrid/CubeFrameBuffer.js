@@ -10,7 +10,7 @@ let gl;
 
 class CubeFrameBuffer {
 
-	constructor(size, mParameters={}) {
+	constructor(size, mParameters = {}) {
 		gl = GL.gl;
 		this._size = size;
 		this.magFilter = mParameters.magFilter || gl.LINEAR;
@@ -38,21 +38,21 @@ class CubeFrameBuffer {
 			gl.TEXTURE_CUBE_MAP_POSITIVE_Z, gl.TEXTURE_CUBE_MAP_NEGATIVE_Z 
 		];
 
-		for( let i=0; i<targets.length ;i++) {
+		for(let i = 0; i < targets.length; i++) {
 			gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
 			gl.texImage2D(targets[i], 0, gl.RGBA, this.width, this.height, 0, gl.RGBA, gl.FLOAT, null);
 		}
 
 
 		this._frameBuffers = [];
-		for( let i=0; i<targets.length ;i++) {
-			let frameBuffer = gl.createFramebuffer();
+		for(let i = 0; i < targets.length; i++) {
+			const frameBuffer = gl.createFramebuffer();
 			gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer);
 			gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, targets[i], this.texture, 0);
 
-			let status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+			const status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
 			if (status !== gl.FRAMEBUFFER_COMPLETE) {
-				console.log('gl.checkFramebufferStatus() returned ' + status);
+				console.log(`'gl.checkFramebufferStatus() returned '${status}`);
 			}
 
 			this._frameBuffers.push(frameBuffer);

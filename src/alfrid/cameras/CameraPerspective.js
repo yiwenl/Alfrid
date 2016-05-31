@@ -5,11 +5,6 @@ import glm from 'gl-matrix';
 
 class CameraPerspective extends Camera {
 
-	constructor() {
-		super();
-	}
-
-
 	setPerspective(mFov, mAspectRatio, mNear, mFar) {
 		
 		this._fov         = mFov;

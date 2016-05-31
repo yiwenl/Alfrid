@@ -2,13 +2,22 @@
 
 'use strict';
 
-var glslify = require('glslify');
+const simpleColorFrag = require('../shaders/simpleColor.frag');
+const bigTriangleVert = require('../shaders/bigTriangle.vert');
+const generalVert = require('../shaders/general.vert');
+const copyFrag = require('../shaders/copy.frag');
+const basicVert = require('../shaders/basic.vert');
+const skyboxVert = require('../shaders/skybox.vert');
+const skyboxFrag = require('../shaders/skybox.frag');
 
 const ShaderLibs = {
-	simpleColorFrag:glslify('../shaders/simpleColor.frag'),
-	bigTriangleVert:glslify('../shaders/bigTriangle.vert'),
-	generalVert:glslify('../shaders/general.vert'),
-	generalNormalVert:glslify('../shaders/generalWithNormal.vert')
+	simpleColorFrag,
+	bigTriangleVert,
+	generalVert,
+	copyFrag,
+	basicVert,
+	skyboxVert,
+	skyboxFrag,
 };
 
 

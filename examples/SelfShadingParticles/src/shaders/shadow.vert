@@ -4,6 +4,7 @@
 
 precision highp float;
 attribute vec3 aVertexPosition;
+attribute vec3 aNormal;
 
 uniform mat4 uModelMatrix;
 uniform mat4 uViewMatrix;
@@ -17,6 +18,7 @@ varying vec4 vColor;
 
 varying vec4 vShadowCoord;
 varying vec4 vPosition;
+varying vec3 vNormal;
 
 const mat4 biasMatrix = mat4( 0.5, 0.0, 0.0, 0.0,
 							  0.0, 0.5, 0.0, 0.0,
@@ -42,4 +44,5 @@ void main(void) {
 	gl_PointSize = 2.0;
 
 	if(length(currPos) - length(nextPos) > 1.0) vColor.a = 0.0;
+	vNormal = aNormal;
 }

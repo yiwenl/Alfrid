@@ -6706,6 +6706,10 @@ var _EaseNumber = _dereq_('./alfrid/tools/EaseNumber');
 
 var _EaseNumber2 = _interopRequireDefault(_EaseNumber);
 
+var _TweenNumber = _dereq_('./alfrid/tools/TweenNumber');
+
+var _TweenNumber2 = _interopRequireDefault(_TweenNumber);
+
 var _OrbitalControl = _dereq_('./alfrid/tools/OrbitalControl');
 
 var _OrbitalControl2 = _interopRequireDefault(_OrbitalControl);
@@ -6758,6 +6762,10 @@ var _BatchDotsPlane = _dereq_('./alfrid/helpers/BatchDotsPlane');
 
 var _BatchDotsPlane2 = _interopRequireDefault(_BatchDotsPlane);
 
+var _BatchSkybox = _dereq_('./alfrid/helpers/BatchSkybox');
+
+var _BatchSkybox2 = _interopRequireDefault(_BatchSkybox);
+
 var _Scene = _dereq_('./alfrid/helpers/Scene');
 
 var _Scene2 = _interopRequireDefault(_Scene);
@@ -6798,6 +6806,7 @@ var alfrid = function () {
 		this.Scheduler = _scheduling2.default;
 		this.EventDispatcher = _EventDispatcher2.default;
 		this.EaseNumber = _EaseNumber2.default;
+		this.TweenNumber = _TweenNumber2.default;
 		this.Camera = _Camera2.default;
 		this.CameraOrtho = _CameraOrtho2.default;
 		this.CameraPerspective = _CameraPerspective2.default;
@@ -6811,6 +6820,7 @@ var alfrid = function () {
 		this.BatchAxis = _BatchAxis2.default;
 		this.BatchBall = _BatchBall2.default;
 		this.BatchBall = _BatchBall2.default;
+		this.BatchSkybox = _BatchSkybox2.default;
 		this.BatchDotsPlane = _BatchDotsPlane2.default;
 		this.Scene = _Scene2.default;
 		this.View = _View2.default;
@@ -6851,7 +6861,7 @@ var b = new alfrid();
 
 module.exports = b;
 
-},{"./alfrid/Batch":13,"./alfrid/CubeFrameBuffer":14,"./alfrid/FrameBuffer":15,"./alfrid/GLCubeTexture":16,"./alfrid/GLShader":17,"./alfrid/GLTexture":18,"./alfrid/GLTool":19,"./alfrid/Geom":20,"./alfrid/Mesh":21,"./alfrid/cameras/Camera":22,"./alfrid/cameras/CameraCube":23,"./alfrid/cameras/CameraOrtho":24,"./alfrid/cameras/CameraPerspective":25,"./alfrid/helpers/BatchAxis":26,"./alfrid/helpers/BatchBall":27,"./alfrid/helpers/BatchCopy":28,"./alfrid/helpers/BatchDotsPlane":29,"./alfrid/helpers/Scene":30,"./alfrid/helpers/View":31,"./alfrid/loaders/BinaryLoader":32,"./alfrid/loaders/HDRLoader":33,"./alfrid/loaders/ObjLoader":34,"./alfrid/post/EffectComposer":35,"./alfrid/tools/EaseNumber":36,"./alfrid/tools/EventDispatcher":37,"./alfrid/tools/OrbitalControl":39,"./alfrid/tools/QuatRotation":40,"./alfrid/tools/ShaderLibs":41,"gl-matrix":1,"scheduling":11}],13:[function(_dereq_,module,exports){
+},{"./alfrid/Batch":13,"./alfrid/CubeFrameBuffer":14,"./alfrid/FrameBuffer":15,"./alfrid/GLCubeTexture":16,"./alfrid/GLShader":17,"./alfrid/GLTexture":18,"./alfrid/GLTool":19,"./alfrid/Geom":20,"./alfrid/Mesh":21,"./alfrid/cameras/Camera":22,"./alfrid/cameras/CameraCube":23,"./alfrid/cameras/CameraOrtho":24,"./alfrid/cameras/CameraPerspective":25,"./alfrid/helpers/BatchAxis":26,"./alfrid/helpers/BatchBall":27,"./alfrid/helpers/BatchCopy":28,"./alfrid/helpers/BatchDotsPlane":29,"./alfrid/helpers/BatchSkybox":30,"./alfrid/helpers/Scene":31,"./alfrid/helpers/View":32,"./alfrid/loaders/BinaryLoader":33,"./alfrid/loaders/HDRLoader":34,"./alfrid/loaders/ObjLoader":35,"./alfrid/post/EffectComposer":36,"./alfrid/tools/EaseNumber":37,"./alfrid/tools/EventDispatcher":38,"./alfrid/tools/OrbitalControl":40,"./alfrid/tools/QuatRotation":41,"./alfrid/tools/ShaderLibs":42,"./alfrid/tools/TweenNumber":43,"gl-matrix":1,"scheduling":11}],13:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7338,6 +7348,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 
+var isSame = function isSame(array1, array2) {
+	return array1.every(function (element, index) {
+		if (element !== array2[index]) {
+			return false;
+		}
+		return true;
+	});
+};
 
 var addLineNumbers = function addLineNumbers(string) {
 	var lines = string.split('\n');
@@ -7348,7 +7366,7 @@ var addLineNumbers = function addLineNumbers(string) {
 };
 
 var gl = void 0;
-var defaultVertexShader = "// basic.vert\n\n#define SHADER_NAME BASIC_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvarying vec2 vTextureCoord;\n\nvoid main(void) {\n    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);\n    vTextureCoord = aTextureCoord;\n}";
+var defaultVertexShader = "// basic.vert\n\n#define SHADER_NAME BASIC_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec3 aNormal;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvarying vec2 vTextureCoord;\nvarying vec3 vNormal;\n\nvoid main(void) {\n    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);\n    vTextureCoord = aTextureCoord;\n    vNormal = aNormal;\n}";
 var defaultFragmentShader = "// basic.frag\n\n#define SHADER_NAME BASIC_FRAGMENT\n\nprecision highp float;\n#define GLSLIFY 1\nvarying vec2 vTextureCoord;\nuniform float time;\n// uniform sampler2D texture;\n\nvoid main(void) {\n    gl_FragColor = vec4(vTextureCoord, sin(time) * .5 + .5, 1.0);\n}";
 
 var uniform_mapping = {
@@ -7370,7 +7388,6 @@ var GLShader = function () {
 
 		gl = _GLTool2.default.gl;
 		this.parameters = [];
-		this.uniformValues = {};
 		this.uniformTextures = [];
 
 		if (!strVertexShader) {
@@ -7396,31 +7413,60 @@ var GLShader = function () {
 	}, {
 		key: 'uniform',
 		value: function uniform(mName, mType, mValue) {
+			if (mValue === undefined || mValue === null) {
+				console.warn('mValue Error:', mName);
+				return;
+			}
+
 			var uniformType = uniform_mapping[mType] || mType;
 			var hasUniform = false;
 			var oUniform = void 0;
+			var parameterIndex = -1;
 
 			for (var i = 0; i < this.parameters.length; i++) {
 				oUniform = this.parameters[i];
 				if (oUniform.name === mName) {
-					oUniform.value = mValue;
 					hasUniform = true;
+					parameterIndex = i;
 					break;
 				}
 			}
 
 			if (!hasUniform) {
 				this.shaderProgram[mName] = gl.getUniformLocation(this.shaderProgram, mName);
-				this.parameters.push({ name: mName, type: uniformType, value: mValue, uniformLoc: this.shaderProgram[mName] });
+				if (!mValue.slice) {
+					this.parameters.push({ name: mName, type: uniformType, value: mValue, uniformLoc: this.shaderProgram[mName] });
+				} else {
+					this.parameters.push({ name: mName, type: uniformType, value: mValue.slice(0), uniformLoc: this.shaderProgram[mName] });
+				}
+
+				parameterIndex = this.parameters.length - 1;
 			} else {
 				this.shaderProgram[mName] = oUniform.uniformLoc;
 			}
 
+			if (!this.parameters[parameterIndex].uniformLoc) {
+				return;
+			}
+
 			if (uniformType.indexOf('Matrix') === -1) {
-				gl[uniformType](this.shaderProgram[mName], mValue);
+				if (mValue.slice) {
+					if (!isSame(this.parameters[parameterIndex].value, mValue) || !hasUniform) {
+						gl[uniformType](this.shaderProgram[mName], mValue);
+						this.parameters[parameterIndex].value = mValue.slice(0);
+					}
+				} else {
+					var needUpdate = this.parameters[parameterIndex].value !== mValue || !hasUniform;
+					if (needUpdate) {
+						gl[uniformType](this.shaderProgram[mName], mValue);
+						this.parameters[parameterIndex].value = mValue;
+					}
+				}
 			} else {
-				gl[uniformType](this.shaderProgram[mName], false, mValue);
-				this.uniformValues[mName] = mValue;
+				if (!isSame(this.parameters[parameterIndex].value, mValue) || !hasUniform) {
+					gl[uniformType](this.shaderProgram[mName], false, mValue);
+					this.parameters[parameterIndex].value = mValue.slice(0);
+				}
 			}
 		}
 	}, {
@@ -7543,6 +7589,12 @@ var GLTexture = function () {
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, this.wrapS);
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, this.wrapT);
 
+			var ext = _GLTool2.default.getExtension('EXT_texture_filter_anisotropic');
+			if (ext) {
+				var max = gl.getParameter(ext.MAX_TEXTURE_MAX_ANISOTROPY_EXT);
+				gl.texParameterf(gl.TEXTURE_2D, ext.TEXTURE_MAX_ANISOTROPY_EXT, max);
+			}
+
 			if (this.minFilter === gl.LINEAR_MIPMAP_NEAREST) {
 				gl.generateMipmap(gl.TEXTURE_2D);
 			}
@@ -7632,6 +7684,47 @@ var GLTexture = function () {
 	return GLTexture;
 }();
 
+var _whiteTexture = void 0,
+    _greyTexture = void 0,
+    _blackTexture = void 0;
+
+GLTexture.whiteTexture = function () {
+	if (_whiteTexture === undefined) {
+		var canvas = document.createElement('canvas');
+		canvas.width = canvas.height = 4;
+		var ctx = canvas.getContext('2d');
+		ctx.fillStyle = '#fff';
+		ctx.fillRect(0, 0, 4, 4);
+		_whiteTexture = new GLTexture(canvas);
+	}
+
+	return _whiteTexture;
+};
+
+GLTexture.greyTexture = function () {
+	if (_greyTexture === undefined) {
+		var canvas = document.createElement('canvas');
+		canvas.width = canvas.height = 4;
+		var ctx = canvas.getContext('2d');
+		ctx.fillStyle = 'rgb(127, 127, 127)';
+		ctx.fillRect(0, 0, 4, 4);
+		_greyTexture = new GLTexture(canvas);
+	}
+	return _greyTexture;
+};
+
+GLTexture.blackTexture = function () {
+	if (_blackTexture === undefined) {
+		var canvas = document.createElement('canvas');
+		canvas.width = canvas.height = 4;
+		var ctx = canvas.getContext('2d');
+		ctx.fillStyle = 'rgb(127, 127, 127)';
+		ctx.fillRect(0, 0, 4, 4);
+		_blackTexture = new GLTexture(canvas);
+	}
+	return _blackTexture;
+};
+
 exports.default = GLTexture;
 
 },{"./GLTool":19}],19:[function(_dereq_,module,exports){
@@ -7693,7 +7786,7 @@ var GLTool = function () {
 			this.gl = this.canvas.getContext('webgl', mParameters) || this.canvas.getContext('experimental-webgl', mParameters);
 
 			//	extensions
-			var extensions = ['EXT_shader_texture_lod', 'EXT_sRGB', 'EXT_frag_depth', 'OES_texture_float', 'OES_texture_half_float', 'OES_texture_float_linear', 'OES_texture_half_float_linear', 'OES_standard_derivatives', 'WEBGL_depth_texture'];
+			var extensions = ['EXT_shader_texture_lod', 'EXT_sRGB', 'EXT_frag_depth', 'OES_texture_float', 'OES_texture_half_float', 'OES_texture_float_linear', 'OES_texture_half_float_linear', 'OES_standard_derivatives', 'WEBGL_depth_texture', 'EXT_texture_filter_anisotropic', 'ANGLE_instanced_arrays'];
 			this.extensions = {};
 			for (var i = 0; i < extensions.length; i++) {
 				this.extensions[extensions[i]] = this.gl.getExtension(extensions[i]);
@@ -7971,9 +8064,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var Geom = {};
 
 Geom.plane = function (width, height, numSegments) {
-	var withNormals = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
-	var axis = arguments.length <= 4 || arguments[4] === undefined ? 'xy' : arguments[4];
-	var drawType = arguments.length <= 5 || arguments[5] === undefined ? 4 : arguments[5];
+	var axis = arguments.length <= 3 || arguments[3] === undefined ? 'xy' : arguments[3];
+	var drawType = arguments.length <= 4 || arguments[4] === undefined ? 4 : arguments[4];
 
 	var positions = [];
 	var coords = [];
@@ -7992,21 +8084,34 @@ Geom.plane = function (width, height, numSegments) {
 			var tx = gapX * i + sx;
 			var ty = gapY * j + sy;
 
+			var u = i / numSegments;
+			var v = j / numSegments;
+
 			if (axis === 'xz') {
-				positions.push([tx, 0, -ty + gapY]);
-				positions.push([tx + gapX, 0, -ty + gapY]);
-				positions.push([tx + gapX, 0, -ty]);
-				positions.push([tx, 0, -ty]);
+				positions.push([tx, 0, ty + gapY]);
+				positions.push([tx + gapX, 0, ty + gapY]);
+				positions.push([tx + gapX, 0, ty]);
+				positions.push([tx, 0, ty]);
+
+				coords.push([u, 1.0 - (v + gapUV)]);
+				coords.push([u + gapUV, 1.0 - (v + gapUV)]);
+				coords.push([u + gapUV, 1.0 - v]);
+				coords.push([u, 1.0 - v]);
 
 				normals.push([0, 1, 0]);
 				normals.push([0, 1, 0]);
 				normals.push([0, 1, 0]);
 				normals.push([0, 1, 0]);
 			} else if (axis === 'yz') {
-				positions.push([0, tx, ty]);
-				positions.push([0, tx + gapX, ty]);
-				positions.push([0, tx + gapX, ty + gapY]);
-				positions.push([0, tx, ty + gapY]);
+				positions.push([0, ty, tx]);
+				positions.push([0, ty, tx + gapX]);
+				positions.push([0, ty + gapY, tx + gapX]);
+				positions.push([0, ty + gapY, tx]);
+
+				coords.push([u, v]);
+				coords.push([u + gapUV, v]);
+				coords.push([u + gapUV, v + gapUV]);
+				coords.push([u, v + gapUV]);
 
 				normals.push([1, 0, 0]);
 				normals.push([1, 0, 0]);
@@ -8018,19 +8123,16 @@ Geom.plane = function (width, height, numSegments) {
 				positions.push([tx + gapX, ty + gapY, 0]);
 				positions.push([tx, ty + gapY, 0]);
 
+				coords.push([u, v]);
+				coords.push([u + gapUV, v]);
+				coords.push([u + gapUV, v + gapUV]);
+				coords.push([u, v + gapUV]);
+
 				normals.push([0, 0, 1]);
 				normals.push([0, 0, 1]);
 				normals.push([0, 0, 1]);
 				normals.push([0, 0, 1]);
 			}
-
-			var u = i / numSegments;
-			var v = j / numSegments;
-
-			coords.push([u, v]);
-			coords.push([u + gapUV, v]);
-			coords.push([u + gapUV, v + gapUV]);
-			coords.push([u, v + gapUV]);
 
 			indices.push(index * 4 + 0);
 			indices.push(index * 4 + 1);
@@ -8045,19 +8147,16 @@ Geom.plane = function (width, height, numSegments) {
 
 	var mesh = new _Mesh2.default(drawType);
 	mesh.bufferVertex(positions);
-	mesh.bufferTexCoords(coords);
-	mesh.bufferIndices(indices);
-	if (withNormals) {
-		mesh.bufferNormal(normals);
-	}
+	mesh.bufferTexCoord(coords);
+	mesh.bufferIndex(indices);
+	mesh.bufferNormal(normals);
 
 	return mesh;
 };
 
 Geom.sphere = function (size, numSegments) {
-	var withNormals = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
-	var isInvert = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
-	var drawType = arguments.length <= 4 || arguments[4] === undefined ? 4 : arguments[4];
+	var isInvert = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+	var drawType = arguments.length <= 3 || arguments[3] === undefined ? 4 : arguments[3];
 
 	var positions = [];
 	var coords = [];
@@ -8093,12 +8192,10 @@ Geom.sphere = function (size, numSegments) {
 			positions.push(getPosition(i + 1, j + 1));
 			positions.push(getPosition(i, j + 1));
 
-			if (withNormals) {
-				normals.push(getPosition(i, j, true));
-				normals.push(getPosition(i + 1, j, true));
-				normals.push(getPosition(i + 1, j + 1, true));
-				normals.push(getPosition(i, j + 1, true));
-			}
+			normals.push(getPosition(i, j, true));
+			normals.push(getPosition(i + 1, j, true));
+			normals.push(getPosition(i + 1, j + 1, true));
+			normals.push(getPosition(i, j + 1, true));
 
 			var u = j / numSegments;
 			var v = i / numSegments;
@@ -8125,18 +8222,15 @@ Geom.sphere = function (size, numSegments) {
 
 	var mesh = new _Mesh2.default(drawType);
 	mesh.bufferVertex(positions);
-	mesh.bufferTexCoords(coords);
-	mesh.bufferIndices(indices);
-	if (withNormals) {
-		mesh.bufferNormal(normals);
-	}
+	mesh.bufferTexCoord(coords);
+	mesh.bufferIndex(indices);
+	mesh.bufferNormal(normals);
 
 	return mesh;
 };
 
 Geom.cube = function (w, h, d) {
-	var withNormals = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
-	var drawType = arguments.length <= 4 || arguments[4] === undefined ? 4 : arguments[4];
+	var drawType = arguments.length <= 3 || arguments[3] === undefined ? 4 : arguments[3];
 
 	h = h || w;
 	d = d || w;
@@ -8303,18 +8397,15 @@ Geom.cube = function (w, h, d) {
 
 	var mesh = new _Mesh2.default(drawType);
 	mesh.bufferVertex(positions);
-	mesh.bufferTexCoords(coords);
-	mesh.bufferIndices(indices);
-	if (withNormals) {
-		mesh.bufferNormal(normals);
-	}
+	mesh.bufferTexCoord(coords);
+	mesh.bufferIndex(indices);
+	mesh.bufferNormal(normals);
 
 	return mesh;
 };
 
 Geom.skybox = function (size) {
-	var withNormals = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
-	var drawType = arguments.length <= 2 || arguments[2] === undefined ? 4 : arguments[2];
+	var drawType = arguments.length <= 1 || arguments[1] === undefined ? 4 : arguments[1];
 
 	var positions = [];
 	var coords = [];
@@ -8472,11 +8563,9 @@ Geom.skybox = function (size) {
 
 	var mesh = new _Mesh2.default(drawType);
 	mesh.bufferVertex(positions);
-	mesh.bufferTexCoords(coords);
-	mesh.bufferIndices(indices);
-	if (withNormals) {
-		mesh.bufferNormal(normals);
-	}
+	mesh.bufferTexCoord(coords);
+	mesh.bufferIndex(indices);
+	mesh.bufferNormal(normals);
 
 	return mesh;
 };
@@ -8487,7 +8576,7 @@ Geom.bigTriangle = function () {
 
 	var mesh = new _Mesh2.default();
 	mesh.bufferData(positions, 'aPosition', 2);
-	mesh.bufferIndices(indices);
+	mesh.bufferIndex(indices);
 
 	return mesh;
 };
@@ -8550,10 +8639,19 @@ var Mesh = function () {
 			this._vertexSize = mArrayVertices.length;
 			this.bufferData(mArrayVertices, 'aVertexPosition', 3, isDynamic);
 			this._vertices = mArrayVertices;
+
+			var tempNormals = [];
+			for (var i = 0; i < mArrayVertices.length; i++) {
+				tempNormals.push([1, 0, 0]);
+			}
+
+			if (this._normals.length === 0) {
+				this.bufferNormal(tempNormals);
+			}
 		}
 	}, {
-		key: 'bufferTexCoords',
-		value: function bufferTexCoords(mArrayTexCoords) {
+		key: 'bufferTexCoord',
+		value: function bufferTexCoord(mArrayTexCoords) {
 			var isDynamic = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
 
 
@@ -8570,8 +8668,8 @@ var Mesh = function () {
 			this._normals = mNormals;
 		}
 	}, {
-		key: 'bufferIndices',
-		value: function bufferIndices(mArrayIndices) {
+		key: 'bufferIndex',
+		value: function bufferIndex(mArrayIndices) {
 			var isDynamic = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
 
 
@@ -9092,10 +9190,10 @@ var BatchAxis = function (_Batch) {
 
 		var mesh = new _Mesh2.default(_GLTool2.default.LINES);
 		mesh.bufferVertex(positions);
-		mesh.bufferIndices(indices);
+		mesh.bufferIndex(indices);
 		mesh.bufferData(colors, 'aColor', 3);
 
-		var shader = new _GLShader2.default("// axis.vert\n\n#define SHADER_NAME BASIC_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec3 aColor;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvarying vec3 vColor;\n\nvoid main(void) {\n    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);\n    vColor = aColor;\n}", "// axis.frag\n\n#define SHADER_NAME SIMPLE_TEXTURE\n\nprecision highp float;\n#define GLSLIFY 1\nvarying vec3 vColor;\n\nvoid main(void) {\n    gl_FragColor = vec4(vColor, 1.0);\n}");
+		var shader = new _GLShader2.default("// axis.vert\n\n#define SHADER_NAME BASIC_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec3 aColor;\nattribute vec3 aNormal;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvarying vec3 vColor;\nvarying vec3 vNormal;\n\nvoid main(void) {\n    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);\n    vColor = aColor;\n    vNormal = aNormal;\n}", "// axis.frag\n\n#define SHADER_NAME SIMPLE_TEXTURE\n\nprecision highp float;\n#define GLSLIFY 1\nvarying vec3 vColor;\n\nvoid main(void) {\n    gl_FragColor = vec4(vColor, 1.0);\n}");
 
 		return _possibleConstructorReturn(this, Object.getPrototypeOf(BatchAxis).call(this, mesh, shader));
 	}
@@ -9145,7 +9243,7 @@ var BatchBall = function (_Batch) {
 		_classCallCheck(this, BatchBall);
 
 		var mesh = _Geom2.default.sphere(1, 24);
-		var shader = new _GLShader2.default("// general.vert\n\n#define SHADER_NAME GENERAL_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nuniform vec3 position;\nuniform vec3 scale;\n\nvarying vec2 vTextureCoord;\n\nvoid main(void) {\n\tvec3 pos      = aVertexPosition * scale;\n\tpos           += position;\n\tgl_Position   = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(pos, 1.0);\n\tvTextureCoord = aTextureCoord;\n}", "// simpleColor.frag\n\n#define SHADER_NAME SIMPLE_COLOR\n\nprecision highp float;\n#define GLSLIFY 1\n\nuniform vec3 color;\nuniform float opacity;\n\nvoid main(void) {\n    gl_FragColor = vec4(color, opacity);\n}");
+		var shader = new _GLShader2.default("// generalWithNormal.vert\n\n#define SHADER_NAME GENERAL_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec3 aNormal;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\nuniform mat3 uNormalMatrix;\n\nuniform vec3 position;\nuniform vec3 scale;\n\nvarying vec2 vTextureCoord;\nvarying vec3 vNormal;\n\nvoid main(void) {\n\tvec3 pos      = aVertexPosition * scale;\n\tpos           += position;\n\tgl_Position   = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(pos, 1.0);\n\t\n\tvTextureCoord = aTextureCoord;\n\tvNormal       = normalize(uNormalMatrix * aNormal);\n}", "// simpleColor.frag\n\n#define SHADER_NAME SIMPLE_COLOR\n\nprecision highp float;\n#define GLSLIFY 1\n\nuniform vec3 color;\nuniform float opacity;\n\nvoid main(void) {\n    gl_FragColor = vec4(color, opacity);\n}");
 		return _possibleConstructorReturn(this, Object.getPrototypeOf(BatchBall).call(this, mesh, shader));
 	}
 
@@ -9301,9 +9399,9 @@ var BatchDotsPlane = function (_Batch) {
 
 		var mesh = new _Mesh2.default(_GLTool2.default.POINTS);
 		mesh.bufferVertex(positions);
-		mesh.bufferIndices(indices);
+		mesh.bufferIndex(indices);
 
-		var shader = new _GLShader2.default("// basic.vert\n\n#define SHADER_NAME DOTS_PLANE_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvoid main(void) {\n    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);\n}", "// simpleColor.frag\n\n#define SHADER_NAME SIMPLE_COLOR\n\nprecision highp float;\n#define GLSLIFY 1\n\nuniform vec3 color;\nuniform float opacity;\n\nvoid main(void) {\n    gl_FragColor = vec4(color, opacity);\n}");
+		var shader = new _GLShader2.default("// basic.vert\n\n#define SHADER_NAME DOTS_PLANE_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec3 aNormal;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvarying vec3 vNormal;\n\nvoid main(void) {\n    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);\n\n    vNormal = aNormal;\n}", "// simpleColor.frag\n\n#define SHADER_NAME SIMPLE_COLOR\n\nprecision highp float;\n#define GLSLIFY 1\n\nuniform vec3 color;\nuniform float opacity;\n\nvoid main(void) {\n    gl_FragColor = vec4(color, opacity);\n}");
 
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(BatchDotsPlane).call(this, mesh, shader));
 
@@ -9329,6 +9427,67 @@ var BatchDotsPlane = function (_Batch) {
 exports.default = BatchDotsPlane;
 
 },{"../Batch":13,"../GLShader":17,"../GLTool":19,"../Mesh":21}],30:[function(_dereq_,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _Geom = _dereq_('../Geom');
+
+var _Geom2 = _interopRequireDefault(_Geom);
+
+var _GLShader = _dereq_('../GLShader');
+
+var _GLShader2 = _interopRequireDefault(_GLShader);
+
+var _Batch2 = _dereq_('../Batch');
+
+var _Batch3 = _interopRequireDefault(_Batch2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // BatchSkybox.js
+
+
+
+var BatchSkybox = function (_Batch) {
+	_inherits(BatchSkybox, _Batch);
+
+	function BatchSkybox() {
+		var size = arguments.length <= 0 || arguments[0] === undefined ? 20 : arguments[0];
+
+		_classCallCheck(this, BatchSkybox);
+
+		var mesh = _Geom2.default.skybox(size);
+		var shader = new _GLShader2.default("// basic.vert\n\n#define SHADER_NAME SKYBOX_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec3 aNormal;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvarying vec2 vTextureCoord;\nvarying vec3 vVertex;\nvarying vec3 vNormal;\n\nvoid main(void) {\n\tgl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);\n\tvTextureCoord = aTextureCoord;\n\t\n\tvVertex = aVertexPosition;\n\tvNormal = aNormal;\n}", "// basic.frag\n\n#define SHADER_NAME SKYBOX_FRAGMENT\n\nprecision highp float;\n#define GLSLIFY 1\nuniform samplerCube texture;\nvarying vec2 vTextureCoord;\nvarying vec3 vVertex;\n\nvoid main(void) {\n    gl_FragColor = textureCube(texture, vVertex);\n}");
+
+		return _possibleConstructorReturn(this, Object.getPrototypeOf(BatchSkybox).call(this, mesh, shader));
+	}
+
+	_createClass(BatchSkybox, [{
+		key: 'draw',
+		value: function draw(texture) {
+			this.shader.bind();
+			texture.bind(0);
+			_get(Object.getPrototypeOf(BatchSkybox.prototype), 'draw', this).call(this);
+		}
+	}]);
+
+	return BatchSkybox;
+}(_Batch3.default);
+
+exports.default = BatchSkybox;
+
+},{"../Batch":13,"../GLShader":17,"../Geom":20}],31:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9452,7 +9611,7 @@ var Scene = function () {
 
 exports.default = Scene;
 
-},{"../GLTool":19,"../cameras/CameraOrtho":24,"../cameras/CameraPerspective":25,"../tools/OrbitalControl":39,"scheduling":11}],31:[function(_dereq_,module,exports){
+},{"../GLTool":19,"../cameras/CameraOrtho":24,"../cameras/CameraPerspective":25,"../tools/OrbitalControl":40,"scheduling":11}],32:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9496,7 +9655,7 @@ var View = function () {
 
 exports.default = View;
 
-},{"../GLShader":17}],32:[function(_dereq_,module,exports){
+},{"../GLShader":17}],33:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9555,7 +9714,7 @@ var BinaryLoader = function () {
 
 exports.default = BinaryLoader;
 
-},{}],33:[function(_dereq_,module,exports){
+},{}],34:[function(_dereq_,module,exports){
 // HDRLoader.js
 
 'use strict';
@@ -9615,7 +9774,7 @@ HDRLoader.parse = function (mArrayBuffer) {
 
 exports.default = HDRLoader;
 
-},{"../tools/HDRParser":38,"./BinaryLoader":32}],34:[function(_dereq_,module,exports){
+},{"../tools/HDRParser":39,"./BinaryLoader":33}],35:[function(_dereq_,module,exports){
 // ObjLoader.js
 
 'use strict';
@@ -9656,21 +9815,19 @@ var ObjLoader = function (_BinaryLoader) {
 	_createClass(ObjLoader, [{
 		key: 'load',
 		value: function load(url, callback) {
-			var ignoreNormals = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
-			var drawType = arguments.length <= 3 || arguments[3] === undefined ? 4 : arguments[3];
+			var drawType = arguments.length <= 2 || arguments[2] === undefined ? 4 : arguments[2];
 
-			this._ignoreNormals = ignoreNormals;
 			this._drawType = drawType;
 			_get(Object.getPrototypeOf(ObjLoader.prototype), 'load', this).call(this, url, callback);
 		}
 	}, {
 		key: '_onLoaded',
 		value: function _onLoaded() {
-			this._parseObj(this._req.response);
+			this.parseObj(this._req.response);
 		}
 	}, {
-		key: '_parseObj',
-		value: function _parseObj(objStr) {
+		key: 'parseObj',
+		value: function parseObj(objStr) {
 			var lines = objStr.split('\n');
 
 			var positions = [];
@@ -9826,7 +9983,7 @@ var ObjLoader = function (_BinaryLoader) {
 				}
 			}
 
-			this._generateMeshes({
+			return this._generateMeshes({
 				positions: positions,
 				coords: coords,
 				normals: finalNormals,
@@ -9839,6 +9996,7 @@ var ObjLoader = function (_BinaryLoader) {
 			var maxNumVertices = 65535;
 			var hasNormals = o.normals.length > 0;
 			var hasUVs = o.coords.length > 0;
+			var mesh = void 0;
 
 			if (o.positions.length > maxNumVertices) {
 				var meshes = [];
@@ -9880,14 +10038,14 @@ var ObjLoader = function (_BinaryLoader) {
 
 					lastIndex = tmpIndex + 1;
 
-					var mesh = new _Mesh2.default(this._drawType);
+					mesh = new _Mesh2.default(this._drawType);
 					mesh.bufferVertex(positions);
 					if (hasUVs) {
-						mesh.bufferTexCoords(coords);
+						mesh.bufferTexCoord(coords);
 					}
 
-					mesh.bufferIndices(indices);
-					if (!this._ignoreNormals && hasNormals) {
+					mesh.bufferIndex(indices);
+					if (hasNormals) {
 						mesh.bufferNormal(normals);
 					}
 
@@ -9897,30 +10055,41 @@ var ObjLoader = function (_BinaryLoader) {
 				if (this._callback) {
 					this._callback(meshes, oCopy);
 				}
+
+				return meshes;
 			} else {
-				var _mesh = new _Mesh2.default(this._drawType);
-				_mesh.bufferVertex(o.positions);
+				mesh = new _Mesh2.default(this._drawType);
+				mesh.bufferVertex(o.positions);
 				if (hasUVs) {
-					_mesh.bufferTexCoords(o.coords);
+					mesh.bufferTexCoord(o.coords);
 				}
-				_mesh.bufferIndices(o.indices);
-				if (!this._ignoreNormals && hasNormals) {
-					_mesh.bufferNormal(o.normals);
+				mesh.bufferIndex(o.indices);
+				if (hasNormals) {
+					mesh.bufferNormal(o.normals);
 				}
 
 				if (this._callback) {
-					this._callback(_mesh, o);
+					this._callback(mesh, o);
 				}
+
+				return mesh;
 			}
+
+			return null;
 		}
 	}]);
 
 	return ObjLoader;
 }(_BinaryLoader3.default);
 
+ObjLoader.parse = function (objStr) {
+	var loader = new ObjLoader();
+	return loader.parseObj(objStr);
+};
+
 exports.default = ObjLoader;
 
-},{"../Mesh":21,"./BinaryLoader":32}],35:[function(_dereq_,module,exports){
+},{"../Mesh":21,"./BinaryLoader":33}],36:[function(_dereq_,module,exports){
 // EffectComposer.js
 
 'use strict';
@@ -9989,7 +10158,7 @@ var EffectComposer = function () {
 
 exports.default = EffectComposer;
 
-},{"../FrameBuffer":15,"../GLTool":19,"../Geom":20}],36:[function(_dereq_,module,exports){
+},{"../FrameBuffer":15,"../GLTool":19,"../Geom":20}],37:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10017,7 +10186,7 @@ var EaseNumber = function () {
 		this.easing = mEasing;
 		this._value = mValue;
 		this._targetValue = mValue;
-		_scheduling2.default.addEF(function () {
+		this._efIndex = _scheduling2.default.addEF(function () {
 			return _this._update();
 		});
 	}
@@ -10025,8 +10194,12 @@ var EaseNumber = function () {
 	_createClass(EaseNumber, [{
 		key: '_update',
 		value: function _update() {
+			var MIN_DIFF = 0.0001;
 			this._checkLimit();
 			this._value += (this._targetValue - this._value) * this.easing;
+			if (Math.abs(this._targetValue - this._value) < MIN_DIFF) {
+				this._value = this._targetValue;
+			}
 		}
 	}, {
 		key: 'setTo',
@@ -10062,6 +10235,11 @@ var EaseNumber = function () {
 				this._targetValue = this._max;
 			}
 		}
+	}, {
+		key: 'destroy',
+		value: function destroy() {
+			_scheduling2.default.removeEF(this._efIndex);
+		}
 
 		//	GETTERS / SETTERS
 
@@ -10085,7 +10263,7 @@ var EaseNumber = function () {
 
 exports.default = EaseNumber;
 
-},{"scheduling":11}],37:[function(_dereq_,module,exports){
+},{"scheduling":11}],38:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10241,7 +10419,7 @@ var EventDispatcher = function () {
 
 exports.default = EventDispatcher;
 
-},{}],38:[function(_dereq_,module,exports){
+},{}],39:[function(_dereq_,module,exports){
 // HDRParser.js
 
 'use strict';
@@ -10453,7 +10631,7 @@ function parseHdr(buffer) {
 
 exports.default = parseHdr;
 
-},{}],39:[function(_dereq_,module,exports){
+},{}],40:[function(_dereq_,module,exports){
 // OrbitalControl.js
 'use strict';
 
@@ -10520,6 +10698,7 @@ var OrbitalControl = function () {
 		this._isLockZoom = false;
 		this._isLockRotation = false;
 		this._isInvert = false;
+		this.sensitivity = 1.0;
 
 		this._listenerTarget.addEventListener('mousewheel', function (e) {
 			return _this._onWheel(e);
@@ -10614,13 +10793,13 @@ var OrbitalControl = function () {
 				if (this._isInvert) {
 					diffX *= -1;
 				}
-				this._ry.value = this._preRY - diffX * 0.01;
+				this._ry.value = this._preRY - diffX * 0.01 * this.sensitivity;
 
 				var diffY = -(this._mouse.y - this._preMouse.y);
 				if (this._isInvert) {
 					diffY *= -1;
 				}
-				this._rx.value = this._preRX - diffY * 0.01;
+				this._rx.value = this._preRX - diffY * 0.01 * this.sensitivity;
 			}
 		}
 	}, {
@@ -10699,7 +10878,7 @@ var OrbitalControl = function () {
 
 exports.default = OrbitalControl;
 
-},{"./EaseNumber":36,"gl-matrix":1,"scheduling":11}],40:[function(_dereq_,module,exports){
+},{"./EaseNumber":37,"gl-matrix":1,"scheduling":11}],41:[function(_dereq_,module,exports){
 // QuatRotation.js
 
 'use strict';
@@ -10971,7 +11150,7 @@ var QuatRotation = function () {
 
 exports.default = QuatRotation;
 
-},{"./EaseNumber":36,"gl-matrix":1,"scheduling":11}],41:[function(_dereq_,module,exports){
+},{"./EaseNumber":37,"gl-matrix":1,"scheduling":11}],42:[function(_dereq_,module,exports){
 // ShaderLbs.js
 
 'use strict';
@@ -10984,13 +11163,417 @@ Object.defineProperty(exports, "__esModule", {
 var ShaderLibs = {
 	simpleColorFrag: "// simpleColor.frag\n\n#define SHADER_NAME SIMPLE_COLOR\n\nprecision highp float;\n#define GLSLIFY 1\n\nuniform vec3 color;\nuniform float opacity;\n\nvoid main(void) {\n    gl_FragColor = vec4(color, opacity);\n}",
 	bigTriangleVert: "// bigTriangle.vert\n\n#define SHADER_NAME BIG_TRIANGLE_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec2 aPosition;\nvarying vec2 vTextureCoord;\n\nvoid main(void) {\n    gl_Position = vec4(aPosition, 0.0, 1.0);\n    vTextureCoord = aPosition * .5 + .5;\n}",
-	generalVert: "// general.vert\n\n#define SHADER_NAME GENERAL_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nuniform vec3 position;\nuniform vec3 scale;\n\nvarying vec2 vTextureCoord;\n\nvoid main(void) {\n\tvec3 pos      = aVertexPosition * scale;\n\tpos           += position;\n\tgl_Position   = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(pos, 1.0);\n\tvTextureCoord = aTextureCoord;\n}",
-	generalNormalVert: "// generalWithNormal.vert\n\n#define SHADER_NAME GENERAL_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec3 aNormal;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\nuniform mat3 uNormalMatrix;\n\nuniform vec3 position;\nuniform vec3 scale;\n\nvarying vec2 vTextureCoord;\nvarying vec3 vNormal;\n\nvoid main(void) {\n\tvec3 pos      = aVertexPosition * scale;\n\tpos           += position;\n\tgl_Position   = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(pos, 1.0);\n\t\n\tvTextureCoord = aTextureCoord;\n\tvNormal       = normalize(uNormalMatrix * aNormal);\n}"
+	generalVert: "// generalWithNormal.vert\n\n#define SHADER_NAME GENERAL_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec3 aNormal;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\nuniform mat3 uNormalMatrix;\n\nuniform vec3 position;\nuniform vec3 scale;\n\nvarying vec2 vTextureCoord;\nvarying vec3 vNormal;\n\nvoid main(void) {\n\tvec3 pos      = aVertexPosition * scale;\n\tpos           += position;\n\tgl_Position   = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(pos, 1.0);\n\t\n\tvTextureCoord = aTextureCoord;\n\tvNormal       = normalize(uNormalMatrix * aNormal);\n}",
+	copyFrag: "// copy.frag\n\n#define SHADER_NAME COPY_FRAGMENT\n\nprecision highp float;\n#define GLSLIFY 1\n\nvarying vec2 vTextureCoord;\nuniform sampler2D texture;\n\nvoid main(void) {\n    gl_FragColor = texture2D(texture, vTextureCoord);\n}",
+	basicVert: "// basic.vert\n\n#define SHADER_NAME BASIC_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec3 aNormal;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvarying vec2 vTextureCoord;\nvarying vec3 vNormal;\n\nvoid main(void) {\n    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);\n    vTextureCoord = aTextureCoord;\n    vNormal = aNormal;\n}",
+	skyboxVert: "// basic.vert\n\n#define SHADER_NAME SKYBOX_VERTEX\n\nprecision highp float;\n#define GLSLIFY 1\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec3 aNormal;\n\nuniform mat4 uModelMatrix;\nuniform mat4 uViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvarying vec2 vTextureCoord;\nvarying vec3 vVertex;\nvarying vec3 vNormal;\n\nvoid main(void) {\n\tgl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);\n\tvTextureCoord = aTextureCoord;\n\t\n\tvVertex = aVertexPosition;\n\tvNormal = aNormal;\n}",
+	skyboxFrag: "// basic.frag\n\n#define SHADER_NAME SKYBOX_FRAGMENT\n\nprecision highp float;\n#define GLSLIFY 1\nuniform samplerCube texture;\nvarying vec2 vTextureCoord;\nvarying vec3 vVertex;\n\nvoid main(void) {\n    gl_FragColor = textureCube(texture, vVertex);\n}"
 };
 
 exports.default = ShaderLibs;
 
-},{}]},{},[12])(12)
+},{}],43:[function(_dereq_,module,exports){
+// TweenNumber.js
+
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _scheduling = _dereq_('scheduling');
+
+var _scheduling2 = _interopRequireDefault(_scheduling);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Easing = {
+	Linear: {
+		None: function None(k) {
+			return k;
+		}
+	},
+	Quadratic: {
+		In: function In(k) {
+			return k * k;
+		},
+		Out: function Out(k) {
+			return k * (2 - k);
+		},
+		InOut: function InOut(k) {
+			if ((k *= 2) < 1) {
+				return 0.5 * k * k;
+			}
+			return -0.5 * (--k * (k - 2) - 1);
+		}
+	},
+	Cubic: {
+		In: function In(k) {
+			return k * k * k;
+		},
+		Out: function Out(k) {
+			return --k * k * k + 1;
+		},
+		InOut: function InOut(k) {
+			if ((k *= 2) < 1) {
+				return 0.5 * k * k * k;
+			}
+			return 0.5 * ((k -= 2) * k * k + 2);
+		}
+	},
+	Quartic: {
+		In: function In(k) {
+			return k * k * k * k;
+		},
+		Out: function Out(k) {
+			return 1 - --k * k * k * k;
+		},
+		InOut: function InOut(k) {
+			if ((k *= 2) < 1) {
+				return 0.5 * k * k * k * k;
+			}
+			return -0.5 * ((k -= 2) * k * k * k - 2);
+		}
+	},
+	Quintic: {
+		In: function In(k) {
+			return k * k * k * k * k;
+		},
+		Out: function Out(k) {
+			return --k * k * k * k * k + 1;
+		},
+		InOut: function InOut(k) {
+			if ((k *= 2) < 1) {
+				return 0.5 * k * k * k * k * k;
+			}
+			return 0.5 * ((k -= 2) * k * k * k * k + 2);
+		}
+	},
+	Sinusoidal: {
+		In: function In(k) {
+			return 1 - Math.cos(k * Math.PI / 2);
+		},
+		Out: function Out(k) {
+			return Math.sin(k * Math.PI / 2);
+		},
+		InOut: function InOut(k) {
+			return 0.5 * (1 - Math.cos(Math.PI * k));
+		}
+	},
+	Exponential: {
+		In: function In(k) {
+			return k === 0 ? 0 : Math.pow(1024, k - 1);
+		},
+		Out: function Out(k) {
+			return k === 1 ? 1 : 1 - Math.pow(2, -10 * k);
+		},
+		InOut: function InOut(k) {
+			if (k === 0) {
+				return 0;
+			}
+			if (k === 1) {
+				return 1;
+			}
+			if ((k *= 2) < 1) {
+				return 0.5 * Math.pow(1024, k - 1);
+			}
+			return 0.5 * (-Math.pow(2, -10 * (k - 1)) + 2);
+		}
+	},
+	Circular: {
+		In: function In(k) {
+			return 1 - Math.sqrt(1 - k * k);
+		},
+		Out: function Out(k) {
+			return Math.sqrt(1 - --k * k);
+		},
+		InOut: function InOut(k) {
+			if ((k *= 2) < 1) {
+				return -0.5 * (Math.sqrt(1 - k * k) - 1);
+			}
+			return 0.5 * (Math.sqrt(1 - (k -= 2) * k) + 1);
+		}
+	},
+	Elastic: {
+		In: function In(k) {
+			var s;
+			var a = 0.1;
+			var p = 0.4;
+			if (k === 0) {
+				return 0;
+			}
+			if (k === 1) {
+				return 1;
+			}
+			if (!a || a < 1) {
+				a = 1;
+				s = p / 4;
+			} else {
+				s = p * Math.asin(1 / a) / (2 * Math.PI);
+			}
+			return -(a * Math.pow(2, 10 * (k -= 1)) * Math.sin((k - s) * (2 * Math.PI) / p));
+		},
+		Out: function Out(k) {
+			var s;
+			var a = 0.1;
+			var p = 0.4;
+			if (k === 0) {
+				return 0;
+			}
+			if (k === 1) {
+				return 1;
+			}
+			if (!a || a < 1) {
+				a = 1;
+				s = p / 4;
+			} else {
+				s = p * Math.asin(1 / a) / (2 * Math.PI);
+			}
+			return a * Math.pow(2, -10 * k) * Math.sin((k - s) * (2 * Math.PI) / p) + 1;
+		},
+		InOut: function InOut(k) {
+			var s;
+			var a = 0.1;
+			var p = 0.4;
+			if (k === 0) {
+				return 0;
+			}
+			if (k === 1) {
+				return 1;
+			}
+			if (!a || a < 1) {
+				a = 1;
+				s = p / 4;
+			} else {
+				s = p * Math.asin(1 / a) / (2 * Math.PI);
+			}
+			if ((k *= 2) < 1) {
+				return -0.5 * (a * Math.pow(2, 10 * (k -= 1)) * Math.sin((k - s) * (2 * Math.PI) / p));
+			}
+			return a * Math.pow(2, -10 * (k -= 1)) * Math.sin((k - s) * (2 * Math.PI) / p) * 0.5 + 1;
+		}
+	},
+	Back: {
+		In: function In(k) {
+			var s = 1.70158;
+			return k * k * ((s + 1) * k - s);
+		},
+		Out: function Out(k) {
+			var s = 1.70158;
+			return --k * k * ((s + 1) * k + s) + 1;
+		},
+		InOut: function InOut(k) {
+			var s = 1.70158 * 1.525;
+			if ((k *= 2) < 1) {
+				return 0.5 * (k * k * ((s + 1) * k - s));
+			}
+			return 0.5 * ((k -= 2) * k * ((s + 1) * k + s) + 2);
+		}
+	},
+	Bounce: {
+		In: function In(k) {
+			return 1 - Easing.Bounce.Out(1 - k);
+		},
+		Out: function Out(k) {
+			if (k < 1 / 2.75) {
+				return 7.5625 * k * k;
+			} else if (k < 2 / 2.75) {
+				return 7.5625 * (k -= 1.5 / 2.75) * k + 0.75;
+			} else if (k < 2.5 / 2.75) {
+				return 7.5625 * (k -= 2.25 / 2.75) * k + 0.9375;
+			} else {
+				return 7.5625 * (k -= 2.625 / 2.75) * k + 0.984375;
+			}
+		},
+		InOut: function InOut(k) {
+			if (k < 0.5) {
+				return Easing.Bounce.In(k * 2) * 0.5;
+			}
+			return Easing.Bounce.Out(k * 2 - 1) * 0.5 + 0.5;
+		}
+	}
+};
+
+function getFunc(mEasing) {
+	switch (mEasing) {
+		default:
+		case 'linear':
+			return Easing.Linear.None;
+		case 'expIn':
+			return Easing.Exponential.In;
+		case 'expOut':
+			return Easing.Exponential.Out;
+		case 'expInOut':
+			return Easing.Exponential.InOut;
+
+		case 'cubicIn':
+			return Easing.Cubic.In;
+		case 'cubicOut':
+			return Easing.Cubic.Out;
+		case 'cubicInOut':
+			return Easing.Cubic.InOut;
+
+		case 'quarticIn':
+			return Easing.Quartic.In;
+		case 'quarticOut':
+			return Easing.Quartic.Out;
+		case 'quarticInOut':
+			return Easing.Quartic.InOut;
+
+		case 'quinticIn':
+			return Easing.Quintic.In;
+		case 'quinticOut':
+			return Easing.Quintic.Out;
+		case 'quinticInOut':
+			return Easing.Quintic.InOut;
+
+		case 'sinusoidalIn':
+			return Easing.Sinusoidal.In;
+		case 'sinusoidalOut':
+			return Easing.Sinusoidal.Out;
+		case 'sinusoidalInOut':
+			return Easing.Sinusoidal.InOut;
+
+		case 'circularIn':
+			return Easing.Circular.In;
+		case 'circularOut':
+			return Easing.Circular.Out;
+		case 'circularInOut':
+			return Easing.Circular.InOut;
+
+		case 'elasticIn':
+			return Easing.Elastic.In;
+		case 'elasticOut':
+			return Easing.Elastic.Out;
+		case 'elasticInOut':
+			return Easing.Elastic.InOut;
+
+		case 'backIn':
+			return Easing.Back.In;
+		case 'backOut':
+			return Easing.Back.Out;
+		case 'backInOut':
+			return Easing.Back.InOut;
+
+		case 'bounceIn':
+			return Easing.Bounce.In;
+		case 'bounceOut':
+			return Easing.Bounce.Out;
+		case 'bounceInOut':
+			return Easing.Bounce.InOut;
+	}
+}
+
+var TweenNumber = function () {
+	function TweenNumber(mValue) {
+		var _this = this;
+
+		var mEasing = arguments.length <= 1 || arguments[1] === undefined ? 'expOut' : arguments[1];
+		var mSpeed = arguments.length <= 2 || arguments[2] === undefined ? 0.01 : arguments[2];
+
+		_classCallCheck(this, TweenNumber);
+
+		this._value = mValue;
+		this._startValue = mValue;
+		this._targetValue = mValue;
+		this._counter = 1;
+		this.speed = mSpeed;
+		this.easing = mEasing;
+		this._needUpdate = true;
+
+		this._efIndex = _scheduling2.default.addEF(function () {
+			return _this._update();
+		});
+	}
+
+	_createClass(TweenNumber, [{
+		key: '_update',
+		value: function _update() {
+			var newCounter = this._counter + this.speed;
+			if (newCounter > 1) {
+				newCounter = 1;
+			}
+			if (this._counter === newCounter) {
+				this._needUpdate = false;
+				return;
+			}
+
+			this._counter = newCounter;
+			this._needUpdate = true;
+		}
+	}, {
+		key: 'limit',
+		value: function limit(mMin, mMax) {
+			if (mMin > mMax) {
+				this.limit(mMax, mMin);
+				return;
+			}
+
+			this._min = mMin;
+			this._max = mMax;
+
+			this._checkLimit();
+		}
+	}, {
+		key: 'setTo',
+		value: function setTo(mValue) {
+			this._value = mValue;
+			this._targetValue = mValue;
+			this._counter = 1;
+		}
+	}, {
+		key: '_checkLimit',
+		value: function _checkLimit() {
+			if (this._min !== undefined && this._targetValue < this._min) {
+				this._targetValue = this._min;
+			}
+
+			if (this._max !== undefined && this._targetValue > this._max) {
+				this._targetValue = this._max;
+			}
+		}
+	}, {
+		key: 'destroy',
+		value: function destroy() {
+			_scheduling2.default.removeEF(this._efIndex);
+		}
+
+		//	GETTERS / SETTERS
+
+	}, {
+		key: 'value',
+		set: function set(mValue) {
+			this._startValue = this._value;
+			this._targetValue = mValue;
+			this._checkLimit();
+			this._counter = 0;
+		},
+		get: function get() {
+			if (this._needUpdate) {
+				var f = getFunc(this.easing);
+				var p = f(this._counter);
+				this._value = this._startValue + p * (this._targetValue - this._startValue);
+				this._needUpdate = false;
+			}
+			return this._value;
+		}
+	}, {
+		key: 'targetValue',
+		get: function get() {
+			return this._targetValue;
+		}
+	}]);
+
+	return TweenNumber;
+}();
+
+exports.default = TweenNumber;
+
+},{"scheduling":11}]},{},[12])(12)
 });
 
 

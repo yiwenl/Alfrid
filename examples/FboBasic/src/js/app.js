@@ -45,7 +45,7 @@ function _init() {
 
 	//	CREATE MESH
 	let size = 2;
-	mesh = alfrid.Geom.cube(size, size, size, true);
+	mesh = alfrid.Geom.cube(size, size, size);
 	let meshPost = alfrid.Geom.plane(2, 2, 1);
 
 	//	CREATE TEXTURE

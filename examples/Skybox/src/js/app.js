@@ -32,7 +32,7 @@ let loader = new AssetLoader({
 window.addEventListener('resize', ()=>resize());
 
 let canvas, camera, batch, mesh, shader, GL, texture, images, textureCube;
-let batchSphere, shaderReflection;
+let batchSphere, shaderReflection, batchSkybox;
 
 function getImage(id) {
 	for(let i=0; i<images.length; i++) {
@@ -81,12 +81,14 @@ function _init() {
 	textureCube                 = new alfrid.GLCubeTexture(faces);
 	
 	//	CREATE SHADER
-	shader                      = new alfrid.GLShader(glslify('../shaders/skybox.vert'), glslify('../shaders/skybox.frag'));
+	// shader                      = new alfrid.GLShader(glslify('../shaders/skybox.vert'), glslify('../shaders/skybox.frag'));
+	shader                      = new alfrid.GLShader(alfrid.ShaderLibs.skyboxVert, alfrid.ShaderLibs.skyboxFrag);
 	shaderReflection            = new alfrid.GLShader(glslify('../shaders/reflection.vert'), glslify('../shaders/reflection.frag'));
 	
 	//	CREATE BATCH
 	batch                       = new alfrid.Batch(mesh, shader);
 	batchSphere                 = new alfrid.Batch(meshSphere, shaderReflection);
+	batchSkybox					= new alfrid.BatchSkybox(15);
 
 	//	LOOPING
 	alfrid.Scheduler.addEF(() => _loop());
@@ -99,10 +101,12 @@ function _loop() {
 	GL.setMatrices(camera);
 
 	//	DRAW SKYBOX
-	shader.bind();
-	shader.uniform('texture', 'uniform1i', 0);
-	textureCube.bind(0);
-	batch.draw();
+	// shader.bind();
+	// shader.uniform('texture', 'uniform1i', 0);
+	// textureCube.bind(0);
+	// batch.draw();
+
+	batchSkybox.draw(textureCube);
 
 
 	//	DRAW SPHERE

@@ -6,9 +6,9 @@ import glm from 'gl-matrix';
 import EaseNumber from './EaseNumber';
 import Scheduler from 'scheduling';
 
-const getMouse = function(mEvent, mTarget) {
+const getMouse = function (mEvent, mTarget) {
 
-	let o = mTarget || {};
+	const o = mTarget || {};
 	if(mEvent.touches) {
 		o.x = mEvent.touches[0].pageX;
 		o.y = mEvent.touches[0].pageY;
@@ -21,7 +21,7 @@ const getMouse = function(mEvent, mTarget) {
 };
 
 class QuatRotation {
-	constructor(mTarget, mListenerTarget=window, mEasing=0.1) {
+	constructor(mTarget, mListenerTarget = window, mEasing = 0.1) {
 
 		this._target         = mTarget;
 		this._listenerTarget = mListenerTarget;
@@ -30,8 +30,8 @@ class QuatRotation {
 		this.m               = glm.mat4.create();
 		this._vZaxis         = glm.vec3.clone([0, 0, 0]);
 		this._zAxis          = glm.vec3.clone([0, 0, 1]);
-		this.preMouse        = {x:0, y:0};
-		this.mouse           = {x:0, y:0};
+		this.preMouse        = { x:0, y:0 };
+		this.mouse           = { x:0, y:0 };
 		this._isMouseDown    = false;
 		this._rotation       = glm.quat.create();
 		this.tempRotation    = glm.quat.create();
@@ -43,31 +43,31 @@ class QuatRotation {
 		this._diffX          = new EaseNumber(0, mEasing);
 		this._diffY          = new EaseNumber(0, mEasing);
 
-		this._listenerTarget.addEventListener('mousedown', (e) => this._onDown(e) );
-		this._listenerTarget.addEventListener('touchstart', (e) => this._onDown(e) );
-		this._listenerTarget.addEventListener('mousemove', (e) => this._onMove(e) );
-		this._listenerTarget.addEventListener('touchmove', (e) => this._onMove(e) );
-		window.addEventListener('touchend', () => this._onUp() );
-		window.addEventListener('mouseup', () => this._onUp() );
+		this._listenerTarget.addEventListener('mousedown', (e) => this._onDown(e));
+		this._listenerTarget.addEventListener('touchstart', (e) => this._onDown(e));
+		this._listenerTarget.addEventListener('mousemove', (e) => this._onMove(e));
+		this._listenerTarget.addEventListener('touchmove', (e) => this._onMove(e));
+		window.addEventListener('touchend', () => this._onUp());
+		window.addEventListener('mouseup', () => this._onUp());
 
-		Scheduler.addEF( () => this._loop());
+		Scheduler.addEF(() => this._loop());
 	}
 
 	// 	PUBLIC METHODS
 
-	inverseControl(isInvert=true) {
+	inverseControl(isInvert = true) {
 		this._isInvert = isInvert;
 	}
 
-	lock(mValue=true) {
+	lock(mValue = true) {
 		this._isLocked = mValue;
 	}	
 
-	setCameraPos(mQuat, speed=0.1) {
+	setCameraPos(mQuat, speed = 0.1) {
 		this.easing = speed;
-		if(this._slerp > 0) {return;}
+		if(this._slerp > 0) { return; }
 		
-		let tempRotation  = glm.quat.clone(this._rotation);
+		const tempRotation  = glm.quat.clone(this._rotation);
 		this._updateRotation(tempRotation);
 		this._rotation    = glm.quat.clone(tempRotation);
 		this._currDiffX   = this.diffX = 0;
@@ -90,19 +90,22 @@ class QuatRotation {
 	//	EVENT HANDLER
 
 	_onDown(mEvent) {
-		if(this._isLocked) {return;}
+		if(this._isLocked) { return; }
 
-		let mouse = getMouse(mEvent);
-		let tempRotation = glm.quat.clone(this._rotation);
+		const mouse = getMouse(mEvent);
+		const tempRotation = glm.quat.clone(this._rotation);
 		this._updateRotation(tempRotation);
 		this._rotation = tempRotation;
 
 		this._isMouseDown = true;
 		this._isRotateZ = 0;
-		this.preMouse = {x:mouse.x, y:mouse.y};
+		this.preMouse = { x:mouse.x, y:mouse.y };
 
-		if(mouse.y < this._rotateZMargin || mouse.y > (window.innerHeight - this._rotateZMargin) ) {	this._isRotateZ = 1;	}
-		else if(mouse.x < this._rotateZMargin || mouse.x > (window.innerWidth - this._rotateZMargin) ) {	this._isRotateZ = 2;	}
+		if(mouse.y < this._rotateZMargin || mouse.y > (window.innerHeight - this._rotateZMargin)) {	
+			this._isRotateZ = 1;	
+		} else if(mouse.x < this._rotateZMargin || mouse.x > (window.innerWidth - this._rotateZMargin)) {	
+			this._isRotateZ = 2;	
+		}
 
 		this._diffX.setTo(0);
 		this._diffY.setTo(0);
@@ -110,13 +113,13 @@ class QuatRotation {
 
 
 	_onMove(mEvent) {
-		if(this._isLocked) {return;}
+		if(this._isLocked) { return; }
 		getMouse(mEvent, this.mouse);
 	}
 
 
 	_onUp() {
-		if(this._isLocked) {return;}
+		if(this._isLocked) { return; }
 		this._isMouseDown = false;
 	}
 
@@ -140,21 +143,21 @@ class QuatRotation {
 			if(this._isRotateZ === 1) {
 				angle = -this._diffX.value * this._offset; 
 				angle *= (this.preMouse.y < this._rotateZMargin) ? -1 : 1;
-				_quat = glm.quat.clone( [0, 0, Math.sin(angle), Math.cos(angle) ] );
+				_quat = glm.quat.clone([0, 0, Math.sin(angle), Math.cos(angle)]);
 				glm.quat.multiply(_quat, mTempRotation, _quat);
 			} else {
 				angle = -this._diffY.value * this._offset; 
 				angle *= (this.preMouse.x < this._rotateZMargin) ? 1 : -1;
-				_quat = glm.quat.clone( [0, 0, Math.sin(angle), Math.cos(angle) ] );
+				_quat = glm.quat.clone([0, 0, Math.sin(angle), Math.cos(angle)]);
 				glm.quat.multiply(_quat, mTempRotation, _quat);
 			}
 		} else {
-			let v = glm.vec3.clone([this._diffX.value, this._diffY.value, 0]);
-			let axis = glm.vec3.create();
+			const v = glm.vec3.clone([this._diffX.value, this._diffY.value, 0]);
+			const axis = glm.vec3.create();
 			glm.vec3.cross(axis, v, this._zAxis);
 			glm.vec3.normalize(axis, axis);
 			angle = glm.vec3.length(v) * this._offset;
-			_quat = glm.quat.clone( [Math.sin(angle) * axis[0], Math.sin(angle) * axis[1], Math.sin(angle) * axis[2], Math.cos(angle) ] );
+			_quat = glm.quat.clone([Math.sin(angle) * axis[0], Math.sin(angle) * axis[1], Math.sin(angle) * axis[2], Math.cos(angle)]);
 			glm.quat.multiply(mTempRotation, _quat, mTempRotation);
 		}
 	}
