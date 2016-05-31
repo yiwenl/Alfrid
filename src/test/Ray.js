@@ -94,6 +94,57 @@ class Ray {
 		}
 	}
 
+
+	intersectTriangle(mPA, mPB, mPC, backfaceCulling = true) {
+		const a = vec3.clone(mPA);
+		const b = vec3.clone(mPB);
+		const c = vec3.clone(mPC);
+
+		const edge1 = vec3.create();
+		const edge2 = vec3.create();
+		const normal = vec3.create();
+		const diff = vec3.create();
+
+		vec3.sub(edge1, b, a);
+		vec3.sub(edge2, c, a);
+		vec3.cross(normal, edge1, edge2);
+
+		let DdN = vec3.dot(this._direction, normal);
+		let sign;
+
+		if (DdN > 0) {
+			if (backfaceCulling) {	return null;	}
+			sign = 1;
+		} else if (DdN < 0) {
+			sign = -1;
+			DdN = - DdN;
+		} else {
+			return null;
+		}
+
+		vec3.sub(diff, this._origin, a);
+
+		vec3.cross(edge2, diff, edge2);
+		const DdQxE2 = sign * vec3.dot(this._direction, edge2);
+		if (DdQxE2 < 0) { 	return null; 	}
+
+		vec3.cross(edge1, edge1, diff);
+		const DdE1xQ = sign * vec3.dot(this._direction, edge1);
+		if (DdE1xQ < 0) {	return null;	}
+
+		if(DdQxE2 + DdE1xQ > DdN) {	return null;	}
+
+		const Qdn = - sign * vec3.dot(diff, normal);
+		if(Qdn < 0) {	return null;	}
+
+		return this.at(Qdn / DdN);
+	}
+
+
+	get origin() {		return this._origin;	}
+
+	get direction() {	return this._direction;	}
+
 }
 
 export default Ray;
