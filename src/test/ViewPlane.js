@@ -9,7 +9,7 @@ class ViewPlane extends alfrid.View {
 
 	_init() {
 		const size = 1;
-		this.mesh = alfrid.Geom.plane(size, size, 1);
+		this.mesh = alfrid.Geom.plane(size * 2, size, 1);
 	}
 
 
