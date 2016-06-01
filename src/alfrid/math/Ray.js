@@ -1,5 +1,15 @@
 // Ray.js
 
+import glm from 'gl-matrix';
+
+const mat4 = glm.mat4;
+const vec3 = glm.vec3;
+
+const a = vec3.create();
+const b = vec3.create();
+const c = vec3.create();
+const target = vec3.create();
+
 class Ray {
 	constructor(mOrigin, mDirection) {
 		this.origin = vec3.clone(mOrigin);
@@ -7,7 +17,7 @@ class Ray {
 	}
 
 	at(t) {
-		const target = vec3.clone(this.direction);
+		vec3.copy(target, this.direction);
 		vec3.scale(target, target, t);
 		vec3.add(target, target, this.origin);
 
@@ -96,9 +106,9 @@ class Ray {
 
 
 	intersectTriangle(mPA, mPB, mPC, backfaceCulling = true) {
-		const a = vec3.clone(mPA);
-		const b = vec3.clone(mPB);
-		const c = vec3.clone(mPC);
+		vec3.copy(a, mPA);
+		vec3.copy(b, mPB);
+		vec3.copy(c, mPC);
 
 		const edge1 = vec3.create();
 		const edge2 = vec3.create();

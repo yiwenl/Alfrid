@@ -205,7 +205,6 @@ class Mesh {
 
 
 	_generateFaces() {
-		console.log(this._vertices.length);
 		let ia, ib, ic;
 		let a, b, c;
 		const vba = vec3.create(), vca = vec3.create(), vNormal = vec3.create();
