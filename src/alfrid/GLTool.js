@@ -182,6 +182,7 @@ class GLTool {
 		if(drawType === this.gl.POINTS) {
 			this.gl.drawArrays(drawType, 0, mMesh.vertexSize);	
 		} else {
+			// console.log('numItems : ', mMesh.iBuffer.numItems);
 			this.gl.drawElements(drawType, mMesh.iBuffer.numItems, this.gl.UNSIGNED_SHORT, 0);	
 		}
 

@@ -38,8 +38,8 @@ class Mesh {
 			tempNormals.push([1, 0, 0]);
 		}
 
-		if (this._normals.length === 0) {
-			this.bufferNormal(tempNormals);	
+		if (this._normals.length < this._vertices.length) {
+			this.bufferNormal(tempNormals, isDynamic);	
 		}
 
 		if (this._indices.length > 0 && this.drawType === GL.TRIANGLES) {
@@ -66,9 +66,11 @@ class Mesh {
 
 	bufferIndex(mArrayIndices, isDynamic = false) {
 
-		const drawType          = isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW;
+		const drawType        = isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW;
 		this._indices         = mArrayIndices;
-		this.iBuffer          = gl.createBuffer();
+		if (!this.iBuffer) {
+			this.iBuffer      = gl.createBuffer();	
+		}
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.iBuffer);
 		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(mArrayIndices), drawType);
 		this.iBuffer.itemSize = 1;
@@ -122,11 +124,13 @@ class Mesh {
 			//	attribute existed, replace with new data
 			buffer = this._attributes[index].buffer;
 			gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-			dataArray = this._attributes[index].dataArray;
-			for(i = 0; i < bufferData.length; i++) {
-				dataArray[i] = bufferData[i];
-			}
+			dataArray = new Float32Array(bufferData);
 			gl.bufferData(gl.ARRAY_BUFFER, dataArray, drawType);
+
+			const attribute = this._attributes.find((a) => a.name === mName);
+			attribute.data = mData;
+			attribute.itemSize = mItemSize;
+			attribute.dataArray = dataArray;
 
 		}
 

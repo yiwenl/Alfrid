@@ -6,21 +6,13 @@ class SceneApp extends alfrid.Scene {
 	constructor() {
 		super();
 		GL.enableAlphaBlending();
-		// this.orbitalControl.rx.value = this.orbitalControl.ry.value = 0.3;
+		GL.disable(GL.CULL_FACE);
+		this.orbitalControl.rx.value = this.orbitalControl.ry.value = 0.3;
 
 		const orgin = vec3.fromValues(0, 0, 1);
 		const direction = vec3.fromValues(0, .1, -1);
 		const ray = new alfrid.Ray(orgin, direction);
 		const center = vec3.fromValues(0, 0, 0);
-
-		console.log('Intersects : ');
-		console.log(ray.intersectsSphere(center, 2));
-		console.log(ray.intersectsSphere(center, .5));
-
-		console.log('Intersect Point : ');
-		console.log(ray.intersectSphere(center, 2));
-		console.log(ray.intersectSphere(center, .5));
-
 		this.ray = ray;
 
 		this.rayMouse = new alfrid.Ray(this.camera.position, vec3.fromValues(0, 0, -1));
@@ -30,6 +22,45 @@ class SceneApp extends alfrid.Scene {
 		this.c = [0, -1, 0];
 		this._size = [.1, .1, .1];
 		this._time = 0;
+
+		this.shader = new alfrid.GLShader();
+		this.mesh = new alfrid.Mesh();
+		this.positions = [];
+		this.coords = [];
+		this.indices = [];
+		this.count = 0;
+
+		this.addTriangle();
+
+		window.addEventListener('mousedown', ()=>this.addTriangle());
+	}
+
+
+	addTriangle() {
+		const random = function (min, max) { return min + Math.random() * (max - min);	};
+		const range = 2;
+		const cx = random(-range, range);
+		const cy = random(-range, range);
+		const cz = random(-range, range);
+
+		this.positions.push([cx - 1, cy + 1, cz]);
+		this.positions.push([cx + 1, cy + 1, cz]);
+		this.positions.push([cx, cy - 1, cz]);
+
+		this.coords.push([0, 0]);
+		this.coords.push([1, 0]);
+		this.coords.push([0.5, 1]);
+
+		this.indices.push(this.count * 3);
+		this.indices.push(this.count * 3 + 1);
+		this.indices.push(this.count * 3 + 2);
+
+		this.mesh.bufferVertex(this.positions, true);
+		this.mesh.bufferTexCoord(this.coords, true);
+		this.mesh.bufferIndex(this.indices, true);
+		this.mesh.bufferNormal(this.positions, true);
+
+		this.count ++;
 	}
 
 
@@ -78,7 +109,7 @@ class SceneApp extends alfrid.Scene {
 		// this._bBall.draw(this.b, this._size, [1, .5, 0]);
 		// this._bBall.draw(this.c, this._size, [1, .5, 0]);
 		
-		
+		/*
 		this._bBall.draw(this.ray.origin, [.05, .05, .05], [1, 1, 1]);
 		this._bBall.draw(this.ray.at(5), [.05, .05, .05], [1, 1, 1]);
 
@@ -102,7 +133,12 @@ class SceneApp extends alfrid.Scene {
 		}
 
 		this._bBall.draw(this.rayMouse.at(15), [.1, .1, .1], [1, .6, 1]);
-		this._vPlane.render();
+		
+*/
+		// this._vPlane.render();
+
+		this.shader.bind();
+		GL.draw(this.mesh);
 	}
 
 
