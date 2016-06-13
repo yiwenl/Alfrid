@@ -1,6 +1,11 @@
 // SceneApp.js
 import alfrid, { GL } from '../alfrid';
 import ViewPlane from './ViewPlane';
+import ViewSphere from './ViewSphere';
+
+window.getAsset = function (id) {
+	return window.assets.find((a) => a.id === id).file;
+};
 
 class SceneApp extends alfrid.Scene {
 	constructor() {
@@ -65,6 +70,23 @@ class SceneApp extends alfrid.Scene {
 
 
 	_initTextures() {
+		const irrPosx = alfrid.HDRLoader.parse(getAsset('irr_posx'));
+		const irrNegx = alfrid.HDRLoader.parse(getAsset('irr_negx'));
+		const irrPosy = alfrid.HDRLoader.parse(getAsset('irr_posy'));
+		const irrNegy = alfrid.HDRLoader.parse(getAsset('irr_negy'));
+		const irrPosz = alfrid.HDRLoader.parse(getAsset('irr_posz'));
+		const irrNegz = alfrid.HDRLoader.parse(getAsset('irr_negz'));
+
+		this._textureIrr = new alfrid.GLCubeTexture([irrPosx, irrNegx, irrPosy, irrNegy, irrPosz, irrNegz]);
+
+		const radPosx = alfrid.HDRLoader.parse(getAsset('rad_posx'));
+		const radNegx = alfrid.HDRLoader.parse(getAsset('rad_negx'));
+		const radPosy = alfrid.HDRLoader.parse(getAsset('rad_posy'));
+		const radNegy = alfrid.HDRLoader.parse(getAsset('rad_negy'));
+		const radPosz = alfrid.HDRLoader.parse(getAsset('rad_posz'));
+		const radNegz = alfrid.HDRLoader.parse(getAsset('rad_negz'));
+
+		this._textureRad = new alfrid.GLCubeTexture([radPosx, radNegx, radPosy, radNegy, radPosz, radNegz]);
 	}
 	
 
@@ -76,7 +98,7 @@ class SceneApp extends alfrid.Scene {
 		this._bLine 	 = new alfrid.BatchLine();
 
 		this._vPlane  	 = new ViewPlane();
-
+		this._vSphere 	 = new ViewSphere();
 
 		window.addEventListener('mousemove', (e) => this._onMove(e));
 	}
@@ -137,8 +159,10 @@ class SceneApp extends alfrid.Scene {
 */
 		// this._vPlane.render();
 
-		this.shader.bind();
-		GL.draw(this.mesh);
+		// this.shader.bind();
+		// GL.draw(this.mesh);
+
+		this._vSphere.render(this._textureRad);
 	}
 
 
