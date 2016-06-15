@@ -9,7 +9,6 @@ let gl;
 
 class GLCubeTexture {
 	constructor(mSource, mParameters = {}, isCubeTexture = false) {
-		// console.log(typeof(mSource));
 		gl = GL.gl;
 
 		if(isCubeTexture) {
@@ -38,12 +37,11 @@ class GLCubeTexture {
 		}
 
 		if (hasMipmaps) {
-			for (let i = 0; i < numLevels; i++) {
-				for (let j = 0; j < 6; j++) {
+			for (let j = 0; j < 6; j++) {
+				for (let i = 0; i < numLevels; i++) {
 					gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
 				
-					index = i * 6 + j;
-					
+					index = j * numLevels + i;
 					if(mSource[index].shape) {
 						gl.texImage2D(targets[j], i, gl.RGBA, mSource[index].shape[0], mSource[index].shape[1], 0, gl.RGBA, gl.FLOAT, mSource[index].data);
 					} else {
@@ -96,18 +94,26 @@ class GLCubeTexture {
 
 
 GLCubeTexture.parseDDS = function parseDDS(mArrayBuffer) {
+
+	function clamp(value, min, max) {
+		if (min > max) {
+			return clamp(value, max, min);
+		}
+
+		if (value < min) return min;
+		else if (value > max) return max;
+		else return value;
+	}
+
 	const ddsInfos = parse(mArrayBuffer);
 	const sources = ddsInfos.images.map((img) => {
-		console.log(img.offset, img.length);
-		// const data = new Float32Array(mArrayBuffer, img.offset, Math.sqrt(img.length) / 4);
-		const data = new Float32Array(mArrayBuffer, img.offset, img.length);
+		const faceData = new Float32Array(mArrayBuffer.slice(img.offset, img.offset + img.length));
 		return {
-			data,
+			data: faceData,
 			shape: img.shape
 		};
 	});
 
-	console.log('Sources : ', sources);
 	return new GLCubeTexture(sources);
 };
 

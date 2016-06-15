@@ -1,6 +1,6 @@
 {
   "name": "alfrid",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "WebGL 3D toolkit",
   "main": "build/alfrid.js",
   "directories": {
@@ -18,7 +18,7 @@
   "dependencies": {
     "gl-matrix": "2.3.2",
     "scheduling": "1.0.3",
-    "parse-dds": "^1.2.1",
+    "parse-dds": "^1.2.1"
   },
   "repository": {
     "type": "git",

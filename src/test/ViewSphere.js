@@ -13,18 +13,24 @@ class ViewSphere extends alfrid.View {
 
 
 	_init() {
-		this.mesh = alfrid.Geom.sphere(1, 24 * 2);
+		this.mesh = alfrid.Geom.sphere(1.5, 24 * 2);
 
-		this.lod = 0;
-		gui.add(this, 'lod', 0, 8);
+		this.gamma = 2.2;
+		this.exposure = 1;
+		gui.add(this, 'gamma', 1, 10);
+		gui.add(this, 'exposure', 1, 10);
 	}
 
 
-	render(textureCube) {
+	render(textureCube, lod = 0, position = [0, 0, 0]) {
 		this.shader.bind();
 		this.shader.uniform('texture', 'uniform1i', 0);
 		textureCube.bind(0);
-		this.shader.uniform('lod', 'float', this.lod);
+		this.shader.uniform('lod', 'float', lod);
+		this.shader.uniform('uPosition', 'vec3', position);
+
+		this.shader.uniform('uExposure', 'uniform1f', this.exposure);
+		this.shader.uniform('uGamma', 'uniform1f', this.gamma);
 		GL.draw(this.mesh);
 	}
 
