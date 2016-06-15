@@ -2,6 +2,7 @@
 import alfrid, { GL } from '../alfrid';
 import ViewPlane from './ViewPlane';
 import ViewSphere from './ViewSphere';
+import parse from 'parse-dds';
 
 window.getAsset = function (id) {
 	return window.assets.find((a) => a.id === id).file;
@@ -70,15 +71,9 @@ class SceneApp extends alfrid.Scene {
 
 
 	_initTextures() {
-		const radPosx = alfrid.HDRLoader.parse(getAsset('rad_posx'));
-		const radNegx = alfrid.HDRLoader.parse(getAsset('rad_negx'));
-		const radPosy = alfrid.HDRLoader.parse(getAsset('rad_posy'));
-		const radNegy = alfrid.HDRLoader.parse(getAsset('rad_negy'));
-		const radPosz = alfrid.HDRLoader.parse(getAsset('rad_posz'));
-		const radNegz = alfrid.HDRLoader.parse(getAsset('rad_negz'));
-
-		// this._textureRad = new alfrid.GLCubeTexture([radPosx, radNegx, radPosy, radNegy, radPosz, radNegz]);
-
+		const factory = getAsset('factory');
+		const dds = parse(factory);
+		console.log(factory, dds);
 
 		const cubeTextures = [];
 		const faces = ['posx', 'negx', 'posy', 'negy', 'posz', 'negz'];
@@ -88,14 +83,14 @@ class SceneApp extends alfrid.Scene {
 			for (let j = 0; j < faces.length; j++) {
 				const id = `mip${i}_rad_${faces[j]}`;
 				const file = alfrid.HDRLoader.parse(getAsset(id));
-				console.log(id, file.shape);
+				// console.log(id, file.shape);
 				cubeTextures.push(file);	
 			}
 		}
 
 		// cubeTextures.length = 6;
 
-		console.log('cubeTextures : ', cubeTextures.length);
+		// console.log('cubeTextures : ', cubeTextures.length);
 		this._textureRad = new alfrid.GLCubeTexture(cubeTextures);
 	}
 	

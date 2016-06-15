@@ -13,12 +13,7 @@ console.debug('DEVELOPMENT BUILDING VERSION');
 alfrid.log();
 
 const assets = [
-	{ id:'rad_posx', url:'assets/img/rad_posx.hdr', type:'binary' },
-	{ id:'rad_posy', url:'assets/img/rad_posy.hdr', type:'binary' },
-	{ id:'rad_posz', url:'assets/img/rad_posz.hdr', type:'binary' },
-	{ id:'rad_negx', url:'assets/img/rad_negx.hdr', type:'binary' },
-	{ id:'rad_negy', url:'assets/img/rad_negy.hdr', type:'binary' },
-	{ id:'rad_negz', url:'assets/img/rad_negz.hdr', type:'binary' }
+	{ id:'factory', url:'assets/img/factory.dds', type: 'binary' },
 ];
 
 const faces = ['posx', 'negx', 'posy', 'negy', 'posz', 'negz'];
