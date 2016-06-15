@@ -13,7 +13,7 @@ class ViewSphere extends alfrid.View {
 
 
 	_init() {
-		this.mesh = alfrid.Geom.sphere(1, 24);
+		this.mesh = alfrid.Geom.sphere(1, 24 * 2);
 
 		this.lod = 0;
 		gui.add(this, 'lod', 0, 8);

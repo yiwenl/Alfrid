@@ -70,15 +70,6 @@ class SceneApp extends alfrid.Scene {
 
 
 	_initTextures() {
-		const irrPosx = alfrid.HDRLoader.parse(getAsset('irr_posx'));
-		const irrNegx = alfrid.HDRLoader.parse(getAsset('irr_negx'));
-		const irrPosy = alfrid.HDRLoader.parse(getAsset('irr_posy'));
-		const irrNegy = alfrid.HDRLoader.parse(getAsset('irr_negy'));
-		const irrPosz = alfrid.HDRLoader.parse(getAsset('irr_posz'));
-		const irrNegz = alfrid.HDRLoader.parse(getAsset('irr_negz'));
-
-		this._textureIrr = new alfrid.GLCubeTexture([irrPosx, irrNegx, irrPosy, irrNegy, irrPosz, irrNegz]);
-
 		const radPosx = alfrid.HDRLoader.parse(getAsset('rad_posx'));
 		const radNegx = alfrid.HDRLoader.parse(getAsset('rad_negx'));
 		const radPosy = alfrid.HDRLoader.parse(getAsset('rad_posy'));
@@ -86,7 +77,26 @@ class SceneApp extends alfrid.Scene {
 		const radPosz = alfrid.HDRLoader.parse(getAsset('rad_posz'));
 		const radNegz = alfrid.HDRLoader.parse(getAsset('rad_negz'));
 
-		this._textureRad = new alfrid.GLCubeTexture([radPosx, radNegx, radPosy, radNegy, radPosz, radNegz]);
+		// this._textureRad = new alfrid.GLCubeTexture([radPosx, radNegx, radPosy, radNegy, radPosz, radNegz]);
+
+
+		const cubeTextures = [];
+		const faces = ['posx', 'negx', 'posy', 'negy', 'posz', 'negz'];
+		const NUM_LEVELS = 8;
+
+		for (let i = 0; i <= NUM_LEVELS; i++) {
+			for (let j = 0; j < faces.length; j++) {
+				const id = `mip${i}_rad_${faces[j]}`;
+				const file = alfrid.HDRLoader.parse(getAsset(id));
+				console.log(id, file.shape);
+				cubeTextures.push(file);	
+			}
+		}
+
+		// cubeTextures.length = 6;
+
+		console.log('cubeTextures : ', cubeTextures.length);
+		this._textureRad = new alfrid.GLCubeTexture(cubeTextures);
 	}
 	
 
@@ -96,6 +106,7 @@ class SceneApp extends alfrid.Scene {
 		this._bDotPlane  = new alfrid.BatchDotsPlane();
 		this._bBall		 = new alfrid.BatchBall();
 		this._bLine 	 = new alfrid.BatchLine();
+		this._bSkybox 	 = new alfrid.BatchSkybox();
 
 		this._vPlane  	 = new ViewPlane();
 		this._vSphere 	 = new ViewSphere();
@@ -162,6 +173,7 @@ class SceneApp extends alfrid.Scene {
 		// this.shader.bind();
 		// GL.draw(this.mesh);
 
+		this._bSkybox.draw(this._textureRad);
 		this._vSphere.render(this._textureRad);
 	}
 

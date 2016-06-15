@@ -13,13 +13,6 @@ console.debug('DEVELOPMENT BUILDING VERSION');
 alfrid.log();
 
 const assets = [
-	{ id:'irr_posx', url:'assets/img/irr_posx.hdr', type:'binary' },
-	{ id:'irr_posy', url:'assets/img/irr_posy.hdr', type:'binary' },
-	{ id:'irr_posz', url:'assets/img/irr_posz.hdr', type:'binary' },
-	{ id:'irr_negx', url:'assets/img/irr_negx.hdr', type:'binary' },
-	{ id:'irr_negy', url:'assets/img/irr_negy.hdr', type:'binary' },
-	{ id:'irr_negz', url:'assets/img/irr_negz.hdr', type:'binary' },
-
 	{ id:'rad_posx', url:'assets/img/rad_posx.hdr', type:'binary' },
 	{ id:'rad_posy', url:'assets/img/rad_posy.hdr', type:'binary' },
 	{ id:'rad_posz', url:'assets/img/rad_posz.hdr', type:'binary' },
@@ -27,6 +20,24 @@ const assets = [
 	{ id:'rad_negy', url:'assets/img/rad_negy.hdr', type:'binary' },
 	{ id:'rad_negz', url:'assets/img/rad_negz.hdr', type:'binary' }
 ];
+
+const faces = ['posx', 'negx', 'posy', 'negy', 'posz', 'negz'];
+const NUM_LEVELS = 8;
+for (let i = 0; i <= NUM_LEVELS; i++) {
+	for (let j = 0; j < faces.length; j++) {
+		const face = faces[j];
+		const level = `mip${i}`;
+		const id = `${level}_rad_${face}`;
+		const url = `assets/img/${level}/rad_${face}.hdr`;
+
+		assets.push({
+			id,
+			url,
+			type: 'binary'
+		});
+	}
+}
+
 
 if(document.body) {
 	_init();
