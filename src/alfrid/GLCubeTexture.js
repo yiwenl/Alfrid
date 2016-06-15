@@ -3,7 +3,7 @@
 'use strict';
 
 import GL from './GLTool';
-
+import parse from 'parse-dds';
 let gl;
 
 
@@ -44,7 +44,7 @@ class GLCubeTexture {
 				
 					index = i * 6 + j;
 					
-					if(mSource[index].exposure) {
+					if(mSource[index].shape) {
 						gl.texImage2D(targets[j], i, gl.RGBA, mSource[index].shape[0], mSource[index].shape[1], 0, gl.RGBA, gl.FLOAT, mSource[index].data);
 					} else {
 						gl.texImage2D(targets[j], i, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, mSource[index]);
@@ -59,7 +59,7 @@ class GLCubeTexture {
 		} else {
 			for (let j = 0; j < 6; j++) {
 				gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
-				if(mSource[j].exposure) {
+				if(mSource[j].shape) {
 					gl.texImage2D(targets[j], 0, gl.RGBA, mSource[j].shape[0], mSource[j].shape[1], 0, gl.RGBA, gl.FLOAT, mSource[j].data);
 				} else {
 					gl.texImage2D(targets[j], 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, mSource[j]);
@@ -93,6 +93,23 @@ class GLCubeTexture {
 		gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);	
 	}
 }
+
+
+GLCubeTexture.parseDDS = function parseDDS(mArrayBuffer) {
+	const ddsInfos = parse(mArrayBuffer);
+	const sources = ddsInfos.images.map((img) => {
+		console.log(img.offset, img.length);
+		// const data = new Float32Array(mArrayBuffer, img.offset, Math.sqrt(img.length) / 4);
+		const data = new Float32Array(mArrayBuffer, img.offset, img.length);
+		return {
+			data,
+			shape: img.shape
+		};
+	});
+
+	console.log('Sources : ', sources);
+	return new GLCubeTexture(sources);
+};
 
 
 export default GLCubeTexture;

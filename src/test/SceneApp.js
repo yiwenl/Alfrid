@@ -72,8 +72,8 @@ class SceneApp extends alfrid.Scene {
 
 	_initTextures() {
 		const factory = getAsset('factory');
-		const dds = parse(factory);
-		console.log(factory, dds);
+		this._textureFactory = alfrid.GLCubeTexture.parseDDS(factory);
+		console.log(this._textureFactory);
 
 		const cubeTextures = [];
 		const faces = ['posx', 'negx', 'posy', 'negy', 'posz', 'negz'];
@@ -168,8 +168,8 @@ class SceneApp extends alfrid.Scene {
 		// this.shader.bind();
 		// GL.draw(this.mesh);
 
-		this._bSkybox.draw(this._textureRad);
-		this._vSphere.render(this._textureRad);
+		this._bSkybox.draw(this._textureFactory);
+		this._vSphere.render(this._textureFactory);
 	}
 
 
