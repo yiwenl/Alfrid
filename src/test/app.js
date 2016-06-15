@@ -13,7 +13,7 @@ console.debug('DEVELOPMENT BUILDING VERSION');
 alfrid.log();
 
 const assets = [
-	{ id:'factory', url:'assets/img/factory.dds', type: 'binary' },
+	{ id:'factory', url:'assets/img/studio_irradiance.dds', type: 'binary' },
 ];
 
 const faces = ['posx', 'negx', 'posy', 'negy', 'posz', 'negz'];
