@@ -2,6 +2,7 @@
 import alfrid, { GL } from '../alfrid';
 import ViewPlane from './ViewPlane';
 import ViewSphere from './ViewSphere';
+import ViewMultiTarget from './ViewMultiTarget';
 import parse from 'parse-dds';
 
 window.getAsset = function (id) {
@@ -94,6 +95,9 @@ class SceneApp extends alfrid.Scene {
 
 		this.lod = 0;
 		gui.add(this, 'lod', 0, 6).listen();
+
+		this._fboRenderSimple = new alfrid.FrameBuffer(GL.width, GL.height);
+		this._fboRender = new alfrid.FrameBuffer(GL.width, GL.height, {}, true);
 	}
 	
 
@@ -107,6 +111,7 @@ class SceneApp extends alfrid.Scene {
 
 		this._vPlane  	 = new ViewPlane();
 		this._vSphere 	 = new ViewSphere();
+		this._vMulti 	 = new ViewMultiTarget();
 
 		window.addEventListener('mousemove', (e) => this._onMove(e));
 	}
@@ -170,10 +175,32 @@ class SceneApp extends alfrid.Scene {
 		// this.shader.bind();
 		// GL.draw(this.mesh);
 
+
+/*	
+		//	LOD
 		this.lod = Math.sin(this._time) * 2 + 2;
 		this._bSkybox.draw(this._textureFactory);
 		this._vSphere.render(this._textureFactory, this.lod, [2, 0, 0]);
 		this._vSphere.render(this._textureRad, this.lod, [-2, 0, 0]);
+*/
+		this._fboRender.bind();
+		GL.clear(0, 0, 0, 0);
+		this._vMulti.render();
+		this._fboRender.unbind();
+
+		this._fboRenderSimple.bind();
+		GL.clear(0, 0, 0, 0);
+		this._vSphere.render(this._textureRad, this.lod, [0, 0, 0]);
+		this._fboRenderSimple.unbind();
+
+		const size = GL.width / 4;
+		for(let i = 0; i < 4; i++) {
+			GL.viewport(size * i, 0, size, size / GL.aspectRatio);
+			this._bCopy.draw(this._fboRender.getTexture(i));
+		}
+
+		GL.viewport(0, size / GL.aspectRatio, size, size / GL.aspectRatio);
+		this._bCopy.draw(this._fboRenderSimple.getTexture());
 	}
 
 

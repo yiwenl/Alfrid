@@ -187,7 +187,7 @@ const Easing = {
 			return 0.5 * ((k -= 2) * k * ((s + 1) * k + s) + 2);
 		}
 	},
-	bounce: {
+	Bounce: {
 		in: function (k) {
 			return 1 - Easing.Bounce.out(1 - k);
 		},

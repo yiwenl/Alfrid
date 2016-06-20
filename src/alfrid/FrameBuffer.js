@@ -14,12 +14,13 @@ let webglDepthTexture;
 
 class FrameBuffer {
 
-	constructor(mWidth, mHeight, mParameters = {}) {
+	constructor(mWidth, mHeight, mParameters = {}, multipleTargets = false) {
 		gl = GL.gl;
 		webglDepthTexture = GL.checkExtension('WEBGL_depth_texture');
 
-		this.width      = mWidth;
-		this.height     = mHeight;
+		this.width            = mWidth;
+		this.height           = mHeight;
+		this._multipleTargets = multipleTargets;
 
 		this.magFilter  = mParameters.magFilter 	|| gl.LINEAR;
 		this.minFilter  = mParameters.minFilter 	|| gl.LINEAR;
@@ -41,8 +42,19 @@ class FrameBuffer {
 
 
 	_init() {
-		this.texture            = gl.createTexture();
-		this.glTexture			= new GLTexture(this.texture, true);
+		this._textures = [];
+
+		if (!this._multipleTargets) {
+			this.texture            = gl.createTexture();
+			this.glTexture			= new GLTexture(this.texture, true);
+			this._textures.push(this.glTexture);
+		} else {
+			for (let i = 0; i < 4; i++) {
+				const t = gl.createTexture();
+				const glt = new GLTexture(t, true);
+				this._textures.push(glt);
+			}
+		}
 
 		this.depthTexture       = gl.createTexture();
 		this.glDepthTexture		= new GLTexture(this.depthTexture, true);
@@ -50,15 +62,23 @@ class FrameBuffer {
 		this.frameBuffer        = gl.createFramebuffer();		
 		gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer);
 
+		const extDrawBuffer = GL.getExtension('WEBGL_draw_buffers');
+		if (!extDrawBuffer && this._multipleTargets) {
+			console.error('Browser not supporting multiple rendering targets !');
+		}
 
 		//	SETUP TEXTURE MIPMAP, WRAP
 
-		gl.bindTexture(gl.TEXTURE_2D, this.texture);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, this.magFilter);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, this.minFilter);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, this.wrapS);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, this.wrapT);
-		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.width, this.height, 0, gl.RGBA, GL.isMobile ? gl.UNSIGNED_BYTE : gl.FLOAT, null);
+		for (let i = 0; i < this._textures.length; i++) {
+			gl.bindTexture(gl.TEXTURE_2D, this._textures[i].texture);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, this.magFilter);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, this.minFilter);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, this.wrapS);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, this.wrapT);
+			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.width, this.height, 0, gl.RGBA, GL.isMobile ? gl.UNSIGNED_BYTE : gl.FLOAT, null);	
+		}
+
+		
 
 		if(webglDepthTexture) {
 			gl.bindTexture(gl.TEXTURE_2D, this.depthTexture);
@@ -72,7 +92,18 @@ class FrameBuffer {
 
 		//	GET COLOUR
 
-		gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.texture, 0);
+		for (let i = 0; i < this._textures.length; i++) {
+			gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + i, gl.TEXTURE_2D, this._textures[i].texture, 0);
+		}
+		if (this._multipleTargets) {
+			extDrawBuffer.drawBuffersWEBGL([
+				extDrawBuffer.COLOR_ATTACHMENT0_WEBGL, // gl_FragData[0]
+				extDrawBuffer.COLOR_ATTACHMENT1_WEBGL, // gl_FragData[1]
+				extDrawBuffer.COLOR_ATTACHMENT2_WEBGL, // gl_FragData[2]
+				extDrawBuffer.COLOR_ATTACHMENT3_WEBGL  // gl_FragData[3]
+			]);
+		}
+		
 
 		//	GET DEPTH
 
@@ -80,8 +111,17 @@ class FrameBuffer {
 
 
 		if(this.minFilter === gl.LINEAR_MIPMAP_NEAREST)	{
-			gl.bindTexture(gl.TEXTURE_2D, this.texture);
-			gl.generateMipmap(gl.TEXTURE_2D);
+			for (let i = 0; i < this._textures.length; i++) {
+				gl.bindTexture(gl.TEXTURE_2D, this._textures[i].texture);
+				gl.generateMipmap(gl.TEXTURE_2D);
+			}
+		}
+
+
+		//	CHECKING FBO
+		const FBOstatus = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+		if(FBOstatus != gl.FRAMEBUFFER_COMPLETE) {
+			console.log('GL_FRAMEBUFFER_COMPLETE failed, CANNOT use Framebuffer');
 		}
 
 		//	UNBIND
@@ -120,8 +160,9 @@ class FrameBuffer {
 
 	//	TEXTURES
 
-	getTexture() {
-		return this.glTexture;
+	getTexture(mIndex = 0) {
+		// return this._textures.length == 1 ? this.glTexture : this._textures;
+		return this._textures[mIndex];
 	}
 
 	getDepthTexture() {

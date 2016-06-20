@@ -90,5 +90,4 @@ function _init3D() {
 
 	//	CREATE SCENE
 	const scene = new SceneApp();
-
 }

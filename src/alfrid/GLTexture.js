@@ -25,17 +25,17 @@ class GLTexture {
 		gl = GL.gl;
 
 		if(isTexture) {
-			this.texture = mSource;
+			this._texture = mSource;
 		} else {
 			this._mSource  = mSource;
-			this.texture   = gl.createTexture();
+			this._texture  = gl.createTexture();
 			this._isVideo  = (mSource.tagName === 'VIDEO');
 			this.magFilter = mParameters.magFilter || gl.LINEAR;
 			this.minFilter = mParameters.minFilter || gl.LINEAR_MIPMAP_NEAREST;
 			
 			this.wrapS     = mParameters.wrapS || gl.MIRRORED_REPEAT;
 			this.wrapT     = mParameters.wrapT || gl.MIRRORED_REPEAT;
-			const width      = mSource.width || mSource.videoWidth;
+			const width    = mSource.width || mSource.videoWidth;
 
 			if(width) {
 				if(!isSourcePowerOfTwo(mSource)) {
@@ -51,7 +51,7 @@ class GLTexture {
 				}
 			}
 
-			gl.bindTexture(gl.TEXTURE_2D, this.texture);
+			gl.bindTexture(gl.TEXTURE_2D, this._texture);
 			gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 
 			if(mSource.exposure) {
@@ -114,7 +114,7 @@ class GLTexture {
 
 	updateTexture(mSource) {
 		if(mSource) { this._mSource = mSource; }
-		gl.bindTexture(gl.TEXTURE_2D, this.texture);
+		gl.bindTexture(gl.TEXTURE_2D, this._texture);
 		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this._mSource);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, this.magFilter);
@@ -132,11 +132,14 @@ class GLTexture {
 		if(!GL.shader) { return; }
 
 		gl.activeTexture(gl.TEXTURE0 + index);
-		gl.bindTexture(gl.TEXTURE_2D, this.texture);
+		gl.bindTexture(gl.TEXTURE_2D, this._texture);
 		gl.uniform1i(GL.shader.uniformTextures[index], index);
 		this._bindIndex = index;
 	}
 
+	//	GETTER
+
+	get texture() {	return this._texture;	}
 }
 
 
