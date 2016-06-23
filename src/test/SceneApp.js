@@ -3,6 +3,7 @@ import alfrid, { GL } from '../alfrid';
 import ViewPlane from './ViewPlane';
 import ViewSphere from './ViewSphere';
 import ViewMultiTarget from './ViewMultiTarget';
+import ViewObjModel from './ViewObjModel';
 import parse from 'parse-dds';
 
 window.getAsset = function (id) {
@@ -102,16 +103,17 @@ class SceneApp extends alfrid.Scene {
 	
 
 	_initViews() {
-		this._bCopy      = new alfrid.BatchCopy();
-		this._bAxis 	 = new alfrid.BatchAxis();
-		this._bDotPlane  = new alfrid.BatchDotsPlane();
-		this._bBall		 = new alfrid.BatchBall();
-		this._bLine 	 = new alfrid.BatchLine();
-		this._bSkybox 	 = new alfrid.BatchSkybox();
-
-		this._vPlane  	 = new ViewPlane();
-		this._vSphere 	 = new ViewSphere();
-		this._vMulti 	 = new ViewMultiTarget();
+		this._bCopy     = new alfrid.BatchCopy();
+		this._bAxis     = new alfrid.BatchAxis();
+		this._bDotPlane = new alfrid.BatchDotsPlane();
+		this._bBall     = new alfrid.BatchBall();
+		this._bLine     = new alfrid.BatchLine();
+		this._bSkybox   = new alfrid.BatchSkybox();
+		
+		this._vPlane    = new ViewPlane();
+		this._vSphere   = new ViewSphere();
+		this._vMulti    = new ViewMultiTarget();
+		this._vObj      = new ViewObjModel();
 
 		window.addEventListener('mousemove', (e) => this._onMove(e));
 	}
@@ -175,14 +177,17 @@ class SceneApp extends alfrid.Scene {
 		// this.shader.bind();
 		// GL.draw(this.mesh);
 
-
-/*	
+		this.lod = Math.sin(this._time) * 3 + 3;
+/*
 		//	LOD
-		this.lod = Math.sin(this._time) * 2 + 2;
 		this._bSkybox.draw(this._textureFactory);
 		this._vSphere.render(this._textureFactory, this.lod, [2, 0, 0]);
 		this._vSphere.render(this._textureRad, this.lod, [-2, 0, 0]);
 */
+
+		this._vObj.render();
+
+		
 		this._fboRender.bind();
 		GL.clear(0, 0, 0, 0);
 		this._vMulti.render();
@@ -190,7 +195,7 @@ class SceneApp extends alfrid.Scene {
 
 		this._fboRenderSimple.bind();
 		GL.clear(0, 0, 0, 0);
-		this._vSphere.render(this._textureRad, this.lod, [0, 0, 0]);
+		this._vSphere.render(this._textureFactory, this.lod, [0, 0, 0]);
 		this._fboRenderSimple.unbind();
 
 		const size = GL.width / 4;

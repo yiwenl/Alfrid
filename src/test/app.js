@@ -14,6 +14,7 @@ alfrid.log();
 
 const assets = [
 	{ id:'factory', url:'assets/img/factory_radiance.dds', type: 'binary' },
+	{ id:'objModel', url:'assets/obj/tree.obj', type:'text' },
 ];
 
 const faces = ['posx', 'negx', 'posy', 'negy', 'posz', 'negz'];

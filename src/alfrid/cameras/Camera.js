@@ -15,7 +15,7 @@ class Camera {
 	}
 
 
-	lookAt(aEye, aCenter, aUp) {
+	lookAt(aEye, aCenter, aUp = [0, 1, 0]) {
 		glm.vec3.copy(this.position, aEye);
 		glm.mat4.identity(this._matrix);
 		glm.mat4.lookAt(this._matrix, aEye, aCenter, aUp);

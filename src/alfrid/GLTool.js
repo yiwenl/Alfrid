@@ -40,7 +40,21 @@ class GLTool {
 		
 
 		//	extensions
-		const extensions = ['EXT_shader_texture_lod', 'EXT_sRGB', 'EXT_frag_depth', 'OES_texture_float', 'OES_texture_half_float', 'OES_texture_float_linear', 'OES_texture_half_float_linear', 'OES_standard_derivatives', 'WEBGL_depth_texture', 'EXT_texture_filter_anisotropic', 'ANGLE_instanced_arrays', 'WEBGL_draw_buffers'];
+		const extensions = [
+			'EXT_shader_texture_lod', 
+			'EXT_sRGB', 
+			'EXT_frag_depth', 
+			'OES_texture_float', 
+			'OES_texture_half_float', 
+			'OES_texture_float_linear', 
+			'OES_texture_half_float_linear', 
+			'OES_standard_derivatives', 
+			'WEBGL_depth_texture', 
+			'EXT_texture_filter_anisotropic', 
+			'ANGLE_instanced_arrays', 
+			'WEBGL_draw_buffers'
+		];
+
 		this.extensions = {};
 		for(let i = 0; i < extensions.length; i++) {
 			this.extensions[extensions[i]] = this.gl.getExtension(extensions[i]);
@@ -66,7 +80,6 @@ class GLTool {
 		this.CLAMP_TO_EDGE         = gl.CLAMP_TO_EDGE;
 		this.SCISSOR_TEST		   = gl.SCISSOR_TEST;
 		
-
 
 		this.enable(this.DEPTH_TEST);
 		this.enable(this.CULL_FACE);

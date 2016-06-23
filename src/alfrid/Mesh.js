@@ -91,6 +91,7 @@ class Mesh {
 		const bufferData = [];
 		let buffer;
 		let dataArray;
+		if (!mItemSize) {	mItemSize = mData[0].length; }
 
 		//	Check for existing attributes
 		for(i = 0; i < this._attributes.length; i++) {
