@@ -115,6 +115,7 @@ class GLShader {
 			return;
 		}
 
+
 		if(uniformType.indexOf('Matrix') === -1) {
 			if(!isNumber) {
 				if(!isSame(this.parameters[parameterIndex].value, mValue) || !hasUniform) {
@@ -136,6 +137,7 @@ class GLShader {
 
 			}
 		}
+
 	}
 
 

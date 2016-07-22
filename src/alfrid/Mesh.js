@@ -11,18 +11,19 @@ const vec3 = glm.vec3;
 
 class Mesh {
 	constructor(mDrawingType = 4) {
-		gl                = GL.gl;
-		this.drawType     = mDrawingType;
-		this._attributes  = [];
-		this._vertexSize  = 0;
+		gl                        = GL.gl;
+		this.drawType             = mDrawingType;
+		this._attributes          = [];
+		this._instancedAttributes = [];
+		this._vertexSize          = 0;
 		
-		this._vertices    = [];
-		this._texCoords   = [];
-		this._normals     = [];
-		this._faceNormals = [];
-		this._tangents    = [];
-		this._indices     = [];
-		this._faces       = [];
+		this._vertices            = [];
+		this._texCoords           = [];
+		this._normals             = [];
+		this._faceNormals         = [];
+		this._tangents            = [];
+		this._indices             = [];
+		this._faces               = [];
 	}
 
 
@@ -75,7 +76,6 @@ class Mesh {
 		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(mArrayIndices), drawType);
 		this.iBuffer.itemSize = 1;
 		this.iBuffer.numItems = mArrayIndices.length;
-		this._indices         = mArrayIndices;
 
 
 		if (this._vertices.length > 0 && this.drawType === GL.TRIANGLES) {
@@ -132,9 +132,68 @@ class Mesh {
 			attribute.data = mData;
 			attribute.itemSize = mItemSize;
 			attribute.dataArray = dataArray;
+		}
+	}
 
+
+	bufferInstance(mData, mName) {
+		if (!GL.checkExtension('ANGLE_instanced_arrays')) {
+			console.warn('Extension : ANGLE_instanced_arrays is not supported with this device !');
+			return;
 		}
 
+		let index = -1;
+		let i = 0;
+		const drawType   = gl.STATIC_DRAW;
+		const bufferData = [];
+		let buffer;
+		let dataArray;
+		const numInstance = mData.length;
+		console.log('Num Instance :', numInstance);
+		const itemSize = mData[0].length;
+
+		//	Check for existing attributes
+		for(i = 0; i < this._instancedAttributes.length; i++) {
+			if(this._instancedAttributes[i].name === mName) {
+				this._instancedAttributes[i].data = mData;
+				index = i;
+				break;
+			}
+		}
+
+		//	flatten buffer data		
+		for(i = 0; i < mData.length; i++) {
+			for(let j = 0; j < mData[i].length; j++) {
+				bufferData.push(mData[i][j]);
+			}
+		}
+
+		console.log('Buffer Data :', mName, bufferData.length);
+
+		
+		if(index === -1) {	
+
+			//	attribute not exist yet, create new buffer
+			buffer = gl.createBuffer();
+			gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+
+			dataArray = new Float32Array(bufferData);
+			gl.bufferData(gl.ARRAY_BUFFER, dataArray, drawType);
+			this._instancedAttributes.push({ name:mName, data:mData, itemSize: itemSize, buffer:buffer, dataArray:dataArray, numInstance: numInstance });
+
+		} else {
+
+			//	attribute existed, replace with new data
+			buffer = this._instancedAttributes[index].buffer;
+			gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+			dataArray = new Float32Array(bufferData);
+			gl.bufferData(gl.ARRAY_BUFFER, dataArray, drawType);
+
+			const attribute = this._instancedAttributes.find((a) => a.name === mName);
+			attribute.data = mData;
+			attribute.itemSize = itemSize;
+			attribute.dataArray = dataArray;
+		}
 	}
 
 
@@ -245,8 +304,20 @@ class Mesh {
 		return this._normals;
 	}
 
+	get coords() {
+		return this._texCoords;
+	}
+
+	get indices() {
+		return this._indices;
+	}
+
 	get attributes() {
 		return this._attributes;
+	}
+
+	get instancedAttributes() {
+		return this._instancedAttributes;
 	}
 
 	get vertexSize() {

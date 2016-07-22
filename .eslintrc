@@ -122,7 +122,7 @@
     'yield-star-spacing': [2, 'after'],
 
     // enforce spacing inside array brackets
-    'array-bracket-spacing': [2, 'never'],
+    //'array-bracket-spacing': [2, 'never'],
 
     // enforce spacing inside single-line blocks
     // http://eslint.org/docs/rules/block-spacing

@@ -4,6 +4,7 @@ import ViewPlane from './ViewPlane';
 import ViewSphere from './ViewSphere';
 import ViewMultiTarget from './ViewMultiTarget';
 import ViewObjModel from './ViewObjModel';
+import ViewInstanced from './ViewInstanced';
 import parse from 'parse-dds';
 
 window.getAsset = function (id) {
@@ -38,9 +39,10 @@ class SceneApp extends alfrid.Scene {
 		this.indices = [];
 		this.count = 0;
 
-		this.addTriangle();
+		this.hasRendered = false;
 
-		window.addEventListener('mousedown', ()=>this.addTriangle());
+		// this.addTriangle();
+		// window.addEventListener('mousedown', ()=>this.addTriangle());
 	}
 
 
@@ -103,17 +105,18 @@ class SceneApp extends alfrid.Scene {
 	
 
 	_initViews() {
-		this._bCopy     = new alfrid.BatchCopy();
-		this._bAxis     = new alfrid.BatchAxis();
-		this._bDotPlane = new alfrid.BatchDotsPlane();
-		this._bBall     = new alfrid.BatchBall();
-		this._bLine     = new alfrid.BatchLine();
-		this._bSkybox   = new alfrid.BatchSkybox();
+		this._bCopy      = new alfrid.BatchCopy();
+		this._bAxis      = new alfrid.BatchAxis();
+		this._bDotPlane  = new alfrid.BatchDotsPlane();
+		this._bBall      = new alfrid.BatchBall();
+		this._bLine      = new alfrid.BatchLine();
+		this._bSkybox    = new alfrid.BatchSkybox();
 		
-		this._vPlane    = new ViewPlane();
-		this._vSphere   = new ViewSphere();
-		this._vMulti    = new ViewMultiTarget();
-		this._vObj      = new ViewObjModel();
+		this._vPlane     = new ViewPlane();
+		this._vSphere    = new ViewSphere();
+		this._vMulti     = new ViewMultiTarget();
+		this._vObj       = new ViewObjModel();
+		this._vInstanced = new ViewInstanced();
 
 		window.addEventListener('mousemove', (e) => this._onMove(e));
 	}
@@ -132,6 +135,7 @@ class SceneApp extends alfrid.Scene {
 
 
 	render() {
+		if(this.hasRendered) return;
 		this._time += 0.01;
 		const radius = .6;
 		const dist = 10;
@@ -139,7 +143,7 @@ class SceneApp extends alfrid.Scene {
 		this.ray.direction[1] = Math.sin(this._time) * radius;
 
 		this.orbitalControl.ry.value += 0.001;
-		// this._bAxis.draw();
+		this._bAxis.draw();
 		this._bDotPlane.draw();
 
 		// this._bBall.draw(this.a, this._size, [1, .5, 0]);
@@ -185,9 +189,10 @@ class SceneApp extends alfrid.Scene {
 		this._vSphere.render(this._textureRad, this.lod, [-2, 0, 0]);
 */
 
-		this._vObj.render();
+		// this._vObj.render();
 
-		
+		//	Multiple rendering target		
+/*		
 		this._fboRender.bind();
 		GL.clear(0, 0, 0, 0);
 		this._vMulti.render();
@@ -206,6 +211,10 @@ class SceneApp extends alfrid.Scene {
 
 		GL.viewport(0, size / GL.aspectRatio, size, size / GL.aspectRatio);
 		this._bCopy.draw(this._fboRenderSimple.getTexture());
+*/		
+
+		this._vInstanced.render();
+		// this.hasRendered = true;
 	}
 
 

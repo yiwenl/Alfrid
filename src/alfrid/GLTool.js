@@ -2,6 +2,24 @@
 
 import glm from 'gl-matrix';
 
+let gl;
+
+const offsets = new Float32Array([
+	0.0, 0.0, 0.1,
+	1.0, 0.0, 0.2,
+	2.0, 0.0, 0.3,
+	3.0, 0.0, 0.4
+]);
+
+const colors = new Float32Array([
+	1.0, 0.0, 0.0, 1.0, // Red monkey
+	0.0, 1.0, 0.0, 1.0, // Green monkey
+	0.0, 0.0, 1.0, 1.0, // Blue monkey
+	1.0, 1.0, 1.0, 1.0, // White monkey
+]);
+
+let offsetBuffer, colorBuffer;
+
 class GLTool {
 
 	constructor() {
@@ -13,6 +31,7 @@ class GLTool {
 		this._inverseModelViewMatrix = glm.mat3.create();
 		this._modelMatrix            = glm.mat4.create();
 		this._matrix                 = glm.mat4.create();
+		this._lastMesh				 = null;
 		glm.mat4.identity(this.identityMatrix, this.identityMatrix);
 
 		this.isMobile = false;
@@ -36,8 +55,7 @@ class GLTool {
 		
 		this.canvas = mCanvas;
 		this.setSize(window.innerWidth, window.innerHeight);
-		this.gl          = this.canvas.getContext('webgl', mParameters) || this.canvas.getContext('experimental-webgl', mParameters);
-		
+		gl = this.gl = this.canvas.getContext('webgl', mParameters) || this.canvas.getContext('experimental-webgl', mParameters);
 
 		//	extensions
 		const extensions = [
@@ -57,12 +75,11 @@ class GLTool {
 
 		this.extensions = {};
 		for(let i = 0; i < extensions.length; i++) {
-			this.extensions[extensions[i]] = this.gl.getExtension(extensions[i]);
+			this.extensions[extensions[i]] = gl.getExtension(extensions[i]);
 		}
 		
 
 		//	Copy gl Attributes
-		const gl                     = this.gl;
 		this.VERTEX_SHADER         = gl.VERTEX_SHADER;
 		this.FRAGMENT_SHADER       = gl.FRAGMENT_SHADER;
 		this.COMPILE_STATUS        = gl.COMPILE_STATUS;
@@ -97,19 +114,19 @@ class GLTool {
 		if(h !== this._viewport[3]) { hasChanged = true; }
 
 		if(hasChanged) {
-			this.gl.viewport(x, y, w, h);
+			gl.viewport(x, y, w, h);
 			this._viewport = [x, y, w, h];
 		}
 	}
 
 	scissor(x, y, w, h) {
-		this.gl.scissor(x, y, w, h);
+		gl.scissor(x, y, w, h);
 	}
 
 
 	clear(r, g, b, a) {
-		this.gl.clearColor(r, g, b, a);
-		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+		gl.clearColor(r, g, b, a);
+		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	}
 
 
@@ -137,7 +154,7 @@ class GLTool {
 	}
 
 
-	draw(mMesh, drawingType) {
+	draw(mMesh, mDrawingType) {
 
 		if(mMesh.length) {
 			for(let i = 0; i < mMesh.length; i++) {
@@ -145,6 +162,7 @@ class GLTool {
 			}
 			return;
 		}
+
 
 		function getAttribLoc(gl, shaderProgram, name) {
 			if(shaderProgram.cacheAttribLoc === undefined) {	shaderProgram.cacheAttribLoc = {};	}
@@ -155,26 +173,29 @@ class GLTool {
 			return shaderProgram.cacheAttribLoc[name];
 		}
 
-		//	ATTRIBUTES
-		for(let i = 0; i < mMesh.attributes.length; i++) {
+		if (this._lastMesh !== mMesh) {
 
-			const attribute = mMesh.attributes[i];
-			this.gl.bindBuffer(this.gl.ARRAY_BUFFER, attribute.buffer);
-			const attrPosition = getAttribLoc(this.gl, this.shaderProgram, attribute.name);
-			this.gl.vertexAttribPointer(attrPosition, attribute.itemSize, this.gl.FLOAT, false, 0, 0);
-			
-			if(this._enabledVertexAttribute.indexOf(attrPosition) === -1) {
-				this.gl.enableVertexAttribArray(attrPosition);
-				this._enabledVertexAttribute.push(attrPosition);
+			//	ATTRIBUTES
+			for(let i = 0; i < mMesh.attributes.length; i++) {
+
+				const attribute = mMesh.attributes[i];
+				gl.bindBuffer(gl.ARRAY_BUFFER, attribute.buffer);
+				const attrPosition = getAttribLoc(gl, this.shaderProgram, attribute.name);
+				gl.vertexAttribPointer(attrPosition, attribute.itemSize, gl.FLOAT, false, 0, 0);
+				
+				if(this._enabledVertexAttribute.indexOf(attrPosition) === -1) {
+					gl.enableVertexAttribArray(attrPosition);
+					this._enabledVertexAttribute.push(attrPosition);
+				}
+				
 			}
-			
+
+
+			//	BIND INDEX BUFFER
+			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mMesh.iBuffer);
+
+			this._lastMesh = mMesh;
 		}
-
-
-		//	BIND INDEX BUFFER
-
-		this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, mMesh.iBuffer);
-
 
 		//	DEFAULT MATRICES
 		if(this.camera !== undefined) {
@@ -187,18 +208,109 @@ class GLTool {
 		this.shader.uniform('uModelViewMatrixInverse', 'mat3', this._inverseModelViewMatrix);
 
 		let drawType = mMesh.drawType;
-		if(drawingType !== undefined) {
-			drawType = drawingType;
+		if(mDrawingType !== undefined) {
+			drawType = mDrawingType;
 		}
 		
 		//	DRAWING
-		if(drawType === this.gl.POINTS) {
-			this.gl.drawArrays(drawType, 0, mMesh.vertexSize);	
+		if(drawType === gl.POINTS) {
+			gl.drawArrays(drawType, 0, mMesh.vertexSize);	
 		} else {
 			// console.log('numItems : ', mMesh.iBuffer.numItems);
-			this.gl.drawElements(drawType, mMesh.iBuffer.numItems, this.gl.UNSIGNED_SHORT, 0);	
+			gl.drawElements(drawType, mMesh.iBuffer.numItems, gl.UNSIGNED_SHORT, 0);	
 		}
 
+	}
+
+
+	drawInstance(mMesh) {
+		const ext = this.getExtension('ANGLE_instanced_arrays');
+		if (!ext) {
+			console.warn('Extension : ANGLE_instanced_arrays is not supported with this device !');
+			return;
+		}
+
+		if(mMesh.length) {
+			for(let i = 0; i < mMesh.length; i++) {
+				this.drawInstance(mMesh[i], mDrawingType);
+			}
+			return;
+		}
+
+
+		function getAttribLoc(gl, shaderProgram, name) {
+			if(shaderProgram.cacheAttribLoc === undefined) {	shaderProgram.cacheAttribLoc = {};	}
+			if(shaderProgram.cacheAttribLoc[name] === undefined) {
+				shaderProgram.cacheAttribLoc[name] = gl.getAttribLocation(shaderProgram, name);
+			}
+
+			return shaderProgram.cacheAttribLoc[name];
+		}
+
+		const attrPositionToReset = [];
+
+
+		if (this._lastMesh !== mMesh) {
+
+			let instanceCount = 1;
+
+			//	ATTRIBUTES
+			for(let i = 0; i < mMesh.attributes.length; i++) {
+
+				const attribute = mMesh.attributes[i];
+				gl.bindBuffer(gl.ARRAY_BUFFER, attribute.buffer);
+				const attrPosition = getAttribLoc(gl, this.shaderProgram, attribute.name);
+				gl.vertexAttribPointer(attrPosition, attribute.itemSize, gl.FLOAT, false, 0, 0);
+				
+				if(this._enabledVertexAttribute.indexOf(attrPosition) === -1) {
+					gl.enableVertexAttribArray(attrPosition);
+					this._enabledVertexAttribute.push(attrPosition);
+				}
+				
+			}
+
+
+			//	BIND INDEX BUFFER
+			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mMesh.iBuffer);
+
+			//	INSTANCE ATTRIBUTES
+			for(let i = 0; i < mMesh.instancedAttributes.length; i++) {
+
+				const attribute = mMesh.instancedAttributes[i];
+				gl.bindBuffer(gl.ARRAY_BUFFER, attribute.buffer);
+				const attrPosition = getAttribLoc(gl, this.shaderProgram, attribute.name);
+				gl.vertexAttribPointer(attrPosition, attribute.itemSize, gl.FLOAT, false, attribute.itemSize * 4, 0);
+				ext.vertexAttribDivisorANGLE(attrPosition, 1);
+				attrPositionToReset.push(attrPosition);
+				
+				if(this._enabledVertexAttribute.indexOf(attrPosition) === -1) {
+					gl.enableVertexAttribArray(attrPosition);
+					this._enabledVertexAttribute.push(attrPosition);
+				}
+				
+				instanceCount = attribute.numInstance;
+			}
+
+			this._instanceCount = instanceCount;
+
+			this._lastMesh = mMesh;
+		}
+
+		//	DEFAULT MATRICES
+		if(this.camera !== undefined) {
+			this.shader.uniform('uProjectionMatrix', 'mat4', this.camera.projection);	
+			this.shader.uniform('uViewMatrix', 'mat4', this.camera.matrix);
+		}
+		
+		this.shader.uniform('uModelMatrix', 'mat4', this._modelMatrix);
+		this.shader.uniform('uNormalMatrix', 'mat3', this._normalMatrix);
+		this.shader.uniform('uModelViewMatrixInverse', 'mat3', this._inverseModelViewMatrix);
+
+		ext.drawElementsInstancedANGLE(mMesh.drawType, mMesh.iBuffer.numItems, gl.UNSIGNED_SHORT, 0, this._instanceCount);
+
+		attrPositionToReset.map((attrPos) => {
+			ext.vertexAttribDivisorANGLE(attrPos, 0);
+		});
 	}
 
 
@@ -209,7 +321,7 @@ class GLTool {
 		this.canvas.height = this._height;
 		this._aspectRatio  = this._width / this._height;
 
-		if(this.gl) {
+		if(gl) {
 			this.viewport(0, 0, this._width, this._height);	
 		}
 		
@@ -237,19 +349,19 @@ class GLTool {
 	//	BLEND MODES
 
 	enableAlphaBlending() {
-		this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);	
+		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);	
 	}
 
 	enableAdditiveBlending() {
-		this.gl.blendFunc(this.gl.ONE, this.gl.ONE);
+		gl.blendFunc(gl.ONE, gl.ONE);
 	}
 
 
 	//	GL NATIVE FUNCTIONS
 
-	enable(mParameter) {	this.gl.enable(mParameter);		}
+	enable(mParameter) {	gl.enable(mParameter);		}
 
-	disable(mParameter) {	this.gl.disable(mParameter);	}
+	disable(mParameter) {	gl.disable(mParameter);	}
 
 	viewport(x, y, w, h) {	this.setViewport(x, y, w, h);	}
 
