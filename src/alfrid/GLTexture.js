@@ -133,7 +133,6 @@ class GLTexture {
 
 		gl.activeTexture(gl.TEXTURE0 + index);
 		gl.bindTexture(gl.TEXTURE_2D, this._texture);
-		gl.uniform1i(GL.shader.uniformTextures[index], index);
 		this._bindIndex = index;
 	}
 

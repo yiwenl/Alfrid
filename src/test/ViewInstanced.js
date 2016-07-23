@@ -4,7 +4,8 @@ import alfrid, { GL } from '../alfrid';
 import vs from './shaders/instanced.vert';
 import fs from './shaders/instanced.frag';
 
-const numInstance = 10;
+const numInstance = Math.pow(40, 3);
+const random = function (min, max) { return min + Math.random() * (max - min);	};
 
 class ViewInstanced extends alfrid.View {
 	
@@ -15,7 +16,7 @@ class ViewInstanced extends alfrid.View {
 
 
 	_init() {
-		const cubeSize = 1;
+		const cubeSize = .24;
 		const meshCube = alfrid.Geom.cube(cubeSize, cubeSize, cubeSize);
 
 		const mesh = new alfrid.Mesh();
@@ -32,11 +33,12 @@ class ViewInstanced extends alfrid.View {
 
 		const positionOffsets = [];
 		const colors = [];
+		const range = 10;
 		let grey;
 		for(let i = 0; i < numInstance; i++) {
-			positionOffsets.push([-numInstance / 2 + i, 0, 0]);
+			positionOffsets.push([random(-range, range), random(-range, range), random(-range, range)]);
 			grey = (i + 1) / numInstance;
-			colors.push([grey, grey, grey]);
+			colors.push([Math.random(), Math.random(), Math.random()]);
 		}
 
 		mesh.bufferInstance(positionOffsets, 'aOffset');

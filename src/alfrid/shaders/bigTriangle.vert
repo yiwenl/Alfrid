@@ -2,7 +2,7 @@
 
 #define SHADER_NAME BIG_TRIANGLE_VERTEX
 
-precision highp float;
+precision mediump float;
 attribute vec2 aPosition;
 varying vec2 vTextureCoord;
 

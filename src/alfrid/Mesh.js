@@ -149,7 +149,6 @@ class Mesh {
 		let buffer;
 		let dataArray;
 		const numInstance = mData.length;
-		console.log('Num Instance :', numInstance);
 		const itemSize = mData[0].length;
 
 		//	Check for existing attributes
@@ -167,8 +166,6 @@ class Mesh {
 				bufferData.push(mData[i][j]);
 			}
 		}
-
-		console.log('Buffer Data :', mName, bufferData.length);
 
 		
 		if(index === -1) {	

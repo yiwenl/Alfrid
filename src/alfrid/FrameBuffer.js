@@ -28,6 +28,7 @@ class FrameBuffer {
 		this.wrapT      = mParameters.wrapT 		|| gl.CLAMP_TO_EDGE;
 		this.useDepth   = mParameters.useDepth 		|| true;
 		this.useStencil = mParameters.useStencil 	|| false;
+		this.texelType 	= mParameters.type;
 
 		if(!isPowerOfTwo(this.width) || !isPowerOfTwo(this.height)) {
 			this.wrapS = this.wrapT = gl.CLAMP_TO_EDGE;
@@ -69,13 +70,31 @@ class FrameBuffer {
 
 		//	SETUP TEXTURE MIPMAP, WRAP
 
+		let texelType = gl.UNSIGNED_BYTE;
+		const extHalfFloat = GL.getExtension('OES_texture_half_float');
+
+		if (GL.checkExtension('OES_texture_float')) {
+			texelType = gl.FLOAT;
+		} else if(extHalfFloat) {
+			texelType = extHalfFloat.HALF_FLOAT_OES;
+		}
+
+
+		if (GL.isMobile && texelType === gl.FLOAT && extHalfFloat) {
+			texelType = extHalfFloat.HALF_FLOAT_OES;
+		}
+
+		if (this.texelType) {
+			texelType = this.texelType;
+		}
+
 		for (let i = 0; i < this._textures.length; i++) {
 			gl.bindTexture(gl.TEXTURE_2D, this._textures[i].texture);
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, this.magFilter);
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, this.minFilter);
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, this.wrapS);
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, this.wrapT);
-			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.width, this.height, 0, gl.RGBA, GL.isMobile ? gl.UNSIGNED_BYTE : gl.FLOAT, null);	
+			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.width, this.height, 0, gl.RGBA, texelType, null);	
 		}
 
 		

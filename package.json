@@ -1,6 +1,6 @@
 {
   "name": "alfrid",
-  "version": "0.1.11",
+  "version": "0.1.13",
   "description": "WebGL 3D toolkit",
   "main": "build/alfrid.js",
   "directories": {
@@ -52,6 +52,7 @@
     "path": "^0.12.7",
     "raw-loader": "^0.5.1",
     "sass-loader": "^3.2.0",
+    "stats.js": "^0.16.0",
     "style-loader": "^0.13.0",
     "webpack": "1.12.14",
     "webpack-dev-server": "1.14.1"

@@ -2,7 +2,7 @@
 
 #define SHADER_NAME SIMPLE_TEXTURE
 
-precision highp float;
+precision lowp float;
 varying vec3 vColor;
 
 void main(void) {

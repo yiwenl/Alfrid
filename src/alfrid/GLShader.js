@@ -59,6 +59,9 @@ class GLShader {
 
 	bind() {
 
+		if(GL.shader === this) {
+			return;
+		}
 		gl.useProgram(this.shaderProgram);
 		GL.useShader(this);
 		this.uniformTextures = [];

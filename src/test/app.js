@@ -1,8 +1,10 @@
 import alfrid, { GL } from '../alfrid';
 import SceneApp from './SceneApp';
+import SceneParticle from './SceneParticle';
 import AssetsLoader from 'assets-loader';
 import dat from 'dat-gui';
 import '../scss/global.scss';
+import Stats from 'stats.js';
 
 console.debug('DEVELOPMENT BUILDING VERSION');
 console.debug('DEVELOPMENT BUILDING VERSION');
@@ -90,5 +92,13 @@ function _init3D() {
 	window.gui = new dat.GUI({ width:300 });
 
 	//	CREATE SCENE
-	const scene = new SceneApp();
+	// const scene = new SceneApp();
+	const scene = new SceneParticle();
+
+
+	const stats = new Stats();
+	document.body.appendChild(stats.domElement);
+	alfrid.Scheduler.addEF(()=> {
+		stats.update();
+	});
 }
