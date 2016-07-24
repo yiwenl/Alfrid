@@ -302,7 +302,7 @@
     'space-in-parens': [2, 'never'],
 
     // require spaces around operators
-    'space-infix-ops': 2,
+    //'space-infix-ops': 2,
 
     // Require or disallow spaces before/after unary operators
     'space-unary-ops': 0,

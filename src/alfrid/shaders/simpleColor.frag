@@ -2,7 +2,7 @@
 
 #define SHADER_NAME SIMPLE_COLOR
 
-precision highp float;
+precision mediump float;
 
 uniform vec3 color;
 uniform float opacity;

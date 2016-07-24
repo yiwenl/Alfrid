@@ -18,6 +18,15 @@ const colors = new Float32Array([
 	1.0, 1.0, 1.0, 1.0, // White monkey
 ]);
 
+const getAttribLoc = function (gl, shaderProgram, name) {
+	if(shaderProgram.cacheAttribLoc === undefined) {	shaderProgram.cacheAttribLoc = {};	}
+	if(shaderProgram.cacheAttribLoc[name] === undefined) {
+		shaderProgram.cacheAttribLoc[name] = gl.getAttribLocation(shaderProgram, name);
+	}
+
+	return shaderProgram.cacheAttribLoc[name];
+};
+
 let offsetBuffer, colorBuffer;
 
 class GLTool {
@@ -95,7 +104,13 @@ class GLTool {
 		this.LINEAR_MIPMAP_NEAREST = gl.LINEAR_MIPMAP_NEAREST;
 		this.MIRRORED_REPEAT       = gl.MIRRORED_REPEAT;
 		this.CLAMP_TO_EDGE         = gl.CLAMP_TO_EDGE;
-		this.SCISSOR_TEST		   = gl.SCISSOR_TEST;
+		this.SCISSOR_TEST          = gl.SCISSOR_TEST;
+
+		
+		this.FLOAT                 = gl.Float;
+		this.UNSIGNED_BYTE         = gl.UNSIGNED_BYTE;
+		const extHalfFloat         = this.getExtension('OES_texture_half_float');
+		this.HALF_FLOAT            = extHalfFloat.HALF_FLOAT_OES;
 		
 
 		this.enable(this.DEPTH_TEST);
@@ -164,37 +179,8 @@ class GLTool {
 		}
 
 
-		function getAttribLoc(gl, shaderProgram, name) {
-			if(shaderProgram.cacheAttribLoc === undefined) {	shaderProgram.cacheAttribLoc = {};	}
-			if(shaderProgram.cacheAttribLoc[name] === undefined) {
-				shaderProgram.cacheAttribLoc[name] = gl.getAttribLocation(shaderProgram, name);
-			}
-
-			return shaderProgram.cacheAttribLoc[name];
-		}
-
 		if (this._lastMesh !== mMesh) {
-
-			//	ATTRIBUTES
-			for(let i = 0; i < mMesh.attributes.length; i++) {
-
-				const attribute = mMesh.attributes[i];
-				gl.bindBuffer(gl.ARRAY_BUFFER, attribute.buffer);
-				const attrPosition = getAttribLoc(gl, this.shaderProgram, attribute.name);
-				gl.vertexAttribPointer(attrPosition, attribute.itemSize, gl.FLOAT, false, 0, 0);
-				
-				if(this._enabledVertexAttribute.indexOf(attrPosition) === -1) {
-					gl.enableVertexAttribArray(attrPosition);
-					this._enabledVertexAttribute.push(attrPosition);
-				}
-				
-			}
-
-
-			//	BIND INDEX BUFFER
-			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mMesh.iBuffer);
-
-			this._lastMesh = mMesh;
+			this._bindBuffers(mMesh);
 		}
 
 		//	DEFAULT MATRICES
@@ -237,64 +223,32 @@ class GLTool {
 			return;
 		}
 
-
-		function getAttribLoc(gl, shaderProgram, name) {
-			if(shaderProgram.cacheAttribLoc === undefined) {	shaderProgram.cacheAttribLoc = {};	}
-			if(shaderProgram.cacheAttribLoc[name] === undefined) {
-				shaderProgram.cacheAttribLoc[name] = gl.getAttribLocation(shaderProgram, name);
-			}
-
-			return shaderProgram.cacheAttribLoc[name];
-		}
-
 		const attrPositionToReset = [];
 
-
 		if (this._lastMesh !== mMesh) {
-
-			let instanceCount = 1;
-
-			//	ATTRIBUTES
-			for(let i = 0; i < mMesh.attributes.length; i++) {
-
-				const attribute = mMesh.attributes[i];
-				gl.bindBuffer(gl.ARRAY_BUFFER, attribute.buffer);
-				const attrPosition = getAttribLoc(gl, this.shaderProgram, attribute.name);
-				gl.vertexAttribPointer(attrPosition, attribute.itemSize, gl.FLOAT, false, 0, 0);
-				
-				if(this._enabledVertexAttribute.indexOf(attrPosition) === -1) {
-					gl.enableVertexAttribArray(attrPosition);
-					this._enabledVertexAttribute.push(attrPosition);
-				}
-				
-			}
-
-
-			//	BIND INDEX BUFFER
-			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mMesh.iBuffer);
-
-			//	INSTANCE ATTRIBUTES
-			for(let i = 0; i < mMesh.instancedAttributes.length; i++) {
-
-				const attribute = mMesh.instancedAttributes[i];
-				gl.bindBuffer(gl.ARRAY_BUFFER, attribute.buffer);
-				const attrPosition = getAttribLoc(gl, this.shaderProgram, attribute.name);
-				gl.vertexAttribPointer(attrPosition, attribute.itemSize, gl.FLOAT, false, attribute.itemSize * 4, 0);
-				ext.vertexAttribDivisorANGLE(attrPosition, 1);
-				attrPositionToReset.push(attrPosition);
-				
-				if(this._enabledVertexAttribute.indexOf(attrPosition) === -1) {
-					gl.enableVertexAttribArray(attrPosition);
-					this._enabledVertexAttribute.push(attrPosition);
-				}
-				
-				instanceCount = attribute.numInstance;
-			}
-
-			this._instanceCount = instanceCount;
-
-			this._lastMesh = mMesh;
+			this._bindBuffers(mMesh);
 		}
+
+		let instanceCount = 1;
+		//	INSTANCE ATTRIBUTES
+		for(let i = 0; i < mMesh.instancedAttributes.length; i++) {
+
+			const attribute = mMesh.instancedAttributes[i];
+			gl.bindBuffer(gl.ARRAY_BUFFER, attribute.buffer);
+			const attrPosition = getAttribLoc(gl, this.shaderProgram, attribute.name);
+			gl.vertexAttribPointer(attrPosition, attribute.itemSize, gl.FLOAT, false, attribute.itemSize * 4, 0);
+			ext.vertexAttribDivisorANGLE(attrPosition, 1);
+			attrPositionToReset.push(attrPosition);
+			
+			if(this._enabledVertexAttribute.indexOf(attrPosition) === -1) {
+				gl.enableVertexAttribArray(attrPosition);
+				this._enabledVertexAttribute.push(attrPosition);
+			}
+			
+			instanceCount = attribute.numInstance;
+		}
+
+		this._instanceCount = instanceCount;
 
 		//	DEFAULT MATRICES
 		if(this.camera !== undefined) {
@@ -311,6 +265,27 @@ class GLTool {
 		attrPositionToReset.map((attrPos) => {
 			ext.vertexAttribDivisorANGLE(attrPos, 0);
 		});
+	}
+
+	_bindBuffers(mMesh) {
+		//	ATTRIBUTES
+		for(let i = 0; i < mMesh.attributes.length; i++) {
+
+			const attribute = mMesh.attributes[i];
+			gl.bindBuffer(gl.ARRAY_BUFFER, attribute.buffer);
+			const attrPosition = getAttribLoc(gl, this.shaderProgram, attribute.name);
+			gl.vertexAttribPointer(attrPosition, attribute.itemSize, gl.FLOAT, false, 0, 0);
+			
+			if(this._enabledVertexAttribute.indexOf(attrPosition) === -1) {
+				gl.enableVertexAttribArray(attrPosition);
+				this._enabledVertexAttribute.push(attrPosition);
+			}
+		}
+
+		//	BIND INDEX BUFFER
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mMesh.iBuffer);
+
+		this._lastMesh = mMesh;
 	}
 
 

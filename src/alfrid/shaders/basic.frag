@@ -2,7 +2,7 @@
 
 #define SHADER_NAME BASIC_FRAGMENT
 
-precision highp float;
+precision lowp float;
 varying vec2 vTextureCoord;
 uniform float time;
 // uniform sampler2D texture;
