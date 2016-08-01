@@ -170,6 +170,10 @@ class GLTool {
 
 
 	draw(mMesh, mDrawingType) {
+		if(mMesh.instancedAttributes.length > 0) {
+			this.drawInstance(mMesh);
+			return;
+		}
 
 		if(mMesh.length) {
 			for(let i = 0; i < mMesh.length; i++) {

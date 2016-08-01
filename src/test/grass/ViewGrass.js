@@ -91,7 +91,7 @@ class ViewGrass extends alfrid.View {
 				this.shader.uniform('uPositionOffset', 'vec3', pos);
 				this.shader.uniform('uUVOffset', 'vec2', uvOffset);
 
-				GL.drawInstance(this.mesh);
+				GL.draw(this.mesh);
 			}
 		}
 	}
