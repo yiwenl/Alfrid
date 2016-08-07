@@ -7,6 +7,10 @@ class Camera {
 		//	VIEW MATRIX
 		this._matrix = glm.mat4.create();
 
+		//	FOR TRANSFORM FROM ORIENTATION
+		this._quat = glm.quat.create();
+		this._orientation = glm.mat4.create();
+
 		//	PROJECTION MATRIX
 		this._projection = glm.mat4.create();
 
@@ -19,6 +23,13 @@ class Camera {
 		glm.vec3.copy(this.position, aEye);
 		glm.mat4.identity(this._matrix);
 		glm.mat4.lookAt(this._matrix, aEye, aCenter, aUp);
+	}
+
+
+	setFromOrientation(x, y, z, w) {
+		glm.quat.set(this._quat, x, y, z, w);
+		glm.mat4.fromQuat(this._orientation, this._quat);
+		glm.mat4.translate(this._matrix, this._orientation, this.positionOffset);
 	}
 
 
