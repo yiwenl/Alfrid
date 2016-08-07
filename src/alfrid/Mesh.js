@@ -9,6 +9,15 @@ let gl;
 
 const vec3 = glm.vec3;
 
+const getAttribLoc = function (gl, shaderProgram, name) {
+	if(shaderProgram.cacheAttribLoc === undefined) {	shaderProgram.cacheAttribLoc = {};	}
+	if(shaderProgram.cacheAttribLoc[name] === undefined) {
+		shaderProgram.cacheAttribLoc[name] = gl.getAttribLocation(shaderProgram, name);
+	}
+
+	return shaderProgram.cacheAttribLoc[name];
+};
+
 class Mesh {
 	constructor(mDrawingType = 4) {
 		gl                        = GL.gl;
@@ -24,6 +33,31 @@ class Mesh {
 		this._tangents            = [];
 		this._indices             = [];
 		this._faces               = [];
+
+		this._extVAO = GL.getExtension('OES_vertex_array_object');
+	}
+
+
+	bindVAO(shader) {
+		if(!this._extVAO) {	return; }
+		this.shader = shader;
+		if(!this._vao) {
+			this._vao = this._extVAO.createVertexArrayOES(); 	
+			console.debug('Create VAO :', this.vao);
+		}
+		
+		this._extVAO.bindVertexArrayOES(this._vao); 
+	}
+
+	unbindVAO() {
+		if(!this._extVAO) {	return; }
+		this._extVAO.bindVertexArrayOES(null);  
+		
+	}
+
+	deleteVAO() {
+		if(!this._extVAO) {	return; }
+		this._extVAO.deleteVertexArrayOES(this._vao); 
 	}
 
 
@@ -119,6 +153,12 @@ class Mesh {
 			dataArray = new Float32Array(bufferData);
 			gl.bufferData(gl.ARRAY_BUFFER, dataArray, drawType);
 			this._attributes.push({ name:mName, data:mData, itemSize: mItemSize, buffer:buffer, dataArray:dataArray });
+
+			if(this.vao) {
+				gl.enableVertexAttribArray(attrPosition);
+				const attrPosition = getAttribLoc(gl, this.shader.shaderProgram, mName);
+				gl.vertexAttribPointer(attrPosition, mItemSize, gl.FLOAT, false, 0, 0);
+			}
 
 		} else {
 
@@ -292,6 +332,10 @@ class Mesh {
 
 
 	//	GETTER AND SETTERS
+
+	get vao() {
+		return this._vao;
+	}
 
 	get vertices() {
 		return this._vertices;

@@ -64,9 +64,15 @@ class GLTool {
 		
 		this.canvas = mCanvas;
 		this.setSize(window.innerWidth, window.innerHeight);
-		gl = this.gl = this.canvas.getContext('webgl', mParameters) || this.canvas.getContext('experimental-webgl', mParameters);
+		const ctx = this.canvas.getContext('webgl', mParameters) || this.canvas.getContext('experimental-webgl', mParameters);
 
 		//	extensions
+		this.initWithGL(ctx);
+	}
+
+	initWithGL(ctx) {
+		if(!this.canvas) {	this.canvas = ctx.canvas;	}
+		gl = this.gl = ctx;
 		const extensions = [
 			'EXT_shader_texture_lod', 
 			'EXT_sRGB', 
@@ -104,19 +110,14 @@ class GLTool {
 		this.LINEAR_MIPMAP_NEAREST = gl.LINEAR_MIPMAP_NEAREST;
 		this.MIRRORED_REPEAT       = gl.MIRRORED_REPEAT;
 		this.CLAMP_TO_EDGE         = gl.CLAMP_TO_EDGE;
-		this.SCISSOR_TEST          = gl.SCISSOR_TEST;
-
-		
-		this.FLOAT                 = gl.Float;
-		this.UNSIGNED_BYTE         = gl.UNSIGNED_BYTE;
-		const extHalfFloat         = this.getExtension('OES_texture_half_float');
-		this.HALF_FLOAT            = extHalfFloat.HALF_FLOAT_OES;
+		this.SCISSOR_TEST		   = gl.SCISSOR_TEST;
 		
 
 		this.enable(this.DEPTH_TEST);
 		this.enable(this.CULL_FACE);
 		this.enable(this.BLEND);
-	}
+	} 
+
 
 
 	//	PUBLIC METHODS
@@ -182,10 +183,15 @@ class GLTool {
 			return;
 		}
 
-
-		if (this._lastMesh !== mMesh) {
-			this._bindBuffers(mMesh);
+		if(mMesh.vao) {
+			this._bindVao(mMesh);
+		} else {
+			if (this._lastMesh !== mMesh) {
+				this._bindBuffers(mMesh);
+			}	
 		}
+
+		
 
 		//	DEFAULT MATRICES
 		if(this.camera !== undefined) {
@@ -206,10 +212,12 @@ class GLTool {
 		if(drawType === gl.POINTS) {
 			gl.drawArrays(drawType, 0, mMesh.vertexSize);	
 		} else {
-			// console.log('numItems : ', mMesh.iBuffer.numItems);
 			gl.drawElements(drawType, mMesh.iBuffer.numItems, gl.UNSIGNED_SHORT, 0);	
 		}
 
+		if(mMesh.vao) {
+			this._unbindVao(mMesh);
+		}
 	}
 
 
@@ -271,6 +279,14 @@ class GLTool {
 		});
 	}
 
+	_bindVao(mMesh) {
+		mMesh.bindVAO();
+	}
+
+	_unbindVao(mMesh) {
+		mMesh.unbindVAO();
+	}
+
 	_bindBuffers(mMesh) {
 		//	ATTRIBUTES
 		for(let i = 0; i < mMesh.attributes.length; i++) {
@@ -279,7 +295,7 @@ class GLTool {
 			gl.bindBuffer(gl.ARRAY_BUFFER, attribute.buffer);
 			const attrPosition = getAttribLoc(gl, this.shaderProgram, attribute.name);
 			gl.vertexAttribPointer(attrPosition, attribute.itemSize, gl.FLOAT, false, 0, 0);
-			
+
 			if(this._enabledVertexAttribute.indexOf(attrPosition) === -1) {
 				gl.enableVertexAttribArray(attrPosition);
 				this._enabledVertexAttribute.push(attrPosition);
@@ -291,7 +307,6 @@ class GLTool {
 
 		this._lastMesh = mMesh;
 	}
-
 
 	setSize(mWidth, mHeight) {
 		this._width        = mWidth;
