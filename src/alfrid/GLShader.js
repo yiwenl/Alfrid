@@ -78,13 +78,14 @@ class GLShader {
 			}
 		}
 
-		if(mValue === undefined || mValue === null) {
+/*
+		if(!!mValue === undefined || mValue === null) {
 			console.warn('mValue Error:', mName);
 			return;
 		}
-
+*/
 		const uniformType = uniformMapping[mType] || mType;
-		const isNumber = uniformType === 'uniform1i' || uniformType === 'uniform1f';
+		
 		let hasUniform = false;
 		let oUniform;
 		let parameterIndex = -1;
@@ -99,18 +100,21 @@ class GLShader {
 			}
 		}
 
+		let isNumber;
 
 		if(!hasUniform) {
+			isNumber = uniformType === 'uniform1i' || uniformType === 'uniform1f';
 			this.shaderProgram[mName] = gl.getUniformLocation(this.shaderProgram, mName);
 			if(isNumber) {
-				this.parameters.push({ name : mName, type: uniformType, value: mValue, uniformLoc: this.shaderProgram[mName] });	
+				this.parameters.push({ name : mName, type: uniformType, value: mValue, uniformLoc: this.shaderProgram[mName], isNumber });	
 			} else {
-				this.parameters.push({ name : mName, type: uniformType, value: cloneArray(mValue), uniformLoc: this.shaderProgram[mName] });	
+				this.parameters.push({ name : mName, type: uniformType, value: cloneArray(mValue), uniformLoc: this.shaderProgram[mName], isNumber });
 			}
 			
 			parameterIndex = this.parameters.length - 1;
 		} else {
 			this.shaderProgram[mName] = oUniform.uniformLoc;
+			isNumber = oUniform.isNumber;
 		}
 
 

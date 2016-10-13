@@ -41,6 +41,9 @@ class GLTool {
 		this._modelMatrix            = glm.mat4.create();
 		this._matrix                 = glm.mat4.create();
 		this._lastMesh				 = null;
+		this._hasArrayInstance;
+		this._extArrayInstance;
+		this._hasCheckedExt = false;
 		glm.mat4.identity(this.identityMatrix, this.identityMatrix);
 
 		this.isMobile = false;
@@ -222,11 +225,22 @@ class GLTool {
 
 
 	drawInstance(mMesh) {
-		const ext = this.getExtension('ANGLE_instanced_arrays');
-		if (!ext) {
+		if(!this._hasCheckedExt) {
+			const ext = this.getExtension('ANGLE_instanced_arrays');
+			if (!ext) {
+				this._hasArrayInstance = false;
+			} else {
+				this._hasArrayInstance = true;
+				this._extArrayInstance = ext;
+			}
+			this._hasCheckedExt = true;
+		}
+
+		if(!this._hasArrayInstance) {
 			console.warn('Extension : ANGLE_instanced_arrays is not supported with this device !');
 			return;
 		}
+		
 
 		if(mMesh.length) {
 			for(let i = 0; i < mMesh.length; i++) {
@@ -236,6 +250,7 @@ class GLTool {
 		}
 
 		const attrPositionToReset = [];
+		const ext = this._extArrayInstance;
 
 		if (this._lastMesh !== mMesh) {
 			this._bindBuffers(mMesh);

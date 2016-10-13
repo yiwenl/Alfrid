@@ -17,6 +17,7 @@ class ViewGrass extends alfrid.View {
 	
 	constructor() {
 		super(vs, fs);
+		this.time = Math.random() * 0xFF;
 	}
 
 
@@ -73,8 +74,9 @@ class ViewGrass extends alfrid.View {
 
 
 	render() {
+		this.time += 0.01;
 		this.shader.bind();
-
+		this.shader.uniform('uTime', 'float', this.time);
 		const numTiles = params.numTiles;
 		const pos = [0, 0, 0];
 		const uvOffset = [0, 0];

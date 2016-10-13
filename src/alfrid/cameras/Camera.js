@@ -33,6 +33,22 @@ class Camera {
 	}
 
 
+	setProjection(mProj) {
+		this._projection = glm.mat4.clone(mProj);
+	}
+
+
+	setView(mView) {
+		this._matrix = glm.mat4.clone(mView);
+	}
+	
+
+	setFromViewProj(mView, mProj) {
+		this.setView(mView);
+		this.setProjection(mProj);
+	}
+
+
 	//	GETTERS 
 
 	get matrix() {
