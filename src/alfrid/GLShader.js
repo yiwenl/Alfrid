@@ -4,7 +4,7 @@
 
 import GL from './GLTool';
 const glslify = require('glslify');
-function isSame(array1, array2) {
+const isSame = (array1, array2) => {
 	if(array1.length !== array2.length) {
 		return false;
 	}
@@ -18,12 +18,21 @@ function isSame(array1, array2) {
 	return true;
 };
 
-function addLineNumbers(string) {
+const addLineNumbers = (string) => {
 	const lines = string.split('\n');
 	for (let i = 0; i < lines.length; i ++) {
 		lines[i] = `${(i + 1)}: ${lines[i]}`;
 	}
 	return lines.join('\n');
+};
+
+
+const cloneArray = (mArray) => {
+	if(mArray.slice) {
+		return mArray.slice(0); 
+	} else {
+		return new Float32Array(mArray);
+	}
 };
 
 let gl;
@@ -70,14 +79,6 @@ class GLShader {
 
 
 	uniform(mName, mType, mValue) {
-		function cloneArray(mArray) {
-			if(mArray.slice) {
-				return mArray.slice(0); 
-			} else {
-				return new Float32Array(mArray);
-			}
-		}
-
 /*
 		if(!!mValue === undefined || mValue === null) {
 			console.warn('mValue Error:', mName);
@@ -100,7 +101,7 @@ class GLShader {
 			}
 		}
 
-		let isNumber;
+		let isNumber = false;
 
 		if(!hasUniform) {
 			isNumber = uniformType === 'uniform1i' || uniformType === 'uniform1f';
