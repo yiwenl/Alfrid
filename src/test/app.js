@@ -17,8 +17,17 @@ alfrid.log();
 
 const assets = [
 	{ id:'starsmap', url:'assets/img/starsmap.jpg' },
+	{ id:'aoTree', url:'assets/img/ao-tree.jpg' },
 	{ id:'factory', url:'assets/img/factory_radiance.dds', type: 'binary' },
 	{ id:'objModel', url:'assets/obj/tree.obj', type:'text' },
+	{ id:'radiance', url:'assets/img/studio_radiance.dds', type: 'binary' },
+	{ id:'irr_posx', url:'assets/img/irr_posx.hdr', type:'binary' },
+	{ id:'irr_posx', url:'assets/img/irr_posx.hdr', type:'binary' },
+	{ id:'irr_posy', url:'assets/img/irr_posy.hdr', type:'binary' },
+	{ id:'irr_posz', url:'assets/img/irr_posz.hdr', type:'binary' },
+	{ id:'irr_negx', url:'assets/img/irr_negx.hdr', type:'binary' },
+	{ id:'irr_negy', url:'assets/img/irr_negy.hdr', type:'binary' },
+	{ id:'irr_negz', url:'assets/img/irr_negz.hdr', type:'binary' },
 ];
 
 const faces = ['posx', 'negx', 'posy', 'negy', 'posz', 'negz'];

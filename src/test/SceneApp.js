@@ -103,6 +103,18 @@ class SceneApp extends alfrid.Scene {
 		this._fboRender = new alfrid.FrameBuffer(GL.width, GL.height, {}, true);
 
 		this._textureStars = new alfrid.GLTexture(getAsset('starsmap'));
+
+
+		const irrposx = alfrid.HDRLoader.parse(getAsset('irr_posx'));
+		const irrnegx = alfrid.HDRLoader.parse(getAsset('irr_negx'));
+		const irrposy = alfrid.HDRLoader.parse(getAsset('irr_posy'));
+		const irrnegy = alfrid.HDRLoader.parse(getAsset('irr_negy'));
+		const irrposz = alfrid.HDRLoader.parse(getAsset('irr_posz'));
+		const irrnegz = alfrid.HDRLoader.parse(getAsset('irr_negz'));
+
+		this._textureIrr = new alfrid.GLCubeTexture([irrposx, irrnegx, irrposy, irrnegy, irrposz, irrnegz]);
+		this._textureRad = alfrid.GLCubeTexture.parseDDS(getAsset('radiance'));
+		this._textureAO = new alfrid.GLTexture(getAsset('aoTree'));
 	}
 	
 
@@ -195,7 +207,7 @@ class SceneApp extends alfrid.Scene {
 		this._vSphere.render(this._textureRad, this.lod, [-2, 0, 0]);
 */
 
-		// this._vObj.render();
+		this._vObj.render(this._textureRad, this._textureIrr, this._textureAO);
 
 		//	Multiple rendering target		
 /*		

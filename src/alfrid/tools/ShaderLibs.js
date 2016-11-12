@@ -2,13 +2,16 @@
 
 'use strict';
 
-const simpleColorFrag = require('../shaders/simpleColor.frag');
-const bigTriangleVert = require('../shaders/bigTriangle.vert');
-const generalVert = require('../shaders/general.vert');
-const copyFrag = require('../shaders/copy.frag');
-const basicVert = require('../shaders/basic.vert');
-const skyboxVert = require('../shaders/skybox.vert');
-const skyboxFrag = require('../shaders/skybox.frag');
+import simpleColorFrag from '../shaders/simpleColor.frag';
+import bigTriangleVert from '../shaders/bigTriangle.vert';
+import generalVert from '../shaders/general.vert';
+import copyFrag from '../shaders/copy.frag';
+import basicVert from '../shaders/basic.vert';
+import skyboxVert from '../shaders/skybox.vert';
+import skyboxFrag from '../shaders/skybox.frag';
+import pbrVert from '../shaders/pbr.vert';
+import pbrColorFrag from '../shaders/pbrColor.frag';
+import pbrTextureFrag from '../shaders/pbrTexture.frag';
 
 const ShaderLibs = {
 	simpleColorFrag,
@@ -18,6 +21,9 @@ const ShaderLibs = {
 	basicVert,
 	skyboxVert,
 	skyboxFrag,
+	pbrVert,
+	pbrColorFrag,
+	pbrTextureFrag,
 };
 
 

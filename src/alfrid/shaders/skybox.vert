@@ -16,7 +16,12 @@ varying vec3 vVertex;
 varying vec3 vNormal;
 
 void main(void) {
-	gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);
+	mat4 matView = uViewMatrix;
+	matView[3][0] = 0.0;
+	matView[3][1] = 0.0;
+	matView[3][2] = 0.0;
+	
+	gl_Position = uProjectionMatrix * matView * uModelMatrix * vec4(aVertexPosition, 1.0);
 	vTextureCoord = aTextureCoord;
 	
 	vVertex = aVertexPosition;
