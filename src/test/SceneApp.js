@@ -1,5 +1,5 @@
 // SceneApp.js
-import alfrid, { GL } from '../alfrid';
+import alfrid, { GL, BatchSky } from '../alfrid';
 import ViewPlane from './ViewPlane';
 import ViewSphere from './ViewSphere';
 import ViewMultiTarget from './ViewMultiTarget';
@@ -101,6 +101,8 @@ class SceneApp extends alfrid.Scene {
 
 		this._fboRenderSimple = new alfrid.FrameBuffer(GL.width, GL.height);
 		this._fboRender = new alfrid.FrameBuffer(GL.width, GL.height, {}, true);
+
+		this._textureStars = new alfrid.GLTexture(getAsset('starsmap'));
 	}
 	
 
@@ -111,6 +113,7 @@ class SceneApp extends alfrid.Scene {
 		this._bBall      = new alfrid.BatchBall();
 		this._bLine      = new alfrid.BatchLine();
 		this._bSkybox    = new alfrid.BatchSkybox();
+		this._bSky 		 = new BatchSky();
 		
 		this._vPlane     = new ViewPlane();
 		this._vSphere    = new ViewSphere();
@@ -143,6 +146,9 @@ class SceneApp extends alfrid.Scene {
 		this.ray.direction[1] = Math.sin(this._time) * radius;
 
 		this.orbitalControl.ry.value += 0.001;
+
+		this._bSky.draw(this._textureStars);
+
 		this._bAxis.draw();
 		this._bDotPlane.draw();
 
@@ -213,7 +219,7 @@ class SceneApp extends alfrid.Scene {
 		this._bCopy.draw(this._fboRenderSimple.getTexture());
 */		
 
-		this._vInstanced.render();
+		// this._vInstanced.render();
 		// this.hasRendered = true;
 	}
 

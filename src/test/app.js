@@ -16,6 +16,7 @@ console.debug('DEVELOPMENT BUILDING VERSION');
 alfrid.log();
 
 const assets = [
+	{ id:'starsmap', url:'assets/img/starsmap.jpg' },
 	{ id:'factory', url:'assets/img/factory_radiance.dds', type: 'binary' },
 	{ id:'objModel', url:'assets/obj/tree.obj', type:'text' },
 ];
@@ -93,8 +94,8 @@ function _init3D() {
 	window.gui = new dat.GUI({ width:300 });
 
 	//	CREATE SCENE
-	// const scene = new SceneApp();
-	const scene = new SceneGrass();
+	const scene = new SceneApp();
+	// const scene = new SceneGrass();
 
 
 	const stats = new Stats();

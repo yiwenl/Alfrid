@@ -40,6 +40,7 @@ import BatchBall			from './alfrid/helpers/BatchBall';
 import BatchDotsPlane		from './alfrid/helpers/BatchDotsPlane';
 import BatchLine 			from './alfrid/helpers/BatchLine';
 import BatchSkybox			from './alfrid/helpers/BatchSkybox';
+import BatchSky				from './alfrid/helpers/BatchSky';
 import Scene				from './alfrid/helpers/Scene';
 import View					from './alfrid/helpers/View';
 import ShaderLibs			from './alfrid/tools/ShaderLibs';
@@ -79,6 +80,7 @@ class Alfrid {
 		this.BatchBall         = BatchBall;
 		this.BatchLine         = BatchLine;
 		this.BatchSkybox       = BatchSkybox;
+		this.BatchSky          = BatchSky;
 		this.BatchDotsPlane    = BatchDotsPlane;
 		this.Scene             = Scene;
 		this.View              = View;
