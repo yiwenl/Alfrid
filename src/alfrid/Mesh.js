@@ -61,23 +61,22 @@ class Mesh {
 	}
 
 
-	bufferVertex(mArrayVertices, isDynamic = false) {
+	bufferVertex(mArrayVertices, isDynamic = false, generateNormal = false) {
 
 		this._vertexSize = mArrayVertices.length;
 		this.bufferData(mArrayVertices, 'aVertexPosition', 3, isDynamic);
 		this._vertices = mArrayVertices;
 
-
-		const tempNormals = [];
-		for (let i = 0; i < mArrayVertices.length; i++) {
-			tempNormals.push([1, 0, 0]);
-		}
-
 		if (this._normals.length < this._vertices.length) {
+			const tempNormals = [];
+			for (let i = 0; i < mArrayVertices.length; i++) {
+				tempNormals.push([1, 0, 0]);
+			}
+
 			this.bufferNormal(tempNormals, isDynamic);	
 		}
 
-		if (this._indices.length > 0 && this.drawType === GL.TRIANGLES) {
+		if (this._indices.length > 0 && this.drawType === GL.TRIANGLES && generateNormal) {
 			this._generateFaces();
 		}
 	}
@@ -99,7 +98,7 @@ class Mesh {
 	}
 
 
-	bufferIndex(mArrayIndices, isDynamic = false) {
+	bufferIndex(mArrayIndices, isDynamic = false, generateNormal = false) {
 
 		const drawType        = isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW;
 		this._indices         = mArrayIndices;
@@ -112,7 +111,7 @@ class Mesh {
 		this.iBuffer.numItems = mArrayIndices.length;
 
 
-		if (this._vertices.length > 0 && this.drawType === GL.TRIANGLES) {
+		if (this._vertices.length > 0 && this.drawType === GL.TRIANGLES && generateNormal) {
 			this._generateFaces();
 		}
 	}

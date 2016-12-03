@@ -11,6 +11,9 @@ class Scene {
 
 
 	constructor() {
+		this._children = [];
+		this._matrixIdentity = mat4.create();
+
 		this._init();
 		this._initTextures();
 		this._initViews();
@@ -22,6 +25,10 @@ class Scene {
 
 	
 	//	PUBLIC METHODS
+
+	update() {
+
+	}
 
 	render() {
 
@@ -49,6 +56,18 @@ class Scene {
 	}
 
 
+	addChild(mChild) {
+		this._children.push(mChild);
+	}
+
+	removeChild(mChild) {
+		const index = this._children.indexOf(mChild);
+		if(index == -1) {	console.warn('Child no exist'); return;	}
+
+		this._children.splice(index, 1);
+	}
+
+
 	//	PROTECTED METHODS TO BE OVERRIDEN BY CHILDREN
 
 	_initTextures() {
@@ -60,6 +79,17 @@ class Scene {
 
 	}
 
+
+	_renderChildren() {
+		let child;
+		for(let i=0; i<this._children.length; i++) {
+			child = this._children[i];
+			GL.rotate(child.matrix);
+			child.render();
+		}
+
+		GL.rotate(this._matrixIdentity);
+	}
 
 	//	PRIVATE METHODS
 
@@ -80,9 +110,11 @@ class Scene {
 		//	RESET CAMERA
 		GL.setMatrices(this.camera);
 
-
+		this.update();
+		this._renderChildren();
 		this.render();
 	}
+
 }
 
 

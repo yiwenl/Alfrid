@@ -5,6 +5,7 @@ import ViewSphere from './ViewSphere';
 import ViewMultiTarget from './ViewMultiTarget';
 import ViewObjModel from './ViewObjModel';
 import ViewInstanced from './ViewInstanced';
+import ViewTest3D from './ViewTest3D';
 import parse from 'parse-dds';
 
 window.getAsset = function (id) {
@@ -133,6 +134,9 @@ class SceneApp extends alfrid.Scene {
 		this._vObj       = new ViewObjModel();
 		this._vInstanced = new ViewInstanced();
 
+		this._vTest3D 	 = new ViewTest3D();
+		this.addChild(this._vTest3D);
+
 		window.addEventListener('mousemove', (e) => this._onMove(e));
 	}
 
@@ -159,7 +163,7 @@ class SceneApp extends alfrid.Scene {
 
 		this.orbitalControl.ry.value += 0.001;
 
-		this._bSky.draw(this._textureStars);
+		// this._bSky.draw(this._textureStars);
 
 		this._bAxis.draw();
 		this._bDotPlane.draw();
@@ -207,7 +211,7 @@ class SceneApp extends alfrid.Scene {
 		this._vSphere.render(this._textureRad, this.lod, [-2, 0, 0]);
 */
 
-		this._vObj.render(this._textureRad, this._textureIrr, this._textureAO);
+		// this._vObj.render(this._textureRad, this._textureIrr, this._textureAO);
 
 		//	Multiple rendering target		
 /*		

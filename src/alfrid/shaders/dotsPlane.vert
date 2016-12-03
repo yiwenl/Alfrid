@@ -13,7 +13,7 @@ uniform mat4 uProjectionMatrix;
 varying vec3 vNormal;
 
 void main(void) {
-    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);
+    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition + aNormal * 0.000001, 1.0);
 
     vNormal = aNormal;
 }

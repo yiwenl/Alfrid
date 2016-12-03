@@ -28,6 +28,9 @@ import CameraCube			from './alfrid/cameras/CameraCube';
 //	MATH
 import Ray 					from './alfrid/math/Ray';
 
+//	OBJECT
+import Object3D 			from './alfrid/objects/Object3D';
+
 //	LOADERS
 import BinaryLoader			from './alfrid/loaders/BinaryLoader';
 import ObjLoader			from './alfrid/loaders/ObjLoader';
@@ -43,6 +46,7 @@ import BatchSkybox			from './alfrid/helpers/BatchSkybox';
 import BatchSky				from './alfrid/helpers/BatchSky';
 import Scene				from './alfrid/helpers/Scene';
 import View					from './alfrid/helpers/View';
+import View3D				from './alfrid/helpers/View3D';
 import ShaderLibs			from './alfrid/tools/ShaderLibs';
 
 const VERSION = '0.1.1';
@@ -84,6 +88,8 @@ class Alfrid {
 		this.BatchDotsPlane    = BatchDotsPlane;
 		this.Scene             = Scene;
 		this.View              = View;
+		this.View3D            = View3D;
+		this.Object3D          = Object3D;
 		this.ShaderLibs        = ShaderLibs;
 
 

@@ -167,6 +167,7 @@ class GLTool {
 		glm.mat3.fromMat4(this._normalMatrix, this._matrix);
 		glm.mat3.invert(this._normalMatrix, this._normalMatrix);
 		glm.mat3.transpose(this._normalMatrix, this._normalMatrix);
+		
 
 		glm.mat3.fromMat4(this._inverseModelViewMatrix, this._matrix);
 		glm.mat3.invert(this._inverseModelViewMatrix, this._inverseModelViewMatrix);

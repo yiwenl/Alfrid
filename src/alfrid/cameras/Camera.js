@@ -20,6 +20,9 @@ class Camera {
 
 
 	lookAt(aEye, aCenter, aUp = [0, 1, 0]) {
+		this._eye = vec3.clone(aEye);
+		this._center = vec3.clone(aCenter);
+
 		glm.vec3.copy(this.position, aEye);
 		glm.mat4.identity(this._matrix);
 		glm.mat4.lookAt(this._matrix, aEye, aCenter, aUp);
@@ -67,6 +70,11 @@ class Camera {
 	get projectionMatrix() {
 		return this._projection;
 	} 
+
+
+	get eye() {	return this._eye;	}
+
+	get center() {	return this._center;	}
 }
 
 
