@@ -1,5 +1,5 @@
 // SceneApp.js
-import alfrid, { GL, BatchSky } from '../alfrid';
+import alfrid, { GL, BatchSky, View3D } from '../alfrid';
 import ViewPlane from './ViewPlane';
 import ViewSphere from './ViewSphere';
 import ViewMultiTarget from './ViewMultiTarget';
@@ -134,8 +134,12 @@ class SceneApp extends alfrid.Scene {
 		this._vObj       = new ViewObjModel();
 		this._vInstanced = new ViewInstanced();
 
+
+		this._container  = new View3D();
+		this._container.x = 1;
 		this._vTest3D 	 = new ViewTest3D();
-		this.addChild(this._vTest3D);
+		this._container.addChild(this._vTest3D);
+		this.addChild(this._container);
 
 		window.addEventListener('mousemove', (e) => this._onMove(e));
 	}

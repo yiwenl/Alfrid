@@ -47,9 +47,11 @@ import BatchSky				from './alfrid/helpers/BatchSky';
 import Scene				from './alfrid/helpers/Scene';
 import View					from './alfrid/helpers/View';
 import View3D				from './alfrid/helpers/View3D';
+import ShaderUtils			from './alfrid/helpers/ShaderUtils';
 import ShaderLibs			from './alfrid/tools/ShaderLibs';
 
-const VERSION = '0.1.1';
+
+const VERSION = '0.1.20';
 
 class Alfrid {
 	constructor() {
@@ -91,6 +93,7 @@ class Alfrid {
 		this.View3D            = View3D;
 		this.Object3D          = Object3D;
 		this.ShaderLibs        = ShaderLibs;
+		this.ShaderUtils       = ShaderUtils;
 
 
 		//	NOT SUPER SURE I'VE DONE THIS IS A GOOD WAY

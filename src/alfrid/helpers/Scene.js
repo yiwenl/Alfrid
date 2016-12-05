@@ -84,8 +84,7 @@ class Scene {
 		let child;
 		for(let i=0; i<this._children.length; i++) {
 			child = this._children[i];
-			GL.rotate(child.matrix);
-			child.render();
+			child.toRender();
 		}
 
 		GL.rotate(this._matrixIdentity);
