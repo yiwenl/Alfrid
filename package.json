@@ -1,6 +1,6 @@
 {
   "name": "alfrid",
-  "version": "0.1.20",
+  "version": "0.1.22",
   "description": "WebGL 3D toolkit",
   "main": "build/alfrid.js",
   "directories": {

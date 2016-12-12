@@ -25,12 +25,11 @@ class ViewTest3D extends alfrid.View3D {
 		this.time += 0.01;
 		const r = 2;
 
-		quat.setAxisAngle(this.quat, up, this.time);
-		// console.log(this.quat);
+		quat.setAxisAngle(this.quat, up, Math.sin(this.time) * Math.PI);
 		this.setRotationFromQuaternion(this.quat);
 
-		this.rotationX = this.time * 0.75;
-		// this.rotationY = this.time * 0.5;
+		// this.rotationX = this.time * 0.75;
+		this.rotationY = this.time;
 		// this.rotationZ = Math.sin(this.time * 1.5);
 
 

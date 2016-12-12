@@ -77,7 +77,7 @@ class Mesh {
 		}
 
 		if (this._indices.length > 0 && this.drawType === GL.TRIANGLES && generateNormal) {
-			this._generateFaces();
+			this.generateFaces();
 		}
 	}
 
@@ -112,7 +112,7 @@ class Mesh {
 
 
 		if (this._vertices.length > 0 && this.drawType === GL.TRIANGLES && generateNormal) {
-			this._generateFaces();
+			this.generateFaces();
 		}
 	}
 
@@ -235,7 +235,7 @@ class Mesh {
 
 	computeNormals(usingFaceNormals = false) {
 
-		this._generateFaces();
+		this.generateFaces();
 
 		if(usingFaceNormals) {
 			this._computeFaceNormals();
@@ -304,7 +304,7 @@ class Mesh {
 	}
 
 
-	_generateFaces() {
+	generateFaces() {
 		let ia, ib, ic;
 		let a, b, c;
 		const vba = vec3.create(), vca = vec3.create(), vNormal = vec3.create();

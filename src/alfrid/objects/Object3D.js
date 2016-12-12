@@ -44,8 +44,8 @@ class Object3D {
 		mat4.rotateY(this._matrixRotation, this._matrixRotation, this._ry);
 		mat4.rotateZ(this._matrixRotation, this._matrixRotation, this._rz);
 
+
 		mat4.fromQuat(this._matrixQuaternion, this._quat);
-		// mat4.mul(this._matrixRotation, this._matrixRotation, this._matrixQuaternion);
 		mat4.mul(this._matrixRotation, this._matrixQuaternion, this._matrixRotation);
 
 		mat4.scale(this._matrixScale, this._matrixScale, this._scale);
@@ -60,6 +60,7 @@ class Object3D {
 
 	setRotationFromQuaternion(mQuat) {
 		quat.copy(this._quat, mQuat);
+		this._needUpdate = true;
 	}
 
 

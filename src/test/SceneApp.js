@@ -160,12 +160,15 @@ class SceneApp extends alfrid.Scene {
 	render() {
 		if(this.hasRendered) return;
 		this._time += 0.01;
+		this._container.x = Math.cos(this._time);
+		this._container.z = Math.sin(this._time);
+		// this._container.rotationX = Math.sin(this._time) * Math.PI;
 		const radius = .6;
 		const dist = 10;
 		this.ray.direction[0] = Math.cos(this._time) * radius;
 		this.ray.direction[1] = Math.sin(this._time) * radius;
 
-		this.orbitalControl.ry.value += 0.001;
+		// this.orbitalControl.ry.value += 0.001;
 
 		// this._bSky.draw(this._textureStars);
 
