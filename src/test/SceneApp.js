@@ -76,26 +76,26 @@ class SceneApp extends alfrid.Scene {
 
 
 	_initTextures() {
-		const factory = getAsset('factory');
-		this._textureFactory = alfrid.GLCubeTexture.parseDDS(factory);
+		// const factory = getAsset('factory');
+		// this._textureFactory = alfrid.GLCubeTexture.parseDDS(factory);
 
-		const cubeTextures = [];
-		const faces = ['posx', 'negx', 'posy', 'negy', 'posz', 'negz'];
-		const NUM_LEVELS = 8;
+		// const cubeTextures = [];
+		// const faces = ['posx', 'negx', 'posy', 'negy', 'posz', 'negz'];
+		// const NUM_LEVELS = 8;
 
-		for (let i = 0; i <= NUM_LEVELS; i++) {
-			for (let j = 0; j < faces.length; j++) {
-				const id = `mip${i}_rad_${faces[j]}`;
-				const file = alfrid.HDRLoader.parse(getAsset(id));
-				// console.log(id, file.shape);
-				cubeTextures.push(file);	
-			}
-		}
+		// for (let i = 0; i <= NUM_LEVELS; i++) {
+		// 	for (let j = 0; j < faces.length; j++) {
+		// 		const id = `mip${i}_rad_${faces[j]}`;
+		// 		const file = alfrid.HDRLoader.parse(getAsset(id));
+		// 		// console.log(id, file.shape);
+		// 		cubeTextures.push(file);	
+		// 	}
+		// }
 
-		cubeTextures.length = 6;
+		// cubeTextures.length = 6;
 
 		// console.log('cubeTextures : ', cubeTextures.length);
-		this._textureRad = new alfrid.GLCubeTexture(cubeTextures);
+		// this._textureRad0 = new alfrid.GLCubeTexture(cubeTextures);
 
 		this.lod = 0;
 		gui.add(this, 'lod', 0, 6).listen();
@@ -113,8 +113,9 @@ class SceneApp extends alfrid.Scene {
 		const irrposz = alfrid.HDRLoader.parse(getAsset('irr_posz'));
 		const irrnegz = alfrid.HDRLoader.parse(getAsset('irr_negz'));
 
-		this._textureIrr = new alfrid.GLCubeTexture([irrposx, irrnegx, irrposy, irrnegy, irrposz, irrnegz]);
+		this._textureRad0 = new alfrid.GLCubeTexture([irrposx, irrnegx, irrposy, irrnegy, irrposz, irrnegz]);
 		this._textureRad = alfrid.GLCubeTexture.parseDDS(getAsset('radiance'));
+		this._textureIrr = alfrid.GLCubeTexture.parseDDS(getAsset('irradiance'));
 		this._textureAO = new alfrid.GLTexture(getAsset('aoTree'));
 	}
 	
@@ -211,12 +212,12 @@ class SceneApp extends alfrid.Scene {
 		// GL.draw(this.mesh);
 
 		this.lod = Math.sin(this._time) * 3 + 3;
-/*
+
 		//	LOD
-		this._bSkybox.draw(this._textureFactory);
-		this._vSphere.render(this._textureFactory, this.lod, [2, 0, 0]);
-		this._vSphere.render(this._textureRad, this.lod, [-2, 0, 0]);
-*/
+		// this._vSphere.render(this._textureRad0, this.lod, [2, 0, 0]);
+		// this._vSphere.render(this._textureRad, this.lod, [-2, 0, 0]);
+		// this._vSphere.render(this._textureRad0, this.lod, [2, 0, 0]);
+
 
 		// this._vObj.render(this._textureRad, this._textureIrr, this._textureAO);
 

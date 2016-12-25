@@ -5,7 +5,9 @@
 import GL from './GLTool';
 import parse from 'parse-dds';
 let gl;
-
+const DDSD_MIPMAPCOUNT = 0x20000;
+const OFF_MIPMAPCOUNT = 7;
+const headerLengthInt = 31;
 
 class GLCubeTexture {
 	constructor(mSource, mParameters = {}, isCubeTexture = false) {
@@ -16,11 +18,20 @@ class GLCubeTexture {
 			return;
 		}
 
+		let hasMipmaps = mSource.length > 6;
+		if(mSource[0].mipmapCount) {
+			hasMipmaps = mSource[0].mipmapCount > 1;
+		}
+
 		this.texture   = gl.createTexture();
 		this.magFilter = mParameters.magFilter || gl.LINEAR;
 		this.minFilter = mParameters.minFilter || gl.LINEAR_MIPMAP_LINEAR;
 		this.wrapS     = mParameters.wrapS || gl.CLAMP_TO_EDGE;
 		this.wrapT     = mParameters.wrapT || gl.CLAMP_TO_EDGE;
+
+		if(!hasMipmaps && this.minFilter == gl.LINEAR_MIPMAP_LINEAR) {
+			this.minFilter = gl.LINEAR;
+		}
 
 		gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.texture);
 		const targets = [
@@ -29,12 +40,11 @@ class GLCubeTexture {
 			gl.TEXTURE_CUBE_MAP_POSITIVE_Z, gl.TEXTURE_CUBE_MAP_NEGATIVE_Z 
 		];
 
-		const hasMipmaps = mSource.length > 6;
-		let numLevels = 0;
+		
+		let numLevels = 1;
 		let index = 0;
-		if (hasMipmaps) {
-			numLevels = mSource.length / 6;
-		}
+		numLevels = mSource.length / 6;
+		this.numLevels = numLevels;
 
 		if (hasMipmaps) {
 			for (let j = 0; j < 6; j++) {
@@ -55,12 +65,14 @@ class GLCubeTexture {
 				}
 			}
 		} else {
+			let index = 0;
 			for (let j = 0; j < 6; j++) {
+				index = j * numLevels;
 				gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
-				if(mSource[j].shape) {
-					gl.texImage2D(targets[j], 0, gl.RGBA, mSource[j].shape[0], mSource[j].shape[1], 0, gl.RGBA, gl.FLOAT, mSource[j].data);
+				if(mSource[index].shape) {
+					gl.texImage2D(targets[j], 0, gl.RGBA, mSource[index].shape[0], mSource[index].shape[1], 0, gl.RGBA, gl.FLOAT, mSource[index].data);
 				} else {
-					gl.texImage2D(targets[j], 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, mSource[j]);
+					gl.texImage2D(targets[j], 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, mSource[index]);
 				}
 				gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, this.wrapS);
 				gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, this.wrapT);
@@ -105,12 +117,20 @@ GLCubeTexture.parseDDS = function parseDDS(mArrayBuffer) {
 		else return value;
 	}
 
+	//	CHECKING MIP MAP LEVELS
 	const ddsInfos = parse(mArrayBuffer);
+	const { flags } = ddsInfos;
+	const header = new Int32Array(mArrayBuffer, 0, headerLengthInt);
+	let mipmapCount = 1;
+	if (flags & DDSD_MIPMAPCOUNT) {
+		mipmapCount = Math.max(1, header[OFF_MIPMAPCOUNT]);
+	}
 	const sources = ddsInfos.images.map((img) => {
 		const faceData = new Float32Array(mArrayBuffer.slice(img.offset, img.offset + img.length));
 		return {
 			data: faceData,
-			shape: img.shape
+			shape: img.shape,
+			mipmapCount,
 		};
 	});
 

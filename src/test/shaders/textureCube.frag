@@ -8,8 +8,9 @@ precision highp float;
 uniform mat3 uModelViewMatrixInverse;
 uniform samplerCube texture;
 uniform float lod;
-uniform float		uExposure;
-uniform float		uGamma;
+uniform float uExposure;
+uniform float uGamma;
+uniform float useLod;
 
 varying vec3 vNormal;
 varying vec2 vTextureCoord;
@@ -50,7 +51,12 @@ void main(void) {
 
 	vec3 lookUp = fix_cube_lookup(wcReflected, 256.0, lod);
 
-	vec3 color = pow(textureCubeLodEXT(texture, lookUp, lod).rgb, vec3(2.2));
+	vec3 color;
+	if(useLod > 0.0) {
+		color = pow(textureCubeLodEXT(texture, lookUp, lod).rgb, vec3(2.2));
+	} else {
+		color = pow(textureCube(texture, ecN).rgb, vec3(2.2));
+	}
 
 	color				= Uncharted2Tonemap( color * uExposure );
 	// // white balance
