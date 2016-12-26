@@ -42,6 +42,9 @@ class SceneApp extends alfrid.Scene {
 
 		this.hasRendered = false;
 
+		const size = 5;
+		this.cameraOrtho.ortho(-size, size, size, -size, 0.1, 100);
+
 		// this.addTriangle();
 		// window.addEventListener('mousedown', ()=>this.addTriangle());
 	}
@@ -117,6 +120,8 @@ class SceneApp extends alfrid.Scene {
 		this._textureRad = alfrid.GLCubeTexture.parseDDS(getAsset('radiance'));
 		this._textureIrr = alfrid.GLCubeTexture.parseDDS(getAsset('irradiance'));
 		this._textureAO = new alfrid.GLTexture(getAsset('aoTree'));
+
+		this._fboDepth = new alfrid.FrameBuffer(GL.width, GL.height);
 	}
 	
 
@@ -212,6 +217,21 @@ class SceneApp extends alfrid.Scene {
 		// GL.draw(this.mesh);
 
 		this.lod = Math.sin(this._time) * 3 + 3;
+
+		this._fboDepth.bind();
+		GL.clear(0, 0, 0, 0);
+		GL.setMatrices(this.cameraOrtho);
+		this._vSphere.render(this._textureRad0, this.lod, [0, 0, 0]);
+		this._vSphere.render(this._textureRad0, this.lod, [1, 1, -20]);
+		this._fboDepth.unbind();
+
+		GL.setMatrices(this.camera);
+		const size = GL.width/2;
+		GL.viewport(0, 0, size, size);
+		this._bCopy.draw(this._fboDepth.getTexture());
+
+		GL.viewport(size, 0, size, size);
+		this._bCopy.draw(this._fboDepth.getDepthTexture());
 
 		//	LOD
 		// this._vSphere.render(this._textureRad0, this.lod, [2, 0, 0]);

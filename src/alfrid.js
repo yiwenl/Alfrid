@@ -51,7 +51,7 @@ import ShaderUtils			from './alfrid/helpers/ShaderUtils';
 import ShaderLibs			from './alfrid/tools/ShaderLibs';
 
 
-const VERSION = '0.1.20';
+const VERSION = '0.1.24';
 
 class Alfrid {
 	constructor() {
