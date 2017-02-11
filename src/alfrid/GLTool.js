@@ -235,8 +235,6 @@ class GLTool {
 
 
 	_bindBuffers(mMesh) {
-		if(this._lastMesh === mMesh) {	return;	}
-
 		//	CHECK IF MESH HAS CREATE BUFFERS
 		mMesh.generateBuffers(this.shaderProgram);
 		this.attrPositionToReset = [];
@@ -248,6 +246,8 @@ class GLTool {
 
 			this._extVAO.bindVertexArrayOES(mMesh.vao);  
 		} else {
+			if(this._lastMesh === mMesh) {	return;	}
+			
 			mMesh.attributes.forEach((attribute)=> {
 				gl.bindBuffer(gl.ARRAY_BUFFER, attribute.buffer);
 				const attrPosition = getAttribLoc(gl, this.shaderProgram, attribute.name);
