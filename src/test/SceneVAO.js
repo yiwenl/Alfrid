@@ -17,18 +17,20 @@ class SceneVAO extends alfrid.Scene {
 		this._bDots = new alfrid.BatchDotsPlane();
 
 		this.shader = new alfrid.GLShader(vsInstanced);
-		this.shader1 = new alfrid.GLShader();
+		this.shader1 = new alfrid.GLShader(vsInstanced);
 		this.mesh = alfrid.Geom.cube(1, 1, 1);
 
 
-		this.meshTri = new alfrid.Mesh();
+		this.meshTri = new alfrid.Mesh(4);
 		this.positions = [[2, 0, 0], [3, 0, 0], [2, 1, 0] ];
 		this.uvs = [[1, 0], [0, 1], [1, 1] ];
 		this.normals = [[0, 0, -1], [0, 0, -1], [0, 0, -1]];
 		this.index = [0, 1, 2];
 
 		this.positionOffset = [[0, 0, 0], [0, 0, -2], [0, 0, 2]];
+		this.positionOffset1 = [[0, 0, 0], [-4, 0, 0]];
 		this.mesh.bufferInstance(this.positionOffset, 'aPosOffset');
+		this.meshTri.bufferInstance(this.positionOffset1, 'aPosOffset');
 
 		this.meshTri.bufferVertex(this.positions);
 		this.meshTri.bufferTexCoord(this.uvs);

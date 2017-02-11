@@ -176,6 +176,22 @@ class GLTool {
 
 
 	draw(mMesh, mDrawingType) {
+		if(!this._hasCheckedExt) {
+			const ext = this.getExtension('ANGLE_instanced_arrays');
+			if (!ext) {
+				this._hasArrayInstance = false;
+			} else {
+				this._hasArrayInstance = true;
+				this._extArrayInstance = ext;
+			}
+			this._hasCheckedExt = true;
+		}
+
+		if(!this._hasArrayInstance) {
+			console.warn('Extension : ANGLE_instanced_arrays is not supported with this device !');
+			return;
+		}
+
 		if(mMesh.length) {
 			for(let i = 0; i < mMesh.length; i++) {
 				this.draw(mMesh[i]);
@@ -183,10 +199,6 @@ class GLTool {
 			return;
 		}
 
-		if(mMesh.instancedAttributes.length > 0) {
-			this.drawInstance(mMesh);
-			return;
-		}
 
 		this._bindBuffers(mMesh);
 
@@ -205,86 +217,20 @@ class GLTool {
 		if(mDrawingType !== undefined) {
 			drawType = mDrawingType;
 		}
-		
-		//	DRAWING
-		if(drawType === gl.POINTS) {
-			gl.drawArrays(drawType, 0, mMesh.vertexSize);	
+
+		if(mMesh.isInstanced) {
+			//	DRAWING
+			const ext = this._extArrayInstance;
+			ext.drawElementsInstancedANGLE(mMesh.drawType, mMesh.iBuffer.numItems, gl.UNSIGNED_SHORT, 0, mMesh.numInstance);
 		} else {
-			gl.drawElements(drawType, mMesh.iBuffer.numItems, gl.UNSIGNED_SHORT, 0);	
-		}
-
-		this._unBindBUffers();
-	}
-
-
-	drawInstance(mMesh) {
-		if(!this._hasCheckedExt) {
-			const ext = this.getExtension('ANGLE_instanced_arrays');
-			if (!ext) {
-				this._hasArrayInstance = false;
+			if(drawType === gl.POINTS) {
+				gl.drawArrays(drawType, 0, mMesh.vertexSize);	
 			} else {
-				this._hasArrayInstance = true;
-				this._extArrayInstance = ext;
-			}
-			this._hasCheckedExt = true;
+				gl.drawElements(drawType, mMesh.iBuffer.numItems, gl.UNSIGNED_SHORT, 0);	
+			}	
 		}
 
-		if(!this._hasArrayInstance) {
-			console.warn('Extension : ANGLE_instanced_arrays is not supported with this device !');
-			return;
-		}
-		
-
-		if(mMesh.length) {
-			for(let i = 0; i < mMesh.length; i++) {
-				this.drawInstance(mMesh[i], mDrawingType);
-			}
-			return;
-		}
-
-		const attrPositionToReset = [];
-		const ext = this._extArrayInstance;
-
-		if (this._lastMesh !== mMesh) {
-			this._bindBuffers(mMesh);
-		}
-
-		let instanceCount = 1;
-		//	INSTANCE ATTRIBUTES
-		for(let i = 0; i < mMesh.instancedAttributes.length; i++) {
-
-			const attribute = mMesh.instancedAttributes[i];
-			gl.bindBuffer(gl.ARRAY_BUFFER, attribute.buffer);
-			const attrPosition = getAttribLoc(gl, this.shaderProgram, attribute.name);
-			gl.vertexAttribPointer(attrPosition, attribute.itemSize, gl.FLOAT, false, attribute.itemSize * 4, 0);
-			ext.vertexAttribDivisorANGLE(attrPosition, 1);
-			attrPositionToReset.push(attrPosition);
-			
-			if(this._enabledVertexAttribute.indexOf(attrPosition) === -1) {
-				gl.enableVertexAttribArray(attrPosition);
-				this._enabledVertexAttribute.push(attrPosition);
-			}
-			
-			instanceCount = attribute.numInstance;
-		}
-
-		this._instanceCount = instanceCount;
-
-		//	DEFAULT MATRICES
-		if(this.camera !== undefined) {
-			this.shader.uniform('uProjectionMatrix', 'mat4', this.camera.projection);	
-			this.shader.uniform('uViewMatrix', 'mat4', this.camera.matrix);
-		}
-		
-		this.shader.uniform('uModelMatrix', 'mat4', this._modelMatrix);
-		this.shader.uniform('uNormalMatrix', 'mat3', this._normalMatrix);
-		this.shader.uniform('uModelViewMatrixInverse', 'mat3', this._inverseModelViewMatrix);
-
-		ext.drawElementsInstancedANGLE(mMesh.drawType, mMesh.iBuffer.numItems, gl.UNSIGNED_SHORT, 0, this._instanceCount);
-
-		attrPositionToReset.map((attrPos) => {
-			ext.vertexAttribDivisorANGLE(attrPos, 0);
-		});
+		this._unbindBUffers(mMesh);
 	}
 
 
@@ -293,6 +239,7 @@ class GLTool {
 
 		//	CHECK IF MESH HAS CREATE BUFFERS
 		mMesh.generateBuffers(this.shaderProgram);
+		this.attrPositionToReset = [];
 
 		if(mMesh.hasVAO) {
 			if(!this._extVAO) {
@@ -301,19 +248,21 @@ class GLTool {
 
 			this._extVAO.bindVertexArrayOES(mMesh.vao);  
 		} else {
-			//	ATTRIBUTES
-			for(let i = 0; i < mMesh.attributes.length; i++) {
-
-				const attribute = mMesh.attributes[i];
+			mMesh.attributes.forEach((attribute)=> {
 				gl.bindBuffer(gl.ARRAY_BUFFER, attribute.buffer);
 				const attrPosition = getAttribLoc(gl, this.shaderProgram, attribute.name);
 				gl.vertexAttribPointer(attrPosition, attribute.itemSize, gl.FLOAT, false, 0, 0);
+
+				if(attribute.isInstanced) {
+					this._extArrayInstance.vertexAttribDivisorANGLE(attrPosition, 1);	
+					this.attrPositionToReset.push(attrPosition);
+				}
 
 				if(this._enabledVertexAttribute.indexOf(attrPosition) === -1) {
 					gl.enableVertexAttribArray(attrPosition);
 					this._enabledVertexAttribute.push(attrPosition);
 				}
-			}
+			});
 
 			//	BIND INDEX BUFFER
 			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mMesh.iBuffer);	
@@ -322,9 +271,15 @@ class GLTool {
 		this._lastMesh = mMesh;
 	}
 
-	_unBindBUffers() {
-		if(this._extVAO) {
+	_unbindBUffers(mMesh) {
+		if(mMesh.hasVAO) {
 			this._extVAO.bindVertexArrayOES(null);	
+
+			mMesh.resetInstanceDivisor();
+		} else {
+			this.attrPositionToReset.map((attrPos) => {
+				this._extArrayInstance.vertexAttribDivisorANGLE(attrPos, 0);
+			});
 		}
 	}
 

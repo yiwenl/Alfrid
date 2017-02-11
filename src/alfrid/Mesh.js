@@ -32,12 +32,12 @@ const getAttribLoc = function (gl, shaderProgram, name) {
 };
 
 class Mesh {
-	constructor(mDrawingType = 4) {
+	constructor(mDrawingType = 4, mUseVao = true) {
 		gl                           = GL.gl;
 		this.drawType                = mDrawingType;
 		this._attributes             = [];
-		this._instancedAttributes    = [];
 		this._vertexSize             = 0;
+		this._numInstance 			 = -1;
 		this._enabledVertexAttribute = [];
 		
 		this._vertices               = [];
@@ -51,9 +51,11 @@ class Mesh {
 		this._hasBufferCreated       = false;
 		this._hasIndexBufferChanged  = false;
 		this._hasVAO                 = false;
+		this._isInstanced 			 = false;
 		
 		this._extVAO                 = GL.getExtension('OES_vertex_array_object');
-		this._supportVAO             = !!this._extVAO;
+		this._extInstance            = GL.getExtension('ANGLE_instanced_arrays');
+		this._useVAO             	 = !!this._extVAO && mUseVao;
 	}
 
 
@@ -98,11 +100,12 @@ class Mesh {
 	}
 
 
-	bufferData(mData, mName, mItemSize, isDynamic = false) {
+	bufferData(mData, mName, mItemSize, isDynamic = false, isInstanced = false) {
 		let i = 0;
 		const drawType   = isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW;
 		const bufferData = [];
 		if (!mItemSize) {	mItemSize = mData[0].length; }
+		this._isInstanced = isInstanced || this._isInstanced;
 
 		//	flatten buffer data		
 		for(i = 0; i < mData.length; i++) {
@@ -120,7 +123,7 @@ class Mesh {
 			attribute.dataArray = dataArray;
 		} else {
 			//	attribute not exist yet, create new attribute object
-			this._attributes.push({ name:mName, itemSize: mItemSize, drawType, dataArray });
+			this._attributes.push({ name:mName, itemSize: mItemSize, drawType, dataArray, isInstanced });
 		}
 
 		this._bufferChanged.push(mName);
@@ -128,10 +131,23 @@ class Mesh {
 	}
 
 
+
+	bufferInstance(mData, mName) {
+		if (!GL.checkExtension('ANGLE_instanced_arrays')) {
+			console.warn('Extension : ANGLE_instanced_arrays is not supported with this device !');
+			return;
+		}
+
+		const itemSize = mData[0].length;
+		this._numInstance = mData.length;
+		this.bufferData(mData, mName, itemSize, false, true);
+	}
+
+
 	generateBuffers(mShaderProgram) {
 		if(this._hasBufferCreated) { return; }
 
-		if(this._supportVAO) { //	IF SUPPORTED, CREATE VAO
+		if(this._useVAO) { //	IF SUPPORTED, CREATE VAO
 
 			//	CREATE VAO
 			this._vao = this._extVAO.createVertexArrayOES();
@@ -149,6 +165,11 @@ class Mesh {
 				const attrPosition = getAttribLoc(gl, mShaderProgram, attrObj.name);
 				gl.enableVertexAttribArray(attrPosition);  
 				gl.vertexAttribPointer(attrPosition, attrObj.itemSize, gl.FLOAT, false, 0, 0);
+				attrObj.attrPosition = attrPosition;
+
+				if(attrObj.isInstanced) {
+					this._extInstance.vertexAttribDivisorANGLE(attrPosition, 1);	
+				}
 			});
 				
 			//	check index buffer
@@ -172,12 +193,19 @@ class Mesh {
 			this._updateIndexBuffer();
 		}
 
-
 		this._hasIndexBufferChanged = false;
 		this._hasBufferCreated = true;
 		this._bufferChanged = [];
 	}
 
+
+	resetInstanceDivisor() {
+		this._attributes.forEach((attribute)=> {
+			if(attribute.isInstanced) {
+				this._extInstance.vertexAttribDivisorANGLE(attribute.attrPosition, 0);
+			}
+		});
+	}
 
 	_updateIndexBuffer() {
 		if(!this._hasIndexBufferChanged) {
@@ -186,64 +214,6 @@ class Mesh {
 			gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this._indices, this._drawType);
 			this.iBuffer.itemSize = 1;
 			this.iBuffer.numItems = this._numItems;
-		}
-	}
-
-
-	bufferInstance(mData, mName) {
-		if (!GL.checkExtension('ANGLE_instanced_arrays')) {
-			console.warn('Extension : ANGLE_instanced_arrays is not supported with this device !');
-			return;
-		}
-
-		let index = -1;
-		let i = 0;
-		const drawType   = gl.STATIC_DRAW;
-		const bufferData = [];
-		let buffer;
-		let dataArray;
-		const numInstance = mData.length;
-		const itemSize = mData[0].length;
-
-		//	Check for existing attributes
-		for(i = 0; i < this._instancedAttributes.length; i++) {
-			if(this._instancedAttributes[i].name === mName) {
-				this._instancedAttributes[i].data = mData;
-				index = i;
-				break;
-			}
-		}
-
-		//	flatten buffer data		
-		for(i = 0; i < mData.length; i++) {
-			for(let j = 0; j < mData[i].length; j++) {
-				bufferData.push(mData[i][j]);
-			}
-		}
-
-		
-		if(index === -1) {	
-
-			//	attribute not exist yet, create new buffer
-			buffer = gl.createBuffer();
-			gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-
-			dataArray = new Float32Array(bufferData);
-			gl.bufferData(gl.ARRAY_BUFFER, dataArray, drawType);
-			this._instancedAttributes.push({ name:mName, data:mData, itemSize: itemSize, buffer:buffer, dataArray:dataArray, numInstance: numInstance });
-
-		} else {
-
-			//	attribute existed, replace with new data
-			buffer = this._instancedAttributes[index].buffer;
-			gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-			dataArray = new Float32Array(bufferData);
-			gl.bufferData(gl.ARRAY_BUFFER, dataArray, drawType);
-
-			const attribute = this._instancedAttributes.find((a) => a.name === mName);
-			attribute.data = mData;
-			attribute.itemSize = itemSize;
-			attribute.dataArray = dataArray;
 		}
 	}
 
@@ -367,10 +337,6 @@ class Mesh {
 		return this._attributes;
 	}
 
-	get instancedAttributes() {
-		return this._instancedAttributes;
-	}
-
 	get vertexSize() {
 		return this._vertexSize;
 	}
@@ -391,6 +357,11 @@ class Mesh {
 	get hasVAO() {	return this._hasVAO;	}
 
 	get vao() {	return this._vao;	}
+
+	get numInstance() {	return this._numInstance;	}
+
+	get isInstanced() { return this._isInstanced;	}
+
 }
 
 
