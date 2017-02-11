@@ -15,7 +15,6 @@ window.getAsset = function (id) {
 class SceneApp extends alfrid.Scene {
 	constructor() {
 		super();
-		GL.enableAlphaBlending();
 		GL.disable(GL.CULL_FACE);
 		this.orbitalControl.rx.value = this.orbitalControl.ry.value = 0.3;
 

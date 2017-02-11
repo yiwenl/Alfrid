@@ -13,6 +13,7 @@ class Scene {
 	constructor() {
 		this._children = [];
 		this._matrixIdentity = mat4.create();
+		GL.enableAlphaBlending();
 
 		this._init();
 		this._initTextures();

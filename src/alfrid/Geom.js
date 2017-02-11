@@ -287,10 +287,10 @@ Geom.cube = function cube(w, h, d, drawType = 4) {
 	count ++;
 
 	// TOP
-	positions.push([-x,  y,  z]);
-	positions.push([x,  y,  z]);
 	positions.push([x,  y, -z]);
 	positions.push([-x,  y, -z]);
+	positions.push([-x,  y,  z]);
+	positions.push([x,  y,  z]);
 
 	normals.push([0, 1, 0]);
 	normals.push([0, 1, 0]);
@@ -312,10 +312,10 @@ Geom.cube = function cube(w, h, d, drawType = 4) {
 	count ++;
 
 	// BOTTOM
-	positions.push([-x, -y, -z]);
-	positions.push([x, -y, -z]);
 	positions.push([x, -y,  z]);
 	positions.push([-x, -y,  z]);
+	positions.push([-x, -y, -z]);
+	positions.push([x, -y, -z]);
 
 	normals.push([0, -1, 0]);
 	normals.push([0, -1, 0]);
