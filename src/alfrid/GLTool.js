@@ -212,6 +212,8 @@ class GLTool {
 		} else {
 			gl.drawElements(drawType, mMesh.iBuffer.numItems, gl.UNSIGNED_SHORT, 0);	
 		}
+
+		this._unBindBUffers();
 	}
 
 
@@ -288,16 +290,16 @@ class GLTool {
 
 	_bindBuffers(mMesh) {
 		if(this._lastMesh === mMesh) {	return;	}
-		
-		//	CHECK IF MESH HAS CREATE BUFFERS
-		mMesh.generateBuffers();
 
-		if(Math.random() > 1.99) {
-			console.log('Has VAO ?', mMesh.hasVAO);
-		}
+		//	CHECK IF MESH HAS CREATE BUFFERS
+		mMesh.generateBuffers(this.shaderProgram);
 
 		if(mMesh.hasVAO) {
+			if(!this._extVAO) {
+				this._extVAO = this.getExtension('OES_vertex_array_object');
+			}
 
+			this._extVAO.bindVertexArrayOES(mMesh.vao);  
 		} else {
 			//	ATTRIBUTES
 			for(let i = 0; i < mMesh.attributes.length; i++) {
@@ -317,9 +319,13 @@ class GLTool {
 			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mMesh.iBuffer);	
 		}
 
-		
-
 		this._lastMesh = mMesh;
+	}
+
+	_unBindBUffers() {
+		if(this._extVAO) {
+			this._extVAO.bindVertexArrayOES(null);	
+		}
 	}
 
 	setSize(mWidth, mHeight) {
