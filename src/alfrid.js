@@ -13,11 +13,11 @@ import CubeFrameBuffer		from './alfrid/CubeFrameBuffer';
 
 //	TOOLS
 import Scheduler 			from 'scheduling';
-import EventDispatcher 		from './alfrid/tools/EventDispatcher';
-import EaseNumber 			from './alfrid/tools/EaseNumber';
-import TweenNumber 			from './alfrid/tools/TweenNumber';
-import OrbitalControl		from './alfrid/tools/OrbitalControl';
-import QuatRotation			from './alfrid/tools/QuatRotation';
+import EventDispatcher 		from './alfrid/utils/EventDispatcher';
+import EaseNumber 			from './alfrid/utils/EaseNumber';
+import TweenNumber 			from './alfrid/utils/TweenNumber';
+import OrbitalControl		from './alfrid/utils/OrbitalControl';
+import QuatRotation			from './alfrid/utils/QuatRotation';
 
 //	CAMERAS
 import Camera 				from './alfrid/cameras/Camera';
@@ -48,7 +48,7 @@ import Scene				from './alfrid/helpers/Scene';
 import View					from './alfrid/helpers/View';
 import View3D				from './alfrid/helpers/View3D';
 import ShaderUtils			from './alfrid/helpers/ShaderUtils';
-import ShaderLibs			from './alfrid/tools/ShaderLibs';
+import ShaderLibs			from './alfrid/utils/ShaderLibs';
 
 
 const VERSION = '0.1.24';

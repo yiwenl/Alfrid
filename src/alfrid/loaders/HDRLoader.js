@@ -3,7 +3,7 @@
 'use strict';
 
 import BinaryLoader from './BinaryLoader';
-import hdrParser from '../tools/HDRParser';
+import hdrParser from '../utils/HDRParser';
 
 class HDRLoader extends BinaryLoader {
 	constructor() {
