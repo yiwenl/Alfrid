@@ -87,6 +87,7 @@ class GLTool {
 			'OES_standard_derivatives', 
 			'WEBGL_depth_texture', 
 			'EXT_texture_filter_anisotropic', 
+			'OES_vertex_array_object', 
 			'ANGLE_instanced_arrays', 
 			'WEBGL_draw_buffers'
 		];
@@ -187,15 +188,8 @@ class GLTool {
 			return;
 		}
 
-		if(mMesh.vao) {
-			this._bindVao(mMesh);
-		} else {
-			if (this._lastMesh !== mMesh) {
-				this._bindBuffers(mMesh);
-			}	
-		}
+		this._bindBuffers(mMesh);
 
-		
 
 		//	DEFAULT MATRICES
 		if(this.camera !== undefined) {
@@ -217,10 +211,6 @@ class GLTool {
 			gl.drawArrays(drawType, 0, mMesh.vertexSize);	
 		} else {
 			gl.drawElements(drawType, mMesh.iBuffer.numItems, gl.UNSIGNED_SHORT, 0);	
-		}
-
-		if(mMesh.vao) {
-			this._unbindVao(mMesh);
 		}
 	}
 
@@ -295,31 +285,39 @@ class GLTool {
 		});
 	}
 
-	_bindVao(mMesh) {
-		mMesh.bindVAO();
-	}
-
-	_unbindVao(mMesh) {
-		mMesh.unbindVAO();
-	}
 
 	_bindBuffers(mMesh) {
-		//	ATTRIBUTES
-		for(let i = 0; i < mMesh.attributes.length; i++) {
+		if(this._lastMesh === mMesh) {	return;	}
+		
+		//	CHECK IF MESH HAS CREATE BUFFERS
+		mMesh.generateBuffers();
 
-			const attribute = mMesh.attributes[i];
-			gl.bindBuffer(gl.ARRAY_BUFFER, attribute.buffer);
-			const attrPosition = getAttribLoc(gl, this.shaderProgram, attribute.name);
-			gl.vertexAttribPointer(attrPosition, attribute.itemSize, gl.FLOAT, false, 0, 0);
-
-			if(this._enabledVertexAttribute.indexOf(attrPosition) === -1) {
-				gl.enableVertexAttribArray(attrPosition);
-				this._enabledVertexAttribute.push(attrPosition);
-			}
+		if(Math.random() > 1.99) {
+			console.log('Has VAO ?', mMesh.hasVAO);
 		}
 
-		//	BIND INDEX BUFFER
-		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mMesh.iBuffer);
+		if(mMesh.hasVAO) {
+
+		} else {
+			//	ATTRIBUTES
+			for(let i = 0; i < mMesh.attributes.length; i++) {
+
+				const attribute = mMesh.attributes[i];
+				gl.bindBuffer(gl.ARRAY_BUFFER, attribute.buffer);
+				const attrPosition = getAttribLoc(gl, this.shaderProgram, attribute.name);
+				gl.vertexAttribPointer(attrPosition, attribute.itemSize, gl.FLOAT, false, 0, 0);
+
+				if(this._enabledVertexAttribute.indexOf(attrPosition) === -1) {
+					gl.enableVertexAttribArray(attrPosition);
+					this._enabledVertexAttribute.push(attrPosition);
+				}
+			}
+
+			//	BIND INDEX BUFFER
+			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mMesh.iBuffer);	
+		}
+
+		
 
 		this._lastMesh = mMesh;
 	}

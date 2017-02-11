@@ -33,12 +33,20 @@ class Mesh {
 		this._tangents            = [];
 		this._indices             = [];
 		this._faces               = [];
+		this._bufferChanged 	  = [];
+		this._hasBufferCreated 	  = false;
+		this._hasVAO 			  = false;
 
 		this._extVAO = GL.getExtension('OES_vertex_array_object');
+		this._supportVAO = !!this._extVAO;
+
+		this._supportVAO = false;
 	}
 
 
 	bindVAO(shader) {
+		console.debug('BIND VAO');
+		debugger;
 		if(!this._extVAO) {	return; }
 		this.shader = shader;
 		if(!this._vao) {
@@ -50,18 +58,41 @@ class Mesh {
 	}
 
 	unbindVAO() {
+		debugger;
 		if(!this._extVAO) {	return; }
 		this._extVAO.bindVertexArrayOES(null);  
 		
 	}
 
 	deleteVAO() {
+		debugger;
 		if(!this._extVAO) {	return; }
 		this._extVAO.deleteVertexArrayOES(this._vao); 
 	}
 
 
-	bufferVertex(mArrayVertices, isDynamic = false, generateNormal = false) {
+	bind() {
+		console.debug('BIND');
+		debugger;
+		if(this._extVAO) {
+			//	bind vertex array object
+		} else {
+			//	traditional bind method
+		}
+
+		this._hasBufferCreated = true;
+	}
+
+	_createVAO() {
+
+	}
+
+	_createBuffers() {
+		
+	}
+
+
+	bufferVertex(mArrayVertices, isDynamic = false, generateNormal = false, generateFaces = false) {
 
 		this._vertexSize = mArrayVertices.length;
 		this.bufferData(mArrayVertices, 'aVertexPosition', 3, isDynamic);
@@ -76,7 +107,7 @@ class Mesh {
 			this.bufferNormal(tempNormals, isDynamic);	
 		}
 
-		if (this._indices.length > 0 && this.drawType === GL.TRIANGLES && generateNormal) {
+		if (generateFaces) {
 			this.generateFaces();
 		}
 	}
@@ -122,8 +153,8 @@ class Mesh {
 		let i = 0;
 		const drawType   = isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW;
 		const bufferData = [];
-		let buffer;
-		let dataArray;
+		// let buffer;
+		// let dataArray;
 		if (!mItemSize) {	mItemSize = mData[0].length; }
 
 		//	Check for existing attributes
@@ -146,32 +177,97 @@ class Mesh {
 		if(index === -1) {	
 
 			//	attribute not exist yet, create new buffer
-			buffer = gl.createBuffer();
-			gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+			// buffer = gl.createBuffer();
+			// gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
 
-			dataArray = new Float32Array(bufferData);
-			gl.bufferData(gl.ARRAY_BUFFER, dataArray, drawType);
-			this._attributes.push({ name:mName, data:mData, itemSize: mItemSize, buffer:buffer, dataArray:dataArray });
+			// dataArray = new Float32Array(bufferData);
+			// gl.bufferData(gl.ARRAY_BUFFER, dataArray, drawType);
+			// this._attributes.push({ name:mName, data:mData, itemSize: mItemSize, buffer:buffer, dataArray:dataArray });
+			this._attributes.push({ name:mName, data:mData, itemSize: mItemSize, bufferData, drawType });
 
-			if(this.vao) {
-				gl.enableVertexAttribArray(attrPosition);
-				const attrPosition = getAttribLoc(gl, this.shader.shaderProgram, mName);
-				gl.vertexAttribPointer(attrPosition, mItemSize, gl.FLOAT, false, 0, 0);
-			}
+			// if(this.vao) {
+			// 	gl.enableVertexAttribArray(attrPosition);
+			// 	const attrPosition = getAttribLoc(gl, this.shader.shaderProgram, mName);
+			// 	gl.vertexAttribPointer(attrPosition, mItemSize, gl.FLOAT, false, 0, 0);
+			// }
 
 		} else {
-
 			//	attribute existed, replace with new data
-			buffer = this._attributes[index].buffer;
-			gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-			dataArray = new Float32Array(bufferData);
-			gl.bufferData(gl.ARRAY_BUFFER, dataArray, drawType);
+			// buffer = this._attributes[index].buffer;
+			// gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+			// dataArray = new Float32Array(bufferData);
+			// gl.bufferData(gl.ARRAY_BUFFER, dataArray, drawType);
 
 			const attribute = this._attributes.find((a) => a.name === mName);
 			attribute.data = mData;
 			attribute.itemSize = mItemSize;
-			attribute.dataArray = dataArray;
+			// attribute.dataArray = dataArray;
 		}
+
+		this._bufferChanged.push(mName);
+		this._hasBufferCreated = false;
+	}
+
+
+	generateBuffers() {
+		//	CHECK IF BUFFER HAS CREATED
+		if(this._hasBufferCreated) {
+			return;
+		}
+
+		//	CHECK IF VAO IS SUPPORTED
+		if(this._supportVAO) {
+			//	IF SUPPORTED, CREATE VAO
+
+			//	CREATE VAO
+			this._vao = this._extVAO.createVertexArrayOES();
+			console.debug('VAO :', this._vao);
+
+			let i = this._attributes.length;
+			let attrObj;
+			while(i--) {
+				attrObj = this._attributes[i];
+
+			}
+
+			//	BIND VAO
+			this._extVAO.bindVertexArrayOES(this._vao);
+
+			//	UNBIND VAO
+			this._extVAO.bindVertexArrayOES(null);
+			this._hasVAO = true;
+		} else {
+			//	ELSE, USE TRADITIONAL METHOD
+
+			let i = this._attributes.length;
+			let attrObj;
+			while(i--) {
+				attrObj = this._attributes[i];
+
+				//	SKIP IF BUFFER HASN'T CHANGED
+				if(this._bufferChanged.indexOf(attrObj.name) === -1) {	continue; }
+
+				let buffer;
+				
+				if(attrObj.buffer !== undefined) {
+					buffer = attrObj.buffer;	
+				} else {
+					buffer = gl.createBuffer();
+					attrObj.buffer = buffer;
+				}
+
+				//	CREATE BUFFERDATA
+				const dataArray = new Float32Array(attrObj.bufferData);
+				attrObj.dataArray = dataArray;
+
+				gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+				gl.bufferData(gl.ARRAY_BUFFER, dataArray, attrObj.drawType);
+			}
+		}
+
+
+		this._hasBufferCreated = true;
+		this._bufferChanged = [];
 	}
 
 
@@ -332,10 +428,6 @@ class Mesh {
 
 	//	GETTER AND SETTERS
 
-	get vao() {
-		return this._vao;
-	}
-
 	get vertices() {
 		return this._vertices;
 	}
@@ -376,6 +468,10 @@ class Mesh {
 
 	get faces() {	return this._faces;	}
 
+
+	get hasVAO() {	return this._hasVAO;	}
+
+	get vao() {	return this._vao;	}
 }
 
 
