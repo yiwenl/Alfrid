@@ -155,6 +155,7 @@ class Mesh {
 			//	BIND VAO
 			this._extVAO.bindVertexArrayOES(this._vao);
 
+			//	UPDATE BUFFERS
 			this._attributes.forEach((attrObj) => {
 				// if(this._bufferChanged.indexOf(attrObj.name) === -1) {	continue; }
 				const buffer = getBuffer(attrObj);
