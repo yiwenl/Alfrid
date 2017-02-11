@@ -17,6 +17,7 @@ class SceneVAO extends alfrid.Scene {
 		this._bDots = new alfrid.BatchDotsPlane();
 
 		this.shader = new alfrid.GLShader(vsInstanced);
+		this.shader1 = new alfrid.GLShader();
 		this.mesh = alfrid.Geom.cube(1, 1, 1);
 
 
@@ -29,10 +30,10 @@ class SceneVAO extends alfrid.Scene {
 		this.positionOffset = [[0, 0, 0], [0, 0, -2], [0, 0, 2]];
 		this.mesh.bufferInstance(this.positionOffset, 'aPosOffset');
 
-		// this.meshTri.bufferVertex(this.positions);
-		// this.meshTri.bufferTexCoord(this.uvs);
-		// this.meshTri.bufferNormal(this.normals);
-		// this.meshTri.bufferIndex(this.index);
+		this.meshTri.bufferVertex(this.positions);
+		this.meshTri.bufferTexCoord(this.uvs);
+		this.meshTri.bufferNormal(this.normals);
+		this.meshTri.bufferIndex(this.index);
 
 	}
 
@@ -43,10 +44,12 @@ class SceneVAO extends alfrid.Scene {
 
 		this.shader.bind();
 		GL.draw(this.mesh);
-		// this.positions[1][1] = Math.sin(this.time) * 0.5;
-		// this.positions[2][0] = Math.cos(this.time) * 0.5 + 2;
-		// this.meshTri.bufferVertex(this.positions);
-		// GL.draw(this.meshTri);
+
+		this.shader1.bind();
+		this.positions[1][1] = Math.sin(this.time) * 0.5;
+		this.positions[2][0] = Math.cos(this.time) * 0.5 + 2;
+		this.meshTri.bufferVertex(this.positions);
+		GL.draw(this.meshTri);
 	}
 
 	resize() {

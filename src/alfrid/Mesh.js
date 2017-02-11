@@ -33,27 +33,27 @@ const getAttribLoc = function (gl, shaderProgram, name) {
 
 class Mesh {
 	constructor(mDrawingType = 4) {
-		gl                        = GL.gl;
-		this.drawType             = mDrawingType;
-		this._attributes          = [];
-		this._instancedAttributes = [];
-		this._vertexSize          = 0;
+		gl                           = GL.gl;
+		this.drawType                = mDrawingType;
+		this._attributes             = [];
+		this._instancedAttributes    = [];
+		this._vertexSize             = 0;
 		this._enabledVertexAttribute = [];
 		
-		this._vertices            = [];
-		this._texCoords           = [];
-		this._normals             = [];
-		this._faceNormals         = [];
-		this._tangents            = [];
-		this._indices             = [];
-		this._faces               = [];
-		this._bufferChanged 	  = [];
-		this._hasBufferCreated 	  = false;
-		this._hasIndexBufferChanged = false;
-		this._hasVAO 			  = false;
-
-		this._extVAO = GL.getExtension('OES_vertex_array_object');
-		this._supportVAO = !!this._extVAO;
+		this._vertices               = [];
+		this._texCoords              = [];
+		this._normals                = [];
+		this._faceNormals            = [];
+		this._tangents               = [];
+		this._indices                = [];
+		this._faces                  = [];
+		this._bufferChanged          = [];
+		this._hasBufferCreated       = false;
+		this._hasIndexBufferChanged  = false;
+		this._hasVAO                 = false;
+		
+		this._extVAO                 = GL.getExtension('OES_vertex_array_object');
+		this._supportVAO             = !!this._extVAO;
 	}
 
 
@@ -129,12 +129,9 @@ class Mesh {
 
 
 	generateBuffers(mShaderProgram) {
-		//	CHECK IF BUFFER HAS CREATED
 		if(this._hasBufferCreated) { return; }
 
-		//	CHECK IF VAO IS SUPPORTED
-		if(this._supportVAO) {
-			//	IF SUPPORTED, CREATE VAO
+		if(this._supportVAO) { //	IF SUPPORTED, CREATE VAO
 
 			//	CREATE VAO
 			this._vao = this._extVAO.createVertexArrayOES();
@@ -142,10 +139,7 @@ class Mesh {
 			//	BIND VAO
 			this._extVAO.bindVertexArrayOES(this._vao);
 
-			let i = this._attributes.length;
-			let attrObj;
-			while(i--) {
-				attrObj = this._attributes[i];
+			this._attributes.forEach((attrObj) => {
 				// if(this._bufferChanged.indexOf(attrObj.name) === -1) {	continue; }
 				const buffer = getBuffer(attrObj);
 
@@ -155,51 +149,44 @@ class Mesh {
 				const attrPosition = getAttribLoc(gl, mShaderProgram, attrObj.name);
 				gl.enableVertexAttribArray(attrPosition);  
 				gl.vertexAttribPointer(attrPosition, attrObj.itemSize, gl.FLOAT, false, 0, 0);
-			}
-
+			});
+				
 			//	check index buffer
-			if(!this._hasIndexBufferChanged) {
-				if (!this.iBuffer) { this.iBuffer = gl.createBuffer();	 }
-				gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.iBuffer);
-				gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this._indices, this._drawType);
-				this.iBuffer.itemSize = 1;
-				this.iBuffer.numItems = this._numItems;
-			}
+			this._updateIndexBuffer();
 
 			//	UNBIND VAO
 			this._extVAO.bindVertexArrayOES(null);
 			this._hasVAO = true;
-		} else {
-			//	ELSE, USE TRADITIONAL METHOD
 
-			let i = this._attributes.length;
-			let attrObj;
-			while(i--) {
-				attrObj = this._attributes[i];
+		} else { //	ELSE, USE TRADITIONAL METHOD
 
+			this._attributes.forEach((attrObj) => {
 				//	SKIP IF BUFFER HASN'T CHANGED
-				if(this._bufferChanged.indexOf(attrObj.name) === -1) {	continue; }
+				if(this._bufferChanged.indexOf(attrObj.name) !== -1) {
+					const buffer = getBuffer(attrObj);
+					gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+					gl.bufferData(gl.ARRAY_BUFFER, attrObj.dataArray, attrObj.drawType);	
+				}
+			});
 
-				const buffer = getBuffer(attrObj);
-
-				//	CREATE BUFFERDATA
-				gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-				gl.bufferData(gl.ARRAY_BUFFER, attrObj.dataArray, attrObj.drawType);
-			}
-
-			if(!this._hasIndexBufferChanged) {
-				if (!this.iBuffer) { this.iBuffer = gl.createBuffer();	 }
-				gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.iBuffer);
-				gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this._indices, this._drawType);
-				this.iBuffer.itemSize = 1;
-				this.iBuffer.numItems = this._numItems;
-			}
+			this._updateIndexBuffer();
 		}
 
 
 		this._hasIndexBufferChanged = false;
 		this._hasBufferCreated = true;
 		this._bufferChanged = [];
+	}
+
+
+	_updateIndexBuffer() {
+		if(!this._hasIndexBufferChanged) {
+			if (!this.iBuffer) { this.iBuffer = gl.createBuffer();	 }
+			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.iBuffer);
+			gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this._indices, this._drawType);
+			this.iBuffer.itemSize = 1;
+			this.iBuffer.numItems = this._numItems;
+		}
 	}
 
 
