@@ -4,20 +4,6 @@ import glm from 'gl-matrix';
 
 let gl;
 
-const offsets = new Float32Array([
-	0.0, 0.0, 0.1,
-	1.0, 0.0, 0.2,
-	2.0, 0.0, 0.3,
-	3.0, 0.0, 0.4
-]);
-
-const colors = new Float32Array([
-	1.0, 0.0, 0.0, 1.0, // Red monkey
-	0.0, 1.0, 0.0, 1.0, // Green monkey
-	0.0, 0.0, 1.0, 1.0, // Blue monkey
-	1.0, 1.0, 1.0, 1.0, // White monkey
-]);
-
 const getAttribLoc = function (gl, shaderProgram, name) {
 	if(shaderProgram.cacheAttribLoc === undefined) {	shaderProgram.cacheAttribLoc = {};	}
 	if(shaderProgram.cacheAttribLoc[name] === undefined) {
@@ -26,8 +12,6 @@ const getAttribLoc = function (gl, shaderProgram, name) {
 
 	return shaderProgram.cacheAttribLoc[name];
 };
-
-let offsetBuffer, colorBuffer;
 
 class GLTool {
 
@@ -73,7 +57,7 @@ class GLTool {
 		if(mParameters.ignoreWebgl2) {
 			ctx = this.canvas.getContext('webgl', mParameters) || this.canvas.getContext('experimental-webgl', mParameters);
 		} else {
-			ctx = this.canvas.getContext('webgl2', mParameters);
+			ctx = this.canvas.getContext('experimental-webgl2', mParameters) || this.canvas.getContext('webgl2', mParameters);
 			if(ctx) {
 				this._useWebGL2 = true;
 			} else {
@@ -82,10 +66,7 @@ class GLTool {
 			
 		}
 
-		if(this.webgl2) {
-			console.log(ctx);
-			window.gl = ctx;
-		}
+		console.log('Using WebGL 2 ?', this.webgl2);
 
 		//	extensions
 		this.initWithGL(ctx);
