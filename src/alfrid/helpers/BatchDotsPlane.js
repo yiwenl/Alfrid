@@ -13,16 +13,12 @@ class BatchDotsPlane extends Batch {
 	constructor() {
 		const positions = [];
 		const indices   = [];
-		let index     = 0;
-		
-		const numDots   = 100;
-		const size      = 50;
-		const gap       = size / numDots;
+		let index       = 0;
+		const size      = 100;
 		let i, j;
 
-
-		for(i = -size / 2; i < size; i += gap) {
-			for(j = -size / 2; j < size; j += gap) {
+		for(i = -size; i < size; i += 1) {
+			for(j = -size; j < size; j += 1) {
 				positions.push([i, j, 0]);
 				indices.push(index);
 				index++;

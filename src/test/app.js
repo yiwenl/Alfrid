@@ -2,6 +2,7 @@ import alfrid, { GL } from '../alfrid';
 import SceneApp from './SceneApp';
 import SceneParticle from './SceneParticle';
 import SceneGrass from './SceneGrass';
+import SceneVAO from './SceneVAO';
 import AssetsLoader from 'assets-loader';
 import dat from 'dat-gui';
 import '../scss/global.scss';
@@ -106,6 +107,7 @@ function _init3D() {
 	//	CREATE SCENE
 	const scene = new SceneApp();
 	// const scene = new SceneGrass();
+	// const scene = new SceneVAO();
 
 
 	const stats = new Stats();
