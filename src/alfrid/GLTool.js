@@ -122,6 +122,8 @@ class GLTool {
 		this.enable(this.DEPTH_TEST);
 		this.enable(this.CULL_FACE);
 		this.enable(this.BLEND);
+
+		this.showExtensions();
 	} 
 
 
