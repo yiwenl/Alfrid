@@ -63,32 +63,29 @@ class FrameBuffer {
 		this.frameBuffer        = gl.createFramebuffer();		
 		gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer);
 
+		let texelType = gl.UNSIGNED_BYTE;
+		const extHalfFloat = GL.getExtension('OES_texture_half_float');
+
 		if(!GL.webgl2) {
 			const extDrawBuffer = GL.getExtension('WEBGL_draw_buffers');
 			if (!extDrawBuffer && this._multipleTargets) {
 				console.error('Browser not supporting multiple rendering targets !');
 			}	
+
+			if (GL.checkExtension('OES_texture_float')) {
+				texelType = gl.FLOAT;
+			} else if(extHalfFloat) {
+				texelType = extHalfFloat.HALF_FLOAT_OES;
+			}
+
+
+			if (GL.isMobile && texelType === gl.FLOAT && extHalfFloat) {
+				texelType = extHalfFloat.HALF_FLOAT_OES;
+			}
 		}
 		
 
 		//	SETUP TEXTURE MIPMAP, WRAP
-
-		let texelType = gl.UNSIGNED_BYTE;
-		const extHalfFloat = GL.getExtension('OES_texture_half_float');
-
-		console.log(texelType, gl.UNSIGNED_BYTE, gl.FLOAT);
-		console.log('webglDepthTexture', webglDepthTexture);
-
-		if (GL.checkExtension('OES_texture_float')) {
-			texelType = gl.FLOAT;
-		} else if(extHalfFloat) {
-			texelType = extHalfFloat.HALF_FLOAT_OES;
-		}
-
-
-		if (GL.isMobile && texelType === gl.FLOAT && extHalfFloat) {
-			texelType = extHalfFloat.HALF_FLOAT_OES;
-		}
 
 		if (this.texelType) {
 			texelType = this.texelType;
@@ -118,16 +115,26 @@ class FrameBuffer {
 		//	GET COLOUR
 
 		for (let i = 0; i < this._textures.length; i++) {
-			gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + i, gl.TEXTURE_2D, this._textures[i].texture, 0);
+			if(GL.webgl2) {
+				gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + i, gl.TEXTURE_2D, this._textures[i].texture, 0);
+			} else {
+				gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + i, gl.TEXTURE_2D, this._textures[i].texture, 0);	
+			}
+			
 		}
 
 		if (this._multipleTargets) {
-			extDrawBuffer.drawBuffersWEBGL([
-				extDrawBuffer.COLOR_ATTACHMENT0_WEBGL, // gl_FragData[0]
-				extDrawBuffer.COLOR_ATTACHMENT1_WEBGL, // gl_FragData[1]
-				extDrawBuffer.COLOR_ATTACHMENT2_WEBGL, // gl_FragData[2]
-				extDrawBuffer.COLOR_ATTACHMENT3_WEBGL  // gl_FragData[3]
-			]);
+			if(GL.webgl2) {
+
+			} else {
+				extDrawBuffer.drawBuffersWEBGL([
+					extDrawBuffer.COLOR_ATTACHMENT0_WEBGL, // gl_FragData[0]
+					extDrawBuffer.COLOR_ATTACHMENT1_WEBGL, // gl_FragData[1]
+					extDrawBuffer.COLOR_ATTACHMENT2_WEBGL, // gl_FragData[2]
+					extDrawBuffer.COLOR_ATTACHMENT3_WEBGL  // gl_FragData[3]
+				]);	
+			}
+			
 		}
 		
 

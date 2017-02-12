@@ -26,7 +26,7 @@ class SceneWebGL2 extends alfrid.Scene {
 	}
 
 	_initTextures() {
-		this._fbo = new alfrid.FrameBuffer(GL.width, GL.height);
+		this._fbo = new alfrid.FrameBuffer(GL.width, GL.height, {}, true);
 	}
 
 
