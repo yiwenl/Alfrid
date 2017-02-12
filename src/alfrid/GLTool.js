@@ -67,6 +67,9 @@ class GLTool {
 		}
 
 		console.log('Using WebGL 2 ?', this.webgl2);
+		if(this.webgl2) {
+			window.gl = ctx;
+		}
 
 		//	extensions
 		this.initWithGL(ctx);

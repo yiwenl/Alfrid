@@ -63,15 +63,21 @@ class FrameBuffer {
 		this.frameBuffer        = gl.createFramebuffer();		
 		gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer);
 
-		const extDrawBuffer = GL.getExtension('WEBGL_draw_buffers');
-		if (!extDrawBuffer && this._multipleTargets) {
-			console.error('Browser not supporting multiple rendering targets !');
+		if(!GL.webgl2) {
+			const extDrawBuffer = GL.getExtension('WEBGL_draw_buffers');
+			if (!extDrawBuffer && this._multipleTargets) {
+				console.error('Browser not supporting multiple rendering targets !');
+			}	
 		}
+		
 
 		//	SETUP TEXTURE MIPMAP, WRAP
 
 		let texelType = gl.UNSIGNED_BYTE;
 		const extHalfFloat = GL.getExtension('OES_texture_half_float');
+
+		console.log(texelType, gl.UNSIGNED_BYTE, gl.FLOAT);
+		console.log('webglDepthTexture', webglDepthTexture);
 
 		if (GL.checkExtension('OES_texture_float')) {
 			texelType = gl.FLOAT;
@@ -107,13 +113,14 @@ class FrameBuffer {
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, this.wrapT);
 			gl.texImage2D(gl.TEXTURE_2D, 0, gl.DEPTH_COMPONENT, this.width, this.height, 0, gl.DEPTH_COMPONENT, gl.UNSIGNED_SHORT, null);	
 		}
-		
+
 
 		//	GET COLOUR
 
 		for (let i = 0; i < this._textures.length; i++) {
 			gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + i, gl.TEXTURE_2D, this._textures[i].texture, 0);
 		}
+
 		if (this._multipleTargets) {
 			extDrawBuffer.drawBuffersWEBGL([
 				extDrawBuffer.COLOR_ATTACHMENT0_WEBGL, // gl_FragData[0]
@@ -126,8 +133,10 @@ class FrameBuffer {
 
 		//	GET DEPTH
 
-		gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, this.depthTexture, 0);
-
+		if(webglDepthTexture) {
+			gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, this.depthTexture, 0);	
+		}
+		
 
 		if(this.minFilter === gl.LINEAR_MIPMAP_NEAREST)	{
 			for (let i = 0; i < this._textures.length; i++) {
@@ -153,6 +162,7 @@ class FrameBuffer {
 		//	CLEAR FRAMEBUFFER 
 
 		this.clear();
+		
 	}
 
 
