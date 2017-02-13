@@ -19,6 +19,7 @@ const exposeAttributes = function () {
 	GL.MIRRORED_REPEAT       = GL.gl.MIRRORED_REPEAT;
 	GL.CLAMP_TO_EDGE         = GL.gl.CLAMP_TO_EDGE;
 	GL.SCISSOR_TEST		   	 = GL.gl.SCISSOR_TEST;
+	GL.UNSIGNED_BYTE		 = GL.gl.UNSIGNED_BYTE;
 };
 
 
