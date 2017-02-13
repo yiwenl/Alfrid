@@ -4,6 +4,8 @@
 import alfrid, { GL } from '../alfrid';
 
 import vsInstanced from './shaders/testInstance.vert';
+import fsMRT from './shaders/mrt.frag';
+import vsMRT from './shaders/mrt.vert';
 
 class SceneWebGL2 extends alfrid.Scene {
 
@@ -14,7 +16,8 @@ class SceneWebGL2 extends alfrid.Scene {
 	}
 
 	_initViews() {
-		this.shader = new alfrid.GLShader(vsInstanced);
+		// this.shader = new alfrid.GLShader(vsInstanced);
+		this.shader = new alfrid.GLShader(vsMRT, fsMRT);
 		this.mesh = alfrid.Geom.sphere(.5, 24);
 		this._bAxis = new alfrid.BatchAxis();
 		this._bDots = new alfrid.BatchDotsPlane();
@@ -44,6 +47,14 @@ class SceneWebGL2 extends alfrid.Scene {
 
 		GL.clear(0, 0, 0, 0);
 		this._bCopy.draw(this._fbo.getTexture());
+
+		GL.disable(GL.DEPTH_TEST);
+		const size = GL.width/4;
+		for(let i=0; i<4; i++) {
+			GL.viewport(size*i, 0, size, size/GL.aspectRatio);
+			this._bCopy.draw(this._fbo.getTexture(i));
+		}
+		GL.enable(GL.DEPTH_TEST);
 	}
 }
 

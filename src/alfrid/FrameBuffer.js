@@ -102,10 +102,10 @@ class FrameBuffer {
 
 
 		if(GL.webgl2) {
-			this.renderBufferDepth = gl.createRenderbuffer()
-			gl.bindRenderbuffer(gl.RENDERBUFFER, this.renderBufferDepth)
+			this.renderBufferDepth = gl.createRenderbuffer();
+			gl.bindRenderbuffer(gl.RENDERBUFFER, this.renderBufferDepth);
 			gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, this.width, this.height);
-			gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.renderBufferDepth)	
+			gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.renderBufferDepth);
 		} else {
 			if(webglDepthTexture) {
 				gl.bindTexture(gl.TEXTURE_2D, this.depthTexture);
@@ -130,7 +130,7 @@ class FrameBuffer {
 
 		if (this._multipleTargets) {
 			if(GL.webgl2) {
-
+				gl.drawBuffers([gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1, gl.COLOR_ATTACHMENT2, gl.COLOR_ATTACHMENT3]);
 			} else {
 				extDrawBuffer.drawBuffersWEBGL([
 					extDrawBuffer.COLOR_ATTACHMENT0_WEBGL, // gl_FragData[0]
