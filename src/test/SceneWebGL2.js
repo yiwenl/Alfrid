@@ -34,11 +34,8 @@ class SceneWebGL2 extends alfrid.Scene {
 	}
 
 	_initTextures() {
-		console.log('Float : ', GL.FLOAT);
-		console.log('Half float : ', GL.HALF_FLOAT);
-
 		this._fbo = new alfrid.FrameBuffer(GL.width, GL.height, {}, true);
-		this._fboMultiSample = new alfrid.MultisampleFrameBuffer(GL.width, GL.height);
+		this._fboMultiSample = new alfrid.MultisampleFrameBuffer(GL.width, GL.height, { numSample:8 }, true);
 	}
 
 
