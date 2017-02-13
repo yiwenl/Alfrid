@@ -38,24 +38,35 @@ class SceneWebGL2 extends alfrid.Scene {
 		console.log('Half float : ', GL.HALF_FLOAT);
 
 		this._fbo = new alfrid.FrameBuffer(GL.width, GL.height, {}, true);
+		this._fboMultiSample = new alfrid.MultisampleFrameBuffer(GL.width, GL.height);
 	}
 
 
 	render() {
+		this._fboMultiSample.bind();
+		GL.clear(0, 0, 0, 0);
+		this.drawScene();
+		this._fboMultiSample.unbind();
+
 		this._fbo.bind();
 		GL.clear(0, 0, 0, 0);
-		this._bAxis.draw();
-		this._bDots.draw();
-
-		this.shader.bind();
-		GL.draw(this.mesh);
-
+		this.drawScene();
 		this._fbo.unbind();
 
-
 		GL.clear(0, 0, 0, 0);
+
+		const width = GL.width/2;
+		const height = width / GL.aspectRatio;
+
+		GL.viewport(0, 0, width, height);
 		this._bCopy.draw(this._fbo.getTexture());
 
+		GL.viewport(width, 0, width, height);
+		this._bCopy.draw(this._fboMultiSample.getTexture());
+
+		// this._bCopy.draw(this._fboMultiSample.getTexture());
+
+/*
 		GL.disable(GL.DEPTH_TEST);
 		const size = GL.width/4;
 		for(let i=0; i<4; i++) {
@@ -69,6 +80,22 @@ class SceneWebGL2 extends alfrid.Scene {
 		}
 		
 		GL.enable(GL.DEPTH_TEST);
+
+*/		
+	}
+
+
+	drawScene() {
+		this._bAxis.draw();
+		this._bDots.draw();
+
+		this.shader.bind();
+		GL.draw(this.mesh);
+	}
+
+
+	getTexture(mIndex = 0) {
+		return this._textures[mIndex];
 	}
 }
 

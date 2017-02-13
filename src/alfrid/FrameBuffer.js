@@ -147,7 +147,10 @@ class FrameBuffer {
 			this._textures.push(glt);
 		}
 
-		this.glDepthTexture = this._createTexture(gl.DEPTH_COMPONENT, gl.UNSIGNED_SHORT);
+		if(webglDepthTexture) {
+			this.glDepthTexture = this._createTexture(gl.DEPTH_COMPONENT, gl.UNSIGNED_SHORT);
+		}
+		
 	}
 
 
@@ -181,9 +184,9 @@ class FrameBuffer {
 
 	unbind(mAutoSetViewport=true) {
 		if(mAutoSetViewport) {
-			gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+			GL.viewport(0, 0, GL.width, GL.height);	
 		}
-		GL.viewport(0, 0, GL.width, GL.height);
+		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 	}
 
 
