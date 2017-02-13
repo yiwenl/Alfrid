@@ -11,6 +11,20 @@ function isPowerOfTwo(x) {
 
 let gl;
 let webglDepthTexture;
+let hasCheckedMultiRenderSupport = false;
+let extDrawBuffer;
+
+
+const checkMultiRender = function () {
+	if(GL.webgl2) {
+		return true;
+	} else {
+		extDrawBuffer = GL.getExtension('WEBGL_draw_buffers');
+		return !!extDrawBuffer;
+	}
+	
+	hasCheckedMultiRenderSupport = true;
+};
 
 class FrameBuffer {
 
@@ -38,55 +52,22 @@ class FrameBuffer {
 			}
 		} 
 
+		if(!hasCheckedMultiRenderSupport) {
+			// console.log('Has multi render support  :', checkMultiRender());
+			checkMultiRender();
+		}
 		this._init();
 	}
 
 
 	_init() {
 		this._textures = [];
-
-		if (!this._multipleTargets) {
-			this.texture            = gl.createTexture();
-			this.glTexture			= new GLTexture(this.texture, true);
-			this._textures.push(this.glTexture);
-		} else {
-			for (let i = 0; i < 4; i++) {
-				const t = gl.createTexture();
-				const glt = new GLTexture(t, true);
-				this._textures.push(glt);
-			}
-		}
-
-		this.depthTexture       = gl.createTexture();
-		this.glDepthTexture		= new GLTexture(this.depthTexture, true);
+		this._initTextures();
 		
 		this.frameBuffer        = gl.createFramebuffer();		
 		gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer);
 
 		let texelType = gl.UNSIGNED_BYTE;
-		const extHalfFloat = GL.getExtension('OES_texture_half_float');
-
-		if(!GL.webgl2) {
-			const extDrawBuffer = GL.getExtension('WEBGL_draw_buffers');
-			if (!extDrawBuffer && this._multipleTargets) {
-				console.error('Browser not supporting multiple rendering targets !');
-			}	
-
-			if (GL.checkExtension('OES_texture_float')) {
-				texelType = gl.FLOAT;
-			} else if(extHalfFloat) {
-				texelType = extHalfFloat.HALF_FLOAT_OES;
-			}
-
-
-			if (GL.isMobile && texelType === gl.FLOAT && extHalfFloat) {
-				texelType = extHalfFloat.HALF_FLOAT_OES;
-			}
-		}
-		
-
-		//	SETUP TEXTURE MIPMAP, WRAP
-
 		if (this.texelType) {
 			texelType = this.texelType;
 		}
@@ -175,6 +156,19 @@ class FrameBuffer {
 
 		this.clear();
 		
+	}
+
+
+	_initTextures() {
+		const numTextures = this._multipleTargets ? 4 : 1;
+		for (let i = 0; i < 4; i++) {
+			const t = gl.createTexture();
+			const glt = new GLTexture(t, true);
+			this._textures.push(glt);
+		}
+
+		this.depthTexture       = gl.createTexture();
+		this.glDepthTexture		= new GLTexture(this.depthTexture, true);
 	}
 
 

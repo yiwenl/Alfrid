@@ -5,6 +5,7 @@ import alfrid, { GL } from '../alfrid';
 
 import vsInstanced from './shaders/testInstance.vert';
 import fsMRT from './shaders/mrt.frag';
+import fsMRTES1 from './shaders/mrtes1.frag';
 import vsMRT from './shaders/mrt.vert';
 
 class SceneWebGL2 extends alfrid.Scene {
@@ -16,8 +17,8 @@ class SceneWebGL2 extends alfrid.Scene {
 	}
 
 	_initViews() {
-		// this.shader = new alfrid.GLShader(vsInstanced);
 		this.shader = new alfrid.GLShader(vsMRT, fsMRT);
+		// this.shader = new alfrid.GLShader(vsInstanced, fsMRTES1);
 		this.mesh = alfrid.Geom.sphere(.5, 24);
 		this._bAxis = new alfrid.BatchAxis();
 		this._bDots = new alfrid.BatchDotsPlane();
@@ -29,6 +30,9 @@ class SceneWebGL2 extends alfrid.Scene {
 	}
 
 	_initTextures() {
+		console.log('Float : ', GL.FLOAT);
+		console.log('Half float : ', GL.HALF_FLOAT);
+
 		this._fbo = new alfrid.FrameBuffer(GL.width, GL.height, {}, true);
 	}
 

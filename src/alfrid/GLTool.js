@@ -1,6 +1,9 @@
 // GLTool.js
 
 import glm from 'gl-matrix';
+import exposeAttributes from './utils/exposeAttributes';
+import getFloat from './utils/getFloat';
+import getHalfFloat from './utils/getHalfFloat';
 
 let gl;
 
@@ -99,31 +102,12 @@ class GLTool {
 			this.extensions[extensions[i]] = gl.getExtension(extensions[i]);
 		}
 		
-
 		//	Copy gl Attributes
-		this.VERTEX_SHADER         = gl.VERTEX_SHADER;
-		this.FRAGMENT_SHADER       = gl.FRAGMENT_SHADER;
-		this.COMPILE_STATUS        = gl.COMPILE_STATUS;
-		this.DEPTH_TEST            = gl.DEPTH_TEST;
-		this.CULL_FACE             = gl.CULL_FACE;
-		this.BLEND                 = gl.BLEND;
-		this.POINTS                = gl.POINTS;
-		this.LINES                 = gl.LINES;
-		this.TRIANGLES             = gl.TRIANGLES;
+		exposeAttributes();
 		
-		this.LINEAR                = gl.LINEAR;
-		this.NEAREST               = gl.NEAREST;
-		this.LINEAR_MIPMAP_NEAREST = gl.LINEAR_MIPMAP_NEAREST;
-		this.MIRRORED_REPEAT       = gl.MIRRORED_REPEAT;
-		this.CLAMP_TO_EDGE         = gl.CLAMP_TO_EDGE;
-		this.SCISSOR_TEST		   = gl.SCISSOR_TEST;
-		
-
 		this.enable(this.DEPTH_TEST);
 		this.enable(this.CULL_FACE);
 		this.enable(this.BLEND);
-
-		this.showExtensions();
 	} 
 
 
@@ -363,6 +347,10 @@ class GLTool {
 
 
 	//	GETTER AND SETTERS
+
+	get FLOAT() { return getFloat(); }
+	
+	get HALF_FLOAT() { return getHalfFloat(); }
 
 	get width() {	return this._width;		}
 
