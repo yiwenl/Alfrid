@@ -4,7 +4,7 @@ import Scheduler from 'scheduling';
 import GL from '../GLTool';
 import CameraPerspective from '../cameras/CameraPerspective';
 import CameraOrtho from '../cameras/CameraOrtho';
-import OrbitalControl from '../tools/OrbitalControl';
+import OrbitalControl from '../utils/OrbitalControl';
 
 
 class Scene {

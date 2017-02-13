@@ -1,5 +1,3 @@
-// Mesh.js
-
 'use strict';
 
 import GL from './GLTool';
@@ -56,6 +54,8 @@ class Mesh {
 		this._extVAO                 = GL.getExtension('OES_vertex_array_object');
 		this._extInstance            = GL.getExtension('ANGLE_instanced_arrays');
 		this._useVAO             	 = !!this._extVAO && mUseVao;
+
+		if(GL.webgl2) {	this._useVAO = true;	}
 	}
 
 
@@ -133,7 +133,7 @@ class Mesh {
 
 
 	bufferInstance(mData, mName) {
-		if (!GL.checkExtension('ANGLE_instanced_arrays')) {
+		if (!GL.webgl2 && !GL.checkExtension('ANGLE_instanced_arrays')) {
 			console.warn('Extension : ANGLE_instanced_arrays is not supported with this device !');
 			return;
 		}
@@ -149,11 +149,15 @@ class Mesh {
 
 		if(this._useVAO) { //	IF SUPPORTED, CREATE VAO
 
-			//	CREATE VAO
-			this._vao = this._extVAO.createVertexArrayOES();
+			//	CREATE & BIND VAO
+			if(GL.webgl2) {
+				this._vao = gl.createVertexArray();
+				gl.bindVertexArray(this._vao);
+			} else {
+				this._vao = this._extVAO.createVertexArrayOES();
+				this._extVAO.bindVertexArrayOES(this._vao);
+			}
 
-			//	BIND VAO
-			this._extVAO.bindVertexArrayOES(this._vao);
 
 			//	UPDATE BUFFERS
 			this._attributes.forEach((attrObj) => {
@@ -169,7 +173,11 @@ class Mesh {
 				attrObj.attrPosition = attrPosition;
 
 				if(attrObj.isInstanced) {
-					this._extInstance.vertexAttribDivisorANGLE(attrPosition, 1);	
+					if(GL.webgl2) {
+						gl.vertexAttribDivisor(attrPosition, 1);	
+					} else {
+						this._extInstance.vertexAttribDivisorANGLE(attrPosition, 1);		
+					}
 				}
 			});
 				
@@ -177,7 +185,12 @@ class Mesh {
 			this._updateIndexBuffer();
 
 			//	UNBIND VAO
-			this._extVAO.bindVertexArrayOES(null);
+			if(GL.webgl2) {
+				gl.bindVertexArray(null);	
+			} else {
+				this._extVAO.bindVertexArrayOES(null);
+			}
+			
 			this._hasVAO = true;
 
 		} else { //	ELSE, USE TRADITIONAL METHOD
@@ -203,7 +216,11 @@ class Mesh {
 	resetInstanceDivisor() {
 		this._attributes.forEach((attribute)=> {
 			if(attribute.isInstanced) {
-				this._extInstance.vertexAttribDivisorANGLE(attribute.attrPosition, 0);
+				if(GL.webgl2) {
+					gl.vertexAttribDivisor(attribute.attrPosition, 0);
+				} else {
+					this._extInstance.vertexAttribDivisorANGLE(attribute.attrPosition, 0);	
+				}
 			}
 		});
 	}

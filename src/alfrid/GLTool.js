@@ -1,22 +1,11 @@
 // GLTool.js
 
 import glm from 'gl-matrix';
+import exposeAttributes from './utils/exposeAttributes';
+import getFloat from './utils/getFloat';
+import getHalfFloat from './utils/getHalfFloat';
 
 let gl;
-
-const offsets = new Float32Array([
-	0.0, 0.0, 0.1,
-	1.0, 0.0, 0.2,
-	2.0, 0.0, 0.3,
-	3.0, 0.0, 0.4
-]);
-
-const colors = new Float32Array([
-	1.0, 0.0, 0.0, 1.0, // Red monkey
-	0.0, 1.0, 0.0, 1.0, // Green monkey
-	0.0, 0.0, 1.0, 1.0, // Blue monkey
-	1.0, 1.0, 1.0, 1.0, // White monkey
-]);
 
 const getAttribLoc = function (gl, shaderProgram, name) {
 	if(shaderProgram.cacheAttribLoc === undefined) {	shaderProgram.cacheAttribLoc = {};	}
@@ -26,8 +15,6 @@ const getAttribLoc = function (gl, shaderProgram, name) {
 
 	return shaderProgram.cacheAttribLoc[name];
 };
-
-let offsetBuffer, colorBuffer;
 
 class GLTool {
 
@@ -41,6 +28,7 @@ class GLTool {
 		this._modelMatrix            = glm.mat4.create();
 		this._matrix                 = glm.mat4.create();
 		this._lastMesh				 = null;
+		this._useWebGL2 			 = false;
 		this._hasArrayInstance;
 		this._extArrayInstance;
 		this._hasCheckedExt = false;
@@ -67,7 +55,24 @@ class GLTool {
 		
 		this.canvas = mCanvas;
 		this.setSize(window.innerWidth, window.innerHeight);
-		const ctx = this.canvas.getContext('webgl', mParameters) || this.canvas.getContext('experimental-webgl', mParameters);
+
+		let ctx;
+		if(mParameters.ignoreWebgl2) {
+			ctx = this.canvas.getContext('webgl', mParameters) || this.canvas.getContext('experimental-webgl', mParameters);
+		} else {
+			ctx = this.canvas.getContext('experimental-webgl2', mParameters) || this.canvas.getContext('webgl2', mParameters);
+			if(ctx) {
+				this._useWebGL2 = true;
+			} else {
+				ctx = this.canvas.getContext('webgl', mParameters) || this.canvas.getContext('experimental-webgl', mParameters);
+			}
+			
+		}
+
+		console.log('Using WebGL 2 ?', this.webgl2);
+		if(this.webgl2) {
+			window.gl = ctx;
+		}
 
 		//	extensions
 		this.initWithGL(ctx);
@@ -97,26 +102,9 @@ class GLTool {
 			this.extensions[extensions[i]] = gl.getExtension(extensions[i]);
 		}
 		
-
 		//	Copy gl Attributes
-		this.VERTEX_SHADER         = gl.VERTEX_SHADER;
-		this.FRAGMENT_SHADER       = gl.FRAGMENT_SHADER;
-		this.COMPILE_STATUS        = gl.COMPILE_STATUS;
-		this.DEPTH_TEST            = gl.DEPTH_TEST;
-		this.CULL_FACE             = gl.CULL_FACE;
-		this.BLEND                 = gl.BLEND;
-		this.POINTS                = gl.POINTS;
-		this.LINES                 = gl.LINES;
-		this.TRIANGLES             = gl.TRIANGLES;
+		exposeAttributes();
 		
-		this.LINEAR                = gl.LINEAR;
-		this.NEAREST               = gl.NEAREST;
-		this.LINEAR_MIPMAP_NEAREST = gl.LINEAR_MIPMAP_NEAREST;
-		this.MIRRORED_REPEAT       = gl.MIRRORED_REPEAT;
-		this.CLAMP_TO_EDGE         = gl.CLAMP_TO_EDGE;
-		this.SCISSOR_TEST		   = gl.SCISSOR_TEST;
-		
-
 		this.enable(this.DEPTH_TEST);
 		this.enable(this.CULL_FACE);
 		this.enable(this.BLEND);
@@ -176,20 +164,22 @@ class GLTool {
 
 
 	draw(mMesh, mDrawingType) {
-		if(!this._hasCheckedExt) {
-			const ext = this.getExtension('ANGLE_instanced_arrays');
-			if (!ext) {
-				this._hasArrayInstance = false;
-			} else {
-				this._hasArrayInstance = true;
-				this._extArrayInstance = ext;
+		if(!this.webgl2) {
+			if(!this._hasCheckedExt) {
+				const ext = this.getExtension('ANGLE_instanced_arrays');
+				if (!ext) {
+					this._hasArrayInstance = false;
+				} else {
+					this._hasArrayInstance = true;
+					this._extArrayInstance = ext;
+				}
+				this._hasCheckedExt = true;
 			}
-			this._hasCheckedExt = true;
-		}
 
-		if(!this._hasArrayInstance) {
-			console.warn('Extension : ANGLE_instanced_arrays is not supported with this device !');
-			return;
+			if(!this._hasArrayInstance) {
+				console.warn('Extension : ANGLE_instanced_arrays is not supported with this device !');
+				return;
+			}
 		}
 
 		if(mMesh.length) {
@@ -220,8 +210,12 @@ class GLTool {
 
 		if(mMesh.isInstanced) {
 			//	DRAWING
-			const ext = this._extArrayInstance;
-			ext.drawElementsInstancedANGLE(mMesh.drawType, mMesh.iBuffer.numItems, gl.UNSIGNED_SHORT, 0, mMesh.numInstance);
+			if(this.webgl2) {
+				gl.drawElementsInstanced(mMesh.drawType, mMesh.iBuffer.numItems, gl.UNSIGNED_SHORT, 0, mMesh.numInstance);
+			} else {
+				this._extArrayInstance.drawElementsInstancedANGLE(mMesh.drawType, mMesh.iBuffer.numItems, gl.UNSIGNED_SHORT, 0, mMesh.numInstance);	
+			}
+			
 		} else {
 			if(drawType === gl.POINTS) {
 				gl.drawArrays(drawType, 0, mMesh.vertexSize);	
@@ -240,11 +234,15 @@ class GLTool {
 		this.attrPositionToReset = [];
 
 		if(mMesh.hasVAO) {
-			if(!this._extVAO) {
-				this._extVAO = this.getExtension('OES_vertex_array_object');
+			if(this.webgl2) {
+				gl.bindVertexArray(mMesh.vao); 
+			} else {
+				if(!this._extVAO) {
+					this._extVAO = this.getExtension('OES_vertex_array_object');
+				}
+				this._extVAO.bindVertexArrayOES(mMesh.vao); 
 			}
-
-			this._extVAO.bindVertexArrayOES(mMesh.vao);  
+			
 		} else {
 			if(this._lastMesh === mMesh) {	return;	}
 			
@@ -254,7 +252,12 @@ class GLTool {
 				gl.vertexAttribPointer(attrPosition, attribute.itemSize, gl.FLOAT, false, 0, 0);
 
 				if(attribute.isInstanced) {
-					this._extArrayInstance.vertexAttribDivisorANGLE(attrPosition, 1);	
+					if(this.webgl2) {
+						gl.vertexAttribDivisor(attrPosition, 1);	
+					} else {
+						this._extArrayInstance.vertexAttribDivisorANGLE(attrPosition, 1);		
+					}
+					
 					this.attrPositionToReset.push(attrPosition);
 				}
 
@@ -273,12 +276,20 @@ class GLTool {
 
 	_unbindBUffers(mMesh) {
 		if(mMesh.hasVAO) {
-			this._extVAO.bindVertexArrayOES(null);	
+			if(this.webgl2) {
+				gl.bindVertexArray(null);
+			} else {
+				this._extVAO.bindVertexArrayOES(null);
+			}
 
 			mMesh.resetInstanceDivisor();
 		} else {
 			this.attrPositionToReset.map((attrPos) => {
-				this._extArrayInstance.vertexAttribDivisorANGLE(attrPos, 0);
+				if(this.webgl2) {
+					gl.vertexAttribDivisor(attrPos, 0);
+				} else {
+					this._extArrayInstance.vertexAttribDivisorANGLE(attrPos, 0);	
+				}
 			});
 		}
 	}
@@ -337,11 +348,17 @@ class GLTool {
 
 	//	GETTER AND SETTERS
 
+	get FLOAT() { return getFloat(); }
+	
+	get HALF_FLOAT() { return getHalfFloat(); }
+
 	get width() {	return this._width;		}
 
 	get height() {	return this._height;	}
 
 	get aspectRatio() {	return this._aspectRatio;	}
+
+	get webgl2() {	return this._useWebGL2;	}
 
 	//	DESTROY
 

@@ -11,6 +11,20 @@ function isPowerOfTwo(x) {
 
 let gl;
 let webglDepthTexture;
+let hasCheckedMultiRenderSupport = false;
+let extDrawBuffer;
+
+
+const checkMultiRender = function () {
+	if(GL.webgl2) {
+		return true;
+	} else {
+		extDrawBuffer = GL.getExtension('WEBGL_draw_buffers');
+		return !!extDrawBuffer;
+	}
+	
+	hasCheckedMultiRenderSupport = true;
+};
 
 class FrameBuffer {
 
@@ -38,96 +52,66 @@ class FrameBuffer {
 			}
 		} 
 
+		if(!hasCheckedMultiRenderSupport) {
+			// console.log('Has multi render support  :', checkMultiRender());
+			checkMultiRender();
+		}
 		this._init();
 	}
 
 
 	_init() {
-		this._textures = [];
-
-		if (!this._multipleTargets) {
-			this.texture            = gl.createTexture();
-			this.glTexture			= new GLTexture(this.texture, true);
-			this._textures.push(this.glTexture);
-		} else {
-			for (let i = 0; i < 4; i++) {
-				const t = gl.createTexture();
-				const glt = new GLTexture(t, true);
-				this._textures.push(glt);
-			}
-		}
-
-		this.depthTexture       = gl.createTexture();
-		this.glDepthTexture		= new GLTexture(this.depthTexture, true);
-		
-		this.frameBuffer        = gl.createFramebuffer();		
-		gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer);
-
-		const extDrawBuffer = GL.getExtension('WEBGL_draw_buffers');
-		if (!extDrawBuffer && this._multipleTargets) {
-			console.error('Browser not supporting multiple rendering targets !');
-		}
-
-		//	SETUP TEXTURE MIPMAP, WRAP
-
 		let texelType = gl.UNSIGNED_BYTE;
-		const extHalfFloat = GL.getExtension('OES_texture_half_float');
-
-		if (GL.checkExtension('OES_texture_float')) {
-			texelType = gl.FLOAT;
-		} else if(extHalfFloat) {
-			texelType = extHalfFloat.HALF_FLOAT_OES;
-		}
-
-
-		if (GL.isMobile && texelType === gl.FLOAT && extHalfFloat) {
-			texelType = extHalfFloat.HALF_FLOAT_OES;
-		}
-
 		if (this.texelType) {
 			texelType = this.texelType;
 		}
 
-		for (let i = 0; i < this._textures.length; i++) {
-			gl.bindTexture(gl.TEXTURE_2D, this._textures[i].texture);
-			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, this.magFilter);
-			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, this.minFilter);
-			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, this.wrapS);
-			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, this.wrapT);
-			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.width, this.height, 0, gl.RGBA, texelType, null);	
-		}
+		this.texelType = texelType;
 
+		this._textures = [];
+		this._initTextures();
 		
+		this.frameBuffer        = gl.createFramebuffer();		
+		gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer);
 
-		if(webglDepthTexture) {
-			gl.bindTexture(gl.TEXTURE_2D, this.depthTexture);
-			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, this.magFilter);
-			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, this.minFilter);
-			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, this.wrapS);
-			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, this.wrapT);
-			gl.texImage2D(gl.TEXTURE_2D, 0, gl.DEPTH_COMPONENT, this.width, this.height, 0, gl.DEPTH_COMPONENT, gl.UNSIGNED_SHORT, null);	
-		}
-		
+		if(GL.webgl2) {
+			this.renderBufferDepth = gl.createRenderbuffer();
+			gl.bindRenderbuffer(gl.RENDERBUFFER, this.renderBufferDepth);
+			gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, this.width, this.height);
+			gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.renderBufferDepth);
+		} 
 
 		//	GET COLOUR
 
 		for (let i = 0; i < this._textures.length; i++) {
-			gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + i, gl.TEXTURE_2D, this._textures[i].texture, 0);
+			if(GL.webgl2) {
+				gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + i, gl.TEXTURE_2D, this._textures[i].texture, 0);
+			} else {
+				gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + i, gl.TEXTURE_2D, this._textures[i].texture, 0);	
+			}
+			
 		}
+
 		if (this._multipleTargets) {
-			extDrawBuffer.drawBuffersWEBGL([
-				extDrawBuffer.COLOR_ATTACHMENT0_WEBGL, // gl_FragData[0]
-				extDrawBuffer.COLOR_ATTACHMENT1_WEBGL, // gl_FragData[1]
-				extDrawBuffer.COLOR_ATTACHMENT2_WEBGL, // gl_FragData[2]
-				extDrawBuffer.COLOR_ATTACHMENT3_WEBGL  // gl_FragData[3]
-			]);
+			if(GL.webgl2) {
+				gl.drawBuffers([gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1, gl.COLOR_ATTACHMENT2, gl.COLOR_ATTACHMENT3]);
+			} else {
+				extDrawBuffer.drawBuffersWEBGL([
+					extDrawBuffer.COLOR_ATTACHMENT0_WEBGL, // gl_FragData[0]
+					extDrawBuffer.COLOR_ATTACHMENT1_WEBGL, // gl_FragData[1]
+					extDrawBuffer.COLOR_ATTACHMENT2_WEBGL, // gl_FragData[2]
+					extDrawBuffer.COLOR_ATTACHMENT3_WEBGL  // gl_FragData[3]
+				]);	
+			}
 		}
 		
 
 		//	GET DEPTH
 
-		gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, this.depthTexture, 0);
-
+		if(webglDepthTexture) {
+			gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, this.glDepthTexture.texture, 0);	
+		}
+		
 
 		if(this.minFilter === gl.LINEAR_MIPMAP_NEAREST)	{
 			for (let i = 0; i < this._textures.length; i++) {
@@ -156,16 +140,49 @@ class FrameBuffer {
 	}
 
 
+	_initTextures() {
+		const numTextures = this._multipleTargets ? 4 : 1;
+		for (let i = 0; i < 4; i++) {
+			const glt = this._createTexture();
+			this._textures.push(glt);
+		}
+
+		this.glDepthTexture = this._createTexture(gl.DEPTH_COMPONENT, gl.UNSIGNED_SHORT);
+	}
+
+
+	_createTexture(mInternalformat, mTexelType) {
+		if(mInternalformat === undefined) {	mInternalformat = gl.RGBA;	}
+		if(mTexelType === undefined) {	mTexelType = this.texelType;	}
+
+		const t = gl.createTexture();
+		const glt = new GLTexture(t, true);
+
+		gl.bindTexture(gl.TEXTURE_2D, t);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, this.magFilter);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, this.minFilter);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, this.wrapS);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, this.wrapT);
+		gl.texImage2D(gl.TEXTURE_2D, 0, mInternalformat, this.width, this.height, 0, mInternalformat, mTexelType, null);	
+		gl.bindTexture(gl.TEXTURE_2D, null);
+
+		return glt;
+	}
+
 	//	PUBLIC METHODS
 
-	bind() {
-		GL.viewport(0, 0, this.width, this.height);
+	bind(mAutoSetViewport=true) {
+		if(mAutoSetViewport) {
+			GL.viewport(0, 0, this.width, this.height);	
+		}
 		gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer);
 	}
 
 
-	unbind() {
-		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+	unbind(mAutoSetViewport=true) {
+		if(mAutoSetViewport) {
+			gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+		}
 		GL.viewport(0, 0, GL.width, GL.height);
 	}
 
@@ -180,7 +197,6 @@ class FrameBuffer {
 	//	TEXTURES
 
 	getTexture(mIndex = 0) {
-		// return this._textures.length == 1 ? this.glTexture : this._textures;
 		return this._textures[mIndex];
 	}
 
