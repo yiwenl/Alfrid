@@ -17,8 +17,12 @@ class SceneWebGL2 extends alfrid.Scene {
 	}
 
 	_initViews() {
-		this.shader = new alfrid.GLShader(vsMRT, fsMRT);
-		// this.shader = new alfrid.GLShader(vsInstanced, fsMRTES1);
+		if(GL.webgl2) {
+			this.shader = new alfrid.GLShader(vsMRT, fsMRT);
+		} else {
+			this.shader = new alfrid.GLShader(vsInstanced, fsMRTES1);	
+		}
+		
 		this.mesh = alfrid.Geom.sphere(.5, 24);
 		this._bAxis = new alfrid.BatchAxis();
 		this._bDots = new alfrid.BatchDotsPlane();
@@ -58,6 +62,12 @@ class SceneWebGL2 extends alfrid.Scene {
 			GL.viewport(size*i, 0, size, size/GL.aspectRatio);
 			this._bCopy.draw(this._fbo.getTexture(i));
 		}
+
+		if(!GL.webgl2) {
+			GL.viewport(0, size/GL.aspectRatio, size, size/GL.aspectRatio);
+			this._bCopy.draw(this._fbo.getDepthTexture());	
+		}
+		
 		GL.enable(GL.DEPTH_TEST);
 	}
 }
