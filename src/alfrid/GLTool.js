@@ -235,6 +235,8 @@ class GLTool {
 		
 		//	BIND SOURCE BUFFERS -> setupVertexAttr(sourceVAO)
 		meshSource.generateBuffers(this.shaderProgram);
+		meshDestination.generateBuffers(this.shaderProgram);
+		
 		meshSource.attributes.forEach((attr, i) => {
 			gl.bindBuffer(gl.ARRAY_BUFFER, attr.buffer);
 			gl.vertexAttribPointer(i, attr.itemSize, gl.FLOAT, false, 0, 0);
