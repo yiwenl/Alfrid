@@ -79,23 +79,18 @@ class FrameBuffer {
 			gl.bindRenderbuffer(gl.RENDERBUFFER, this.renderBufferDepth);
 			gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, this.width, this.height);
 			gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.renderBufferDepth);
-		} 
 
-		//	GET COLOUR
-
-		for (let i = 0; i < this._textures.length; i++) {
-			if(GL.webgl2) {
+			for (let i = 0; i < this._textures.length; i++) {
 				gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + i, gl.TEXTURE_2D, this._textures[i].texture, 0);
-			} else {
+			}
+
+			gl.drawBuffers([gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1, gl.COLOR_ATTACHMENT2, gl.COLOR_ATTACHMENT3]);
+		} else {
+			for (let i = 0; i < this._textures.length; i++) {
 				gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + i, gl.TEXTURE_2D, this._textures[i].texture, 0);	
 			}
-			
-		}
 
-		if (this._multipleTargets) {
-			if(GL.webgl2) {
-				gl.drawBuffers([gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1, gl.COLOR_ATTACHMENT2, gl.COLOR_ATTACHMENT3]);
-			} else {
+			if(this._multipleTargets) {
 				extDrawBuffer.drawBuffersWEBGL([
 					extDrawBuffer.COLOR_ATTACHMENT0_WEBGL, // gl_FragData[0]
 					extDrawBuffer.COLOR_ATTACHMENT1_WEBGL, // gl_FragData[1]
