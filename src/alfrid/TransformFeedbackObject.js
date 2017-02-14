@@ -11,9 +11,9 @@ class TransformFeedbackObject {
 
 	constructor(strVertexShader, strFragmentShader) {
 		gl = GL.gl;
-		this.shader = new GLShader(strVertexShader, strFragmentShader);
-		this._varyings = [];
-		this.transformFeedback = gl.createTransformFeedback();
+		this._vs = strVertexShader;
+		this._fs = strFragmentShader;
+		
 		this._init();
 	}
 
@@ -21,17 +21,51 @@ class TransformFeedbackObject {
 	_init() {
 		this._meshCurrent = new Mesh();
 		this._meshTarget = new Mesh();
+		this._numPoints = -1;
+
+		this._varyings = [];
+		this.transformFeedback = gl.createTransformFeedback();
 	}
 
 
 	bufferData(mData, mName, mVaryingName) {
-		this._meshCurrent.bufferData(mData, mName);
-		this._meshTarget.bufferData(mData, mName);
-		this._varyings.push(mVaryingName);
+		const isTransformFeedback = !!mVaryingName;
+		console.log('is Transform feedback ?', mName, isTransformFeedback);
+		this._meshCurrent.bufferData(mData, mName, null, false, false, isTransformFeedback);
+		this._meshTarget.bufferData(mData, mName, null, false, false, isTransformFeedback);
+
+		if(isTransformFeedback) {
+			this._varyings.push(mVaryingName);
+
+			if(this._numPoints < 0) {
+
+				this._numPoints = mData.length;
+				console.debug('Number of Points : ', this.numPoints);
+			}
+		}
 	}
+
+	bufferIndex(mArrayIndices) {
+		this._meshCurrent.bufferIndex(mArrayIndices);
+		this._meshTarget.bufferIndex(mArrayIndices);
+	}
+
 
 	uniform(mName, mType, mValue) {
 		this.shader.uniform(mName, mType, mValue);
+	}
+
+	generate() {
+		this.shader = new GLShader(this._vs, this._fs, this._varyings);
+	}
+
+	render() {
+		if(!this.shader) {	this.generate();	}
+
+		this.shader.bind();
+		GL.drawTransformFeedback(this);
+
+		this._swap();
 	}
 
 	_swap() {
@@ -40,16 +74,11 @@ class TransformFeedbackObject {
 		this._meshTarget  = tmp;
 	}
 
-	render() {
-		this.shader.bind();
-		GL.drawTransformFeedback(this);
-
-		this._swap();
-	}
-
-
+	get numPoints() {	return this._numPoints;	}
 	get meshCurrent() {	return this._meshCurrent;	}
 	get meshTarget() {	return this._meshTarget;	}
+	get meshSource() {	return this._meshCurrent;	}
+	get meshDestination() {	return this._meshTarget;	}
 }
 
 

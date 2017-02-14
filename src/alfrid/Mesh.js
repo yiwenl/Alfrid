@@ -100,9 +100,13 @@ class Mesh {
 	}
 
 
-	bufferData(mData, mName, mItemSize, isDynamic = false, isInstanced = false) {
+	bufferData(mData, mName, mItemSize, isDynamic = false, isInstanced = false, isTransformFeedback = false) {
 		let i = 0;
-		const drawType   = isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW;
+		let drawType   = isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW;
+		if(isTransformFeedback) {
+			drawType = gl.STREAM_COPY;
+		}
+
 		const bufferData = [];
 		if (!mItemSize) {	mItemSize = mData[0].length; }
 		this._isInstanced = isInstanced || this._isInstanced;
@@ -123,7 +127,7 @@ class Mesh {
 			attribute.dataArray = dataArray;
 		} else {
 			//	attribute not exist yet, create new attribute object
-			this._attributes.push({ name:mName, itemSize: mItemSize, drawType, dataArray, isInstanced });
+			this._attributes.push({ name:mName, itemSize: mItemSize, drawType, dataArray, isInstanced, isTransformFeedback });
 		}
 
 		this._bufferChanged.push(mName);

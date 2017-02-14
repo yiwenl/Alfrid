@@ -229,16 +229,43 @@ class GLTool {
 
 
 	drawTransformFeedback(mTransformObject) {
-		const mesh = mTransformObject.meshCurrent;
-		this._bindBuffers(mesh);
+		const toLog = Math.random() > .99;
 
-		gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, this.transformFeedback);
+		const { meshSource, meshDestination, numPoints, transformFeedback } = mTransformObject;
+		
+		//	BIND SOURCE BUFFERS -> setupVertexAttr(sourceVAO)
+		meshSource.generateBuffers(this.shaderProgram);
+		meshSource.attributes.forEach((attr, i) => {
+			gl.bindBuffer(gl.ARRAY_BUFFER, attr.buffer);
+			gl.vertexAttribPointer(i, attr.itemSize, gl.FLOAT, false, 0, 0);
+			gl.enableVertexAttribArray(i);
+		});
 
-		if(Math.random() > .99) {
-			// console.log(mMesh.attributes);
-		}
 
-		this._unbindBUffers(mesh);
+		//	BIND DESTINATION BUFFERS
+		gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, transformFeedback);
+
+		meshDestination.attributes.forEach((attr, i)=> {
+			gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, i, attr.buffer);
+		});
+
+		gl.enable(gl.RASTERIZER_DISCARD);
+
+		gl.beginTransformFeedback(gl.POINTS);
+		gl.drawArrays(gl.POINTS, 0, numPoints);
+		gl.endTransformFeedback();	
+		
+
+		//	reset state
+		gl.disable(gl.RASTERIZER_DISCARD);
+		gl.useProgram(null);
+		gl.bindBuffer(gl.ARRAY_BUFFER, null);
+		meshDestination.attributes.forEach((attr, i)=> {
+			gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, i, null);
+		});
+		gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, null);
+
+		this._unbindBUffers(meshSource);
 	}
 
 
