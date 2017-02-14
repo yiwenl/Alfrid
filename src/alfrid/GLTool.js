@@ -238,7 +238,7 @@ class GLTool {
 			// console.log(mMesh.attributes);
 		}
 
-		this._unbindBUffers(mMesh);
+		this._unbindBUffers(mesh);
 	}
 
 
