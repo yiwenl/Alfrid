@@ -10,7 +10,10 @@ import Geom					from './alfrid/Geom';
 import Batch				from './alfrid/Batch';
 import FrameBuffer			from './alfrid/FrameBuffer';
 import CubeFrameBuffer		from './alfrid/CubeFrameBuffer';
+
+//	WEBGL 2
 import MultisampleFrameBuffer		from './alfrid/MultisampleFrameBuffer';
+import TransformFeedbackObject from './alfrid/TransformFeedbackObject';
 
 //	TOOLS
 import Scheduler 			from 'scheduling';
@@ -67,7 +70,6 @@ class Alfrid {
 		this.Batch             = Batch;
 		this.FrameBuffer       = FrameBuffer;
 		this.CubeFrameBuffer   = CubeFrameBuffer;
-		this.MultisampleFrameBuffer   = MultisampleFrameBuffer;
 		this.Scheduler         = Scheduler;
 		this.EventDispatcher   = EventDispatcher;
 		this.EaseNumber        = EaseNumber;
@@ -96,6 +98,9 @@ class Alfrid {
 		this.Object3D          = Object3D;
 		this.ShaderLibs        = ShaderLibs;
 		this.ShaderUtils       = ShaderUtils;
+
+		this.MultisampleFrameBuffer   = MultisampleFrameBuffer;
+		this.TransformFeedbackObject   = TransformFeedbackObject;
 
 
 		//	NOT SUPER SURE I'VE DONE THIS IS A GOOD WAY

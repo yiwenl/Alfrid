@@ -10,7 +10,10 @@ import fsDraw from './shaders/transform/draw.frag';
 const random = function (min, max) { return min + Math.random() * (max - min);	};
 
 let gl;
-const NUM_PARTICLES = 10000;
+const t = 300;
+const NUM_PARTICLES = t * t;
+
+console.debug('Num Particles :', NUM_PARTICLES);
 
 class SceneTransformFeedbacks extends alfrid.Scene {
 	constructor() {
@@ -26,12 +29,28 @@ class SceneTransformFeedbacks extends alfrid.Scene {
 
 
 	_initParticles() {
-		
+		const range = 2;
+		this.transformFeedbackObj = new alfrid.TransformFeedbackObject(vsEmit, fsEmit);
+
+		const positions = [];
+		const velocities = [];
+
+		for(let i=0; i<NUM_PARTICLES; i++) {
+			const pos = [random(-range, range), random(-range, range), random(-range, range)];
+			const vel = [0, 0, 0];
+
+			positions.push(pos);
+			velocities.push(vel);
+		}
+
+		this.transformFeedbackObj.bufferData(positions, 'a_position', 'v_position');
+		this.transformFeedbackObj.bufferData(velocities, 'a_velocity', 'v_velocity');
+
 
 		this.particlePositions = new Float32Array(NUM_PARTICLES * 3);
 		this.particleVelocities = new Float32Array(NUM_PARTICLES * 3);
 		this.particleIDs = new Float32Array(NUM_PARTICLES);
-		const range = 2;
+		
 
 		for(let i=0; i<NUM_PARTICLES; i++) {
 			this.particlePositions[i * 3] = random(-range, range);
@@ -72,6 +91,7 @@ class SceneTransformFeedbacks extends alfrid.Scene {
 		//	INIT SHADERS
 		this.shaderEmit = new alfrid.GLShader(vsEmit, fsEmit, ['v_position', 'v_velocity']);
 		this.shaderDraw = new alfrid.GLShader(vsDraw, fsDraw);
+		this.shader = this.shaderDraw;
 
 
 		//	TRANSFORM FEEDBACK
@@ -144,8 +164,11 @@ class SceneTransformFeedbacks extends alfrid.Scene {
 		this.shaderDraw.bind();
 		this.shaderDraw.uniform('uViewMatrix', 'mat4', this.camera.viewMatrix);
 		this.shaderDraw.uniform('uProjectionMatrix', 'mat4', this.camera.projectionMatrix);
+		this.shaderDraw.uniform('uViewport', 'vec2', [GL.width, GL.height]);
 
 		gl.drawArrays(gl.POINTS, 0, NUM_PARTICLES);
+
+		this.transformFeedbackObj.render();
 		
 	}
 }

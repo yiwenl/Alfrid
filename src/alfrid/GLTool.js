@@ -228,6 +228,20 @@ class GLTool {
 	}
 
 
+	drawTransformFeedback(mTransformObject) {
+		const mesh = mTransformObject.meshCurrent;
+		this._bindBuffers(mesh);
+
+		gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, this.transformFeedback);
+
+		if(Math.random() > .99) {
+			// console.log(mMesh.attributes);
+		}
+
+		this._unbindBUffers(mMesh);
+	}
+
+
 	_bindBuffers(mMesh) {
 		//	CHECK IF MESH HAS CREATE BUFFERS
 		mMesh.generateBuffers(this.shaderProgram);

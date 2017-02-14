@@ -351,10 +351,6 @@ class Mesh {
 		return this._indices;
 	}
 
-	get attributes() {
-		return this._attributes;
-	}
-
 	get vertexSize() {
 		return this._vertexSize;
 	}
@@ -371,6 +367,7 @@ class Mesh {
 
 	get faces() {	return this._faces;	}
 
+	get attributes() {	return this._attributes;	}
 
 	get hasVAO() {	return this._hasVAO;	}
 

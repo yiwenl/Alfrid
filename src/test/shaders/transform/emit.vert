@@ -120,7 +120,7 @@ const float maxRadius = 3.0;
 void main(void) {
 	const float posOffset = 0.1;
 	vec3 noise = curlNoise(a_position * posOffset + time * 0.3);
-	const float strength = 0.0005;
+	const float strength = 0.00025;
 	vec3 velocity = a_velocity + noise * strength;
 
 	vec3 position = a_position + velocity;
