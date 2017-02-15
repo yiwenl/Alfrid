@@ -66,12 +66,7 @@ class Mesh {
 		this._vertices = mArrayVertices;
 
 		if (this._normals.length < this._vertices.length) {
-			const tempNormals = [];
-			for (let i = 0; i < mArrayVertices.length; i++) {
-				tempNormals.push([1, 0, 0]);
-			}
-
-			this.bufferNormal(tempNormals, isDynamic);	
+			this.bufferNormal(mArrayVertices, isDynamic);	
 		}
 	}
 
