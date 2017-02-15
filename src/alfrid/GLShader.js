@@ -50,11 +50,12 @@ const uniformMapping = {
 };
 
 class GLShader {
-	constructor(strVertexShader = defaultVertexShader, strFragmentShader = defaultFragmentShader) {
+	constructor(strVertexShader = defaultVertexShader, strFragmentShader = defaultFragmentShader, mVaryings) {
 
 		gl                   = GL.gl;
 		this.parameters      = [];
 		this.uniformTextures = [];
+		this._varyings 		 = mVaryings;
 
 		if(!strVertexShader) { strVertexShader = defaultVertexShader; }
 		if(!strFragmentShader) { strFragmentShader = defaultVertexShader; }
@@ -171,6 +172,15 @@ class GLShader {
 		this.shaderProgram = gl.createProgram();
 		gl.attachShader(this.shaderProgram, mVertexShader);
 		gl.attachShader(this.shaderProgram, mFragmentShader);
+
+		gl.deleteShader(mVertexShader);
+		gl.deleteShader(mFragmentShader);
+
+		if(this._varyings) {
+			console.log('Transform feedback setup : ', this._varyings);
+			gl.transformFeedbackVaryings(this.shaderProgram, this._varyings, gl.SEPARATE_ATTRIBS);
+		}
+
 		gl.linkProgram(this.shaderProgram);
 
 	}

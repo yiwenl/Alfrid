@@ -4,6 +4,7 @@ import SceneParticle from './SceneParticle';
 import SceneGrass from './SceneGrass';
 import SceneVAO from './SceneVAO';
 import SceneWebGL2 from './SceneWebGL2';
+import SceneTransformFeedbacks from './SceneTransformFeedbacks';
 import AssetsLoader from 'assets-loader';
 import dat from 'dat-gui';
 import '../scss/global.scss';
@@ -106,10 +107,11 @@ function _init3D() {
 	window.gui = new dat.GUI({ width:300 });
 
 	//	CREATE SCENE
-	const scene = new SceneWebGL2();
+	// const scene = new SceneWebGL2();
 	// const scene = new SceneApp();
 	// const scene = new SceneGrass();
 	// const scene = new SceneVAO();
+	const scene = new SceneTransformFeedbacks();
 
 
 	const stats = new Stats();
