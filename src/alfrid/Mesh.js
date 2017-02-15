@@ -55,7 +55,7 @@ class Mesh {
 		this._extInstance            = GL.getExtension('ANGLE_instanced_arrays');
 		this._useVAO             	 = !!this._extVAO && mUseVao;
 
-		if(GL.webgl2) {	this._useVAO = true;	}
+		if(GL.webgl2) {	this._useVAO = mUseVao;	}
 	}
 
 

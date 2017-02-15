@@ -10,7 +10,7 @@ import fsDraw from './shaders/transform/draw.frag';
 const random = function (min, max) { return min + Math.random() * (max - min);	};
 
 let gl;
-const t = 300;
+const t = 512;
 const NUM_PARTICLES = t * t;
 
 console.debug('Num Particles :', NUM_PARTICLES);
@@ -34,6 +34,7 @@ class SceneTransformFeedbacks extends alfrid.Scene {
 
 		const positions = [];
 		const velocities = [];
+		const extras = [];
 		const indices = [];
 
 		for(let i=0; i<NUM_PARTICLES; i++) {
@@ -42,12 +43,16 @@ class SceneTransformFeedbacks extends alfrid.Scene {
 
 			positions.push(pos);
 			velocities.push(vel);
+			extras.push([random(.5, 2), Math.random() * 255, random(.1, .2)]);
 			indices.push(i);
 		}
 
 		this.transformFeedbackObj.bufferData(positions, 'a_position', 'v_position');
 		this.transformFeedbackObj.bufferData(velocities, 'a_velocity', 'v_velocity');
+		this.transformFeedbackObj.bufferData(extras, 'a_extra', 'v_extra');
 		this.transformFeedbackObj.bufferIndex(indices);
+
+		console.log(positions.length, extras.length);
 
 /*
 		this.particlePositions = new Float32Array(NUM_PARTICLES * 3);
@@ -90,7 +95,7 @@ class SceneTransformFeedbacks extends alfrid.Scene {
 */
 		this.shaderDraw = new alfrid.GLShader(vsDraw, fsDraw);
 		this.shader = this.shaderDraw;
-		
+
 		//	TRANSFORM FEEDBACK
 		this.transformFeedback = gl.createTransformFeedback();
 	}

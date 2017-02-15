@@ -38,9 +38,7 @@ class TransformFeedbackObject {
 			this._varyings.push(mVaryingName);
 
 			if(this._numPoints < 0) {
-
 				this._numPoints = mData.length;
-				console.debug('Number of Points : ', this.numPoints);
 			}
 		}
 	}
@@ -52,7 +50,10 @@ class TransformFeedbackObject {
 
 
 	uniform(mName, mType, mValue) {
-		this.shader.uniform(mName, mType, mValue);
+		if(this.shader) {
+			this.shader.uniform(mName, mType, mValue);	
+		}
+		
 	}
 
 	generate() {
