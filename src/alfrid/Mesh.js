@@ -149,13 +149,8 @@ class Mesh {
 		if(this._useVAO) { //	IF SUPPORTED, CREATE VAO
 
 			//	CREATE & BIND VAO
-			if(GL.webgl2) {
-				this._vao = gl.createVertexArray();
-				gl.bindVertexArray(this._vao);
-			} else {
-				this._vao = this._extVAO.createVertexArrayOES();
-				this._extVAO.bindVertexArrayOES(this._vao);
-			}
+			this._vao = gl.createVertexArray();
+			gl.bindVertexArray(this._vao);
 
 
 			//	UPDATE BUFFERS
@@ -172,11 +167,7 @@ class Mesh {
 				attrObj.attrPosition = attrPosition;
 
 				if(attrObj.isInstanced) {
-					if(GL.webgl2) {
-						gl.vertexAttribDivisor(attrPosition, 1);	
-					} else {
-						this._extInstance.vertexAttribDivisorANGLE(attrPosition, 1);		
-					}
+					gl.vertexAttribDivisor(attrPosition, 1);
 				}
 			});
 				
@@ -184,11 +175,7 @@ class Mesh {
 			this._updateIndexBuffer();
 
 			//	UNBIND VAO
-			if(GL.webgl2) {
-				gl.bindVertexArray(null);	
-			} else {
-				this._extVAO.bindVertexArrayOES(null);
-			}
+			gl.bindVertexArray(null);	
 			
 			this._hasVAO = true;
 
@@ -215,11 +202,7 @@ class Mesh {
 	resetInstanceDivisor() {
 		this._attributes.forEach((attribute)=> {
 			if(attribute.isInstanced) {
-				if(GL.webgl2) {
-					gl.vertexAttribDivisor(attribute.attrPosition, 0);
-				} else {
-					this._extInstance.vertexAttribDivisorANGLE(attribute.attrPosition, 0);	
-				}
+				gl.vertexAttribDivisor(attribute.attrPosition, 0);
 			}
 		});
 	}

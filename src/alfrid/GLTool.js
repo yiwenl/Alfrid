@@ -1,6 +1,8 @@
 // GLTool.js
 
 import glm from 'gl-matrix';
+
+import getAndApplyExtension from './utils/getAndApplyExtension';
 import exposeAttributes from './utils/exposeAttributes';
 import getFloat from './utils/getFloat';
 import getHalfFloat from './utils/getHalfFloat';
@@ -71,8 +73,9 @@ class GLTool {
 
 		console.log('Using WebGL 2 ?', this.webgl2);
 		if(this.webgl2) {
-			window.gl = ctx;
+			
 		}
+		window.gl = ctx;
 
 		//	extensions
 		this.initWithGL(ctx);
@@ -104,6 +107,9 @@ class GLTool {
 		
 		//	Copy gl Attributes
 		exposeAttributes();
+		getAndApplyExtension(gl, 'OES_vertex_array_object');
+		getAndApplyExtension(gl, 'ANGLE_instanced_arrays');
+		getAndApplyExtension(gl, 'WEBGL_draw_buffers');
 		
 		this.enable(this.DEPTH_TEST);
 		this.enable(this.CULL_FACE);
@@ -210,12 +216,7 @@ class GLTool {
 
 		if(mMesh.isInstanced) {
 			//	DRAWING
-			if(this.webgl2) {
-				gl.drawElementsInstanced(mMesh.drawType, mMesh.iBuffer.numItems, gl.UNSIGNED_SHORT, 0, mMesh.numInstance);
-			} else {
-				this._extArrayInstance.drawElementsInstancedANGLE(mMesh.drawType, mMesh.iBuffer.numItems, gl.UNSIGNED_SHORT, 0, mMesh.numInstance);	
-			}
-			
+			gl.drawElementsInstanced(mMesh.drawType, mMesh.iBuffer.numItems, gl.UNSIGNED_SHORT, 0, mMesh.numInstance);
 		} else {
 			if(drawType === gl.POINTS) {
 				gl.drawArrays(drawType, 0, mMesh.vertexSize);	
@@ -278,15 +279,7 @@ class GLTool {
 		this.attrPositionToReset = [];
 
 		if(mMesh.hasVAO) {
-			if(this.webgl2) {
-				gl.bindVertexArray(mMesh.vao); 
-			} else {
-				if(!this._extVAO) {
-					this._extVAO = this.getExtension('OES_vertex_array_object');
-				}
-				this._extVAO.bindVertexArrayOES(mMesh.vao); 
-			}
-			
+			gl.bindVertexArray(mMesh.vao); 
 		} else {
 			if(this._lastMesh === mMesh) {	return;	}
 			
@@ -296,12 +289,7 @@ class GLTool {
 				gl.vertexAttribPointer(attrPosition, attribute.itemSize, gl.FLOAT, false, 0, 0);
 
 				if(attribute.isInstanced) {
-					if(this.webgl2) {
-						gl.vertexAttribDivisor(attrPosition, 1);	
-					} else {
-						this._extArrayInstance.vertexAttribDivisorANGLE(attrPosition, 1);		
-					}
-					
+					gl.vertexAttribDivisor(attrPosition, 1);
 					this.attrPositionToReset.push(attrPosition);
 				}
 
@@ -320,12 +308,7 @@ class GLTool {
 
 	_unbindBUffers(mMesh) {
 		if(mMesh.hasVAO) {
-			if(this.webgl2) {
-				gl.bindVertexArray(null);
-			} else {
-				this._extVAO.bindVertexArrayOES(null);
-			}
-
+			gl.bindVertexArray(null);
 			mMesh.resetInstanceDivisor();
 		} else {
 			this.attrPositionToReset.map((attrPos) => {
