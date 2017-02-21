@@ -40,7 +40,6 @@ class Mesh {
 		this._indices                = [];
 		this._faces                  = [];
 		this._bufferChanged          = [];
-		this._hasBufferCreated       = false;
 		this._hasIndexBufferChanged  = false;
 		this._hasVAO                 = false;
 		this._isInstanced 			 = false;
@@ -110,16 +109,14 @@ class Mesh {
 			//	attribute existed, replace with new data
 			attribute.itemSize = mItemSize;
 			attribute.dataArray = dataArray;
+			attribute.source = mData;
 		} else {
 			//	attribute not exist yet, create new attribute object
 			this._attributes.push({ name:mName, source:mData, itemSize: mItemSize, drawType, dataArray, isInstanced, isTransformFeedback });
 		}
 
 		this._bufferChanged.push(mName);
-		this._hasBufferCreated = false;
 	}
-
-
 
 	bufferInstance(mData, mName) {
 		if (!GL.webgl2 && !GL.checkExtension('ANGLE_instanced_arrays')) {
@@ -138,7 +135,7 @@ class Mesh {
 	}
 
 	generateBuffers(mShaderProgram) {
-		if(this._hasBufferCreated) { return; }
+		if(this._bufferChanged.length == 0) { return; }
 
 		if(this._useVAO) { //	IF SUPPORTED, CREATE VAO
 
@@ -188,7 +185,6 @@ class Mesh {
 		}
 
 		this._hasIndexBufferChanged = false;
-		this._hasBufferCreated = true;
 		this._bufferChanged = [];
 	}
 
