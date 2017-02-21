@@ -37,6 +37,13 @@ class SceneVAO extends alfrid.Scene {
 		this.meshTri.bufferNormal(this.normals);
 		this.meshTri.bufferIndex(this.index);
 
+		const { vertices, coords, normals, indices } = this.meshTri;
+		console.log('Triangle : ', vertices, coords, normals, indices);
+
+		const attr = this.meshTri.getAttribute('aVertexPosition');
+		console.log('Attr :', attr);
+		this.meshTri.generateFaces();
+
 	}
 
 	render() {

@@ -34,19 +34,12 @@ class Mesh {
 		gl                           = GL.gl;
 		this.drawType                = mDrawingType;
 		this._attributes             = [];
-		this._vertexSize             = 0;
 		this._numInstance 			 = -1;
 		this._enabledVertexAttribute = [];
 		
-		this._vertices               = [];
-		this._texCoords              = [];
-		this._normals                = [];
-		this._faceNormals            = [];
-		this._tangents               = [];
 		this._indices                = [];
 		this._faces                  = [];
 		this._bufferChanged          = [];
-		this._hasBufferCreated       = false;
 		this._hasIndexBufferChanged  = false;
 		this._hasVAO                 = false;
 		this._isInstanced 			 = false;
@@ -61,11 +54,9 @@ class Mesh {
 
 	bufferVertex(mArrayVertices, isDynamic = false) {
 
-		this._vertexSize = mArrayVertices.length;
 		this.bufferData(mArrayVertices, 'aVertexPosition', 3, isDynamic);
-		this._vertices = mArrayVertices;
 
-		if (this._normals.length < this._vertices.length) {
+		if (this.normals.length < this.vertices.length) {
 			this.bufferNormal(mArrayVertices, isDynamic);	
 		}
 	}
@@ -74,7 +65,6 @@ class Mesh {
 	bufferTexCoord(mArrayTexCoords, isDynamic = false) {
 
 		this.bufferData(mArrayTexCoords, 'aTextureCoord', 2, isDynamic);
-		this._texCoords = mArrayTexCoords;
 
 	}
 
@@ -82,7 +72,6 @@ class Mesh {
 	bufferNormal(mNormals, isDynamic = false) {
 
 		this.bufferData(mNormals, 'aNormal', 3, isDynamic);
-		this._normals = mNormals;
 
 	}
 
@@ -113,23 +102,21 @@ class Mesh {
 			}
 		}
 		const dataArray = new Float32Array(bufferData);
-		const attribute = this._attributes.find((a) => a.name === mName);
+		const attribute = this.getAttribute(mName);
 
 		
 		if(attribute) {	
 			//	attribute existed, replace with new data
 			attribute.itemSize = mItemSize;
 			attribute.dataArray = dataArray;
+			attribute.source = mData;
 		} else {
 			//	attribute not exist yet, create new attribute object
-			this._attributes.push({ name:mName, itemSize: mItemSize, drawType, dataArray, isInstanced, isTransformFeedback });
+			this._attributes.push({ name:mName, source:mData, itemSize: mItemSize, drawType, dataArray, isInstanced, isTransformFeedback });
 		}
 
 		this._bufferChanged.push(mName);
-		this._hasBufferCreated = false;
 	}
-
-
 
 	bufferInstance(mData, mName) {
 		if (!GL.webgl2 && !GL.checkExtension('ANGLE_instanced_arrays')) {
@@ -143,8 +130,12 @@ class Mesh {
 	}
 
 
+	bind() {
+
+	}
+
 	generateBuffers(mShaderProgram) {
-		if(this._hasBufferCreated) { return; }
+		if(this._bufferChanged.length == 0) { return; }
 
 		if(this._useVAO) { //	IF SUPPORTED, CREATE VAO
 
@@ -194,7 +185,6 @@ class Mesh {
 		}
 
 		this._hasIndexBufferChanged = false;
-		this._hasBufferCreated = true;
 		this._bufferChanged = [];
 	}
 
@@ -229,11 +219,6 @@ class Mesh {
 		}
 	}
 
-
-	computeTangents() {
-
-	}
-
 	//	PRIVATE METHODS
 
 	_computeFaceNormals() {
@@ -261,8 +246,9 @@ class Mesh {
 		let face;
 		const sumNormal = vec3.create();
 		const normals = [];
+		const { vertices } = this;
 
-		for(let i = 0; i < this._vertices.length; i++) {
+		for(let i = 0; i < vertices.length; i++) {
 
 			vec3.set(sumNormal, 0, 0, 0);
 
@@ -293,6 +279,7 @@ class Mesh {
 		let ia, ib, ic;
 		let a, b, c;
 		const vba = vec3.create(), vca = vec3.create(), vNormal = vec3.create();
+		const { vertices } = this;
 
 		for(let i = 0; i < this._indices.length; i += 3) {
 
@@ -300,9 +287,9 @@ class Mesh {
 			ib = this._indices[i + 1];
 			ic = this._indices[i + 2];
 
-			a = this._vertices[ia];
-			b = this._vertices[ib];
-			c = this._vertices[ic];
+			a = vertices[ia];
+			b = vertices[ib];
+			c = vertices[ic];
 
 			const face = {
 				indices:[ia, ib, ic],
@@ -315,37 +302,24 @@ class Mesh {
 	}
 
 
+	getAttribute(mName) {	return this._attributes.find((a) => a.name === mName);	}
+	getSource(mName) {
+		const attr = this.getAttribute(mName);
+		return attr ? attr.source : [];
+	}
+
+
 	//	GETTER AND SETTERS
 
-	get vertices() {
-		return this._vertices;
-	}
+	get vertices() {	return this.getSource('aVertexPosition');	}
 
-	get normals() {
-		return this._normals;
-	}
+	get normals() {		return this.getSource('aNormal');	}
 
-	get coords() {
-		return this._texCoords;
-	}
+	get coords() {		return this.getSource('aTextureCoord');	}
 
-	get indices() {
-		return this._indices;
-	}
+	get indices() {		return this._indices;	}
 
-	get vertexSize() {
-		return this._vertexSize;
-	}
-
-	get hasNormals() {
-		if(this._normals.length === 0) {	return false; }
-		return true;
-	}
-
-	get hasTangents() {
-		if(this._tangents.length === 0) {	return false; }
-		return true;	
-	}
+	get vertexSize() {	return this.vertices.length;	}
 
 	get faces() {	return this._faces;	}
 
