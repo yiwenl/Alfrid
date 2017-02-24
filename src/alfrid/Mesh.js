@@ -1,11 +1,11 @@
 'use strict';
 
 import GL from './GLTool';
-import glm from 'gl-matrix';
+import { vec3 } from 'gl-matrix';
+import getAttribLoc from './utils/getAttribLoc';
 
 let gl;
-
-const vec3 = glm.vec3;
+const STATIC_DRAW = 35044;
 
 const getBuffer = function (attr) {
 	let buffer;
@@ -20,14 +20,6 @@ const getBuffer = function (attr) {
 	return buffer;
 };
 
-const getAttribLoc = function (gl, shaderProgram, name) {
-	if(shaderProgram.cacheAttribLoc === undefined) {	shaderProgram.cacheAttribLoc = {};	}
-	if(shaderProgram.cacheAttribLoc[name] === undefined) {
-		shaderProgram.cacheAttribLoc[name] = gl.getAttribLocation(shaderProgram, name);
-	}
-
-	return shaderProgram.cacheAttribLoc[name];
-};
 
 class Mesh {
 	constructor(mDrawingType = 4, mUseVao = true) {
@@ -44,34 +36,31 @@ class Mesh {
 		this._hasVAO                 = false;
 		this._isInstanced 			 = false;
 		
-		this._extVAO                 = GL.getExtension('OES_vertex_array_object');
-		this._extInstance            = GL.getExtension('ANGLE_instanced_arrays');
+		this._extVAO                 = !!GL.gl.createVertexArray;
 		this._useVAO             	 = !!this._extVAO && mUseVao;
-
-		if(GL.webgl2) {	this._useVAO = mUseVao;	}
 	}
 
 
-	bufferVertex(mArrayVertices, isDynamic = false) {
+	bufferVertex(mArrayVertices, mDrawType = STATIC_DRAW) {
 
-		this.bufferData(mArrayVertices, 'aVertexPosition', 3, isDynamic);
+		this.bufferData(mArrayVertices, 'aVertexPosition', 3, mDrawType);
 
 		if (this.normals.length < this.vertices.length) {
-			this.bufferNormal(mArrayVertices, isDynamic);	
+			this.bufferNormal(mArrayVertices, mDrawType);	
 		}
 	}
 
 
-	bufferTexCoord(mArrayTexCoords, isDynamic = false) {
+	bufferTexCoord(mArrayTexCoords, mDrawType = STATIC_DRAW) {
 
-		this.bufferData(mArrayTexCoords, 'aTextureCoord', 2, isDynamic);
+		this.bufferData(mArrayTexCoords, 'aTextureCoord', 2, mDrawType);
 
 	}
 
 
-	bufferNormal(mNormals, isDynamic = false) {
+	bufferNormal(mNormals, mDrawType = STATIC_DRAW) {
 
-		this.bufferData(mNormals, 'aNormal', 3, isDynamic);
+		this.bufferData(mNormals, 'aNormal', 3, mDrawType);
 
 	}
 
@@ -84,12 +73,10 @@ class Mesh {
 	}
 
 
-	bufferData(mData, mName, mItemSize, isDynamic = false, isInstanced = false, isTransformFeedback = false) {
+	bufferData(mData, mName, mItemSize, mDrawType = STATIC_DRAW, isInstanced = false) {
 		let i = 0;
-		let drawType   = isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW;
-		if(isTransformFeedback) {
-			drawType = gl.STREAM_COPY;
-		}
+		const drawType   = mDrawType;
+		if(!drawType) debugger;
 
 		const bufferData = [];
 		if (!mItemSize) {	mItemSize = mData[0].length; }
@@ -112,21 +99,21 @@ class Mesh {
 			attribute.source = mData;
 		} else {
 			//	attribute not exist yet, create new attribute object
-			this._attributes.push({ name:mName, source:mData, itemSize: mItemSize, drawType, dataArray, isInstanced, isTransformFeedback });
+			this._attributes.push({ name:mName, source:mData, itemSize: mItemSize, drawType, dataArray, isInstanced });
 		}
 
 		this._bufferChanged.push(mName);
 	}
 
 	bufferInstance(mData, mName) {
-		if (!GL.webgl2 && !GL.checkExtension('ANGLE_instanced_arrays')) {
-			console.warn('Extension : ANGLE_instanced_arrays is not supported with this device !');
+		if (!GL.gl.vertexAttribDivisor) {
+			console.error('Extension : ANGLE_instanced_arrays is not supported with this device !');
 			return;
 		}
 
 		const itemSize = mData[0].length;
 		this._numInstance = mData.length;
-		this.bufferData(mData, mName, itemSize, false, true);
+		this.bufferData(mData, mName, itemSize, STATIC_DRAW, true);
 	}
 
 
@@ -146,7 +133,6 @@ class Mesh {
 
 			//	UPDATE BUFFERS
 			this._attributes.forEach((attrObj) => {
-				// if(this._bufferChanged.indexOf(attrObj.name) === -1) {	continue; }
 				const buffer = getBuffer(attrObj);
 
 				gl.bindBuffer(gl.ARRAY_BUFFER, buffer);

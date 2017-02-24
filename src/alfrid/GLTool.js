@@ -6,17 +6,9 @@ import getAndApplyExtension from './utils/getAndApplyExtension';
 import exposeAttributes from './utils/exposeAttributes';
 import getFloat from './utils/getFloat';
 import getHalfFloat from './utils/getHalfFloat';
+import getAttribLoc from './utils/getAttribLoc';
 
 let gl;
-
-const getAttribLoc = function (gl, shaderProgram, name) {
-	if(shaderProgram.cacheAttribLoc === undefined) {	shaderProgram.cacheAttribLoc = {};	}
-	if(shaderProgram.cacheAttribLoc[name] === undefined) {
-		shaderProgram.cacheAttribLoc[name] = gl.getAttribLocation(shaderProgram, name);
-	}
-
-	return shaderProgram.cacheAttribLoc[name];
-};
 
 class GLTool {
 
@@ -114,6 +106,7 @@ class GLTool {
 		this.enable(this.DEPTH_TEST);
 		this.enable(this.CULL_FACE);
 		this.enable(this.BLEND);
+		this.enableAlphaBlending();
 	} 
 
 
@@ -170,24 +163,6 @@ class GLTool {
 
 
 	draw(mMesh, mDrawingType) {
-		if(!this.webgl2) {
-			if(!this._hasCheckedExt) {
-				const ext = this.getExtension('ANGLE_instanced_arrays');
-				if (!ext) {
-					this._hasArrayInstance = false;
-				} else {
-					this._hasArrayInstance = true;
-					this._extArrayInstance = ext;
-				}
-				this._hasCheckedExt = true;
-			}
-
-			if(!this._hasArrayInstance) {
-				console.warn('Extension : ANGLE_instanced_arrays is not supported with this device !');
-				return;
-			}
-		}
-
 		if(mMesh.length) {
 			for(let i = 0; i < mMesh.length; i++) {
 				this.draw(mMesh[i]);
@@ -225,7 +200,7 @@ class GLTool {
 			}	
 		}
 
-		this._unbindBUffers(mMesh);
+		this._unbindBuffers(mMesh);
 	}
 
 
@@ -269,7 +244,7 @@ class GLTool {
 		});
 		gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, null);
 
-		this._unbindBUffers(meshSource);
+		this._unbindBuffers(meshSource);
 	}
 
 
@@ -306,7 +281,7 @@ class GLTool {
 		this._lastMesh = mMesh;
 	}
 
-	_unbindBUffers(mMesh) {
+	_unbindBuffers(mMesh) {
 		if(mMesh.hasVAO) {
 			gl.bindVertexArray(null);
 			mMesh.resetInstanceDivisor();

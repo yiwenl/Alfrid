@@ -18,6 +18,7 @@ function checkFloat() {
 			return GL.gl.UNSIGNED_BYTE;
 		}
 	}
+
 	hasChecked = true;
 };
 

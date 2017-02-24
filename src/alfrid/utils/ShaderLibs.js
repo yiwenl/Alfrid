@@ -9,9 +9,6 @@ import copyFrag from '../shaders/copy.frag';
 import basicVert from '../shaders/basic.vert';
 import skyboxVert from '../shaders/skybox.vert';
 import skyboxFrag from '../shaders/skybox.frag';
-import pbrVert from '../shaders/pbr.vert';
-import pbrColorFrag from '../shaders/pbrColor.frag';
-import pbrTextureFrag from '../shaders/pbrTexture.frag';
 
 const ShaderLibs = {
 	simpleColorFrag,
@@ -21,9 +18,6 @@ const ShaderLibs = {
 	basicVert,
 	skyboxVert,
 	skyboxFrag,
-	pbrVert,
-	pbrColorFrag,
-	pbrTextureFrag,
 };
 
 

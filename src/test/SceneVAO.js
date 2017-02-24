@@ -43,7 +43,6 @@ class SceneVAO extends alfrid.Scene {
 		const attr = this.meshTri.getAttribute('aVertexPosition');
 		console.log('Attr :', attr);
 		this.meshTri.generateFaces();
-
 	}
 
 	render() {
