@@ -80,6 +80,10 @@ class GLShader {
 
 
 	uniform(mName, mType, mValue) {
+		if(typeof mName === 'object') {
+			this.uniformObject(mName);
+			return;
+		}
 /*
 		if(!!mValue === undefined || mValue === null) {
 			console.warn('mValue Error:', mName);
@@ -149,6 +153,24 @@ class GLShader {
 
 	}
 
+	uniformObject(mUniformObj) {
+		for(const uniformName in mUniformObj) {
+			let uniformValue = mUniformObj[uniformName];
+			const uniformType = GLShader.getUniformType(uniformValue);
+
+			if(uniformValue.concat && uniformValue[0].concat) {
+				let tmp = [];
+				for(let i=0; i<uniformValue.length; i++) {
+					tmp = tmp.concat(uniformValue[i]);
+				}
+				uniformValue = tmp;
+			}
+			
+			this.uniform(uniformName, uniformType, uniformValue);
+		}
+
+	}
+
 
 	_createShaderProgram(mShaderStr, isVertexShader) {
 		
@@ -186,6 +208,30 @@ class GLShader {
 	}
 
 }
+
+GLShader.getUniformType = function (mValue) {
+	const isArray = !!mValue.concat;
+
+	const getArrayUniformType = function (mValue) {
+		if(mValue.length === 9) {
+			return 'uniformMatrix3fv';
+		} else if(mValue.length === 16) {
+			return 'uniformMatrix4fv';
+		} else {
+			return `vec${mValue.length}`;	
+		}
+	};
+
+	if(!isArray) {
+		return 'float';
+	} else {
+		if (!mValue[0].concat) {
+			return getArrayUniformType(mValue);	
+		} else {
+			return getArrayUniformType(mValue[0]);
+		}
+	}
+};
 
 
 export default GLShader;

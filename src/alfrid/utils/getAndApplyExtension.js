@@ -14,7 +14,7 @@ export default function getAndApplyExtension(gl, name) {
 			const unsuffixedKey = key.replace(suffixRE, '');
 			if (key.substring) {
 				gl[unsuffixedKey] = ext[key].bind(ext);	
-				console.log('Replacing :', key, '=>', unsuffixedKey);
+				// console.log('Replacing :', key, '=>', unsuffixedKey);
 			}
 		}
 	}
