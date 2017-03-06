@@ -50,13 +50,15 @@ class SceneVAO extends alfrid.Scene {
 
 		this.meshPlane = alfrid.Geom.plane(5, 5, 1);
 
+		const g = .85;
+
 		this._uniformObj = {
 			time:0,
-			uPosOffset:[1, 1],
+			uPosOffset:[0, 1],
 			colors:[
-				[0, 0, .9],
+				[0, 0, g],
 				[1, 1, 1],
-				[.9, 0, 0]
+				[g, 0, 0]
 			]
 		};
 
@@ -64,22 +66,22 @@ class SceneVAO extends alfrid.Scene {
 
 	render() {
 		this.time += 0.01;
-		this._uniformObj.time += 0.001;
+		this._uniformObj.time += 0.01;
 		this._bAxis.draw();
 		this._bDots.draw();
 
-		// this.shader.bind();
-		// GL.draw(this.mesh);
+		this.shader.bind();
+		GL.draw(this.mesh);
 
-		// this.shader1.bind();
-		// this.positions[1][1] = Math.sin(this.time) * 0.5;
-		// this.positions[2][0] = Math.cos(this.time) * 0.5 + 2;
-		// this.meshTri.bufferVertex(this.positions);
-		// GL.draw(this.meshTri);
+		this.shader1.bind();
+		this.positions[1][1] = Math.sin(this.time) * 0.5;
+		this.positions[2][0] = Math.cos(this.time) * 0.5 + 2;
+		this.meshTri.bufferVertex(this.positions);
+		GL.draw(this.meshTri);
 
-		this.shaderArray.bind();
-		this.shaderArray.uniform(this._uniformObj);
-		GL.draw(this.meshPlane);
+		// this.shaderArray.bind();
+		// this.shaderArray.uniform(this._uniformObj);
+		// GL.draw(this.meshPlane);
 	}
 
 	resize() {

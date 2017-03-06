@@ -118,7 +118,30 @@ class Mesh {
 
 
 	bind() {
+		this.attrPositionToReset = [];
 
+		if(this._useVAO) {
+			GL.gl.bindVertexArray(this._vao);
+		} else {
+			this.attributes.forEach((attribute)=> {
+				gl.bindBuffer(gl.ARRAY_BUFFER, attribute.buffer);
+				const attrPosition = getAttribLoc(gl, this.shaderProgram, attribute.name);
+				gl.vertexAttribPointer(attrPosition, attribute.itemSize, gl.FLOAT, false, 0, 0);
+
+				if(attribute.isInstanced) {
+					gl.vertexAttribDivisor(attrPosition, 1);
+					this.attrPositionToReset.push(attrPosition);
+				}
+
+				if(this._enabledVertexAttribute.indexOf(attrPosition) === -1) {
+					gl.enableVertexAttribArray(attrPosition);
+					this._enabledVertexAttribute.push(attrPosition);
+				}
+			});
+
+			//	BIND INDEX BUFFER
+			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.iBuffer);	
+		}
 	}
 
 	generateBuffers(mShaderProgram) {
@@ -127,25 +150,33 @@ class Mesh {
 		if(this._useVAO) { //	IF SUPPORTED, CREATE VAO
 
 			//	CREATE & BIND VAO
-			this._vao = gl.createVertexArray();
+			if(!this._vao) {
+				this._vao = gl.createVertexArray();	
+			}
+			
 			gl.bindVertexArray(this._vao);
 
 
 			//	UPDATE BUFFERS
 			this._attributes.forEach((attrObj) => {
-				const buffer = getBuffer(attrObj);
 
-				gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-				gl.bufferData(gl.ARRAY_BUFFER, attrObj.dataArray, attrObj.drawType);
+				if(this._bufferChanged.indexOf(attrObj.name) !== -1) {
+					// console.log('Update :', attrObj.name);
+					const buffer = getBuffer(attrObj);
 
-				const attrPosition = getAttribLoc(gl, mShaderProgram, attrObj.name);
-				gl.enableVertexAttribArray(attrPosition);  
-				gl.vertexAttribPointer(attrPosition, attrObj.itemSize, gl.FLOAT, false, 0, 0);
-				attrObj.attrPosition = attrPosition;
+					gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+					gl.bufferData(gl.ARRAY_BUFFER, attrObj.dataArray, attrObj.drawType);
 
-				if(attrObj.isInstanced) {
-					gl.vertexAttribDivisor(attrPosition, 1);
+					const attrPosition = getAttribLoc(gl, mShaderProgram, attrObj.name);
+					gl.enableVertexAttribArray(attrPosition);  
+					gl.vertexAttribPointer(attrPosition, attrObj.itemSize, gl.FLOAT, false, 0, 0);
+					attrObj.attrPosition = attrPosition;
+
+					if(attrObj.isInstanced) {
+						gl.vertexAttribDivisor(attrPosition, 1);
+					}
 				}
+				
 			});
 				
 			//	check index buffer

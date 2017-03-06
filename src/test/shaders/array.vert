@@ -24,7 +24,8 @@ vec2 rotate(vec2 v, float a) {
 
 void main(void) {
 	vec3 position = aVertexPosition + vec3(uPosOffset, .0);
-	position.xz = rotate(position.xz, time);
+	position.xz = rotate(position.xz, sin(time));
+	position.yz = rotate(position.yz, cos(time));
     gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(position, 1.0);
     vTextureCoord = aTextureCoord;
     vNormal = aNormal;
