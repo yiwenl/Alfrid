@@ -185,7 +185,6 @@ class GLTool {
 
 
 	drawTransformFeedback(mTransformObject) {
-		const toLog = Math.random() > .995;
 
 		const { meshSource, meshDestination, numPoints, transformFeedback } = mTransformObject;
 		

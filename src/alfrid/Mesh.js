@@ -156,9 +156,7 @@ class Mesh {
 			this._attributes.forEach((attrObj) => {
 
 				if(this._bufferChanged.indexOf(attrObj.name) !== -1) {
-					// console.log('Update :', attrObj.name);
 					const buffer = getBuffer(attrObj);
-
 					gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
 					gl.bufferData(gl.ARRAY_BUFFER, attrObj.dataArray, attrObj.drawType);
 

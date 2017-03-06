@@ -53,46 +53,6 @@ class SceneTransformFeedbacks extends alfrid.Scene {
 		this.transformFeedbackObj.bufferIndex(indices);
 
 		console.log(positions.length, extras.length);
-
-/*
-		this.particlePositions = new Float32Array(NUM_PARTICLES * 3);
-		this.particleVelocities = new Float32Array(NUM_PARTICLES * 3);
-		this.particleIDs = new Float32Array(NUM_PARTICLES);
-		
-
-		for(let i=0; i<NUM_PARTICLES; i++) {
-			this.particlePositions[i * 3] = random(-range, range);
-			this.particlePositions[i * 3 + 1] = random(-range, range);
-			this.particlePositions[i * 3 + 2] = random(-range, range);
-
-			this.particleVelocities[i * 3] = 0;
-			this.particleVelocities[i * 3 + 1] = 0;
-			this.particleVelocities[i * 3 + 2] = 0;
-
-			this.particleIDs[i] = i;
-		}
-
-
-		this.particleVBOs = [];
-
-		for(let i=0; i<2; i++) {
-			this.particleVBOs[i] = [];
-			for(let j=0; j<2; j++) {
-				this.particleVBOs[i][j] = gl.createBuffer();
-			}
-
-			gl.bindBuffer(gl.ARRAY_BUFFER, this.particleVBOs[i][0]);
-			gl.bufferData(gl.ARRAY_BUFFER, this.particlePositions, gl.STREAM_COPY);
-
-			gl.bindBuffer(gl.ARRAY_BUFFER, this.particleVBOs[i][1]);
-			gl.bufferData(gl.ARRAY_BUFFER, this.particleVelocities, gl.STREAM_COPY);
-		}
-
-
-		//	INIT SHADERS
-		this.shaderEmit = new alfrid.GLShader(vsEmit, fsEmit, ['v_position', 'v_velocity']);
-		
-*/
 		this.shaderDraw = new alfrid.GLShader(vsDraw, fsDraw);
 		this.shader = this.shaderDraw;
 
@@ -104,57 +64,14 @@ class SceneTransformFeedbacks extends alfrid.Scene {
 		this._bAxis = new alfrid.BatchAxis();
 		this._bDots = new alfrid.BatchDotsPlane();
 	}
-
-/*
-	setupVertexAttributes(vboArray) {
-		gl.bindBuffer(gl.ARRAY_BUFFER, vboArray[0]);
-		gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
-
-		gl.bindBuffer(gl.ARRAY_BUFFER, vboArray[1]);
-		gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 0, 0);
-
-		gl.enableVertexAttribArray(0);
-		gl.enableVertexAttribArray(1);
-	}
-
-
-	emitParticles() {
-		const sourceVBO = this.particleVBOs[this.currentSourceIdx];
-		const destinationVBO = this.particleVBOs[(this.currentSourceIdx + 1) % 2];
-
-		
-		this.shaderEmit.bind();
-		this.shaderEmit.uniform('time', 'float', this.time);
-		this.setupVertexAttributes(sourceVBO);
-
-		gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, this.transformFeedback);
-		gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, destinationVBO[0]);
-		gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 1, destinationVBO[1]);
-
-		gl.enable(gl.RASTERIZER_DISCARD);
-		// Emit particles using transform feedback
-		gl.beginTransformFeedback(gl.POINTS);
-		gl.drawArrays(gl.POINTS, 0, NUM_PARTICLES);
-		gl.endTransformFeedback();
-
-		gl.disable(gl.RASTERIZER_DISCARD);
-		gl.useProgram(null);
-		gl.bindBuffer(gl.ARRAY_BUFFER, null);
-		gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, null);
-		gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 1, null);
-		gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, null);
-
-		this.currentSourceIdx = (this.currentSourceIdx + 1) % 2;
-	}
-*/
 	render() {
 		this.time += 0.01;
 		// this.emitParticles();
 		this.transformFeedbackObj.render();
 
 		GL.clear();
-		this._bAxis.draw();
-		this._bDots.draw();
+		// this._bAxis.draw();
+		// this._bDots.draw();
 
 		// this.setupVertexAttributes(this.particleVBOs[this.currentSourceIdx]);
 
