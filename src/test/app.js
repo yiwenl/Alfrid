@@ -110,8 +110,8 @@ function _init3D() {
 	// const scene = new SceneWebGL2();
 	// const scene = new SceneApp();
 	// const scene = new SceneGrass();
-	const scene = new SceneVAO();
-	// const scene = new SceneTransformFeedbacks();
+	// const scene = new SceneVAO();
+	const scene = new SceneTransformFeedbacks();
 
 
 	const stats = new Stats();

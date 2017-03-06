@@ -190,16 +190,8 @@ class GLTool {
 		const { meshSource, meshDestination, numPoints, transformFeedback } = mTransformObject;
 		
 		//	BIND SOURCE BUFFERS -> setupVertexAttr(sourceVAO)
-		meshSource.generateBuffers(this.shaderProgram);
-
-		// this._bindBuffers(meshSource);
+		meshSource.bind(this.shaderProgram);
 		meshDestination.generateBuffers(this.shaderProgram);
-
-		meshSource.attributes.forEach((attr, i) => {
-			gl.bindBuffer(gl.ARRAY_BUFFER, attr.buffer);
-			gl.vertexAttribPointer(i, attr.itemSize, gl.FLOAT, false, 0, 0);
-			gl.enableVertexAttribArray(i);
-		});
 
 		//	BIND DESTINATION BUFFERS
 		gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, transformFeedback);
@@ -224,7 +216,7 @@ class GLTool {
 		});
 		gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, null);
 
-		this._unbindBuffers(meshSource);
+		meshSource.unbind();
 	}
 
 

@@ -10,7 +10,7 @@ import fsDraw from './shaders/transform/draw.frag';
 const random = function (min, max) { return min + Math.random() * (max - min);	};
 
 let gl;
-const t = 512;
+const t = 256;
 const NUM_PARTICLES = t * t;
 
 console.debug('Num Particles :', NUM_PARTICLES);
@@ -159,6 +159,7 @@ class SceneTransformFeedbacks extends alfrid.Scene {
 		// this.setupVertexAttributes(this.particleVBOs[this.currentSourceIdx]);
 
 		this.shaderDraw.bind();
+		this.transformFeedbackObj.meshCurrent.bind();
 		this.shaderDraw.uniform('uViewMatrix', 'mat4', this.camera.viewMatrix);
 		this.shaderDraw.uniform('uProjectionMatrix', 'mat4', this.camera.projectionMatrix);
 		this.shaderDraw.uniform('uViewport', 'vec2', [GL.width, GL.height]);

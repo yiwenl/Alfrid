@@ -31,8 +31,8 @@ class TransformFeedbackObject {
 	bufferData(mData, mName, mVaryingName) {
 		const isTransformFeedback = !!mVaryingName;
 		console.log('is Transform feedback ?', mName, isTransformFeedback);
-		this._meshCurrent.bufferData(mData, mName, null, false, false, isTransformFeedback);
-		this._meshTarget.bufferData(mData, mName, null, false, false, isTransformFeedback);
+		this._meshCurrent.bufferData(mData, mName, null, gl.STREAM_COPY, false);
+		this._meshTarget.bufferData(mData, mName, null, gl.STREAM_COPY, false);
 
 		if(isTransformFeedback) {
 			this._varyings.push(mVaryingName);
