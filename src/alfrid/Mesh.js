@@ -38,6 +38,7 @@ class Mesh {
 		
 		this._extVAO                 = !!GL.gl.createVertexArray;
 		this._useVAO             	 = !!this._extVAO && mUseVao;
+		// this._useVAO = false;
 	}
 
 
@@ -117,26 +118,21 @@ class Mesh {
 	}
 
 
-	bind() {
-		this.attrPositionToReset = [];
+	bind(mShaderProgram) {
+		this.generateBuffers(mShaderProgram);
 
-		if(this._useVAO) {
-			GL.gl.bindVertexArray(this._vao);
+		if(this.hasVAO) {
+			gl.bindVertexArray(this.vao); 
 		} else {
 			this.attributes.forEach((attribute)=> {
 				gl.bindBuffer(gl.ARRAY_BUFFER, attribute.buffer);
-				const attrPosition = getAttribLoc(gl, this.shaderProgram, attribute.name);
+				const attrPosition = attribute.attrPosition;
 				gl.vertexAttribPointer(attrPosition, attribute.itemSize, gl.FLOAT, false, 0, 0);
 
 				if(attribute.isInstanced) {
 					gl.vertexAttribDivisor(attrPosition, 1);
-					this.attrPositionToReset.push(attrPosition);
 				}
 
-				if(this._enabledVertexAttribute.indexOf(attrPosition) === -1) {
-					gl.enableVertexAttribArray(attrPosition);
-					this._enabledVertexAttribute.push(attrPosition);
-				}
 			});
 
 			//	BIND INDEX BUFFER
@@ -156,7 +152,6 @@ class Mesh {
 			
 			gl.bindVertexArray(this._vao);
 
-
 			//	UPDATE BUFFERS
 			this._attributes.forEach((attrObj) => {
 
@@ -168,7 +163,7 @@ class Mesh {
 					gl.bufferData(gl.ARRAY_BUFFER, attrObj.dataArray, attrObj.drawType);
 
 					const attrPosition = getAttribLoc(gl, mShaderProgram, attrObj.name);
-					gl.enableVertexAttribArray(attrPosition);  
+					gl.enableVertexAttribArray(attrPosition); 
 					gl.vertexAttribPointer(attrPosition, attrObj.itemSize, gl.FLOAT, false, 0, 0);
 					attrObj.attrPosition = attrPosition;
 
@@ -194,7 +189,16 @@ class Mesh {
 				if(this._bufferChanged.indexOf(attrObj.name) !== -1) {
 					const buffer = getBuffer(attrObj);
 					gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-					gl.bufferData(gl.ARRAY_BUFFER, attrObj.dataArray, attrObj.drawType);	
+					gl.bufferData(gl.ARRAY_BUFFER, attrObj.dataArray, attrObj.drawType);
+
+					const attrPosition = getAttribLoc(gl, mShaderProgram, attrObj.name);
+					gl.enableVertexAttribArray(attrPosition);
+					gl.vertexAttribPointer(attrPosition, attrObj.itemSize, gl.FLOAT, false, 0, 0);
+					attrObj.attrPosition = attrPosition;
+
+					if(attrObj.isInstanced) {
+						gl.vertexAttribDivisor(attrPosition, 1);
+					}
 				}
 			});
 
@@ -206,13 +210,18 @@ class Mesh {
 	}
 
 
-	resetInstanceDivisor() {
+	unbind() {
+		if(this._useVAO) {
+			gl.bindVertexArray(null);	
+		}
+		
 		this._attributes.forEach((attribute)=> {
 			if(attribute.isInstanced) {
 				gl.vertexAttribDivisor(attribute.attrPosition, 0);
 			}
 		});
 	}
+
 
 	_updateIndexBuffer() {
 		if(!this._hasIndexBufferChanged) {
