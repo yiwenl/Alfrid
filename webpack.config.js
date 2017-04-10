@@ -39,6 +39,7 @@ module.exports = {
 		timings: true,
 		version: false
 	},
+	devtool: prod ? 'source-map' : 'eval-cheap-module-source-map',
 	output: {
 		path: getOutput(),
 		filename: prod ? libraryName + '.js' : 'js/bundle.js',
