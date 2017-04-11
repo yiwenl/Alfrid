@@ -68,6 +68,9 @@ class SceneWebGL2 extends alfrid.Scene {
 		this._bCopy.draw(this._fbo.getDepthTexture());
 
 		if(GL.webgl2) {
+			GL.clear(0, 0, 0, 0);
+			GL.viewport(0, 0, width, height);
+			this._bCopy.draw(this._fbo.getTexture());
 			GL.viewport(width, 0, width, height);
 			this._bCopy.draw(this._fboMultiSample.getTexture());
 		} else {
