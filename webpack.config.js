@@ -19,7 +19,7 @@ function getOutput() {
 	
 }
 
-module.exports = {
+const settings = {
 	hotPort: 8158,
 	cache: !prod,
 	debug: !prod,
@@ -39,7 +39,6 @@ module.exports = {
 		timings: true,
 		version: false
 	},
-	devtool: prod ? 'source-map' : 'eval-cheap-module-source-map',
 	output: {
 		path: getOutput(),
 		filename: prod ? libraryName + '.js' : 'js/bundle.js',
@@ -90,3 +89,10 @@ module.exports = {
 		new ExtractTextPlugin('css/main.css')
 	] : [new webpack.optimize.OccurenceOrderPlugin()]
 };
+
+if(prod) {
+	settings.devtool = 'source-map';
+}
+
+
+module.exports = settings;

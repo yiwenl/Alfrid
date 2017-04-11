@@ -107,11 +107,11 @@ function _init3D() {
 	window.gui = new dat.GUI({ width:300 });
 
 	//	CREATE SCENE
-	// const scene = new SceneWebGL2();
+	const scene = new SceneWebGL2();
 	// const scene = new SceneApp();
 	// const scene = new SceneGrass();
 	// const scene = new SceneVAO();
-	const scene = new SceneTransformFeedbacks();
+	// const scene = new SceneTransformFeedbacks();
 
 
 	const stats = new Stats();

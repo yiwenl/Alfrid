@@ -14,6 +14,7 @@ class SceneWebGL2 extends alfrid.Scene {
 		super();
 		this.time = 0;
 		this.orbitalControl.rx.value = this.orbitalControl.ry.value = 0.3;
+		this.camera.setPerspective(Math.PI/3, GL.aspectRatio, 0.2, 20);
 	}
 
 	_initViews() {
@@ -35,15 +36,20 @@ class SceneWebGL2 extends alfrid.Scene {
 
 	_initTextures() {
 		this._fbo = new alfrid.FrameBuffer(GL.width, GL.height, {}, true);
-		this._fboMultiSample = new alfrid.MultisampleFrameBuffer(GL.width, GL.height, { numSample:8 }, true);
+		if(GL.webgl2) {
+			this._fboMultiSample = new alfrid.MultisampleFrameBuffer(GL.width, GL.height, { numSample:8 }, true);	
+		}
+		
 	}
 
 
 	render() {
-		this._fboMultiSample.bind();
-		GL.clear(0, 0, 0, 0);
-		this.drawScene();
-		this._fboMultiSample.unbind();
+		if(GL.webgl2) {
+			this._fboMultiSample.bind();
+			GL.clear(0, 0, 0, 0);
+			this.drawScene();
+			this._fboMultiSample.unbind();
+		}
 
 		this._fbo.bind();
 		GL.clear(0, 0, 0, 0);
@@ -55,13 +61,21 @@ class SceneWebGL2 extends alfrid.Scene {
 		const width = GL.width/2;
 		const height = width / GL.aspectRatio;
 
-		GL.viewport(0, 0, width, height);
-		this._bCopy.draw(this._fbo.getTexture());
-
-		GL.viewport(width, 0, width, height);
+		GL.disable(GL.DEPTH_TEST);
 		this._bCopy.draw(this._fboMultiSample.getTexture());
 
-		// this._bCopy.draw(this._fboMultiSample.getTexture());
+		GL.viewport(0, 0, width, height);
+		this._bCopy.draw(this._fbo.getDepthTexture());
+
+		if(GL.webgl2) {
+			GL.viewport(width, 0, width, height);
+			this._bCopy.draw(this._fboMultiSample.getTexture());
+		} else {
+			GL.viewport(width, 0, width, height);
+			this._bCopy.draw(this._fbo.getTexture());			
+		}
+
+		GL.enable(GL.DEPTH_TEST);
 
 /*
 		GL.disable(GL.DEPTH_TEST);
