@@ -1,6 +1,5 @@
 // SceneWebGL2.js
 
-
 import alfrid, { GL } from '../alfrid';
 
 import vsInstanced from './shaders/testInstance.vert';
@@ -28,6 +27,7 @@ class SceneWebGL2 extends alfrid.Scene {
 		this._bAxis = new alfrid.BatchAxis();
 		this._bDots = new alfrid.BatchDotsPlane();
 		this._bCopy = new alfrid.BatchCopy();
+		this._bFxaa = new alfrid.BatchFXAA();
 
 		this.positionOffset = [[0, 0, 0], [0, 0, -2], [0, 0, 2]];
 		this.mesh.bufferInstance(this.positionOffset, 'aPosOffset');
@@ -76,7 +76,12 @@ class SceneWebGL2 extends alfrid.Scene {
 		} else {
 			GL.viewport(width, 0, width, height);
 			this._bCopy.draw(this._fbo.getTexture());			
+			// this._bFxaa.draw(this._fbo.getTexture());
 		}
+
+		// GL.viewport(0, 0, GL.width, GL.height);
+		// this._bFxaa.draw(this._fbo.getTexture());
+		// this._bCopy.draw(this._fbo.getTexture());
 
 		GL.enable(GL.DEPTH_TEST);
 

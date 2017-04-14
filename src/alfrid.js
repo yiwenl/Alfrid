@@ -48,6 +48,7 @@ import BatchDotsPlane		from './alfrid/helpers/BatchDotsPlane';
 import BatchLine 			from './alfrid/helpers/BatchLine';
 import BatchSkybox			from './alfrid/helpers/BatchSkybox';
 import BatchSky				from './alfrid/helpers/BatchSky';
+import BatchFXAA			from './alfrid/helpers/BatchFXAA';
 import Scene				from './alfrid/helpers/Scene';
 import View					from './alfrid/helpers/View';
 import View3D				from './alfrid/helpers/View3D';
@@ -91,6 +92,7 @@ class Alfrid {
 		this.BatchLine         = BatchLine;
 		this.BatchSkybox       = BatchSkybox;
 		this.BatchSky          = BatchSky;
+		this.BatchFXAA         = BatchFXAA;
 		this.BatchDotsPlane    = BatchDotsPlane;
 		this.Scene             = Scene;
 		this.View              = View;
