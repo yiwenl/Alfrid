@@ -34,22 +34,22 @@ const assets = [
 	{ id:'irr_negz', url:'assets/img/irr_negz.hdr', type:'binary' },
 ];
 
-const faces = ['posx', 'negx', 'posy', 'negy', 'posz', 'negz'];
-const NUM_LEVELS = 8;
-for (let i = 0; i <= NUM_LEVELS; i++) {
-	for (let j = 0; j < faces.length; j++) {
-		const face = faces[j];
-		const level = `mip${i}`;
-		const id = `${level}_rad_${face}`;
-		const url = `assets/img/${level}/rad_${face}.hdr`;
+// const faces = ['posx', 'negx', 'posy', 'negy', 'posz', 'negz'];
+// const NUM_LEVELS = 8;
+// for (let i = 0; i <= NUM_LEVELS; i++) {
+// 	for (let j = 0; j < faces.length; j++) {
+// 		const face = faces[j];
+// 		const level = `mip${i}`;
+// 		const id = `${level}_rad_${face}`;
+// 		const url = `assets/img/${level}/rad_${face}.hdr`;
 
-		assets.push({
-			id,
-			url,
-			type: 'binary'
-		});
-	}
-}
+// 		assets.push({
+// 			id,
+// 			url,
+// 			type: 'binary'
+// 		});
+// 	}
+// }
 
 
 if(document.body) {
@@ -87,7 +87,8 @@ function _init() {
 function _onImageLoaded(o) {
 
 	//	ASSETS
-	console.log('Image Loaded : ', o);
+	console.log('Image Loaded : ');
+	console.table(o);
 	document.body.classList.remove('isLoading');
 	window.assets = o;	
 

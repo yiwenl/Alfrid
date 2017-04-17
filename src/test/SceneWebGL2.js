@@ -1,11 +1,15 @@
 // SceneWebGL2.js
 
-import alfrid, { GL } from '../alfrid';
+import alfrid, { GL, EffectComposer, Pass, PassBlur } from '../alfrid';
 
 import vsInstanced from './shaders/testInstance.vert';
 import fsMRT from './shaders/mrt.frag';
 import fsMRTES1 from './shaders/mrtes1.frag';
 import vsMRT from './shaders/mrt.vert';
+import fsTextureTest from './shaders/textureTest.frag';
+
+//	post
+import fsGrey from './shaders/greyscale.frag';
 
 class SceneWebGL2 extends alfrid.Scene {
 
@@ -32,6 +36,18 @@ class SceneWebGL2 extends alfrid.Scene {
 		this.positionOffset = [[0, 0, 0], [0, 0, -2], [0, 0, 2]];
 		this.mesh.bufferInstance(this.positionOffset, 'aPosOffset');
 
+		const planeSize = 20;
+		this.meshPlane = alfrid.Geom.plane(planeSize, planeSize, 1, 'xz');
+		this.shaderTexture = new alfrid.GLShader(alfrid.ShaderLibs.generalVert, fsTextureTest);
+		this.shaderTexture.bind();
+		this.shaderTexture.uniform('position', 'vec3', [0, -1, 0]);
+		this.shaderTexture.uniform('scale', 'vec3', [1, 1, 1]);
+
+		this._composer = new EffectComposer(GL.width, GL.height);
+		const passGrey = new Pass(fsGrey);
+		this._composer.addPass(passGrey);
+		const passBlur = new PassBlur();
+		this._composer.addPass(passBlur);
 	}
 
 	_initTextures() {
@@ -40,6 +56,44 @@ class SceneWebGL2 extends alfrid.Scene {
 			this._fboMultiSample = new alfrid.MultisampleFrameBuffer(GL.width, GL.height, { numSample:8 }, true);	
 		}
 		
+		// console.log('Assets:', assets);
+
+		const img = assets.find((asset) => asset.id === 'aoTree').file;
+		console.log('Image :', img);
+		this.texture = new alfrid.GLTexture(img);	
+		window.testTexture = this.texture;
+
+		const wrapModes = ['MIRRORED_REPEAT', 'CLAMP_TO_EDGE', 'REPEAT'];
+		const mipMapModes = ['NEAREST', 'LINEAR', 'LINEAR_MIPMAP_NEAREST', 'NEAREST_MIPMAP_LINEAR', 'LINEAR_MIPMAP_LINEAR', 'NEAREST_MIPMAP_NEAREST'];
+		const o = {
+			wrapS:wrapModes[0],
+			wrapT:wrapModes[0],
+			minFilter:mipMapModes[0],
+			magFilter:mipMapModes[0],
+			premultiplyAlpha:true
+		};
+
+		gui.add(o, 'wrapS', wrapModes).onFinishChange(()=> {
+			this.texture.wrapS = GL[o.wrapS];
+		});
+
+		gui.add(o, 'wrapT', wrapModes).onFinishChange(()=> {
+			this.texture.wrapT = GL[o.wrapT];
+		});
+
+		gui.add(o, 'minFilter', mipMapModes).onFinishChange(()=> {
+			console.log(o.minFilter, GL[o.minFilter]);
+			this.texture.minFilter = GL[o.minFilter];
+		});
+
+		gui.add(o, 'magFilter', mipMapModes).onFinishChange(()=> {
+			this.texture.magFilter = GL[o.magFilter];
+		});
+
+		gui.add(o, 'premultiplyAlpha').onFinishChange(()=> {
+			this.texture.premultiplyAlpha = o.premultiplyAlpha;
+		});
+
 	}
 
 
@@ -79,9 +133,19 @@ class SceneWebGL2 extends alfrid.Scene {
 			// this._bFxaa.draw(this._fbo.getTexture());
 		}
 
-		// GL.viewport(0, 0, GL.width, GL.height);
+		GL.viewport(0, 0, GL.width, GL.height);
 		// this._bFxaa.draw(this._fbo.getTexture());
 		// this._bCopy.draw(this._fbo.getTexture());
+
+		// this._bCopy.draw(this.texture);
+
+		// this.shaderTexture.bind();
+		// this.shaderTexture.uniform('texture', 'uniform1i', 0);
+		// this.texture.bind(0);
+		// GL.draw(this.meshPlane);
+
+		this._composer.render(this._fboMultiSample.getTexture());
+		this._bCopy.draw(this._composer.getTexture());
 
 		GL.enable(GL.DEPTH_TEST);
 
