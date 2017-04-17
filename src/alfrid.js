@@ -47,6 +47,7 @@ import PassMacro 			from './alfrid/post/PassMacro';
 import PassBlur 			from './alfrid/post/PassBlur';
 import PassVBlur 			from './alfrid/post/PassVBlur';
 import PassHBlur 			from './alfrid/post/PassHBlur';
+import PassFxaa 			from './alfrid/post/PassFxaa';
 
 
 //	HELPERS
@@ -114,6 +115,7 @@ class Alfrid {
 		this.PassBlur          = PassBlur;
 		this.PassVBlur         = PassVBlur;
 		this.PassHBlur         = PassHBlur;
+		this.PassFxaa          = PassFxaa;
 
 		this.MultisampleFrameBuffer   = MultisampleFrameBuffer;
 		this.TransformFeedbackObject  = TransformFeedbackObject;

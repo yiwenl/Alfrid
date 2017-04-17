@@ -10,8 +10,8 @@ class EffectComposer {
 		this._width = mWidth || GL.width;
 		this._height = mHeight || GL.height;
 
-		this._fboCurrent = new FrameBuffer(this._width, this._height, mParmas);
-		this._fboTarget = new FrameBuffer(this._width, this._height, mParmas);
+		this._params = {};
+		this.setSize(mWidth, mHeight);
 		this._mesh = Geom.bigTriangle();
 		this._passes = [];
 		this._returnTexture;
@@ -75,6 +75,13 @@ class EffectComposer {
 
 		this._current = this._fboCurrent;
 		this._target = this._fboTarget;
+	}
+
+	setSize(mWidth, mHeight) {
+		this._width = mWidth;
+		this._height = mHeight;
+		this._fboCurrent = new FrameBuffer(this._width, this._height, this._params);
+		this._fboTarget = new FrameBuffer(this._width, this._height, this._params);
 	}
 
 	get passes() {

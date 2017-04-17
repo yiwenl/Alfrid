@@ -60,5 +60,5 @@ vec4 applyFXAA(sampler2D tex) {
 
 void main(void) {
  	vec4 color = applyFXAA(texture);
- 	gl_FragColor = color;
+    gl_FragColor = color;
 }

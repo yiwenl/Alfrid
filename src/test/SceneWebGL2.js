@@ -1,6 +1,6 @@
 // SceneWebGL2.js
 
-import alfrid, { GL, EffectComposer, Pass, PassBlur } from '../alfrid';
+import alfrid, { GL, EffectComposer, Pass, PassBlur, PassFxaa } from '../alfrid';
 
 import vsInstanced from './shaders/testInstance.vert';
 import fsMRT from './shaders/mrt.frag';
@@ -46,8 +46,10 @@ class SceneWebGL2 extends alfrid.Scene {
 		this._composer = new EffectComposer(GL.width, GL.height);
 		const passGrey = new Pass(fsGrey);
 		this._composer.addPass(passGrey);
-		const passBlur = new PassBlur();
-		this._composer.addPass(passBlur);
+		// const passBlur = new PassBlur();
+		// this._composer.addPass(passBlur);
+		this._composer.addPass(new PassFxaa());
+
 	}
 
 	_initTextures() {
@@ -144,7 +146,8 @@ class SceneWebGL2 extends alfrid.Scene {
 		// this.texture.bind(0);
 		// GL.draw(this.meshPlane);
 
-		this._composer.render(this._fboMultiSample.getTexture());
+		// this._composer.render(this._fboMultiSample.getTexture());
+		this._composer.render(this._fbo.getTexture());
 		this._bCopy.draw(this._composer.getTexture());
 
 		GL.enable(GL.DEPTH_TEST);
