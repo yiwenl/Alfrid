@@ -65,7 +65,7 @@ class SceneTransformFeedbacks extends alfrid.Scene {
 		this._bDots = new alfrid.BatchDotsPlane();
 	}
 	render() {
-		this.time += 0.01;
+		this.time += 0.2;
 		// this.emitParticles();
 		this.transformFeedbackObj.render();
 
