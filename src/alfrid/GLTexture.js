@@ -30,24 +30,25 @@ class GLTexture {
 			this._mSource  = mSource;
 			this._texture  = gl.createTexture();
 			this._isVideo  = (mSource.tagName === 'VIDEO');
-			this.magFilter = mParameters.magFilter || gl.LINEAR;
-			this.minFilter = mParameters.minFilter || gl.LINEAR_MIPMAP_NEAREST;
+			this._premultiplyAlpha = true;
+			this._magFilter = mParameters.magFilter || gl.LINEAR;
+			this._minFilter = mParameters.minFilter || gl.NEAREST_MIPMAP_LINEAR;
 			
-			this.wrapS     = mParameters.wrapS || gl.MIRRORED_REPEAT;
-			this.wrapT     = mParameters.wrapT || gl.MIRRORED_REPEAT;
+			this._wrapS     = mParameters.wrapS || gl.MIRRORED_REPEAT;
+			this._wrapT     = mParameters.wrapT || gl.MIRRORED_REPEAT;
 			const width    = mSource.width || mSource.videoWidth;
 
 			if(width) {
 				if(!isSourcePowerOfTwo(mSource)) {
-					this.wrapS = this.wrapT = gl.CLAMP_TO_EDGE;
-					if(this.minFilter === gl.LINEAR_MIPMAP_NEAREST) {
-						this.minFilter = gl.LINEAR;
+					this._wrapS = this._wrapT = gl.CLAMP_TO_EDGE;
+					if(this._minFilter === gl.NEAREST_MIPMAP_LINEAR) {
+						this._minFilter = gl.LINEAR;
 					}
 				} 	
 			} else {
-				this.wrapS = this.wrapT = gl.CLAMP_TO_EDGE;
-				if(this.minFilter === gl.LINEAR_MIPMAP_NEAREST) {
-					this.minFilter = gl.LINEAR;
+				this._wrapS = this._wrapT = gl.CLAMP_TO_EDGE;
+				if(this._minFilter === gl.NEAREST_MIPMAP_LINEAR) {
+					this._minFilter = gl.LINEAR;
 				}
 			}
 
@@ -60,10 +61,10 @@ class GLTexture {
 				gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, mSource);	
 			}
 			
-			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, this.magFilter);
-			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, this.minFilter);
-			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, this.wrapS);
-			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, this.wrapT);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, this._magFilter);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, this._minFilter);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, this._wrapS);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, this._wrapT);
 
 			const ext = GL.getExtension('EXT_texture_filter_anisotropic');
 			if(ext) {
@@ -71,7 +72,7 @@ class GLTexture {
 				gl.texParameterf(gl.TEXTURE_2D, ext.TEXTURE_MAX_ANISOTROPY_EXT, max);
 			}
 			
-			if(this.minFilter === gl.LINEAR_MIPMAP_NEAREST)	{
+			if(this._canGenerateMipmap()) {
 				gl.generateMipmap(gl.TEXTURE_2D);
 			}
 
@@ -79,36 +80,88 @@ class GLTexture {
 		}
 	}
 
+	generateMipmap() {
+		if (!this._canGenerateMipmap()) { return; }
+		gl.bindTexture(gl.TEXTURE_2D, this._texture);
+		gl.generateMipmap(gl.TEXTURE_2D);
+		gl.bindTexture(gl.TEXTURE_2D, null);
+	}
+
 
 	//	MIPMAP FILTER
 
-	minFilter(mValue) {
-		if(mValue !== gl.LINEAR && mValue !== gl.NEAREST && mValue !== gl.LINEAR_MIPMAP_NEAREST) { return this; }
-		this.minFilter = mValue;
-		return this;
+	set minFilter(mValue) {
+		if(mValue !== gl.LINEAR
+			&& mValue !== gl.NEAREST 
+			&& mValue !== gl.NEAREST_MIPMAP_LINEAR
+			&& mValue !== gl.NEAREST_MIPMAP_LINEAR
+			&& mValue !== gl.LINEAR_MIPMAP_LINEAR
+			&& mValue !== gl.NEAREST_MIPMAP_NEAREST
+		) { return this; }
+		this._minFilter = mValue;
+		gl.bindTexture(gl.TEXTURE_2D, this._texture);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, this._minFilter);
+		gl.bindTexture(gl.TEXTURE_2D, null);
 	}
 
-	magFilter(mValue) {
-		if(mValue !== gl.LINEAR && mValue !== gl.NEAREST && mValue !== gl.LINEAR_MIPMAP_NEAREST) { return this; }
-		this.magFilter = mValue;
-		return this;
+	get minFilter() {
+		return this._minFilter;
+	}
+
+	set magFilter(mValue) {
+		if(mValue !== gl.LINEAR && mValue !== gl.NEAREST) { return this; }
+		this._magFilter = mValue;
+		gl.bindTexture(gl.TEXTURE_2D, this._texture);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, this._magFilter);
+		gl.bindTexture(gl.TEXTURE_2D, null);
+	}
+
+	get magFilter() {
+		return this._magFilter;
 	}
 
 
 	//	WRAP
 
-	wrapS(mValue) {
+	set wrapS(mValue) {
 		if(mValue !== gl.CLAMP_TO_EDGE && mValue !== gl.REPEAT && mValue !== gl.MIRRORED_REPEAT) { return this; }
-		this.wrapS = mValue;
-		return this;
+		this._wrapS = mValue;
+		gl.bindTexture(gl.TEXTURE_2D, this._texture);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, this._wrapS);
+		gl.bindTexture(gl.TEXTURE_2D, null);
 	}
 
-	wrapT(mValue) {
-		if(mValue !== gl.CLAMP_TO_EDGE && mValue !== gl.REPEAT && mValue !== gl.MIRRORED_REPEAT) { return this; }
-		this.wrapT = mValue;
-		return this;
+	get wrapS() {
+		return this._wrapS;
 	}
 
+	set wrapT(mValue) {
+		if(mValue !== gl.CLAMP_TO_EDGE && mValue !== gl.REPEAT && mValue !== gl.MIRRORED_REPEAT) { return this; }
+		this._wrapT = mValue;
+		gl.bindTexture(gl.TEXTURE_2D, this._texture);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, this._wrapT);
+		gl.bindTexture(gl.TEXTURE_2D, null);
+	}
+
+	get wrapT() {
+		return this._wrapT;
+	}
+
+
+	//	PREMULTIPLY ALPHA
+
+	set premultiplyAlpha(mValue) {
+		this._premultiplyAlpha = mValue;
+		gl.bindTexture(gl.TEXTURE_2D, this._texture);
+		console.log('premultiplyAlpha:', mValue);
+		gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, this._premultiplyAlpha);
+		gl.bindTexture(gl.TEXTURE_2D, null);
+
+	}
+
+	get premultiplyAlpha() {
+		return this._premultiplyAlpha;
+	}
 
 	//	UPDATE TEXTURE
 
@@ -117,9 +170,9 @@ class GLTexture {
 		gl.bindTexture(gl.TEXTURE_2D, this._texture);
 		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this._mSource);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, this.magFilter);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, this.minFilter);
-		if(this.minFilter === gl.LINEAR_MIPMAP_NEAREST)	{
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, this._magFilter);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, this._minFilter);
+		if(this._canGenerateMipmap()) {
 			gl.generateMipmap(gl.TEXTURE_2D);
 		}
 
@@ -134,6 +187,13 @@ class GLTexture {
 		gl.activeTexture(gl.TEXTURE0 + index);
 		gl.bindTexture(gl.TEXTURE_2D, this._texture);
 		this._bindIndex = index;
+	}
+
+	_canGenerateMipmap() {
+		return this._minFilter === gl.LINEAR_MIPMAP_NEAREST 
+				|| this._minFilter === gl.NEAREST_MIPMAP_LINEAR 
+				|| this._minFilter === gl.LINEAR_MIPMAP_LINEAR 
+				|| this._minFilter === gl.NEAREST_MIPMAP_NEAREST;
 	}
 
 	//	GETTER

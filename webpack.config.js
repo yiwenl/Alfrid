@@ -19,7 +19,7 @@ function getOutput() {
 	
 }
 
-module.exports = {
+const settings = {
 	hotPort: 8158,
 	cache: !prod,
 	debug: !prod,
@@ -89,3 +89,10 @@ module.exports = {
 		new ExtractTextPlugin('css/main.css')
 	] : [new webpack.optimize.OccurenceOrderPlugin()]
 };
+
+if(prod) {
+	settings.devtool = 'source-map';
+}
+
+
+module.exports = settings;

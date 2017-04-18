@@ -40,6 +40,16 @@ import BinaryLoader			from './alfrid/loaders/BinaryLoader';
 import ObjLoader			from './alfrid/loaders/ObjLoader';
 import HDRLoader			from './alfrid/loaders/HDRLoader';
 
+//	POST EFFECT
+import EffectComposer 		from './alfrid/post/EffectComposer';
+import Pass 				from './alfrid/post/Pass';
+import PassMacro 			from './alfrid/post/PassMacro';
+import PassBlur 			from './alfrid/post/PassBlur';
+import PassVBlur 			from './alfrid/post/PassVBlur';
+import PassHBlur 			from './alfrid/post/PassHBlur';
+import PassFxaa 			from './alfrid/post/PassFxaa';
+
+
 //	HELPERS
 import BatchCopy			from './alfrid/helpers/BatchCopy';
 import BatchAxis			from './alfrid/helpers/BatchAxis';
@@ -48,10 +58,10 @@ import BatchDotsPlane		from './alfrid/helpers/BatchDotsPlane';
 import BatchLine 			from './alfrid/helpers/BatchLine';
 import BatchSkybox			from './alfrid/helpers/BatchSkybox';
 import BatchSky				from './alfrid/helpers/BatchSky';
+import BatchFXAA			from './alfrid/helpers/BatchFXAA';
 import Scene				from './alfrid/helpers/Scene';
 import View					from './alfrid/helpers/View';
 import View3D				from './alfrid/helpers/View3D';
-import ShaderUtils			from './alfrid/helpers/ShaderUtils';
 import ShaderLibs			from './alfrid/utils/ShaderLibs';
 
 
@@ -91,16 +101,24 @@ class Alfrid {
 		this.BatchLine         = BatchLine;
 		this.BatchSkybox       = BatchSkybox;
 		this.BatchSky          = BatchSky;
+		this.BatchFXAA         = BatchFXAA;
 		this.BatchDotsPlane    = BatchDotsPlane;
 		this.Scene             = Scene;
 		this.View              = View;
 		this.View3D            = View3D;
 		this.Object3D          = Object3D;
 		this.ShaderLibs        = ShaderLibs;
-		this.ShaderUtils       = ShaderUtils;
+		
+		this.EffectComposer    = EffectComposer;
+		this.Pass        	   = Pass;
+		this.PassMacro         = PassMacro;
+		this.PassBlur          = PassBlur;
+		this.PassVBlur         = PassVBlur;
+		this.PassHBlur         = PassHBlur;
+		this.PassFxaa          = PassFxaa;
 
 		this.MultisampleFrameBuffer   = MultisampleFrameBuffer;
-		this.TransformFeedbackObject   = TransformFeedbackObject;
+		this.TransformFeedbackObject  = TransformFeedbackObject;
 
 
 		//	NOT SUPER SURE I'VE DONE THIS IS A GOOD WAY

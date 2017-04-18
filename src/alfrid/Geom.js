@@ -5,6 +5,7 @@
 import Mesh from './Mesh';
 
 const Geom = {};
+let meshTri;
 
 Geom.plane = function plane(width, height, numSegments, axis = 'xy', drawType = 4) {
 	const positions = [];
@@ -511,18 +512,22 @@ Geom.skybox = function skybox(size, drawType = 4) {
 };
 
 Geom.bigTriangle = function bigTriangle() {
-	const indices = [2, 1, 0];
-	const positions = [
-		[-1, -1], 
-		[-1, 4], 
-		[4, -1]
-	];
-	
-	const mesh = new Mesh();
-	mesh.bufferData(positions, 'aPosition', 2);
-	mesh.bufferIndex(indices);
 
-	return mesh;
+	if(!meshTri) {
+		const indices = [2, 1, 0];
+		const positions = [
+			[-1, -1], 
+			[-1, 4], 
+			[4, -1]
+		];
+		
+		meshTri = new Mesh();
+		meshTri.bufferData(positions, 'aPosition', 2);
+		meshTri.bufferIndex(indices);	
+	}
+	
+
+	return meshTri;
 };
 
 export default Geom;
