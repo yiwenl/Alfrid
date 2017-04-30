@@ -16,17 +16,18 @@
   },
   "author": "Yi-Wen Lin",
   "license": "MIT",
-  "dependencies": {
-    "gl-matrix": "2.3.2",
-    "scheduling": "1.0.3",
-    "parse-dds": "^1.2.1"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/yiwenl/Alfrid"
   },
   "bugs": {
     "url": "https://github.com/yiwenl/Alfrid/issues"
+  },
+  "dependencies": {
+    "gl-matrix": "2.3.2",
+    "scheduling": "1.0.3",
+    "parse-dds": "^1.2.1",
+    "collada-parser": "^1.0.0"
   },
   "devDependencies": {
     "assets-loader": "^0.4.0",
@@ -46,7 +47,6 @@
     "eslint": "^2.10.2",
     "eslint-loader": "^1.3.0",
     "extract-text-webpack-plugin": "^1.0.1",
-    "gl-matrix": "^2.3.2",
     "glslify": "^5.0.2",
     "glslify-loader": "^1.0.2",
     "ip": "^1.1.3",
