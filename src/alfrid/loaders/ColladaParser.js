@@ -4,7 +4,7 @@ import parser from 'collada-parser';
 import Mesh from '../Mesh';
 
 
-const generateMesh = function(meshes) {
+const generateMesh = function (meshes) {
 	const caches = {};
 
 	meshes.forEach((mesh)=> {
@@ -21,7 +21,7 @@ const generateMesh = function(meshes) {
 
 		mesh.glMesh = caches[name];
 	});
-}
+};
 
 const parse = function (mData) {
 	const meshes = parser.parse(mData);
