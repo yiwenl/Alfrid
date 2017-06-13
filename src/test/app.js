@@ -23,6 +23,7 @@ const assets = [
 	{ id:'aoTree', url:'assets/img/ao-tree.jpg' },
 	{ id:'factory', url:'assets/img/factory_radiance.dds', type: 'binary' },
 	{ id:'objModel', url:'assets/obj/tree.obj', type:'text' },
+	{ id:'objBoat', url:'assets/obj/boatTest.dae', type:'text' },
 	{ id:'irradiance', url:'assets/img/studio_irradiance.dds', type: 'binary' },
 	{ id:'radiance', url:'assets/img/studio_radiance.dds', type: 'binary' },
 	{ id:'irr_posx', url:'assets/img/irr_posx.hdr', type:'binary' },

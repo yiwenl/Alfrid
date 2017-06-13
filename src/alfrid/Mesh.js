@@ -21,6 +21,21 @@ const getBuffer = function (attr) {
 };
 
 
+const formBuffer = function (mData, mNum) {
+	const ary = [];
+
+	for(let i=0; i<mData.length; i+= mNum) {
+		const o = [];
+		for(let j=0; j<mNum; j++) {
+			o.push(mData[i+j]);
+		}
+
+		ary.push(o);
+	}
+
+	return ary;
+};
+
 class Mesh {
 	constructor(mDrawingType = 4, mUseVao = true) {
 		gl                           = GL.gl;
@@ -49,12 +64,15 @@ class Mesh {
 		if (this.normals.length < this.vertices.length) {
 			this.bufferNormal(mArrayVertices, mDrawType);	
 		}
+
+		return this;
 	}
 
 
 	bufferTexCoord(mArrayTexCoords, mDrawType = STATIC_DRAW) {
 
 		this.bufferData(mArrayTexCoords, 'aTextureCoord', 2, mDrawType);
+		return this;
 
 	}
 
@@ -62,6 +80,7 @@ class Mesh {
 	bufferNormal(mNormals, mDrawType = STATIC_DRAW) {
 
 		this.bufferData(mNormals, 'aNormal', 3, mDrawType);
+		return this;
 
 	}
 
@@ -71,8 +90,17 @@ class Mesh {
 		this._drawType        = isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW;
 		this._indices         = new Uint16Array(mArrayIndices);
 		this._numItems 		  = this._indices.length;
+		return this;
+
 	}
 
+	bufferFlattenData(mData, mName, mItemSize, mDrawType = STATIC_DRAW, isInstanced = false) {
+		
+		const data = formBuffer(mData, mItemSize);
+		this.bufferData(data, mName, mItemSize, mDrawType = STATIC_DRAW, isInstanced = false);
+		return this;
+
+	}
 
 	bufferData(mData, mName, mItemSize, mDrawType = STATIC_DRAW, isInstanced = false) {
 		let i = 0;
@@ -104,6 +132,7 @@ class Mesh {
 		}
 
 		this._bufferChanged.push(mName);
+		return this;
 	}
 
 	bufferInstance(mData, mName) {

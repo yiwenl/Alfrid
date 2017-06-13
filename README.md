@@ -1,4 +1,5 @@
 Alfrid
+[![npm version](https://badge.fury.io/js/alfrid.svg)](https://badge.fury.io/js/alfrid)
 ======
 
 A WebGL tool set
@@ -34,3 +35,6 @@ npm run dev;
 ```
 npm run build;
 ```
+
+[npm-image]: https://img.shields.io/npm/v/alfrid.svg?style=flat-square
+[npm-url]: https://www.npmjs.com/package/alfrid

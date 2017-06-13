@@ -1,12 +1,14 @@
 // SceneWebGL2.js
 
-import alfrid, { GL, EffectComposer, Pass, PassBlur, PassFxaa } from '../alfrid';
+import alfrid, { GL, EffectComposer, Pass, PassBlur, PassFxaa, ColladaParser } from '../alfrid';
 
 import vsInstanced from './shaders/testInstance.vert';
 import fsMRT from './shaders/mrt.frag';
 import fsMRTES1 from './shaders/mrtes1.frag';
 import vsMRT from './shaders/mrt.vert';
 import fsTextureTest from './shaders/textureTest.frag';
+import vsDae from './shaders/dae.vert';
+import fsDae from './shaders/dae.frag';
 
 //	post
 import fsGrey from './shaders/greyscale.frag';
@@ -43,9 +45,38 @@ class SceneWebGL2 extends alfrid.Scene {
 		this.shaderTexture.uniform('position', 'vec3', [0, -1, 0]);
 		this.shaderTexture.uniform('scale', 'vec3', [1, 1, 1]);
 
+
+		const s = 0.005;
+		this._mtxScale = mat4.create();
+		mat4.scale(this._mtxScale, this._mtxScale, vec3.fromValues(s, s, s));
+
+		/*
+		const oBoat = assets.find((o)=>o.id === 'objBoat').file;
+		this.boat = ColladaParser.parse(oBoat);
+		*/	
+
+		this.boat = [];
+		ColladaParser.load('assets/obj/boatTest.dae', (o)=> {
+			console.log('Loaded :', o);
+			this.boat = o;
+			this.boat.forEach((o)=> {
+				mat4.multiply(o.modelMatrix, this._mtxScale, o.modelMatrix);
+			});
+
+		});
+		this.shaderDae = new alfrid.GLShader(vsDae, fsDae);
+		
+
+		this.boat.forEach((o)=> {
+			mat4.multiply(o.modelMatrix, this._mtxScale, o.modelMatrix);
+		});
+
+
+		this._modelMatrix = mat4.create();
+
 		this._composer = new EffectComposer(GL.width, GL.height);
 		const passGrey = new Pass(fsGrey);
-		this._composer.addPass(passGrey);
+		// this._composer.addPass(passGrey);
 		// const passBlur = new PassBlur();
 		// this._composer.addPass(passBlur);
 		this._composer.addPass(new PassFxaa());
@@ -95,7 +126,6 @@ class SceneWebGL2 extends alfrid.Scene {
 		gui.add(o, 'premultiplyAlpha').onFinishChange(()=> {
 			this.texture.premultiplyAlpha = o.premultiplyAlpha;
 		});
-
 	}
 
 
@@ -170,13 +200,22 @@ class SceneWebGL2 extends alfrid.Scene {
 */		
 	}
 
-
 	drawScene() {
+		GL.rotate(this._modelMatrix);
 		this._bAxis.draw();
 		this._bDots.draw();
 
 		this.shader.bind();
 		GL.draw(this.mesh);
+
+		GL.disable(GL.CULL_FACE);
+		this.shaderDae.bind();
+		this.boat.forEach((o, i)=> {
+			GL.rotate(o.modelMatrix);
+			GL.draw(o.glMesh);
+		});
+
+		GL.enable(GL.CULL_FACE);
 	}
 
 
