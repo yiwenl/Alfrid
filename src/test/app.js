@@ -104,13 +104,13 @@ function _init3D() {
 	document.body.appendChild(canvas);
 
 	//	INIT 3D TOOL
-	GL.init(canvas, { ignoreWebgl2:false });
+	GL.init(canvas, { ignoreWebgl2:true });
 
 	window.gui = new dat.GUI({ width:300 });
 
 	//	CREATE SCENE
-	const scene = new SceneWebGL2();
-	// const scene = new SceneApp();
+	// const scene = new SceneWebGL2();
+	const scene = new SceneApp();
 	// const scene = new SceneGrass();
 	// const scene = new SceneVAO();
 	// const scene = new SceneTransformFeedbacks();
