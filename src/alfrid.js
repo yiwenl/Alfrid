@@ -12,7 +12,7 @@ import FrameBuffer			from './alfrid/FrameBuffer';
 import CubeFrameBuffer		from './alfrid/CubeFrameBuffer';
 
 //	WEBGL 2
-import MultisampleFrameBuffer		from './alfrid/MultisampleFrameBuffer';
+import MultisampleFrameBuffer  from './alfrid/MultisampleFrameBuffer';
 import TransformFeedbackObject from './alfrid/TransformFeedbackObject';
 
 //	TOOLS

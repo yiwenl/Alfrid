@@ -14,6 +14,14 @@ const cameraDir = vec3.create();
 
 class CameraPerspective extends Camera {
 
+	constructor(mFov, mAspectRatio, mNear, mFar) {
+		super();
+		
+		if(mFov) {
+			this.setPerspective(mFov, mAspectRatio, mNear, mFar);
+		}
+	}
+
 	setPerspective(mFov, mAspectRatio, mNear, mFar) {
 		
 		this._fov         = mFov;

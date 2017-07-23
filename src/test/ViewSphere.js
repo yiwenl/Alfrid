@@ -8,7 +8,7 @@ import fs from './shaders/textureCube.frag';
 class ViewSphere extends alfrid.View {
 	
 	constructor() {
-		super(vs, fs);
+		super();
 	}
 
 
@@ -22,16 +22,8 @@ class ViewSphere extends alfrid.View {
 	}
 
 
-	render(textureCube, lod = 0, position = [0, 0, 0], useLod=true) {
+	render() {
 		this.shader.bind();
-		this.shader.uniform('texture', 'uniform1i', 0);
-		textureCube.bind(0);
-		this.shader.uniform('lod', 'float', lod);
-		this.shader.uniform('uPosition', 'vec3', position);
-
-		this.shader.uniform('uExposure', 'uniform1f', this.exposure);
-		this.shader.uniform('uGamma', 'uniform1f', this.gamma);
-		this.shader.uniform('useLod', 'float', useLod ? 1.0 : 0.0);
 		GL.draw(this.mesh);
 	}
 

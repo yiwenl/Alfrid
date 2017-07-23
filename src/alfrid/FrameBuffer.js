@@ -34,17 +34,18 @@ class FrameBuffer {
 
 		this.width            = mWidth;
 		this.height           = mHeight;
+		console.log('Frame Buffer size :', this.width, this.height);
 		this._multipleTargets = multipleTargets;
 
 		this.magFilter  = mParameters.magFilter 	|| gl.LINEAR;
-		this.minFilter  = mParameters.minFilter 	|| gl.LINEAR_MIPMAP_NEAREST;
+		this.minFilter  = mParameters.minFilter 	|| gl.NEAREST_MIPMAP_LINEAR;
 		this.wrapS      = mParameters.wrapS 		|| gl.CLAMP_TO_EDGE;
 		this.wrapT      = mParameters.wrapT 		|| gl.CLAMP_TO_EDGE;
 		this.useDepth   = mParameters.useDepth 		|| true;
 		this.useStencil = mParameters.useStencil 	|| false;
 		this.texelType 	= mParameters.type;
 
-		if(!isPowerOfTwo(this.width) || !isPowerOfTwo(this.height)) {
+		if(!isPowerOfTwo(this.width) || !isPowerOfTwo(this.height) ) {
 			this.wrapS = this.wrapT = gl.CLAMP_TO_EDGE;
 
 			if(this.minFilter === gl.LINEAR_MIPMAP_NEAREST) {
@@ -91,8 +92,10 @@ class FrameBuffer {
 			gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, this.glDepthTexture.texture, 0);
 
 		} else {
+			console.log(this._textures.length, this._multipleTargets);
 			for (let i = 0; i < this._textures.length; i++) {
-				gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + i, gl.TEXTURE_2D, this._textures[i].texture, 0);	
+				// gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + i, gl.TEXTURE_2D, this._textures[i].texture, 0);	
+				gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this._textures[i].texture, 0);
 			}
 
 			if(this._multipleTargets) {
@@ -105,23 +108,24 @@ class FrameBuffer {
 			}
 
 			if(webglDepthTexture) {
-				gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, this.glDepthTexture.texture, 0);	
+				// gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, this.glDepthTexture.texture, 0);	
 			}
 		}
 		
 
-		if(this.minFilter === gl.LINEAR_MIPMAP_NEAREST)	{
-			for (let i = 0; i < this._textures.length; i++) {
-				gl.bindTexture(gl.TEXTURE_2D, this._textures[i].texture);
-				gl.generateMipmap(gl.TEXTURE_2D);
-			}
-		}
+		// if(this.minFilter === gl.LINEAR_MIPMAP_NEAREST)	{
+		// 	for (let i = 0; i < this._textures.length; i++) {
+		// 		gl.bindTexture(gl.TEXTURE_2D, this._textures[i].texture);
+		// 		gl.generateMipmap(gl.TEXTURE_2D);
+		// 	}
+		// }
 
 
 		//	CHECKING FBO
 		const FBOstatus = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
 		if(FBOstatus != gl.FRAMEBUFFER_COMPLETE) {
 			console.log('GL_FRAMEBUFFER_COMPLETE failed, CANNOT use Framebuffer');
+			console.log('Status :', FBOstatus);
 		}
 
 		//	UNBIND
@@ -139,7 +143,8 @@ class FrameBuffer {
 
 	_initTextures() {
 		const numTextures = this._multipleTargets ? 4 : 1;
-		for (let i = 0; i < 4; i++) {
+		console.log('Numtextures :', numTextures, GL.webgl2);
+		for (let i = 0; i < numTextures; i++) {
 			const glt = this._createTexture();
 			this._textures.push(glt);
 		}
@@ -158,17 +163,12 @@ class FrameBuffer {
 		if(mTexelType === undefined) {	mTexelType = this.texelType;	}
 		if(!mFormat) {	mFormat = mInternalformat; }
 
-		const t = gl.createTexture();
-		const glt = new GLTexture(t, true);
-		const magFilter = forceNearest ? GL.NEAREST : this.magFilter;
-		const minFilter = forceNearest ? GL.NEAREST : this.minFilter;
-
-		gl.bindTexture(gl.TEXTURE_2D, t);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, magFilter);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, minFilter);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, this.wrapS);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, this.wrapT);
-		gl.texImage2D(gl.TEXTURE_2D, 0, mInternalformat, this.width, this.height, 0, mFormat, mTexelType, null);	
+		const texture = gl.createTexture();
+		const glt = new GLTexture(texture, true);
+		gl.bindTexture(gl.TEXTURE_2D, texture);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 2, 2, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
 		gl.bindTexture(gl.TEXTURE_2D, null);
 
 		return glt;
