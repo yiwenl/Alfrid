@@ -3,7 +3,7 @@
 
 import EaseNumber from './EaseNumber';
 import Scheduler from  'scheduling';
-import glm from 'gl-matrix';
+import { vec3 } from 'gl-matrix';
 
 const getMouse = function (mEvent, mTarget) {
 
@@ -22,16 +22,15 @@ const getMouse = function (mEvent, mTarget) {
 class OrbitalControl {
 
 	constructor(mTarget, mListenerTarget = window, mRadius = 500) {
-
 		this._target         = mTarget;
 		this._listenerTarget = mListenerTarget;
 		this._mouse          = {};
 		this._preMouse       = {};
-		this.center          = glm.vec3.create();
-		this._up             = glm.vec3.fromValues(0, 1, 0);
+		this.center          = vec3.create();
+		this._up             = vec3.fromValues(0, 1, 0);
 		this.radius          = new EaseNumber(mRadius);
-		this.position        = glm.vec3.fromValues(0, 0, this.radius.value);
-		this.positionOffset  = glm.vec3.create();
+		this.position        = vec3.fromValues(0, 0, this.radius.value);
+		this.positionOffset  = vec3.create();
 		this._rx             = new EaseNumber(0);
 		this._rx.limit(-Math.PI / 2, Math.PI / 2);
 		this._ry             = new EaseNumber(0);
@@ -43,17 +42,40 @@ class OrbitalControl {
 		this._isInvert       = false;
 		this.sensitivity	 = 1.0;
 
-		this._listenerTarget.addEventListener('mousewheel', (e) => this._onWheel(e));
-		this._listenerTarget.addEventListener('DOMMouseScroll', (e) => this._onWheel(e));
 
-		this._listenerTarget.addEventListener('mousedown', (e) => this._onDown(e));
-		this._listenerTarget.addEventListener('touchstart', (e) => this._onDown(e));
-		this._listenerTarget.addEventListener('mousemove', (e) => this._onMove(e));
-		this._listenerTarget.addEventListener('touchmove', (e) => this._onMove(e));
-		window.addEventListener('touchend', () => this._onUp());
-		window.addEventListener('mouseup', () => this._onUp());
-
+		this._wheelBind = (e) => this._onWheel(e);
+		this._downBind = (e) => this._onDown(e);
+		this._moveBind = (e) => this._onMove(e);
+		this._upBind = () => this._onUp();
+	
+		this.connect();		
 		Scheduler.addEF(() => this._loop());
+	}
+
+	connect() {
+		this.disconnect();
+
+		this._listenerTarget.addEventListener('mousewheel', this._wheelBind);
+		this._listenerTarget.addEventListener('DOMMouseScroll', this._wheelBind);
+
+		this._listenerTarget.addEventListener('mousedown', this._downBind);
+		this._listenerTarget.addEventListener('touchstart', this._downBind);
+		this._listenerTarget.addEventListener('mousemove', this._moveBind);
+		this._listenerTarget.addEventListener('touchmove', this._moveBind);
+		window.addEventListener('touchend', this._upBind);
+		window.addEventListener('mouseup', this._upBind);
+	}
+
+	disconnect() {
+		this._listenerTarget.removeEventListener('mousewheel', this._wheelBind);
+		this._listenerTarget.removeEventListener('DOMMouseScroll', this._wheelBind);
+
+		this._listenerTarget.removeEventListener('mousedown', this._downBind);
+		this._listenerTarget.removeEventListener('touchstart', this._downBind);
+		this._listenerTarget.removeEventListener('mousemove', this._moveBind);
+		this._listenerTarget.removeEventListener('touchmove', this._moveBind);
+		window.removeEventListener('touchend', this._upBind);
+		window.removeEventListener('mouseup', this._upBind);
 	}
 
 
@@ -62,6 +84,7 @@ class OrbitalControl {
 	lock(mValue = true) {
 		this._isLockZoom = mValue;
 		this._isLockRotation = mValue;
+		this._isMouseDown = false;
 	}
 
 	lockZoom(mValue = true) {
@@ -149,7 +172,7 @@ class OrbitalControl {
 		const tr = Math.cos(this._rx.value) * this.radius.value;
 		this.position[0] = Math.cos(this._ry.value + Math.PI * 0.5) * tr;
 		this.position[2] = Math.sin(this._ry.value + Math.PI * 0.5) * tr;
-		glm.vec3.add(this.position, this.position, this.positionOffset);
+		vec3.add(this.position, this.position, this.positionOffset);
 	}
 
 

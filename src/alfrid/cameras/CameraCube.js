@@ -3,9 +3,7 @@
 'use strict';
 
 import CameraPerspective from './CameraPerspective';
-import glm from 'gl-matrix';
-
-const vec3 = glm.vec3;
+import { vec3 } from 'gl-matrix';
 
 const CAMERA_SETTINGS = [
 	[vec3.fromValues(0, 0, 0), vec3.fromValues(1, 0, 0), vec3.fromValues(0, -1, 0)],		

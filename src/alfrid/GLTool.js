@@ -1,6 +1,6 @@
 // GLTool.js
 
-import glm from 'gl-matrix';
+import { mat4, mat3 } from 'gl-matrix';
 
 import getAndApplyExtension from './utils/getAndApplyExtension';
 import exposeAttributes from './utils/exposeAttributes';
@@ -17,17 +17,17 @@ class GLTool {
 		this.canvas;
 		this._viewport               = [0, 0, 0, 0];
 		this._enabledVertexAttribute = [];
-		this.identityMatrix          = glm.mat4.create();
-		this._normalMatrix           = glm.mat3.create();
-		this._inverseModelViewMatrix = glm.mat3.create();
-		this._modelMatrix            = glm.mat4.create();
-		this._matrix                 = glm.mat4.create();
+		this.identityMatrix          = mat4.create();
+		this._normalMatrix           = mat3.create();
+		this._inverseModelViewMatrix = mat3.create();
+		this._modelMatrix            = mat4.create();
+		this._matrix                 = mat4.create();
 		this._lastMesh				 = null;
 		this._useWebGL2 			 = false;
 		this._hasArrayInstance;
 		this._extArrayInstance;
 		this._hasCheckedExt = false;
-		glm.mat4.identity(this.identityMatrix, this.identityMatrix);
+		mat4.identity(this.identityMatrix, this.identityMatrix);
 
 		this.isMobile = false;
 		if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
@@ -132,15 +132,15 @@ class GLTool {
 
 
 	rotate(mRotation) {
-		glm.mat4.copy(this._modelMatrix, mRotation);
-		glm.mat4.multiply(this._matrix, this.camera.matrix, this._modelMatrix);
-		glm.mat3.fromMat4(this._normalMatrix, this._matrix);
-		glm.mat3.invert(this._normalMatrix, this._normalMatrix);
-		glm.mat3.transpose(this._normalMatrix, this._normalMatrix);
+		mat4.copy(this._modelMatrix, mRotation);
+		mat4.multiply(this._matrix, this.camera.matrix, this._modelMatrix);
+		mat3.fromMat4(this._normalMatrix, this._matrix);
+		mat3.invert(this._normalMatrix, this._normalMatrix);
+		mat3.transpose(this._normalMatrix, this._normalMatrix);
 		
 
-		glm.mat3.fromMat4(this._inverseModelViewMatrix, this._matrix);
-		glm.mat3.invert(this._inverseModelViewMatrix, this._inverseModelViewMatrix);
+		mat3.fromMat4(this._inverseModelViewMatrix, this._matrix);
+		mat3.invert(this._inverseModelViewMatrix, this._inverseModelViewMatrix);
 	}
 
 

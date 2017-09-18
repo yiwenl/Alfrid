@@ -1,15 +1,15 @@
 // CameraOrtho.js
 
 import Camera from './Camera';
-import glm from 'gl-matrix';
+import { vec3 } from 'gl-matrix';
 
 class CameraOrtho extends Camera {
 	constructor() {
 		super();
 
-		const eye    = glm.vec3.clone([0, 0, 15]);
-		const center = glm.vec3.create();
-		const up     = glm.vec3.clone([0, -1, 0]);
+		const eye    = vec3.clone([0, 0, 15]);
+		const center = vec3.create();
+		const up     = vec3.clone([0, -1, 0]);
 		this.lookAt(eye, center, up);
 		this.ortho(1, -1, 1, -1);
 	}
@@ -25,7 +25,7 @@ class CameraOrtho extends Camera {
 		this.right  = right;
 		this.top    = top;
 		this.bottom = bottom;
-		glm.mat4.ortho(this._projection, left, right, top, bottom, near, far);
+		mat4.ortho(this._projection, left, right, top, bottom, near, far);
 	}
 
 }

@@ -20,6 +20,10 @@ class SceneWebGL2 extends alfrid.Scene {
 		this.time = 0;
 		this.orbitalControl.rx.value = this.orbitalControl.ry.value = 0.3;
 		this.camera.setPerspective(Math.PI/3, GL.aspectRatio, 0.2, 20);
+
+
+		gui.add(this.orbitalControl, 'connect');
+		gui.add(this.orbitalControl, 'disconnect');
 	}
 
 	_initViews() {

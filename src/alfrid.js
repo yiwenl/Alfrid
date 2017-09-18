@@ -1,6 +1,6 @@
 // alfrid.js
 
-import GLM 					from 'gl-matrix';
+import * as GLM 			from 'gl-matrix';
 import GLTool 				from './alfrid/GLTool';
 import GLShader 			from './alfrid/GLShader';
 import GLTexture 			from './alfrid/GLTexture';
