@@ -29,5 +29,18 @@
     "parse-dds": "^1.2.1",
     "scheduling": "^1.0.6"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "css-loader": "^0.28.7",
+    "dat-gui": "^0.5.0",
+    "eslint": "^4.7.1",
+    "eslint-loader": "^1.9.0",
+    "fs-extra": "^4.0.2",
+    "glslify-loader": "^1.0.2",
+    "raw-loader": "^0.5.1",
+    "sass-loader": "^6.0.6",
+    "stats.js": "^0.17.0",
+    "style-loader": "^0.18.2",
+    "webpack": "^3.6.0",
+    "webpack-dev-server": "^2.8.2"
+  }
 }
