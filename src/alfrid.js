@@ -1,7 +1,7 @@
 // alfrid.js
 
 import * as GLM 			from 'gl-matrix';
-import GLTool 				from './alfrid/GLTool';
+import GL 					from './alfrid/GLTool';
 import GLShader 			from './alfrid/GLShader';
 import GLTexture 			from './alfrid/GLTexture';
 import GLCubeTexture 		from './alfrid/GLCubeTexture';
@@ -12,7 +12,7 @@ import FrameBuffer			from './alfrid/FrameBuffer';
 import CubeFrameBuffer		from './alfrid/CubeFrameBuffer';
 
 //	WEBGL 2
-import MultisampleFrameBuffer		from './alfrid/MultisampleFrameBuffer';
+import MultisampleFrameBuffer  from './alfrid/MultisampleFrameBuffer';
 import TransformFeedbackObject from './alfrid/TransformFeedbackObject';
 
 //	TOOLS
@@ -71,8 +71,8 @@ const VERSION = '0.1.24';
 class Alfrid {
 	constructor() {
 		this.glm               = GLM;
-		this.GL                = GLTool;
-		this.GLTool            = GLTool;
+		this.GL                = GL;
+		this.GLTool            = GL;
 		this.GLShader          = GLShader;
 		this.GLTexture         = GLTexture;
 		this.GLCubeTexture     = GLCubeTexture;
@@ -151,3 +151,51 @@ class Alfrid {
 const al = new Alfrid();
 
 export default al;
+export {
+	GL,
+	GLShader,
+	GLTexture,
+	GLCubeTexture,
+	Mesh,
+	Geom,
+	Batch,
+	FrameBuffer,
+	CubeFrameBuffer,
+	MultisampleFrameBuffer,
+	TransformFeedbackObject,
+	Scheduler,
+	EventDispatcher,
+	EaseNumber,
+	TweenNumber,
+	OrbitalControl,
+	QuatRotation,
+	Camera,
+	CameraOrtho,
+	CameraPerspective,
+	CameraCube,
+	Ray,
+	Object3D,
+	BinaryLoader,
+	ObjLoader,
+	HDRLoader,
+	ColladaParser,
+	EffectComposer,
+	Pass,
+	PassMacro,
+	PassBlur,
+	PassVBlur,
+	PassHBlur,
+	PassFxaa,
+	BatchCopy,
+	BatchAxis,
+	BatchBall,
+	BatchDotsPlane,
+	BatchLine,
+	BatchSkybox,
+	BatchSky,
+	BatchFXAA,
+	Scene,
+	View,
+	View3D,
+	ShaderLibs
+}
