@@ -1,50 +1,18 @@
 // main.js
 import './global.scss';
+import quickSetup from './utils/quickSetup';
 
-import { GL, BatchDotsPlane, BatchAxis, CameraPerspective, OrbitalControl } from '../src/alfrid';
-import Scheduler from 'scheduling';
+import { GL, Geom, GLShader } from '../src/alfrid';
+let cube, shader;
 
-
-// create canvas
-const canvas = document.createElement("canvas");
-document.body.appendChild(canvas);
-
-
-// INIT GL
-GL.init(canvas);
-
-
-//	Camera
-const camera = new CameraPerspective();
-camera.setPerspective(Math.PI/4, window.innerWidth/window.innerHeight, .1, 100);
-
-//	Camera control
-const orbControl = new OrbitalControl(camera, window, 15);
-orbControl.rx.value = orbControl.ry.value = .3
-orbControl.radius.value = 5;
-
-
-//	Views
-const batchDots = new BatchDotsPlane();
-const batchAxis = new BatchAxis();
-
-
-//	render loop
 function render() {
-	GL.clear(0, 0, 0, 0);
-	GL.setMatrices(camera);
-	batchDots.draw();
-	batchAxis.draw();
+	shader.bind();
+	GL.draw(cube);
 }
-Scheduler.addEF(render);
 
-
-//	resizing
-window.addEventListener('resize', resize);
-function resize() {
-
-	GL.setSize(window.innerWidth, window.innerHeight);
-	camera.setPerspective(Math.PI/4, GL.aspectRatio, .1, 100);
-
+function onComplete() {
+	cube = Geom.cube(1, 1, 1);
+	shader = new GLShader();
 }
-resize();
+
+quickSetup(render, onComplete);
