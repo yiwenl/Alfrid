@@ -10,9 +10,9 @@ function render() {
 	GL.draw(cube);
 }
 
-function onComplete() {
+
+quickSetup(render)
+.then(()=> {
 	cube = Geom.cube(1, 1, 1);
 	shader = new GLShader();
-}
-
-quickSetup(render, onComplete);
+});

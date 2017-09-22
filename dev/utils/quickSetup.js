@@ -2,8 +2,15 @@
 
 import { GL, BatchDotsPlane, BatchAxis, CameraPerspective, OrbitalControl } from '../../src/alfrid';
 import Scheduler from 'scheduling';
+/*
+export default (mRender, mCallback, mResize) => {
+	
+}
 
-export default (mRender, mResize, mCallback) => {
+*/
+
+
+const quickSetup = (mRender, mResize) => new Promise((resolve, reject) => {
 	// create canvas
 	const canvas = document.createElement("canvas");
 	document.body.appendChild(canvas);
@@ -56,7 +63,8 @@ export default (mRender, mResize, mCallback) => {
 	}
 	resize();
 
-	if(mCallback) {
-		mCallback();
-	}
-}
+	resolve();
+});
+
+
+export default quickSetup;
