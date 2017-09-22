@@ -66,7 +66,7 @@ import View3D				from './alfrid/helpers/View3D';
 import ShaderLibs			from './alfrid/utils/ShaderLibs';
 
 
-const VERSION = '0.1.24';
+const VERSION = '0.2.0';
 
 class Alfrid {
 	constructor() {
