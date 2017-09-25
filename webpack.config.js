@@ -1,98 +1,86 @@
-/* eslint comma-dangle: 0 */
-const webpack           = require('webpack');
-const path              = require('path');
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const prod              = process.env.NODE_ENV === 'production';
-const ip                = require('ip');
-const serverIp          = ip.address();
-const libraryName       = 'alfrid';
+// webpack.config.js
+const path = require('path');
+const webpack = require('webpack');
 
-console.log('is Prod : ', prod);
+const pathOutput = path.resolve(__dirname, 'dev');
+const pathBuild = path.resolve(__dirname, 'build');
+const pathNodeModules = path.resolve(__dirname, 'node_modules');
 
-function getOutput() {
+const env = process.env.NODE_ENV;
+const isProd = env === 'production';
+const libraryName = 'alfrid';
+console.log('Environment isProd :', isProd);
 
-	if(prod) {
-		return path.resolve(__dirname, "build/" )  
-	} else {
-		return path.resolve(__dirname, "test/assets/" )  
-	}
-	
-}
+const plugins = isProd ? 
+[	
+	new webpack.optimize.UglifyJsPlugin({
+		sourceMap:false,
+		compress: {
+			drop_debugger: true,
+			drop_console: true,
+			screw_ie8: true
+		},
+		comments:false,
+		mangle:false
+	})
+] : [
+	new webpack.HotModuleReplacementPlugin()
+];
 
-const settings = {
-	hotPort: 8158,
-	cache: !prod,
-	debug: !prod,
-	entry: {
-		app: prod ? ['./src/alfrid.js'] : ['./src/test/app.js']
-	},
-	stats: {
-		cached: false,
-		cachedAssets: false,
-		chunkModules: false,
-		chunks: false,
-		colors: true,
-		errorDetails: true,
-		hash: false,
-		progress: true,
-		reasons: false,
-		timings: true,
-		version: false
-	},
-	output: {
-		path: getOutput(),
-		filename: prod ? libraryName + '.js' : 'js/bundle.js',
+
+const entry = isProd ? {app:`./src/${libraryName}.js`}
+				: {app:'./dev/main.js'};
+const output = isProd ? {
+		path: pathBuild,
+		filename: `./${libraryName}.js`,
 		library: libraryName,
 		libraryTarget: 'umd',
-		umdNamedDefine: true,
-		publicPath: !prod ? `http://${serverIp}:8158/assets/` : ''
+		umdNamedDefine: true
+	} : {
+		filename:'bundle.js',
+		path: pathOutput
+	};
+
+const devtool = 'source-map';
+
+const config = {
+	entry,
+	devtool,
+	devServer: {
+		host:'0.0.0.0',
+		contentBase: './dev',
+		hot:true,
+		disableHostCheck:true
 	},
+	plugins,
+	output,
 	module: {
-		loaders: [
+		rules: [
 			{
 				test: /\.js$/,
-				loader: 'babel',
-				exclude: /node_modules/,
+				loader: 'babel-loader',
 				query: {
-					plugins: ['transform-runtime', 'add-module-exports'],
-					presets: ['es2015', 'stage-1']
+					presets: ['env']
 				}
-			},
-			{
-				test: /\.js$/,
-				loader: 'eslint-loader',
-				exclude: /node_modules/
+				// exclude: pathNodeModules
 			},
 			{
 				test: /\.css$/,
-				loader: 'style!css'
+				use: ['style-loader', 'css-loader'],
+				exclude: pathNodeModules
 			},
 			{
 				test: /\.scss$/,
-				loader: prod ?
-					ExtractTextPlugin.extract("style-loader", `css-loader!autoprefixer-loader?browsers=last 3 version!sass-loader?includePaths[]=test`) :
-					`style!css!autoprefixer?browsers=last 3 version!sass?includePaths[]=test` 
+				use: ["style-loader", "css-loader", "sass-loader"],
+				exclude: pathNodeModules
 			},
-			{ test: /\.(glsl|frag|vert)$/, loader: 'raw', exclude: /node_modules/ },
-			{ test: /\.(glsl|frag|vert)$/, loader: 'glslify', exclude: /node_modules/ }
-		]
-	},
-	plugins: prod ? [
-		new webpack.optimize.DedupePlugin(),
-		new webpack.optimize.OccurenceOrderPlugin(),
-		new webpack.optimize.UglifyJsPlugin({
-			compress: {
-				screw_ie8: true,
-				warnings: false
+			{
+				test: /\.(glsl|vert|frag)$/,
+				use: ["raw-loader", "glslify-loader"],
+				exclude: pathNodeModules
 			}
-		}),
-		new ExtractTextPlugin('css/main.css')
-	] : [new webpack.optimize.OccurenceOrderPlugin()]
-};
-
-if(prod) {
-	settings.devtool = 'source-map';
+		]
+	}
 }
 
-
-module.exports = settings;
+module.exports = config;
