@@ -3,6 +3,7 @@ import './global.scss';
 import quickSetup from './utils/quickSetup';
 
 import { GL, Geom, GLShader } from '../src/alfrid';
+import fs from './test.frag';
 let cube, shader;
 
 let mtx1 = mat4.create();
@@ -33,5 +34,5 @@ function render() {
 quickSetup(render)
 .then(()=> {
 	cube = Geom.cube(1, 1, 1);
-	shader = new GLShader();
+	shader = new GLShader(null, fs);
 });

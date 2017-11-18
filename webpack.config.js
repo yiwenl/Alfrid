@@ -17,7 +17,7 @@ const plugins = isProd ?
 		sourceMap:false,
 		compress: {
 			drop_debugger: true,
-			drop_console: true,
+			drop_console: false,
 			screw_ie8: true
 		},
 		comments:false,
