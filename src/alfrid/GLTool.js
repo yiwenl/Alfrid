@@ -22,6 +22,7 @@ class GLTool {
 		this._inverseModelViewMatrix = mat3.create();
 		this._modelMatrix            = mat4.create();
 		this._matrix                 = mat4.create();
+		this._matrixStacks 			 = [];
 		this._lastMesh				 = null;
 		this._useWebGL2 			 = false;
 		this._hasArrayInstance;
@@ -258,6 +259,22 @@ class GLTool {
 
 	enableAdditiveBlending() {
 		gl.blendFunc(gl.ONE, gl.ONE);
+	}
+
+	//	matrices
+
+	pushMatrix() {
+		const mtx = mat4.clone(this._modelMatrix);
+		this._matrixStacks.push(mtx);
+	}
+
+
+	popMatrix() {
+		if(this._matrixStacks.length == 0) {
+			return null;
+		}
+		const mtx = this._matrixStacks.pop();
+		this.rotate(mtx);
 	}
 
 
