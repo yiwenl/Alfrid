@@ -4,6 +4,12 @@ import EventDispatcher from './EventDispatcher';
 import Ray from '../math/Ray';
 import getMouse from './getMouse';
 
+function distance(a, b) {
+	let dx = a.x - b.x;
+	let dy = a.y - b.y;
+	return Math.sqrt(dx * dx + dy * dy);
+}
+
 class TouchDetector extends EventDispatcher {
 	constructor(mMesh, mCamera, mSkipMoveCheck=false, mListenerTarget=window) {
 		super();
@@ -12,10 +18,12 @@ class TouchDetector extends EventDispatcher {
 		this._mesh.generateFaces();
 		this._camera = mCamera;
 		this.faceVertices = mMesh.faces.map((face)=>(face.vertices));
+		this.clickTolerance = 8;
 
 		this._ray = new Ray([0, 0, 0], [0, 0, -1]);
 		this._hit = vec3.fromValues(-999, -999, -999);
 		this._lastPos;
+		this._firstPos;
 
 		this._listenerTarget = mListenerTarget;
 		this._skippingMove = mSkipMoveCheck;
@@ -89,6 +97,7 @@ class TouchDetector extends EventDispatcher {
 
 
 	_onDown(e) {
+		this._firstPos = getMouse(e);
 		this._lastPos = getMouse(e);
 	}
 
@@ -99,8 +108,12 @@ class TouchDetector extends EventDispatcher {
 		}
 	}
 
-	_onUp(e) {
-		this._checkHit();
+	_onUp() {
+		const dist = distance(this._firstPos, this._lastPos);
+		if(dist < this.clickTolerance) {
+			this._checkHit();	
+		}
+		
 	}
 
 }
