@@ -63,7 +63,12 @@ const quickSetup = (mRender, mResize) => new Promise((resolve, reject) => {
 	}
 	resize();
 
-	resolve();
+	const o = {
+		camera,
+		orbControl
+	}
+
+	resolve(o);
 });
 
 

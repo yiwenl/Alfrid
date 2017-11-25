@@ -22,6 +22,7 @@ import EaseNumber 			from './alfrid/utils/EaseNumber';
 import TweenNumber 			from './alfrid/utils/TweenNumber';
 import OrbitalControl		from './alfrid/utils/OrbitalControl';
 import QuatRotation			from './alfrid/utils/QuatRotation';
+import TouchDetector		from './alfrid/utils/TouchDetector';
 
 //	CAMERAS
 import Camera 				from './alfrid/cameras/Camera';
@@ -169,6 +170,7 @@ export {
 	TweenNumber,
 	OrbitalControl,
 	QuatRotation,
+	TouchDetector,
 	Camera,
 	CameraOrtho,
 	CameraPerspective,
