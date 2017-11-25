@@ -1,6 +1,6 @@
 // getMouse.js
 
-export default function(e) {
+export default function (e) {
 	let x, y;
 
 	if(e.touches) {
@@ -14,5 +14,5 @@ export default function(e) {
 
 	return {
 		x, y
-	}
+	};
 }

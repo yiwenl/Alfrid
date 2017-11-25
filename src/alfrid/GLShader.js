@@ -84,12 +84,12 @@ class GLShader {
 			this.uniformObject(mName);
 			return;
 		}
-/*
+		/*
 		if(!!mValue === undefined || mValue === null) {
 			console.warn('mValue Error:', mName);
 			return;
 		}
-*/
+	*/
 		const uniformType = uniformMapping[mType] || mType;
 		
 		let hasUniform = false;

@@ -11,10 +11,10 @@ const generateMesh = function (meshes) {
 		const { vertices, normals, coords, triangles, name } = mesh.mesh;
 		if(!caches[name]) {
 			const glMesh = new Mesh()
-			.bufferFlattenData(vertices, 'aVertexPosition', 3)
-			.bufferFlattenData(coords, 'aTextureCoord', 2)
-			.bufferFlattenData(normals, 'aNormal', 3)
-			.bufferIndex(triangles);
+				.bufferFlattenData(vertices, 'aVertexPosition', 3)
+				.bufferFlattenData(coords, 'aTextureCoord', 2)
+				.bufferFlattenData(normals, 'aNormal', 3)
+				.bufferIndex(triangles);
 
 			caches[name] = glMesh;
 		}

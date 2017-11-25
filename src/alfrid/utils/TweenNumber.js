@@ -6,18 +6,18 @@ import Scheduler from 'scheduling';
 
 const Easing = {
 	Linear: {
-		None: function (k) {
+		None(k) {
 			return k;
 		}
 	},
 	Quadratic: {
-		In: function (k) {
+		In(k) {
 			return k * k;
 		},
-		Out: function (k) {
+		Out(k) {
 			return k * (2 - k);
 		},
-		InOut: function (k) {
+		InOut(k) {
 			if ((k *= 2) < 1) {
 				return 0.5 * k * k;
 			}
@@ -25,13 +25,13 @@ const Easing = {
 		}
 	},
 	Cubic: {
-		In: function (k) {
+		In(k) {
 			return k * k * k;
 		},
-		Out: function (k) {
+		Out(k) {
 			return --k * k * k + 1;
 		},
-		InOut: function (k) {
+		InOut(k) {
 			if ((k *= 2) < 1) {
 				return 0.5 * k * k * k;
 			}
@@ -39,13 +39,13 @@ const Easing = {
 		}
 	},
 	Quartic: {
-		In: function (k) {
+		In(k) {
 			return k * k * k * k;
 		},
-		Out: function (k) {
+		Out(k) {
 			return 1 - (--k * k * k * k);
 		},
-		InOut: function (k) {
+		InOut(k) {
 			if ((k *= 2) < 1) {
 				return 0.5 * k * k * k * k;
 			}
@@ -53,13 +53,13 @@ const Easing = {
 		}
 	},
 	Quintic: {
-		In: function (k) {
+		In(k) {
 			return k * k * k * k * k;
 		},
-		Out: function (k) {
+		Out(k) {
 			return --k * k * k * k * k + 1;
 		},
-		InOut: function (k) {
+		InOut(k) {
 			if ((k *= 2) < 1) {
 				return 0.5 * k * k * k * k * k;
 			}
@@ -67,24 +67,24 @@ const Easing = {
 		}
 	},
 	Sinusoidal: {
-		In: function (k) {
+		In(k) {
 			return 1 - Math.cos(k * Math.PI / 2);
 		},
-		Out: function (k) {
+		Out(k) {
 			return Math.sin(k * Math.PI / 2);
 		},
-		InOut: function (k) {
+		InOut(k) {
 			return 0.5 * (1 - Math.cos(Math.PI * k));
 		}
 	},
 	Exponential: {
-		In: function (k) {
+		In(k) {
 			return k === 0 ? 0 : Math.pow(1024, k - 1);
 		},
-		Out: function (k) {
+		Out(k) {
 			return k === 1 ? 1 : 1 - Math.pow(2, - 10 * k);
 		},
-		InOut: function (k) {
+		InOut(k) {
 			if (k === 0) {
 				return 0;
 			}
@@ -98,13 +98,13 @@ const Easing = {
 		}
 	},
 	Circular: {
-		In: function (k) {
+		In(k) {
 			return 1 - Math.sqrt(1 - k * k);
 		},
-		Out: function (k) {
+		Out(k) {
 			return Math.sqrt(1 - (--k * k));
 		},
-		InOut: function (k) {
+		InOut(k) {
 			if ((k *= 2) < 1) {
 				return - 0.5 * (Math.sqrt(1 - k * k) - 1);
 			}
@@ -112,7 +112,7 @@ const Easing = {
 		}
 	},
 	Elastic: {
-		In: function (k) {
+		In(k) {
 			let s;
 			let a = 0.1;
 			const p = 0.4;
@@ -130,7 +130,7 @@ const Easing = {
 			}
 			return - (a * Math.pow(2, 10 * (k -= 1)) * Math.sin((k - s) * (2 * Math.PI) / p));
 		},
-		Out: function (k) {
+		Out(k) {
 			let s;
 			let a = 0.1;
 			const p = 0.4;
@@ -148,7 +148,7 @@ const Easing = {
 			}
 			return (a * Math.pow(2, - 10 * k) * Math.sin((k - s) * (2 * Math.PI) / p) + 1);
 		},
-		InOut: function (k) {
+		InOut(k) {
 			let s;
 			let a = 0.1;
 			const p = 0.4;
@@ -171,15 +171,15 @@ const Easing = {
 		}
 	},
 	Back: {
-		In: function (k) {
+		In(k) {
 			const s = 1.70158;
 			return k * k * ((s + 1) * k - s);
 		},
-		Out: function (k) {
+		Out(k) {
 			const s = 1.70158;
 			return --k * k * ((s + 1) * k + s) + 1;
 		},
-		InOut: function (k) {
+		InOut(k) {
 			const s = 1.70158 * 1.525;
 			if ((k *= 2) < 1) {
 				return 0.5 * (k * k * ((s + 1) * k - s));
@@ -188,10 +188,10 @@ const Easing = {
 		}
 	},
 	Bounce: {
-		in: function (k) {
+		in(k) {
 			return 1 - Easing.Bounce.out(1 - k);
 		},
-		out: function (k) {
+		out(k) {
 			if (k < (1 / 2.75)) {
 				return 7.5625 * k * k;
 			} else if (k < (2 / 2.75)) {
@@ -202,7 +202,7 @@ const Easing = {
 				return 7.5625 * (k -= (2.625 / 2.75)) * k + 0.984375;
 			}
 		},
-		inOut: function (k) {
+		inOut(k) {
 			if (k < 0.5) {
 				return Easing.Bounce.in(k * 2) * 0.5;
 			}

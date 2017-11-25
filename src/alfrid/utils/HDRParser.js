@@ -56,7 +56,7 @@ function readPixelsRawRLE(buffer, data, offset, fileOffset, scanlineWidth, numSc
 		}
 
 		if ((rgbe[0] !== 2) || (rgbe[1] !== 2) || ((rgbe[2] & 0x80) !== 0)) {
-				// this file is not run length encoded
+			// this file is not run length encoded
 			data[offset++] = rgbe[0];
 			data[offset++] = rgbe[1];
 			data[offset++] = rgbe[2];
@@ -200,8 +200,8 @@ function parseHdr(buffer) {
 
 	return {
 		shape: [width, height],
-		exposure: exposure,
-		gamma: gamma,
+		exposure,
+		gamma,
 		data: floatData
 	};
 }

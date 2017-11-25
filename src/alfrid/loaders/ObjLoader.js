@@ -219,10 +219,10 @@ class ObjLoader extends BinaryLoader {
 		}
 
 		return this._generateMeshes({	
-			positions:positions,
-			coords:coords,
+			positions,
+			coords,
 			normals:finalNormals,
-			indices:indices
+			indices
 		});
 		
 	}

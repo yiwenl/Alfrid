@@ -5,8 +5,8 @@ import Ray from '../math/Ray';
 import getMouse from './getMouse';
 
 function distance(a, b) {
-	let dx = a.x - b.x;
-	let dy = a.y - b.y;
+	const dx = a.x - b.x;
+	const dy = a.y - b.y;
 	return Math.sqrt(dx * dx + dy * dy);
 }
 
@@ -49,7 +49,7 @@ class TouchDetector extends EventDispatcher {
 
 
 	_checkHit() {
-		let camera = this._camera;
+		const camera = this._camera;
 		if(!camera) {
 			return;
 		}
@@ -70,7 +70,7 @@ class TouchDetector extends EventDispatcher {
 			v1 = [vertices[1][0], vertices[1][1], vertices[1][2]];
 			v2 = [vertices[2][0], vertices[2][1], vertices[2][2]];
 
-			let t = this._ray.intersectTriangle(v0, v1, v2);
+			const t = this._ray.intersectTriangle(v0, v1, v2);
 
 			if(t) {
 				if(hit) {
@@ -89,7 +89,7 @@ class TouchDetector extends EventDispatcher {
 
 		if(hit) {
 			this._hit = vec3.clone(hit);
-			this.dispatchCustomEvent('onHit', {hit});
+			this.dispatchCustomEvent('onHit', { hit });
 		} else {
 			this.dispatchCustomEvent('onUp');
 		}
@@ -104,7 +104,7 @@ class TouchDetector extends EventDispatcher {
 	_onMove(e) {
 		this._lastPos = getMouse(e);
 		if(!this._skippingMove) {
-			this._checkHit()
+			this._checkHit();
 		}
 	}
 
