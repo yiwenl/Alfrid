@@ -24,6 +24,7 @@ class TouchDetector extends EventDispatcher {
 		this._hit = vec3.fromValues(-999, -999, -999);
 		this._lastPos;
 		this._firstPos;
+		this.mtxModel = mat4.create();
 
 		this._listenerTarget = mListenerTarget;
 		this._skippingMove = mSkipMoveCheck;
@@ -61,15 +62,20 @@ class TouchDetector extends EventDispatcher {
 		camera.generateRay([mx, my, 0], this._ray);
 
 		let hit;
-		let v0, v1, v2;
+		const v0 = vec3.create();
+		const v1 = vec3.create();
+		const v2 = vec3.create();
 		let dist = 0;
+
+		const getVector = (v, target) => {
+			vec3.transformMat4(target, v, this.mtxModel);
+		};
 
 		for(let i = 0; i < this.faceVertices.length; i++) {
 			const vertices = this.faceVertices[i];
-			v0 = [vertices[0][0], vertices[0][1], vertices[0][2]];
-			v1 = [vertices[1][0], vertices[1][1], vertices[1][2]];
-			v2 = [vertices[2][0], vertices[2][1], vertices[2][2]];
-
+			getVector(vertices[0], v0); 
+			getVector(vertices[1], v1); 
+			getVector(vertices[2], v2); 
 			const t = this._ray.intersectTriangle(v0, v1, v2);
 
 			if(t) {

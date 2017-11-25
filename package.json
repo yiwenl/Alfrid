@@ -1,13 +1,13 @@
 {
   "name": "alfrid",
-  "version": "0.2.5",
+  "version": "0.2.7",
   "description": "WebGL 3D toolkit",
   "main": "build/alfrid.js",
   "directories": {
     "example": "examples"
   },
   "scripts": {
-    "lint": "eslint -c .eslintrc src/**",
+    "lint": "npm run lint:fix && eslint -c .eslintrc src/**",
     "lint:fix": "eslint -c .eslintrc --fix src/**",
     "start": "npm run dev",
     "dev": "NODE_ENV=development webpack-dev-server --open",
