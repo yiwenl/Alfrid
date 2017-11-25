@@ -48,7 +48,7 @@ class TouchDetector extends EventDispatcher {
 	}
 
 
-	_checkHit() {
+	_checkHit(mType='onHit') {
 		const camera = this._camera;
 		if(!camera) {
 			return;
@@ -89,7 +89,7 @@ class TouchDetector extends EventDispatcher {
 
 		if(hit) {
 			this._hit = vec3.clone(hit);
-			this.dispatchCustomEvent('onHit', { hit });
+			this.dispatchCustomEvent(mType, { hit });
 		} else {
 			this.dispatchCustomEvent('onUp');
 		}
@@ -99,6 +99,7 @@ class TouchDetector extends EventDispatcher {
 	_onDown(e) {
 		this._firstPos = getMouse(e);
 		this._lastPos = getMouse(e);
+		this._checkHit('onDown');
 	}
 
 	_onMove(e) {

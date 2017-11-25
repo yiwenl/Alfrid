@@ -24,13 +24,18 @@ quickSetup(render)
 	ball = new BatchBall();
 
 	const detector = new TouchDetector(cube, o.camera, true);
-	
-	detector.on('onHit', (o)=> {
+
+
+	detector.on('onDown', (o)=> {
 		vec3.copy(hit, o.detail.hit);
 	});
 
-	detector.on('onUp', () => {
-		vec3.set(hit, 999, 999, 999);
-	});
+	// detector.on('onHit', (o)=> {
+	// 	vec3.copy(hit, o.detail.hit);
+	// });
+
+	// detector.on('onUp', () => {
+	// 	vec3.set(hit, 999, 999, 999);
+	// });
 
 });
