@@ -1,14 +1,17 @@
 // main.js
 import './global.scss';
 import quickSetup from './utils/quickSetup';
-
+import AssetsLoader from 'assets-loader';
 import { GL, Geom, GLShader, TouchDetector, BatchBall } from '../src/alfrid';
 import fs from './test.frag';
+
+let loader;
 let cube, shader;
 let hit = vec3.fromValues(999, 999, 99);
 let ball;
 let mtx = mat4.create();
 mat4.translate(mtx, mtx, vec3.fromValues(1, 0, 0));
+
 
 function render() {
 	let s = .1;
@@ -18,6 +21,7 @@ function render() {
 	shader.bind();
 	GL.draw(cube);
 }
+
 
 quickSetup(render)
 .then((o)=> {
@@ -32,12 +36,44 @@ quickSetup(render)
 		vec3.copy(hit, o.detail.hit);
 	});
 
-	// detector.on('onHit', (o)=> {
-	// 	vec3.copy(hit, o.detail.hit);
-	// });
+	const assets = [
+		{"id":"scene","url":"assets/models/scene.gltf","type":"text"},
+	];
 
-	// detector.on('onUp', () => {
-	// 	vec3.set(hit, 999, 999, 999);
-	// });
+	loader = new AssetsLoader({
+		assets		
+	}).on('error', (err)=> {
+		console.log('Error loading :', err);
+	}).on('complete', (o) => {
+		_onAssetsLoaded(o);
+	}).start();
 
 });
+
+
+function _onAssetsLoaded(o) {
+	window.assets = o;
+	console.log('Assets Loaded : ', o);
+
+	const gltfScene = JSON.parse(getAsset('scene'));
+	console.log(gltfScene);
+}
+
+
+
+
+function loadGltf() {
+
+}
+
+
+function getAsset(id) {
+	const o = assets.find( a => {
+		return a.id === id;
+	});
+
+	if(!o) {
+		return null;
+	}
+	return o.file;
+}
