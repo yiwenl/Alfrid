@@ -133,6 +133,11 @@ class GLTool {
 	}
 
 
+	cullFace(mValue) {
+		gl.cullFace(mValue);
+	}
+
+
 	setMatrices(mCamera) {
 		this.camera = mCamera;
 		this.rotate(this.identityMatrix);
