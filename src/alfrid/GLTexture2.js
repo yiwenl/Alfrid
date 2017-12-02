@@ -20,6 +20,7 @@ class GLTexture {
 
 		this._params = getTextureParameters(mParam, mSource, this._width, this._height);
 		this._checkMipmap();
+		this._checkWrapping();
 
 		//	setup texture
 		
@@ -135,9 +136,16 @@ class GLTexture {
 		}
 	}
 
+	_checkWrapping() {
+		if(!this._generateMipmap) {
+			this._params.wrapS = GL.CLAMP_TO_EDGE;
+			this._params.wrapT = GL.CLAMP_TO_EDGE;
+		}
+	}
+
 	showParameters() {
-		console.log('Source type : ', WebglNumber[this._sourceType]);
-		console.log('Texel type:', WebglNumber[this._sourceType]);
+		console.log('Source type : ', WebglNumber[this._sourceType] || this._sourceType);
+		console.log('Texel type:', WebglNumber[this.texelType]);
 		console.log('Dimension :', this._width, this._height);
 		for(let s in this._params) {
 			console.log(s, WebglNumber[this._params[s]] || this._params[s]);
@@ -185,6 +193,7 @@ class GLTexture {
 
 	set wrapS(mValue) {
 		this._params.wrapS = mValue;
+		this._checkWrapping();
 
 		gl.bindTexture(gl.TEXTURE_2D, this._texture);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, this._params.wrapS);
@@ -198,6 +207,7 @@ class GLTexture {
 
 	set wrapT(mValue) {
 		this._params.wrapT = mValue;
+		this._checkWrapping();
 
 		gl.bindTexture(gl.TEXTURE_2D, this._texture);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, this._params.wrapT);

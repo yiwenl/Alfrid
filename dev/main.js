@@ -54,6 +54,7 @@ quickSetup(render)
 	shaderCopy = new GLShader(null, fsUV);
 	ball = new BatchBall();
 	bCopy = new BatchCopy();
+	o.orbControl.radius.value = 25;
 
 	const detector = new TouchDetector(cube, o.camera, false);
 	mat4.copy(detector.mtxModel, mtx);
@@ -65,6 +66,7 @@ quickSetup(render)
 
 	const assets = [
 		{"id":"image","url":"assets/img/test.jpg"},
+		{"id":"image1","url":"assets/img/test1.jpg"},
 		{"id":"hdr","url":"assets/img/singleLight.hdr","type":"binary"},
 	];
 
@@ -84,7 +86,7 @@ function _onAssetsLoaded(o) {
 	console.log('Assets Loaded : ');
 	console.table(o);
 
-	const img = getAsset('image');
+	const img = getAsset('image1');
 	// texture = new GLTexture(img);
 
 	const source = new Float32Array([
@@ -110,28 +112,19 @@ function _onAssetsLoaded(o) {
 		255, 255, 0, 255
 	];
 
-	texture = new GLTexture2(img, {minFilter:GL.NEAREST}, 512, 512);
-	console.log('texture :', texture);
-	// texture = new GLTexture2(source1, {magFilter:GL.NEAREST}, 2, 3);
-	// texture = new GLTexture2(source2, {minFilter:GL.NEAREST, magFilter:GL.NEAREST});
-	// texture = new GLTexture2(source1, {magFilter:GL.NEAREST}, 2, 2);
-	// const oHDR = alfrid.HDRLoader.parse(getAsset('hdr'));
-	// textureHdr = new GLTexture2(oHDR.data, {}, oHDR.shape[0], oHDR.shape[1]);
+	texture = new GLTexture2(img, {minFilter:GL.NEAREST, wrapS:GL.MIRRORED_REPEAT}, 512, 512);
 
 	const s = 1024;
-	// fbo = new alfrid.FrameBuffer(s, s);
-
-
 	const MIP = ['LINEAR', 'LINEAR_MIPMAP_LINEAR', 'LINEAR_MIPMAP_NEAREST', 'NEAREST'];
 	const WRAP = ['CLAMP_TO_EDGE', 'MIRRORED_REPEAT', 'REPEAT'];
 	gui.add(params, 'minFilter', MIP).onChange(o=> {
-		console.log(o);
 		texture.minFilter = GL[o];
 	});
 
 
 	gui.add(params, 'wrapS', WRAP).onChange(o=> {
 		texture.wrapS = GL[o];
+		texture.showParameters();
 	});
 
 	gui.add(params, 'wrapT', WRAP).onChange(o=> {
