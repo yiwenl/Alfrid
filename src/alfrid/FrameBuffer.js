@@ -189,6 +189,13 @@ class FrameBuffer {
 			GL.viewport(0, 0, GL.width, GL.height);	
 		}
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+		if(this.minFilter === gl.LINEAR_MIPMAP_NEAREST)	{
+			for (let i = 0; i < this._textures.length; i++) {
+				gl.bindTexture(gl.TEXTURE_2D, this._textures[i].texture);
+				gl.generateMipmap(gl.TEXTURE_2D);
+			}
+		}
 	}
 
 

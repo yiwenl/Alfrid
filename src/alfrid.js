@@ -23,8 +23,8 @@ import TweenNumber 			from './alfrid/utils/TweenNumber';
 import OrbitalControl		from './alfrid/utils/OrbitalControl';
 import QuatRotation			from './alfrid/utils/QuatRotation';
 import TouchDetector		from './alfrid/utils/TouchDetector';
-import WebglNumber			from './alfrid/utils/WebglNumber';
-import WebglConst			from './alfrid/utils/WebglConst';
+// import WebglNumber			from './alfrid/utils/WebglNumber';
+// import WebglConst			from './alfrid/utils/WebglConst';
 
 //	CAMERAS
 import Camera 				from './alfrid/cameras/Camera';
@@ -173,8 +173,6 @@ export {
 	OrbitalControl,
 	QuatRotation,
 	TouchDetector,
-	WebglConst,
-	WebglNumber,
 	Camera,
 	CameraOrtho,
 	CameraPerspective,
