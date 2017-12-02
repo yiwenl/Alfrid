@@ -6,7 +6,7 @@ import alfrid, { GL, Geom, GLShader, TouchDetector, BatchBall, BatchCopy, GLText
 import fs from './test.frag';
 
 
-let loader, bCopy, texture, fbo;
+let loader, bCopy, texture, textureHdr, fbo;
 let cube, shader;
 let hit = vec3.fromValues(999, 999, 99);
 let ball;
@@ -34,10 +34,13 @@ function render() {
 
 
 	s = 200;
-	GL.viewport(s, 0, s, s);
-	bCopy.draw(texture);
+	
 	GL.viewport(0, 0, s, s);
 	bCopy.draw(fbo.getTexture());
+	GL.viewport(s, 0, s, s);
+	bCopy.draw(texture);
+	GL.viewport(s*2, 0, s*2, s);
+	bCopy.draw(textureHdr);
 
 	GL.viewport(0, 0, GL.width, GL.height);
 }
@@ -75,7 +78,8 @@ quickSetup(render)
 
 function _onAssetsLoaded(o) {
 	window.assets = o;
-	console.log('Assets Loaded : ', o);
+	console.log('Assets Loaded : ');
+	console.table(o);
 
 	const img = getAsset('image');
 	// texture = new GLTexture(img);
@@ -103,10 +107,14 @@ function _onAssetsLoaded(o) {
 		255, 255, 0, 255
 	];
 
-	// texture = new GLTexture2(img, {magFilter:GL.LINEAR}, 512, 512);
+	texture = new GLTexture2(img, {minFilter:GL.NEAREST}, 512, 512);
 	// texture = new GLTexture2(source1, {magFilter:GL.NEAREST}, 2, 3);
-	texture = new GLTexture2(source1, {minFilter:GL.NEAREST, magFilter:GL.NEAREST});
+	// texture = new GLTexture2(source2, {minFilter:GL.NEAREST, magFilter:GL.NEAREST});
 	// texture = new GLTexture2(source1, {magFilter:GL.NEAREST}, 2, 2);
+
+	const oHDR = alfrid.HDRLoader.parse(getAsset('hdr'));
+	textureHdr = new GLTexture2(oHDR.data, {}, oHDR.shape[0], oHDR.shape[1]);
+	textureHdr.showParameters();
 
 	const s = 1024;
 	fbo = new alfrid.FrameBuffer(s, s)
