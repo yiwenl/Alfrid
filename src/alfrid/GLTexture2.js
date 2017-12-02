@@ -23,6 +23,11 @@ class GLTexture {
 
 		//	setup texture
 		this._texture = gl.createTexture();
+		this._uploadTexture();		
+	}
+
+
+	_uploadTexture() {
 		gl.bindTexture(gl.TEXTURE_2D, this._texture);
 		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 
@@ -59,6 +64,13 @@ class GLTexture {
 		gl.activeTexture(gl.TEXTURE0 + index);
 		gl.bindTexture(gl.TEXTURE_2D, this._texture);
 		this._bindIndex = index;
+	}
+
+
+	updateTexture(mSource) {
+		this._source = mSource;
+		this._checkSource();
+		this._uploadTexture();
 	}
 
 

@@ -62,7 +62,7 @@ quickSetup(render)
 	ball = new BatchBall();
 	bCopy = new BatchCopy();
 	o.orbControl.radius.value = 25;
-	o.camera.setPerspective(Math.PI/4, window.innerWidth/window.innerHeight, 1, 30);
+	o.camera.setPerspective(Math.PI/4, window.innerWidth/window.innerHeight, 1, 50);
 
 	const detector = new TouchDetector(cube, o.camera, false);
 	mat4.copy(detector.mtxModel, mtx);
@@ -75,6 +75,7 @@ quickSetup(render)
 	const assets = [
 		{"id":"image","url":"assets/img/test.jpg"},
 		{"id":"image1","url":"assets/img/test1.jpg"},
+		{"id":"image2","url":"assets/img/test2.jpg"},
 		{"id":"hdr","url":"assets/img/singleLight.hdr","type":"binary"},
 	];
 
@@ -120,6 +121,13 @@ function _onAssetsLoaded(o) {
 		255, 255, 0, 255
 	];
 
+	const source3 = [
+		255, 255, 255, 255,
+		0, 0, 0, 255,
+		0, 0, 0, 255,
+		255, 255, 255, 255
+	];	
+
 	texture = new GLTexture2(img, {minFilter:GL.NEAREST, wrapS:GL.MIRRORED_REPEAT}, 512, 512);
 	textureData = new GLTexture2(source2, {magFilter:GL.NEAREST, minFilter:GL.NEAREST, type:GL.FLOAT});
 
@@ -139,6 +147,13 @@ function _onAssetsLoaded(o) {
 	gui.add(params, 'wrapT', WRAP).onChange(o=> {
 		texture.wrapT = GL[o];
 	});
+
+
+	setTimeout(()=> {
+		console.log('Update texture 3');
+		textureData.updateTexture(source3)
+		texture.updateTexture(getAsset('image2'));
+	}, 2000);
 }
 
 
