@@ -1,8 +1,7 @@
 // GLTexture.js
 
-'use strict';
-
 import GL from './GLTool';
+import WebglNumber from './utils/WebglNumber';
 
 function isPowerOfTwo(x) {	
 	return (x !== 0) && (!(x & (x - 1)));
@@ -59,12 +58,16 @@ class GLTexture {
 				gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, mSource.shape[0], mSource.shape[1], 0, gl.RGBA, gl.FLOAT, mSource.data);
 			} else {
 				gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, mSource);	
+				// gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.width, this.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
 			}
 			
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, this._magFilter);
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, this._minFilter);
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, this._wrapS);
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, this._wrapT);
+
+			// console.log('Texture Min :', WebglNumber[this._minFilter]);
+			// console.log('Texture Mag :', WebglNumber[this._magFilter]);
 
 			const ext = GL.getExtension('EXT_texture_filter_anisotropic');
 			if(ext) {

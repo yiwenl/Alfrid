@@ -91,6 +91,7 @@ class FrameBuffer {
 			gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, this.glDepthTexture.texture, 0);
 
 		} else {
+			// console.log('here');
 			for (let i = 0; i < this._textures.length; i++) {
 				gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + i, gl.TEXTURE_2D, this._textures[i].texture, 0);	
 			}
@@ -139,7 +140,7 @@ class FrameBuffer {
 
 	_initTextures() {
 		const numTextures = this._multipleTargets ? 4 : 1;
-		for (let i = 0; i < 4; i++) {
+		for (let i = 0; i < numTextures; i++) {
 			const glt = this._createTexture();
 			this._textures.push(glt);
 		}
