@@ -163,8 +163,6 @@ class FrameBuffer {
 
 	_createTexture2() {
 		const texture = new GLTexture2(null, this._parameters, this.width, this.height);
-		console.log('Frame buffer texture :');
-		texture.showParameters();
 		return texture;
 	}
 
@@ -259,6 +257,9 @@ class FrameBuffer {
 	}
 
 
+	showParameters() {
+		this._textures[0].showParameters();
+	}
 }
 
 

@@ -26,28 +26,28 @@ function render() {
 	}
 
 
-	// fbo.bind();
-	// GL.clear(0, 0, 0, 0);
-	// shader.bind();
-	// GL.draw(cube);
-	// fbo.unbind();
+	fbo.bind();
+	GL.clear(0, 0, 0, 0);
+	shader.bind();
+	GL.draw(cube);
+	fbo.unbind();
 
 	shaderCopy.bind();
 	shaderCopy.uniform("texture", "uniform1i", 0);
 	texture.bind(0);
 	GL.draw(floor);
 
-	// let s = 300;
-	// GL.viewport(0, 0, s, s);
-	// bCopy.draw(fbo.getTexture());
+	let s = 300;
+	GL.viewport(0, 0, s, s);
+	bCopy.draw(fbo.getTexture());
 
-	// GL.viewport(0, 0, GL.width, GL.height);
+	GL.viewport(0, 0, GL.width, GL.height);
 
 }
 
 quickSetup(render)
 .then((o)=> {
-	cube = Geom.cube(1, 1, 1);
+	cube = Geom.cube(5, 5, 5);
 	const floorSize = 20;
 	floor = Geom.plane(floorSize, floorSize, 1, 'xz');
 	shader = new GLShader(null, fs);
@@ -86,7 +86,7 @@ function _onAssetsLoaded(o) {
 	console.log('Assets Loaded : ');
 	console.table(o);
 
-	const img = getAsset('image1');
+	const img = getAsset('image');
 	// texture = new GLTexture(img);
 
 	const source = new Float32Array([
@@ -115,16 +115,16 @@ function _onAssetsLoaded(o) {
 	texture = new GLTexture2(img, {minFilter:GL.NEAREST, wrapS:GL.MIRRORED_REPEAT}, 512, 512);
 
 	const s = 1024;
+	fbo = new alfrid.FrameBuffer(s, s, {minFilter:GL.LINEAR_MIPMAP_NEAREST});
+
 	const MIP = ['LINEAR', 'LINEAR_MIPMAP_LINEAR', 'LINEAR_MIPMAP_NEAREST', 'NEAREST'];
 	const WRAP = ['CLAMP_TO_EDGE', 'MIRRORED_REPEAT', 'REPEAT'];
 	gui.add(params, 'minFilter', MIP).onChange(o=> {
 		texture.minFilter = GL[o];
 	});
 
-
 	gui.add(params, 'wrapS', WRAP).onChange(o=> {
 		texture.wrapS = GL[o];
-		texture.showParameters();
 	});
 
 	gui.add(params, 'wrapT', WRAP).onChange(o=> {
