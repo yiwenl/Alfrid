@@ -8,7 +8,7 @@ let gl;
 
 class GLTexture {
 
-	constructor(mSource, mParam, mWidth, mHeight) {
+	constructor(mSource, mParam = {}, mWidth = 0, mHeight = 0) {
 		gl = GL.gl;
 
 		this._source = mSource;
@@ -22,7 +22,6 @@ class GLTexture {
 		this._checkWrapping();
 
 		//	setup texture
-		
 		this._texture = gl.createTexture();
 		gl.bindTexture(gl.TEXTURE_2D, this._texture);
 		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
@@ -46,10 +45,7 @@ class GLTexture {
 			gl.texParameterf(gl.TEXTURE_2D, ext.TEXTURE_MAX_ANISOTROPY_EXT, max);
 		}
 
-		if(this._generateMipmap) {
-			gl.generateMipmap(gl.TEXTURE_2D);	
-		}
-		
+		if(this._generateMipmap) {	gl.generateMipmap(gl.TEXTURE_2D);	}
 
 		//	unbind texture
 		gl.bindTexture(gl.TEXTURE_2D, null);
@@ -77,7 +73,7 @@ class GLTexture {
 		console.log('Source type : ', WebglNumber[this._sourceType] || this._sourceType);
 		console.log('Texel type:', WebglNumber[this.texelType]);
 		console.log('Dimension :', this._width, this._height);
-		for(const s in this._params) {
+		for(let s in this._params) {
 			console.log(s, WebglNumber[this._params[s]] || this._params[s]);
 		}
 
@@ -153,13 +149,11 @@ class GLTexture {
 	}
 
 	_isSourceHtmlElement() {
-		return this._sourceType === 'image' || this._sourceType === 'video';
+		return this._sourceType === 'image' || this._sourceType === 'video' || this._sourceType === 'canvas';
 	}
 
 
-	get minFilter() {
-		return this._params.minFilter;
-	}
+	get minFilter() {	return this._params.minFilter;	}
 
 	set minFilter(mValue) {
 		this._params.minFilter = mValue;
@@ -172,9 +166,7 @@ class GLTexture {
 		this.generateMipmap();
 	}
 
-	get magFilter() {
-		return this._params.minFilter;
-	}
+	get magFilter() {	return this._params.minFilter;	}
 
 	set magFilter(mValue) {
 		this._params.magFilter = mValue;
@@ -185,9 +177,7 @@ class GLTexture {
 	}
 
 
-	get wrapS() {
-		return this._params.wrapS;
-	}
+	get wrapS() {	return this._params.wrapS;	}
 
 	set wrapS(mValue) {
 		this._params.wrapS = mValue;
@@ -199,9 +189,7 @@ class GLTexture {
 	}
 
 
-	get wrapT() {
-		return this._params.wrapT;
-	}
+	get wrapT() {	return this._params.wrapT;	}
 
 	set wrapT(mValue) {
 		this._params.wrapT = mValue;
@@ -212,22 +200,13 @@ class GLTexture {
 		gl.bindTexture(gl.TEXTURE_2D, null);
 	}
 
+	get texelType() {	return this._texelType;	}
 
-	get texelType() {
-		return this._texelType;
-	}
+	get width() {	return this._width;	}
 
-	get width() {
-		return this._width;
-	}
+	get height() {	return this._height;	}
 
-	get height() {
-		return this._height;
-	}
-
-	get texture() {
-		return this._texture;
-	}
+	get texture() {	return this._texture;	}
 
 }
 
@@ -248,10 +227,51 @@ function getSourceType(mSource) {
 		type = GL.UNSIGNED_BYTE;
 	} else if(mSource instanceof Float32Array) {
 		type = GL.FLOAT;
-	} else if(mSource instanceof Image) {
+	} else if(mSource instanceof HTMLImageElement) {
 		type = 'image';
+	} else if(mSource instanceof HTMLCanvasElement) {
+		type = 'canvas';
 	}
 	return type;
 }
+
+let _whiteTexture, _greyTexture, _blackTexture;
+
+GLTexture.whiteTexture = function whiteTexture() {
+	if(_whiteTexture === undefined) {
+		const canvas = document.createElement('canvas');
+		canvas.width = canvas.height = 2;
+		const ctx = canvas.getContext('2d');
+		ctx.fillStyle = '#fff';
+		ctx.fillRect(0, 0, 2, 2);
+		_whiteTexture = new GLTexture(canvas);
+	}
+	
+	return _whiteTexture;
+};
+
+GLTexture.greyTexture = function greyTexture() {
+	if(_greyTexture === undefined) {
+		const canvas = document.createElement('canvas');
+		canvas.width = canvas.height = 2;
+		const ctx = canvas.getContext('2d');
+		ctx.fillStyle = 'rgb(127, 127, 127)';
+		ctx.fillRect(0, 0, 2, 2);
+		_greyTexture = new GLTexture(canvas);
+	}
+	return _greyTexture;
+};
+
+GLTexture.blackTexture = function blackTexture() {
+	if(_blackTexture === undefined) {
+		const canvas = document.createElement('canvas');
+		canvas.width = canvas.height = 2;
+		const ctx = canvas.getContext('2d');
+		ctx.fillStyle = 'rgb(0, 0, 0)';
+		ctx.fillRect(0, 0, 2, 2);
+		_blackTexture = new GLTexture(canvas);
+	}
+	return _blackTexture;
+};
 
 export default GLTexture;

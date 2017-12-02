@@ -1,9 +1,6 @@
 // FrameBuffer.js
 
-'use strict';
-
 import GL from './GLTool';
-import GLTexture from './GLTexture';
 import GLTexture2 from './GLTexture2';
 import WebglNumber from './utils/WebglNumber';
 
@@ -40,22 +37,6 @@ class FrameBuffer {
 		this._multipleTargets = mNumTargets > 1;
 		this._parameters = mParameters;
 
-		// this.magFilter  = mParameters.magFilter 	|| gl.LINEAR;
-		// this.minFilter  = mParameters.minFilter 	|| gl.LINEAR_MIPMAP_NEAREST;
-		// this.wrapS      = mParameters.wrapS 		|| gl.CLAMP_TO_EDGE;
-		// this.wrapT      = mParameters.wrapT 		|| gl.CLAMP_TO_EDGE;
-		// this.useDepth   = mParameters.useDepth 		|| true;
-		// this.useStencil = mParameters.useStencil 	|| false;
-		// this.texelType 	= mParameters.type;
-
-		// if(!isPowerOfTwo(this.width) || !isPowerOfTwo(this.height)) {
-		// 	this.wrapS = this.wrapT = gl.CLAMP_TO_EDGE;
-
-		// 	if(this.minFilter === gl.LINEAR_MIPMAP_NEAREST) {
-		// 		this.minFilter = gl.LINEAR;
-		// 	}
-		// } 
-
 		if(!hasCheckedMultiRenderSupport) {
 			// console.log('Has multi render support  :', checkMultiRender());
 			checkMultiRender();
@@ -65,14 +46,6 @@ class FrameBuffer {
 
 
 	_init() {
-		// let texelType = gl.UNSIGNED_BYTE;
-		// if (this.texelType) {
-		// 	texelType = this.texelType;
-		// }
-
-		// this.texelType = texelType;
-
-		
 		this._initTextures();
 		
 		this.frameBuffer        = gl.createFramebuffer();		
@@ -133,12 +106,10 @@ class FrameBuffer {
 		this.clear();
 	}
 
-
 	_initTextures() {
 		this._textures = [];
-		console.log('num textures :', this._numTargets);
 		for (let i = 0; i < this._numTargets; i++) {
-			const glt = this._createTexture2();
+			const glt = this._createTexture();
 			this._textures.push(glt);
 		}
 
@@ -146,13 +117,11 @@ class FrameBuffer {
 		if(GL.webgl2) { 
 			this.glDepthTexture = this._createTexture(gl.DEPTH_COMPONENT16, gl.UNSIGNED_SHORT, gl.DEPTH_COMPONENT, true);
 		} else {
-			// this.glDepthTexture = this._createTexture(gl.DEPTH_COMPONENT, gl.UNSIGNED_SHORT);
-			this.glDepthTexture = this._createTexture2(gl.DEPTH_COMPONENT, gl.UNSIGNED_SHORT, gl.DEPTH_COMPONENT, { minFilter:GL.LINEAR });
+			this.glDepthTexture = this._createTexture(gl.DEPTH_COMPONENT, gl.UNSIGNED_SHORT, gl.DEPTH_COMPONENT, { minFilter:GL.LINEAR });
 		}
 	}
 
-
-	_createTexture2(mInternalformat, mTexelType, mFormat, mParameters = {}) {
+	_createTexture(mInternalformat, mTexelType, mFormat, mParameters = {}) {
 		const parameters = Object.assign({}, this._parameters);
 		if(!mFormat) {	mFormat = mInternalformat; }
 		
@@ -165,27 +134,6 @@ class FrameBuffer {
 
 		const texture = new GLTexture2(null, parameters, this.width, this.height);
 		return texture;
-	}
-
-	_createTexture(mInternalformat, mTexelType, mFormat, forceNearest = false) {
-		if(mInternalformat === undefined) {	mInternalformat = gl.RGBA;	}
-		if(mTexelType === undefined) {	mTexelType = this.texelType;	}
-		if(!mFormat) {	mFormat = mInternalformat; }
-
-		const t = gl.createTexture();
-		const glt = new GLTexture(t, true);
-		const magFilter = forceNearest ? GL.NEAREST : this.magFilter;
-		const minFilter = forceNearest ? GL.NEAREST : this.minFilter;
-
-		gl.bindTexture(gl.TEXTURE_2D, t);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, magFilter);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, minFilter);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, this.wrapS);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, this.wrapT);
-		gl.texImage2D(gl.TEXTURE_2D, 0, mInternalformat, this.width, this.height, 0, mFormat, mTexelType, null);	
-		gl.bindTexture(gl.TEXTURE_2D, null);
-
-		return glt;
 	}
 
 	//	PUBLIC METHODS

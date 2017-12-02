@@ -45,6 +45,9 @@ function render() {
 	GL.viewport(s*2, 0, s, s);
 	bCopy.draw(textureData);
 
+	GL.viewport(s*3, 0, s, s);
+	bCopy.draw(GLTexture2.blackTexture());
+
 	GL.viewport(0, 0, GL.width, GL.height);
 
 }
