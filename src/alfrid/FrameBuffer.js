@@ -4,6 +4,7 @@
 
 import GL from './GLTool';
 import GLTexture from './GLTexture';
+import GLTexture2 from './GLTexture2';
 
 function isPowerOfTwo(x) {	
 	return (x !== 0) && (!(x & (x - 1)));

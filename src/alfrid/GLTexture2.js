@@ -16,7 +16,7 @@ class GLTexture {
 		this._sourceType = mParam.type || getSourceType(mSource);
 		this._checkSource();
 		this._internalFormat;
-		this._format = this._getFormat();
+		this._texelType = this._getTexelType();
 
 		this._params = getTextureParameters(mParam, mSource, this._width, this._height);
 		this._checkMipmap();
@@ -28,9 +28,9 @@ class GLTexture {
 		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 
 		if(this._isSourceHtmlElement()) {
-			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, this._format, this._source);
+			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, this._texelType, this._source);
 		} else {
-			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._width, this._height, 0, gl.RGBA, this._format, this._source);	
+			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._width, this._height, 0, gl.RGBA, this._texelType, this._source);	
 		}
 		
 
@@ -114,7 +114,7 @@ class GLTexture {
 
 	}
 
-	_getFormat() {
+	_getTexelType() {
 		if(this._isSourceHtmlElement()) {
 			return GL.UNSIGNED_BYTE;	
 		}
@@ -147,8 +147,8 @@ class GLTexture {
 		return this._sourceType === 'image' || this._sourceType === 'video';
 	}
 
-	get format() {
-		return this._format;
+	get texelType() {
+		return this._texelType;
 	}
 
 	get width() {
@@ -169,8 +169,6 @@ function isPowerOfTwo(x) {
 function getSourceType(mSource) {
 	//	possible source type : Image / Video / Unit8Array / Float32Array
 	//	this list must be flexible
-
-	console.log(mSource instanceof Image);
 
 	let type = GL.UNSIGNED_BYTE;
 

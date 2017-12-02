@@ -27,16 +27,16 @@ function render() {
 		return;
 	}
 
-	fbo.bind();
-	GL.clear(1, 0, 0, 1);
-	GL.draw(cube);	
-	fbo.unbind();
+	// fbo.bind();
+	// GL.clear(1, 0, 0, 1);
+	// GL.draw(cube);	
+	// fbo.unbind();
 
 
 	s = 200;
 	
 	GL.viewport(0, 0, s, s);
-	bCopy.draw(fbo.getTexture());
+	// bCopy.draw(fbo.getTexture());
 	GL.viewport(s, 0, s, s);
 	bCopy.draw(texture);
 	GL.viewport(s*2, 0, s*2, s);
