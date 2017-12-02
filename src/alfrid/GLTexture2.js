@@ -15,7 +15,6 @@ class GLTexture {
 		this._getDimension(mSource, mWidth, mHeight);
 		this._sourceType = mParam.type || getSourceType(mSource);
 		this._checkSource();
-		this._internalFormat;
 		this._texelType = this._getTexelType();
 
 		this._params = getTextureParameters(mParam, mSource, this._width, this._height);
@@ -29,9 +28,9 @@ class GLTexture {
 		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 
 		if(this._isSourceHtmlElement()) {
-			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, this._texelType, this._source);
+			gl.texImage2D(gl.TEXTURE_2D, 0, this._params.internalFormat, this._params.format, this._texelType, this._source);
 		} else {
-			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._width, this._height, 0, 	gl.RGBA, this._texelType, this._source);	
+			gl.texImage2D(gl.TEXTURE_2D, 0, this._params.internalFormat, this._width, this._height, 0, this._params.format, this._texelType, this._source);	
 		}
 		
 
@@ -74,6 +73,16 @@ class GLTexture {
 		gl.bindTexture(gl.TEXTURE_2D, null);
 	}
 
+	showParameters() {
+		console.log('Source type : ', WebglNumber[this._sourceType] || this._sourceType);
+		console.log('Texel type:', WebglNumber[this.texelType]);
+		console.log('Dimension :', this._width, this._height);
+		for(const s in this._params) {
+			console.log(s, WebglNumber[this._params[s]] || this._params[s]);
+		}
+
+		console.log('Mipmapping :', this._generateMipmap);
+	}
 
 	_getDimension(mSource, mWidth, mHeight) {
 		if(mSource) {
@@ -89,7 +98,7 @@ class GLTexture {
 			//	todo : check HDR 
 			if(!this._width || !this._height) {
 				this._width = this._height = Math.sqrt(mSource.length / 4);
-				console.log('Auto detect, data dimension : ', this._width, this._height);	
+				// console.log('Auto detect, data dimension : ', this._width, this._height);	
 			}
 
 		} else {
@@ -103,12 +112,12 @@ class GLTexture {
 
 		if(this._sourceType === GL.UNSIGNED_BYTE) {
 			if (!(this._source instanceof Uint8Array)) {
-				console.log('Converting to Uint8Array');
+				// console.log('Converting to Uint8Array');
 				this._source = new Uint8Array(this._source);
 			}
 		} else if(this._sourceType === GL.FLOAT) {
 			if (!(this._source instanceof Float32Array)) {
-				console.log('Converting to Float32Array');
+				// console.log('Converting to Float32Array');
 				this._source = new Float32Array(this._source);
 			}
 		}
@@ -141,17 +150,6 @@ class GLTexture {
 			this._params.wrapS = GL.CLAMP_TO_EDGE;
 			this._params.wrapT = GL.CLAMP_TO_EDGE;
 		}
-	}
-
-	showParameters() {
-		console.log('Source type : ', WebglNumber[this._sourceType] || this._sourceType);
-		console.log('Texel type:', WebglNumber[this.texelType]);
-		console.log('Dimension :', this._width, this._height);
-		for(let s in this._params) {
-			console.log(s, WebglNumber[this._params[s]] || this._params[s]);
-		}
-
-		console.log('Mipmapping :', this._generateMipmap);
 	}
 
 	_isSourceHtmlElement() {

@@ -24,11 +24,10 @@ const exposeAttributes = function () {
 	// GL.CLAMP_TO_EDGE         	= GL.gl.CLAMP_TO_EDGE;
 	// GL.SCISSOR_TEST		   	 	= GL.gl.SCISSOR_TEST;
 	// GL.UNSIGNED_BYTE		 	= GL.gl.UNSIGNED_BYTE;
-	for (let s in WebglConst) {
+	for (const s in WebglConst) {
 		if(!GL[s]) {
 			GL[s] = WebglConst[s];
-		} 
-		else {
+		} else {
 			console.log('already exist : ', s);
 		}
 		

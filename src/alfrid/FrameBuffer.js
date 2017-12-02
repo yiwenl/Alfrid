@@ -30,13 +30,14 @@ const checkMultiRender = function () {
 
 class FrameBuffer {
 
-	constructor(mWidth, mHeight, mParameters = {}, multipleTargets = false) {
+	constructor(mWidth, mHeight, mParameters = {}, mNumTargets = 1) {
 		gl = GL.gl;
-		webglDepthTexture = GL.checkExtension('WEBGL_depth_texture') && false;
+		webglDepthTexture = GL.checkExtension('WEBGL_depth_texture');
 
 		this.width            = mWidth;
 		this.height           = mHeight;
-		this._multipleTargets = multipleTargets;
+		this._numTargets 	  = mNumTargets;
+		this._multipleTargets = mNumTargets > 1;
 		this._parameters = mParameters;
 
 		// this.magFilter  = mParameters.magFilter 	|| gl.LINEAR;
@@ -94,34 +95,25 @@ class FrameBuffer {
 			gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, this.glDepthTexture.texture, 0);
 
 		} else {
-			console.log('Init Framebuffer', this._multipleTargets, this._textures.length);
-			console.log('webglDepthTexture', webglDepthTexture);
 			for (let i = 0; i < this._textures.length; i++) {
 				gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + i, gl.TEXTURE_2D, this._textures[i].texture, 0);	
 			}
 
 			if(this._multipleTargets) {
-				extDrawBuffer.drawBuffersWEBGL([
-					extDrawBuffer.COLOR_ATTACHMENT0_WEBGL, // gl_FragData[0]
-					extDrawBuffer.COLOR_ATTACHMENT1_WEBGL, // gl_FragData[1]
-					extDrawBuffer.COLOR_ATTACHMENT2_WEBGL, // gl_FragData[2]
-					extDrawBuffer.COLOR_ATTACHMENT3_WEBGL  // gl_FragData[3]
-				]);	
+				const drawBuffers = [];
+				for(let i=0; i<this._numTargets; i++) {
+					console.log(i, extDrawBuffer[`COLOR_ATTACHMENT${i}_WEBGL`]);
+					drawBuffers.push(extDrawBuffer[`COLOR_ATTACHMENT${i}_WEBGL`]);
+				}
+
+				extDrawBuffer.drawBuffersWEBGL(drawBuffers);	
 			}
 
-			// if(webglDepthTexture) {
-			// 	gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, this.glDepthTexture.texture, 0);	
-			// }
+			if(webglDepthTexture) {
+				gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, this.glDepthTexture.texture, 0);	
+			}
 		}
 		
-
-		// if(this.minFilter === gl.LINEAR_MIPMAP_NEAREST)	{
-		// 	for (let i = 0; i < this._textures.length; i++) {
-		// 		gl.bindTexture(gl.TEXTURE_2D, this._textures[i].texture);
-		// 		gl.generateMipmap(gl.TEXTURE_2D);
-		// 	}
-		// }
-
 
 		//	CHECKING FBO
 		const FBOstatus = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
@@ -144,25 +136,34 @@ class FrameBuffer {
 
 	_initTextures() {
 		this._textures = [];
-		const numTextures = this._multipleTargets ? 4 : 1;
-		console.log('num textures :', numTextures);
-		for (let i = 0; i < numTextures; i++) {
-			// const glt = this._createTexture();
+		console.log('num textures :', this._numTargets);
+		for (let i = 0; i < this._numTargets; i++) {
 			const glt = this._createTexture2();
 			this._textures.push(glt);
 		}
 
 		
-		// if(GL.webgl2) { 
-		// 	this.glDepthTexture = this._createTexture(gl.DEPTH_COMPONENT16, gl.UNSIGNED_SHORT, gl.DEPTH_COMPONENT, true);
-		// } else {
-		// 	this.glDepthTexture = this._createTexture(gl.DEPTH_COMPONENT, gl.UNSIGNED_SHORT);
-		// }
+		if(GL.webgl2) { 
+			this.glDepthTexture = this._createTexture(gl.DEPTH_COMPONENT16, gl.UNSIGNED_SHORT, gl.DEPTH_COMPONENT, true);
+		} else {
+			// this.glDepthTexture = this._createTexture(gl.DEPTH_COMPONENT, gl.UNSIGNED_SHORT);
+			this.glDepthTexture = this._createTexture2(gl.DEPTH_COMPONENT, gl.UNSIGNED_SHORT, gl.DEPTH_COMPONENT, { minFilter:GL.LINEAR });
+		}
 	}
 
 
-	_createTexture2() {
-		const texture = new GLTexture2(null, this._parameters, this.width, this.height);
+	_createTexture2(mInternalformat, mTexelType, mFormat, mParameters = {}) {
+		const parameters = Object.assign({}, this._parameters);
+		if(!mFormat) {	mFormat = mInternalformat; }
+		
+		parameters.internalFormat = mInternalformat || gl.RGBA;
+		parameters.format = mFormat;
+		parameters.type = parameters.type || mTexelType || GL.UNSIGNED_BYTE;
+		for(const s in mParameters) {
+			parameters[s] = mParameters[s];
+		}
+
+		const texture = new GLTexture2(null, parameters, this.width, this.height);
 		return texture;
 	}
 
@@ -203,7 +204,7 @@ class FrameBuffer {
 		}
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
-		this._textures.forEach( texture => {
+		this._textures.forEach(texture => {
 			texture.generateMipmap();
 		});
 	}

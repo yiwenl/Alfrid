@@ -7,7 +7,7 @@ import fs from './test.frag';
 import fsUV from './uv.frag';
 
 
-let loader, bCopy, texture, textureHdr, fbo;
+let loader, bCopy, texture, textureData, textureHdr, fbo;
 let cube, shader, floor, shaderCopy;
 let hit = vec3.fromValues(999, 999, 99);
 let ball;
@@ -21,9 +21,7 @@ let params = {
 }
 
 function render() {
-	if(!texture) {
-		return;
-	}
+	if(!texture) { return; }
 
 
 	fbo.bind();
@@ -37,9 +35,15 @@ function render() {
 	texture.bind(0);
 	GL.draw(floor);
 
-	let s = 300;
+	let s = 200;
 	GL.viewport(0, 0, s, s);
 	bCopy.draw(fbo.getTexture());
+
+	GL.viewport(s, 0, s, s);
+	bCopy.draw(fbo.getDepthTexture());
+
+	GL.viewport(s*2, 0, s, s);
+	bCopy.draw(textureData);
 
 	GL.viewport(0, 0, GL.width, GL.height);
 
@@ -55,6 +59,7 @@ quickSetup(render)
 	ball = new BatchBall();
 	bCopy = new BatchCopy();
 	o.orbControl.radius.value = 25;
+	o.camera.setPerspective(Math.PI/4, window.innerWidth/window.innerHeight, 1, 30);
 
 	const detector = new TouchDetector(cube, o.camera, false);
 	mat4.copy(detector.mtxModel, mtx);
@@ -113,6 +118,7 @@ function _onAssetsLoaded(o) {
 	];
 
 	texture = new GLTexture2(img, {minFilter:GL.NEAREST, wrapS:GL.MIRRORED_REPEAT}, 512, 512);
+	textureData = new GLTexture2(source2, {magFilter:GL.NEAREST, minFilter:GL.NEAREST, type:GL.FLOAT});
 
 	const s = 1024;
 	fbo = new alfrid.FrameBuffer(s, s, {minFilter:GL.LINEAR_MIPMAP_NEAREST});
