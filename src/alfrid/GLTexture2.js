@@ -30,24 +30,21 @@ class GLTexture {
 		if(this._isSourceHtmlElement()) {
 			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, this._texelType, this._source);
 		} else {
-			console.log('here, texeltype :', WebglNumber[this._texelType]);
-			console.log('here, texeltype :', this._width, this._height);
-			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 			this._width, this._height, 0, 	gl.RGBA, this._texelType, this._source);	
-			// gl.texImage2D(gl.TEXTURE_2D, 0, mInternalformat, 	this.width, this.height, 0, 	mFormat, mTexelType, null);	
+			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._width, this._height, 0, 	gl.RGBA, this._texelType, this._source);	
 		}
 		
 
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, this._params.magFilter);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, this._params.minFilter);
-		// gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, this._params.wrapS);
-		// gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, this._params.wrapT);
-		// gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, this._premultiplyAlpha);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, this._params.wrapS);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, this._params.wrapT);
+		gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, this._premultiplyAlpha);
 
-		// const ext = GL.getExtension('EXT_texture_filter_anisotropic');
-		// if(ext) {
-		// 	const max = gl.getParameter(ext.MAX_TEXTURE_MAX_ANISOTROPY_EXT);
-		// 	gl.texParameterf(gl.TEXTURE_2D, ext.TEXTURE_MAX_ANISOTROPY_EXT, max);
-		// }
+		const ext = GL.getExtension('EXT_texture_filter_anisotropic');
+		if(ext) {
+			const max = gl.getParameter(ext.MAX_TEXTURE_MAX_ANISOTROPY_EXT);
+			gl.texParameterf(gl.TEXTURE_2D, ext.TEXTURE_MAX_ANISOTROPY_EXT, max);
+		}
 
 		if(this._generateMipmap) {
 			gl.generateMipmap(gl.TEXTURE_2D);	
@@ -152,6 +149,61 @@ class GLTexture {
 	_isSourceHtmlElement() {
 		return this._sourceType === 'image' || this._sourceType === 'video';
 	}
+
+
+	get minFilter() {
+		return this._params.minFilter;
+	}
+
+	set minFilter(mValue) {
+		this._params.minFilter = mValue;
+		this._checkMipmap();
+
+		gl.bindTexture(gl.TEXTURE_2D, this._texture);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, this._params.minFilter);
+		gl.bindTexture(gl.TEXTURE_2D, null);
+
+		this.generateMipmap();
+	}
+
+	get magFilter() {
+		return this._params.minFilter;
+	}
+
+	set magFilter(mValue) {
+		this._params.magFilter = mValue;
+
+		gl.bindTexture(gl.TEXTURE_2D, this._texture);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, this._params.magFilter);
+		gl.bindTexture(gl.TEXTURE_2D, null);
+	}
+
+
+	get wrapS() {
+		return this._params.wrapS;
+	}
+
+	set wrapS(mValue) {
+		this._params.wrapS = mValue;
+
+		gl.bindTexture(gl.TEXTURE_2D, this._texture);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, this._params.wrapS);
+		gl.bindTexture(gl.TEXTURE_2D, null);
+	}
+
+
+	get wrapT() {
+		return this._params.wrapT;
+	}
+
+	set wrapT(mValue) {
+		this._params.wrapT = mValue;
+
+		gl.bindTexture(gl.TEXTURE_2D, this._texture);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, this._params.wrapT);
+		gl.bindTexture(gl.TEXTURE_2D, null);
+	}
+
 
 	get texelType() {
 		return this._texelType;
