@@ -5,6 +5,7 @@
 import GL from './GLTool';
 import GLTexture from './GLTexture';
 import GLTexture2 from './GLTexture2';
+import WebglNumber from './utils/WebglNumber';
 
 function isPowerOfTwo(x) {	
 	return (x !== 0) && (!(x & (x - 1)));
@@ -31,27 +32,28 @@ class FrameBuffer {
 
 	constructor(mWidth, mHeight, mParameters = {}, multipleTargets = false) {
 		gl = GL.gl;
-		webglDepthTexture = GL.checkExtension('WEBGL_depth_texture');
+		webglDepthTexture = GL.checkExtension('WEBGL_depth_texture') && false;
 
 		this.width            = mWidth;
 		this.height           = mHeight;
 		this._multipleTargets = multipleTargets;
+		this._parameters = mParameters;
 
-		this.magFilter  = mParameters.magFilter 	|| gl.LINEAR;
-		this.minFilter  = mParameters.minFilter 	|| gl.LINEAR_MIPMAP_NEAREST;
-		this.wrapS      = mParameters.wrapS 		|| gl.CLAMP_TO_EDGE;
-		this.wrapT      = mParameters.wrapT 		|| gl.CLAMP_TO_EDGE;
-		this.useDepth   = mParameters.useDepth 		|| true;
-		this.useStencil = mParameters.useStencil 	|| false;
-		this.texelType 	= mParameters.type;
+		// this.magFilter  = mParameters.magFilter 	|| gl.LINEAR;
+		// this.minFilter  = mParameters.minFilter 	|| gl.LINEAR_MIPMAP_NEAREST;
+		// this.wrapS      = mParameters.wrapS 		|| gl.CLAMP_TO_EDGE;
+		// this.wrapT      = mParameters.wrapT 		|| gl.CLAMP_TO_EDGE;
+		// this.useDepth   = mParameters.useDepth 		|| true;
+		// this.useStencil = mParameters.useStencil 	|| false;
+		// this.texelType 	= mParameters.type;
 
-		if(!isPowerOfTwo(this.width) || !isPowerOfTwo(this.height)) {
-			this.wrapS = this.wrapT = gl.CLAMP_TO_EDGE;
+		// if(!isPowerOfTwo(this.width) || !isPowerOfTwo(this.height)) {
+		// 	this.wrapS = this.wrapT = gl.CLAMP_TO_EDGE;
 
-			if(this.minFilter === gl.LINEAR_MIPMAP_NEAREST) {
-				this.minFilter = gl.LINEAR;
-			}
-		} 
+		// 	if(this.minFilter === gl.LINEAR_MIPMAP_NEAREST) {
+		// 		this.minFilter = gl.LINEAR;
+		// 	}
+		// } 
 
 		if(!hasCheckedMultiRenderSupport) {
 			// console.log('Has multi render support  :', checkMultiRender());
@@ -62,14 +64,14 @@ class FrameBuffer {
 
 
 	_init() {
-		let texelType = gl.UNSIGNED_BYTE;
-		if (this.texelType) {
-			texelType = this.texelType;
-		}
+		// let texelType = gl.UNSIGNED_BYTE;
+		// if (this.texelType) {
+		// 	texelType = this.texelType;
+		// }
 
-		this.texelType = texelType;
+		// this.texelType = texelType;
 
-		this._textures = [];
+		
 		this._initTextures();
 		
 		this.frameBuffer        = gl.createFramebuffer();		
@@ -92,7 +94,8 @@ class FrameBuffer {
 			gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, this.glDepthTexture.texture, 0);
 
 		} else {
-			// console.log('here');
+			console.log('Init Framebuffer', this._multipleTargets, this._textures.length);
+			console.log('webglDepthTexture', webglDepthTexture);
 			for (let i = 0; i < this._textures.length; i++) {
 				gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + i, gl.TEXTURE_2D, this._textures[i].texture, 0);	
 			}
@@ -106,24 +109,24 @@ class FrameBuffer {
 				]);	
 			}
 
-			if(webglDepthTexture) {
-				gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, this.glDepthTexture.texture, 0);	
-			}
+			// if(webglDepthTexture) {
+			// 	gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, this.glDepthTexture.texture, 0);	
+			// }
 		}
 		
 
-		if(this.minFilter === gl.LINEAR_MIPMAP_NEAREST)	{
-			for (let i = 0; i < this._textures.length; i++) {
-				gl.bindTexture(gl.TEXTURE_2D, this._textures[i].texture);
-				gl.generateMipmap(gl.TEXTURE_2D);
-			}
-		}
+		// if(this.minFilter === gl.LINEAR_MIPMAP_NEAREST)	{
+		// 	for (let i = 0; i < this._textures.length; i++) {
+		// 		gl.bindTexture(gl.TEXTURE_2D, this._textures[i].texture);
+		// 		gl.generateMipmap(gl.TEXTURE_2D);
+		// 	}
+		// }
 
 
 		//	CHECKING FBO
 		const FBOstatus = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
 		if(FBOstatus != gl.FRAMEBUFFER_COMPLETE) {
-			console.log('GL_FRAMEBUFFER_COMPLETE failed, CANNOT use Framebuffer');
+			console.warn('GL_FRAMEBUFFER_COMPLETE failed, CANNOT use Framebuffer');
 		}
 
 		//	UNBIND
@@ -140,20 +143,30 @@ class FrameBuffer {
 
 
 	_initTextures() {
+		this._textures = [];
 		const numTextures = this._multipleTargets ? 4 : 1;
+		console.log('num textures :', numTextures);
 		for (let i = 0; i < numTextures; i++) {
-			const glt = this._createTexture();
+			// const glt = this._createTexture();
+			const glt = this._createTexture2();
 			this._textures.push(glt);
 		}
 
 		
-		if(GL.webgl2) { 
-			this.glDepthTexture = this._createTexture(gl.DEPTH_COMPONENT16, gl.UNSIGNED_SHORT, gl.DEPTH_COMPONENT, true);
-		} else {
-			this.glDepthTexture = this._createTexture(gl.DEPTH_COMPONENT, gl.UNSIGNED_SHORT);
-		}
+		// if(GL.webgl2) { 
+		// 	this.glDepthTexture = this._createTexture(gl.DEPTH_COMPONENT16, gl.UNSIGNED_SHORT, gl.DEPTH_COMPONENT, true);
+		// } else {
+		// 	this.glDepthTexture = this._createTexture(gl.DEPTH_COMPONENT, gl.UNSIGNED_SHORT);
+		// }
 	}
 
+
+	_createTexture2() {
+		const texture = new GLTexture2(null, this._parameters, this.width, this.height);
+		console.log('Frame buffer texture :');
+		texture.showParameters();
+		return texture;
+	}
 
 	_createTexture(mInternalformat, mTexelType, mFormat, forceNearest = false) {
 		if(mInternalformat === undefined) {	mInternalformat = gl.RGBA;	}
@@ -191,6 +204,10 @@ class FrameBuffer {
 			GL.viewport(0, 0, GL.width, GL.height);	
 		}
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+		this._textures.forEach( texture => {
+			texture.generateMipmap();
+		});
 	}
 
 

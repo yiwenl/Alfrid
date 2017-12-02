@@ -27,20 +27,21 @@ function render() {
 		return;
 	}
 
-	// fbo.bind();
-	// GL.clear(1, 0, 0, 1);
-	// GL.draw(cube);	
-	// fbo.unbind();
+	fbo.bind();
+	GL.clear(1, 0, 0, 1);
+	GL.draw(cube);	
+	fbo.unbind();
 
 
 	s = 200;
 	
 	GL.viewport(0, 0, s, s);
-	// bCopy.draw(fbo.getTexture());
-	GL.viewport(s, 0, s, s);
-	bCopy.draw(texture);
-	GL.viewport(s*2, 0, s*2, s);
-	bCopy.draw(textureHdr);
+	bCopy.draw(fbo.getTexture());
+
+	// GL.viewport(s, 0, s, s);
+	// bCopy.draw(texture);
+	// GL.viewport(s*2, 0, s*2, s);
+	// bCopy.draw(textureHdr);
 
 	GL.viewport(0, 0, GL.width, GL.height);
 }
@@ -113,11 +114,10 @@ function _onAssetsLoaded(o) {
 	// texture = new GLTexture2(source1, {magFilter:GL.NEAREST}, 2, 2);
 
 	const oHDR = alfrid.HDRLoader.parse(getAsset('hdr'));
-	textureHdr = new GLTexture2(oHDR.data, {}, oHDR.shape[0], oHDR.shape[1]);
-	textureHdr.showParameters();
+	// textureHdr = new GLTexture2(oHDR.data, {}, oHDR.shape[0], oHDR.shape[1]);
 
 	const s = 1024;
-	fbo = new alfrid.FrameBuffer(s, s)
+	fbo = new alfrid.FrameBuffer(s, s);
 }
 
 
