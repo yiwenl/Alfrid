@@ -7,7 +7,7 @@ import fs from './test.frag';
 import fsUV from './uv.frag';
 
 
-let loader, bCopy, texture, textureData, textureHdr, fbo;
+let loader, bCopy, texture, textureData, textureHdr, textureVideo, fbo;
 let cube, shader, floor, shaderCopy;
 let hit = vec3.fromValues(999, 999, 99);
 let ball;
@@ -46,7 +46,7 @@ function render() {
 	bCopy.draw(textureData);
 
 	GL.viewport(s*3, 0, s, s);
-	bCopy.draw(GLTexture2.blackTexture());
+	bCopy.draw(textureVideo);
 
 	GL.viewport(0, 0, GL.width, GL.height);
 
@@ -130,6 +130,14 @@ function _onAssetsLoaded(o) {
 
 	texture = new GLTexture2(img, {minFilter:GL.NEAREST, wrapS:GL.MIRRORED_REPEAT}, 512, 512);
 	textureData = new GLTexture2(source2, {magFilter:GL.NEAREST, minFilter:GL.NEAREST, type:GL.FLOAT});
+
+	const video = document.createElement("Video");
+	video.src = 'assets/video/color1.mp4';
+	video.loop = true;
+	video.play();
+	textureVideo = new GLTexture2(video);
+
+	document.body.appendChild(video);
 
 	const s = 1024;
 	fbo = new alfrid.FrameBuffer(s, s, {minFilter:GL.LINEAR_MIPMAP_NEAREST});

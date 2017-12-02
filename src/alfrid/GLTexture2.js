@@ -3,6 +3,7 @@
 import getTextureParameters from './utils/getTextureParameters';
 import WebglNumber from './utils/WebglNumber';
 import GL from './GLTool';
+import Scheduler from 'scheduling';
 
 let gl;
 
@@ -16,6 +17,7 @@ class GLTexture {
 		this._sourceType = mParam.type || getSourceType(mSource);
 		this._checkSource();
 		this._texelType = this._getTexelType();
+		this._isTextureReady = true;
 
 		this._params = getTextureParameters(mParam, mSource, this._width, this._height);
 		this._checkMipmap();
@@ -23,7 +25,21 @@ class GLTexture {
 
 		//	setup texture
 		this._texture = gl.createTexture();
-		this._uploadTexture();		
+
+		if(this._sourceType === 'video') {
+			this._isTextureReady = false;
+			Scheduler.addEF(()=>this._loop());
+		} else {
+			this._uploadTexture();	
+		}
+		
+	}
+
+	_loop() {
+		if(this._source.readyState == 4) {
+			this._isTextureReady = true;
+			this._uploadTexture();
+		}
 	}
 
 
@@ -62,7 +78,12 @@ class GLTexture {
 		if(!GL.shader) { return; }
 
 		gl.activeTexture(gl.TEXTURE0 + index);
-		gl.bindTexture(gl.TEXTURE_2D, this._texture);
+		if(this._isTextureReady) {
+			gl.bindTexture(gl.TEXTURE_2D, this._texture);	
+		} else {
+			gl.bindTexture(gl.TEXTURE_2D, GLTexture.blackTexture().texture);
+		}
+		
 		this._bindIndex = index;
 	}
 
@@ -96,7 +117,7 @@ class GLTexture {
 		if(mSource) {
 			//	for html image / video element
 			this._width = mSource.width || mSource.videoWidth;
-			this._height = mSource.height || mSource.videoWidth;	
+			this._height = mSource.height || mSource.videoWidth;
 
 			//	for manual width / height settings
 			this._width = this._width || mWidth;
@@ -220,6 +241,8 @@ class GLTexture {
 
 	get texture() {	return this._texture;	}
 
+	get isTextureReady() {	return this._isTextureReady;	}
+
 }
 
 
@@ -243,6 +266,8 @@ function getSourceType(mSource) {
 		type = 'image';
 	} else if(mSource instanceof HTMLCanvasElement) {
 		type = 'canvas';
+	} else if(mSource instanceof HTMLVideoElement) {
+		type = 'video';
 	}
 	return type;
 }
