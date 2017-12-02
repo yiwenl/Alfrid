@@ -139,7 +139,7 @@ class FrameBuffer {
 
 	_initTextures() {
 		const numTextures = this._multipleTargets ? 4 : 1;
-		for (let i = 0; i < 4; i++) {
+		for (let i = 0; i < numTextures; i++) {
 			const glt = this._createTexture();
 			this._textures.push(glt);
 		}
