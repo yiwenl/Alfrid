@@ -22,19 +22,9 @@ class GLTexture {
 		this._getDimension(mSource, mWidth, mHeight);
 
 		this._params = getTextureParameters(mParam, mSource, this._width, this._height);
-		if(this._params.needConvertArray) {
-			if(this._params.type === GL.UNSIGNED_BYTE) {
-				this._source = new Uint8Array(mSource);
-			} else if(this._params.type === GL.FLOAT) {
-				this._source = new Float32Array(mSource);
-			}
-		}
 		this._canGenerateMipMap = false;
 
-		// console.log('Texture Parameters :');
-		// for(let s in this._params) {
-		// 	console.log(s, WebglNumber[this._params[s]] || this._params[s]);
-		// }
+		
 
 		//	setup texture
 		
@@ -46,7 +36,7 @@ class GLTexture {
 			// gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this._source);
 			// gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this._source);
 			// gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._width, this._height, 0, gl.RGBA, gl.UNSIGNED_BYTE, this._source);
-			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._width, this._height, 0, gl.RGBA, this._getFormat(), this._source);
+			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._width, this._height, 0, gl.RGBA, this._format, this._source);
 		}
 
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, this._params.magFilter);
@@ -120,6 +110,17 @@ class GLTexture {
 		return GL[WebglNumber[this._sourceType]];
 	}
 
+
+	showParameters() {
+		for(let s in this._params) {
+			console.log(s, WebglNumber[this._params[s]] || this._params[s]);
+		}
+	}
+
+
+	get format() {
+		return this._format;
+	}
 
 	get width() {
 		return this._width;

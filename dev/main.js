@@ -95,7 +95,7 @@ function _onAssetsLoaded(o) {
 	];
 
 	// texture = new GLTexture2(img, {magFilter:GL.LINEAR}, 512, 512);
-	texture = new GLTexture2(source, {magFilter:GL.NEAREST});
+	texture = new GLTexture2(source1, {magFilter:GL.NEAREST});
 	// texture = new GLTexture2(source1, {magFilter:GL.NEAREST}, 2, 2);
 
 	const s = 1024;
