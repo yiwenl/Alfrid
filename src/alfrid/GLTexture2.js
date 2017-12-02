@@ -16,7 +16,8 @@ class GLTexture {
 		this._checkSource();
 		
 		this._internalFormat;
-		this._format;
+		this._format = this._getFormat();
+		console.log('Format :', WebglNumber[this._format]);
 
 		this._getDimension(mSource, mWidth, mHeight);
 
@@ -45,7 +46,7 @@ class GLTexture {
 			// gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this._source);
 			// gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this._source);
 			// gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._width, this._height, 0, gl.RGBA, gl.UNSIGNED_BYTE, this._source);
-			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._width, this._height, 0, gl.RGBA, this._getGLType(), this._source);
+			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._width, this._height, 0, gl.RGBA, this._getFormat(), this._source);
 		}
 
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, this._params.magFilter);
@@ -115,8 +116,8 @@ class GLTexture {
 		}
 	}
 
-	_getGLType() {
-		return GL[WebglNumber[this._params.type]];
+	_getFormat() {
+		return GL[WebglNumber[this._sourceType]];
 	}
 
 

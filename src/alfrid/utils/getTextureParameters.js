@@ -27,37 +27,6 @@ const getTextureParameters = function(mParams, mSource, mWidth, mHeight) {
 		mParams.minFilter = minFilter;
 	} 
 
-
-	if(!mParams.type) {
-		if(mSource) {
-			// console.log('Source type : ');
-			if (mSource instanceof Uint8Array) {
-				// console.log('Uint8Array');
-				mParams.type = GL.UNSIGNED_BYTE;
-				mParams.needConvertArray = true;
-			} else if(mSource instanceof Float32Array) {
-				// console.log('Float32Array');
-				mParams.type = GL.FLOAT;
-				mParams.needConvertArray = true;
-			} else if(mSource instanceof Array) {
-				// console.log('Array');
-				mParams.type = GL.UNSIGNED_BYTE;
-				mParams.needConvertArray = true;
-			} else {
-				console.log(typeof mSource);
-
-			}
-		} else {
-			mParams.type = GL.UNSIGNED_BYTE;
-		}
-	}
-
-	if(mParams.type === GL.FLOAT || GL.UNSIGNED_BYTE) {
-		if(mSource instanceof Array) {
-			mParams.needConvertArray = true;	
-		}
-	}
-	
 	mParams.magFilter = mParams.magFilter || GL.LINEAR;
 	mParams.wrapS = mParams.wrapS || GL.CLAMP_TO_EDGE;
 	mParams.wrapT = mParams.wrapT || GL.CLAMP_TO_EDGE;
