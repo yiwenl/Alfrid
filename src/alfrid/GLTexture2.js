@@ -12,19 +12,15 @@ class GLTexture {
 		gl = GL.gl;
 
 		this._source = mSource;
+		this._getDimension(mSource, mWidth, mHeight);
 		this._sourceType = mParam.type || getSourceType(mSource);
 		this._checkSource();
-		
 		this._internalFormat;
 		this._format = this._getFormat();
-		console.log('Format :', WebglNumber[this._format]);
-
-		this._getDimension(mSource, mWidth, mHeight);
 
 		this._params = getTextureParameters(mParam, mSource, this._width, this._height);
-		this._canGenerateMipMap = false;
-
-		
+		this._checkMipmap();
+		// this.showParameters();
 
 		//	setup texture
 		
@@ -32,12 +28,10 @@ class GLTexture {
 		gl.bindTexture(gl.TEXTURE_2D, this._texture);
 		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 
-		if(this._source) {
-			// gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this._source);
-			// gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this._source);
-			// gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._width, this._height, 0, gl.RGBA, gl.UNSIGNED_BYTE, this._source);
-			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._width, this._height, 0, gl.RGBA, this._format, this._source);
-		}
+		// gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this._source);
+		// gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this._source);
+		// gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._width, this._height, 0, gl.RGBA, gl.UNSIGNED_BYTE, this._source);
+		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._width, this._height, 0, gl.RGBA, this._format, this._source);
 
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, this._params.magFilter);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, this._params.minFilter);
@@ -50,7 +44,10 @@ class GLTexture {
 			gl.texParameterf(gl.TEXTURE_2D, ext.TEXTURE_MAX_ANISOTROPY_EXT, max);
 		}
 
-		gl.generateMipmap(gl.TEXTURE_2D);
+		if(this._generateMipmap) {
+			gl.generateMipmap(gl.TEXTURE_2D);	
+		}
+		
 
 		//	unbind texture
 		gl.bindTexture(gl.TEXTURE_2D, null);
@@ -110,13 +107,24 @@ class GLTexture {
 		return GL[WebglNumber[this._sourceType]];
 	}
 
+	_checkMipmap() {
+		this._generateMipmap = this._params.mipmap;
+
+		if(!(isPowerOfTwo(this._width) && isPowerOfTwo(this._height))) {
+			this._generateMipmap = false;
+		}
+
+		const minFilter = WebglNumber[this._params.minFilter];
+		if(minFilter.indexOf('MIPMAP') == -1) {
+			this._generateMipmap = false;
+		}
+	}
 
 	showParameters() {
 		for(let s in this._params) {
 			console.log(s, WebglNumber[this._params[s]] || this._params[s]);
 		}
 	}
-
 
 	get format() {
 		return this._format;
@@ -129,10 +137,12 @@ class GLTexture {
 	get height() {
 		return this._height;
 	}
-
-
 }
 
+
+function isPowerOfTwo(x) {	
+	return (x !== 0) && (!(x & (x - 1)));
+};
 
 function getSourceType(mSource) {
 	//	possible source type : Image / Video / Unit8Array / Float32Array

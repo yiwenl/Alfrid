@@ -91,11 +91,21 @@ function _onAssetsLoaded(o) {
 		255, 0, 0, 255,
 		0, 255, 0, 255,
 		0, 0, 255, 255,
+		255, 255, 0, 255,
+		0, 255, 255, 255,
+		255, 0, 255, 255
+	];
+
+	const source2 = [
+		255, 0, 0, 255,
+		0, 255, 0, 255,
+		0, 0, 255, 255,
 		255, 255, 0, 255
 	];
 
 	// texture = new GLTexture2(img, {magFilter:GL.LINEAR}, 512, 512);
-	texture = new GLTexture2(source1, {magFilter:GL.NEAREST});
+	// texture = new GLTexture2(source1, {magFilter:GL.NEAREST}, 2, 3);
+	texture = new GLTexture2(source1, {minFilter:GL.NEAREST, magFilter:GL.NEAREST});
 	// texture = new GLTexture2(source1, {magFilter:GL.NEAREST}, 2, 2);
 
 	const s = 1024;
