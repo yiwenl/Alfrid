@@ -30,17 +30,17 @@ const getTextureParameters = function(mParams, mSource, mWidth, mHeight) {
 
 	if(!mParams.type) {
 		if(mSource) {
-			console.log('Source type : ');
+			// console.log('Source type : ');
 			if (mSource instanceof Uint8Array) {
-				console.log('Uint8Array');
+				// console.log('Uint8Array');
 				mParams.type = GL.UNSIGNED_BYTE;
 				mParams.needConvertArray = true;
 			} else if(mSource instanceof Float32Array) {
-				console.log('Float32Array');
+				// console.log('Float32Array');
 				mParams.type = GL.FLOAT;
 				mParams.needConvertArray = true;
 			} else if(mSource instanceof Array) {
-				console.log('Array');
+				// console.log('Array');
 				mParams.type = GL.UNSIGNED_BYTE;
 				mParams.needConvertArray = true;
 			} else {

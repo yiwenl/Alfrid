@@ -80,7 +80,7 @@ function _onAssetsLoaded(o) {
 	const img = getAsset('image');
 	// texture = new GLTexture(img);
 
-	const source = new Uint8Array([
+	const source = new Float32Array([
 		255, 0, 0, 255,
 		0, 255, 0, 255,
 		0, 0, 255, 255,
@@ -95,8 +95,8 @@ function _onAssetsLoaded(o) {
 	];
 
 	// texture = new GLTexture2(img, {magFilter:GL.LINEAR}, 512, 512);
-	texture = new GLTexture2(source1, {magFilter:GL.NEAREST}, 2, 2);
-	// texture = new GLTexture2(source1, {magFilter:GL.NEAREST, type:GL.FLOAT}, 2, 2);
+	texture = new GLTexture2(source, {magFilter:GL.NEAREST});
+	// texture = new GLTexture2(source1, {magFilter:GL.NEAREST}, 2, 2);
 
 	const s = 1024;
 	fbo = new alfrid.FrameBuffer(s, s)

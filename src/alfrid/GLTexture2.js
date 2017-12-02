@@ -11,20 +11,14 @@ class GLTexture {
 	constructor(mSource, mParam, mWidth, mHeight) {
 		gl = GL.gl;
 
-		if(mSource) {
-			this._width = mSource.width || mSource.videoWidth;
-			this._height = mSource.height || mSource.videoWidth;	
-
-			this._width = this._width || mWidth;
-			this._height = this._height || mHeight;
-
-		} else {
-			this._width = mWidth;
-			this._height = mHeight;
-		}
-
-
 		this._source = mSource;
+		this._sourceType = mParam.type || getSourceType(mSource);
+		this._checkSource();
+		
+		this._internalFormat;
+		this._format;
+
+		this._getDimension(mSource, mWidth, mHeight);
 
 		this._params = getTextureParameters(mParam, mSource, this._width, this._height);
 		if(this._params.needConvertArray) {
@@ -36,13 +30,10 @@ class GLTexture {
 		}
 		this._canGenerateMipMap = false;
 
-
-		console.log('GL TYPE :', this._getGLType());
-
-		console.log('Texture Parameters :');
-		for(let s in this._params) {
-			console.log(s, WebglNumber[this._params[s]] || this._params[s]);
-		}
+		// console.log('Texture Parameters :');
+		// for(let s in this._params) {
+		// 	console.log(s, WebglNumber[this._params[s]] || this._params[s]);
+		// }
 
 		//	setup texture
 		
@@ -53,7 +44,6 @@ class GLTexture {
 		if(this._source) {
 			// gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this._source);
 			// gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this._source);
-			console.log(this._width, this._height);
 			// gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._width, this._height, 0, gl.RGBA, gl.UNSIGNED_BYTE, this._source);
 			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._width, this._height, 0, gl.RGBA, this._getGLType(), this._source);
 		}
@@ -86,6 +76,45 @@ class GLTexture {
 	}
 
 
+	_getDimension(mSource, mWidth, mHeight) {
+		if(mSource) {
+			//	for html image / video element
+			this._width = mSource.width || mSource.videoWidth;
+			this._height = mSource.height || mSource.videoWidth;	
+
+			//	for manual width / height settings
+			this._width = this._width || mWidth;
+			this._height = this._height || mHeight;
+
+			//	auto detect ( data array) ? not sure is good idea ? 
+			//	todo : check HDR 
+			if(!this._width || !this._height) {
+				this._width = this._height = Math.sqrt(mSource.length / 4);
+				console.log('Auto detect, data dimension : ', this._width, this._height);	
+			}
+
+		} else {
+			this._width = mWidth;
+			this._height = mHeight;
+		}
+	}
+
+	_checkSource() {
+		console.log('Source type :', WebglNumber[this._sourceType]);
+
+		if(this._sourceType === GL.UNSIGNED_BYTE) {
+			if (!(this._source instanceof Uint8Array)) {
+				console.log('Converting to Uint8Array');
+				this._source = new Uint8Array(this._source);
+			}
+		} else if(this._sourceType === GL.FLOAT) {
+			if (!(this._source instanceof Float32Array)) {
+				console.log('Converting to Float32Array');
+				this._source = new Float32Array(this._source);
+			}
+		}
+	}
+
 	_getGLType() {
 		return GL[WebglNumber[this._params.type]];
 	}
@@ -102,5 +131,21 @@ class GLTexture {
 
 }
 
+
+function getSourceType(mSource) {
+	//	possible source type : Image / Video / Unit8Array / Float32Array
+	//	this list must be flexible
+
+	let type = GL.UNSIGNED_BYTE;
+
+	if(mSource instanceof Array) {
+		type = GL.UNSIGNED_BYTE;
+	} else if(mSource instanceof Uint8Array) {
+		type = GL.UNSIGNED_BYTE;
+	} else if(mSource instanceof Float32Array) {
+		type = GL.FLOAT;
+	}
+	return type;
+}
 
 export default GLTexture;
