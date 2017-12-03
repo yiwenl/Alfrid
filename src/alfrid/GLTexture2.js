@@ -106,7 +106,7 @@ class GLTexture {
 		console.log('Source type : ', WebglNumber[this._sourceType] || this._sourceType);
 		console.log('Texel type:', WebglNumber[this.texelType]);
 		console.log('Dimension :', this._width, this._height);
-		for(let s in this._params) {
+		for(const s in this._params) {
 			console.log(s, WebglNumber[this._params[s]] || this._params[s]);
 		}
 

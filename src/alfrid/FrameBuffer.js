@@ -108,7 +108,7 @@ class FrameBuffer {
 	_checkMaxNumRenderTarget() {
 		const maxNumDrawBuffers = GL.gl.getParameter(extDrawBuffer.MAX_DRAW_BUFFERS_WEBGL);
 		if(this._numTargets > maxNumDrawBuffers) {
-			console.error('Over max number of draw buffers supported : ', maxNumDrawBuffers)
+			console.error('Over max number of draw buffers supported : ', maxNumDrawBuffers);
 			this._numTargets = maxNumDrawBuffers;
 		}
 	}
@@ -192,7 +192,7 @@ class FrameBuffer {
 	get minFilter() {	return this._textures[0].minFilter;	}
 
 	set minFilter(mValue) {
-		this._textures.forEach( texture => {
+		this._textures.forEach(texture => {
 			texture.minFilter = mValue;
 		});
 	}
@@ -200,7 +200,7 @@ class FrameBuffer {
 	get magFilter() {	return this._textures[0].magFilter;	}
 
 	set magFilter(mValue) {
-		this._textures.forEach( texture => {
+		this._textures.forEach(texture => {
 			texture.magFilter = mValue;
 		});
 	}
@@ -211,7 +211,7 @@ class FrameBuffer {
 	get wrapS() {	return this._textures[0].wrapS;	}
 
 	set wrapS(mValue) {
-		this._textures.forEach( texture => {
+		this._textures.forEach(texture => {
 			texture.wrapS = mValue;
 		});
 	}
@@ -220,7 +220,7 @@ class FrameBuffer {
 	get wrapT() {	return this._textures[0].wrapT;	}
 
 	set wrapT(mValue) {
-		this._textures.forEach( texture => {
+		this._textures.forEach(texture => {
 			texture.wrapT = mValue;
 		});
 	}
