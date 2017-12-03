@@ -1,13 +1,8 @@
 // FrameBuffer.js
 
-'use strict';
-
 import GL from './GLTool';
-import GLTexture from './GLTexture';
-
-function isPowerOfTwo(x) {	
-	return (x !== 0) && (!(x & (x - 1)));
-};
+import GLTexture2 from './GLTexture2';
+import WebglNumber from './utils/WebglNumber';
 
 let gl;
 let webglDepthTexture;
@@ -28,47 +23,29 @@ const checkMultiRender = function () {
 
 class FrameBuffer {
 
-	constructor(mWidth, mHeight, mParameters = {}, multipleTargets = false) {
+	constructor(mWidth, mHeight, mParameters = {}, mNumTargets = 1) {
 		gl = GL.gl;
 		webglDepthTexture = GL.checkExtension('WEBGL_depth_texture');
 
 		this.width            = mWidth;
 		this.height           = mHeight;
-		this._multipleTargets = multipleTargets;
-
-		this.magFilter  = mParameters.magFilter 	|| gl.LINEAR;
-		this.minFilter  = mParameters.minFilter 	|| gl.LINEAR_MIPMAP_NEAREST;
-		this.wrapS      = mParameters.wrapS 		|| gl.CLAMP_TO_EDGE;
-		this.wrapT      = mParameters.wrapT 		|| gl.CLAMP_TO_EDGE;
-		this.useDepth   = mParameters.useDepth 		|| true;
-		this.useStencil = mParameters.useStencil 	|| false;
-		this.texelType 	= mParameters.type;
-
-		if(!isPowerOfTwo(this.width) || !isPowerOfTwo(this.height)) {
-			this.wrapS = this.wrapT = gl.CLAMP_TO_EDGE;
-
-			if(this.minFilter === gl.LINEAR_MIPMAP_NEAREST) {
-				this.minFilter = gl.LINEAR;
-			}
-		} 
+		this._numTargets 	  = mNumTargets;
+		this._multipleTargets = mNumTargets > 1;
+		this._parameters = mParameters;
 
 		if(!hasCheckedMultiRenderSupport) {
-			// console.log('Has multi render support  :', checkMultiRender());
 			checkMultiRender();
 		}
+
+		if(this._multipleTargets) {
+			this._checkMaxNumRenderTarget();
+		}
+
 		this._init();
 	}
 
 
 	_init() {
-		let texelType = gl.UNSIGNED_BYTE;
-		if (this.texelType) {
-			texelType = this.texelType;
-		}
-
-		this.texelType = texelType;
-
-		this._textures = [];
 		this._initTextures();
 		
 		this.frameBuffer        = gl.createFramebuffer();		
@@ -81,7 +58,7 @@ class FrameBuffer {
 			// gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.renderBufferDepth);
 
 			const buffers = [];
-			for (let i = 0; i < this._textures.length; i++) {
+			for (let i = 0; i < this._numTargets; i++) {
 				gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + i, gl.TEXTURE_2D, this._textures[i].texture, 0);
 				buffers.push(gl[`COLOR_ATTACHMENT${i}`]);
 			}
@@ -91,17 +68,17 @@ class FrameBuffer {
 			gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, this.glDepthTexture.texture, 0);
 
 		} else {
-			for (let i = 0; i < this._textures.length; i++) {
+			for (let i = 0; i < this._numTargets; i++) {
 				gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + i, gl.TEXTURE_2D, this._textures[i].texture, 0);	
 			}
 
 			if(this._multipleTargets) {
-				extDrawBuffer.drawBuffersWEBGL([
-					extDrawBuffer.COLOR_ATTACHMENT0_WEBGL, // gl_FragData[0]
-					extDrawBuffer.COLOR_ATTACHMENT1_WEBGL, // gl_FragData[1]
-					extDrawBuffer.COLOR_ATTACHMENT2_WEBGL, // gl_FragData[2]
-					extDrawBuffer.COLOR_ATTACHMENT3_WEBGL  // gl_FragData[3]
-				]);	
+				const drawBuffers = [];
+				for(let i=0; i<this._numTargets; i++) {
+					drawBuffers.push(extDrawBuffer[`COLOR_ATTACHMENT${i}_WEBGL`]);
+				}
+
+				extDrawBuffer.drawBuffersWEBGL(drawBuffers);	
 			}
 
 			if(webglDepthTexture) {
@@ -110,18 +87,10 @@ class FrameBuffer {
 		}
 		
 
-		if(this.minFilter === gl.LINEAR_MIPMAP_NEAREST)	{
-			for (let i = 0; i < this._textures.length; i++) {
-				gl.bindTexture(gl.TEXTURE_2D, this._textures[i].texture);
-				gl.generateMipmap(gl.TEXTURE_2D);
-			}
-		}
-
-
 		//	CHECKING FBO
 		const FBOstatus = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
 		if(FBOstatus != gl.FRAMEBUFFER_COMPLETE) {
-			console.log('GL_FRAMEBUFFER_COMPLETE failed, CANNOT use Framebuffer');
+			console.error('GL_FRAMEBUFFER_COMPLETE failed, CANNOT use Framebuffer');
 		}
 
 		//	UNBIND
@@ -136,10 +105,17 @@ class FrameBuffer {
 		this.clear();
 	}
 
+	_checkMaxNumRenderTarget() {
+		const maxNumDrawBuffers = GL.gl.getParameter(extDrawBuffer.MAX_DRAW_BUFFERS_WEBGL);
+		if(this._numTargets > maxNumDrawBuffers) {
+			console.error('Over max number of draw buffers supported : ', maxNumDrawBuffers)
+			this._numTargets = maxNumDrawBuffers;
+		}
+	}
 
 	_initTextures() {
-		const numTextures = this._multipleTargets ? 4 : 1;
-		for (let i = 0; i < numTextures; i++) {
+		this._textures = [];
+		for (let i = 0; i < this._numTargets; i++) {
 			const glt = this._createTexture();
 			this._textures.push(glt);
 		}
@@ -148,30 +124,23 @@ class FrameBuffer {
 		if(GL.webgl2) { 
 			this.glDepthTexture = this._createTexture(gl.DEPTH_COMPONENT16, gl.UNSIGNED_SHORT, gl.DEPTH_COMPONENT, true);
 		} else {
-			this.glDepthTexture = this._createTexture(gl.DEPTH_COMPONENT, gl.UNSIGNED_SHORT);
+			this.glDepthTexture = this._createTexture(gl.DEPTH_COMPONENT, gl.UNSIGNED_SHORT, gl.DEPTH_COMPONENT, { minFilter:GL.LINEAR });
 		}
 	}
 
-
-	_createTexture(mInternalformat, mTexelType, mFormat, forceNearest = false) {
-		if(mInternalformat === undefined) {	mInternalformat = gl.RGBA;	}
-		if(mTexelType === undefined) {	mTexelType = this.texelType;	}
+	_createTexture(mInternalformat, mTexelType, mFormat, mParameters = {}) {
+		const parameters = Object.assign({}, this._parameters);
 		if(!mFormat) {	mFormat = mInternalformat; }
+		
+		parameters.internalFormat = mInternalformat || gl.RGBA;
+		parameters.format = mFormat;
+		parameters.type = parameters.type || mTexelType || GL.UNSIGNED_BYTE;
+		for(const s in mParameters) {
+			parameters[s] = mParameters[s];
+		}
 
-		const t = gl.createTexture();
-		const glt = new GLTexture(t, true);
-		const magFilter = forceNearest ? GL.NEAREST : this.magFilter;
-		const minFilter = forceNearest ? GL.NEAREST : this.minFilter;
-
-		gl.bindTexture(gl.TEXTURE_2D, t);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, magFilter);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, minFilter);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, this.wrapS);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, this.wrapT);
-		gl.texImage2D(gl.TEXTURE_2D, 0, mInternalformat, this.width, this.height, 0, mFormat, mTexelType, null);	
-		gl.bindTexture(gl.TEXTURE_2D, null);
-
-		return glt;
+		const texture = new GLTexture2(null, parameters, this.width, this.height);
+		return texture;
 	}
 
 	//	PUBLIC METHODS
@@ -190,12 +159,9 @@ class FrameBuffer {
 		}
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
-		if(this.minFilter === gl.LINEAR_MIPMAP_NEAREST)	{
-			for (let i = 0; i < this._textures.length; i++) {
-				gl.bindTexture(gl.TEXTURE_2D, this._textures[i].texture);
-				gl.generateMipmap(gl.TEXTURE_2D);
-			}
-		}
+		this._textures.forEach(texture => {
+			texture.generateMipmap();
+		});
 	}
 
 
@@ -216,37 +182,56 @@ class FrameBuffer {
 		return this.glDepthTexture;
 	}
 
+	//	TOUGHTS : Should I remove these from frame buffer ? 
+	//	Shouldn't these be set individually to each texture ? 
+	//	e.g. fbo.getTexture(0).minFilter = GL.NEAREST;
+	//		 fbo.getTexture(1).minFilter = GL.LINEAR; ... etc ? 
 
 	//	MIPMAP FILTER
 
-	minFilter(mValue) {
-		if(mValue !== gl.LINEAR && mValue !== gl.NEAREST && mValue !== gl.LINEAR_MIPMAP_NEAREST) { return this; }
-		this.minFilter = mValue;
-		return this;
+	get minFilter() {	return this._textures[0].minFilter;	}
+
+	set minFilter(mValue) {
+		this._textures.forEach( texture => {
+			texture.minFilter = mValue;
+		});
 	}
 
-	magFilter(mValue) {
-		if(mValue !== gl.LINEAR && mValue !== gl.NEAREST && mValue !== gl.LINEAR_MIPMAP_NEAREST) { return this; }
-		this.magFilter = mValue;
-		return this;
-	}
+	get magFilter() {	return this._textures[0].magFilter;	}
 
-
-	//	WRAP
-
-	wrapS(mValue) {
-		if(mValue !== gl.CLAMP_TO_EDGE && mValue !== gl.REPEAT && mValue !== gl.MIRRORED_REPEAT) { return this; }
-		this.wrapS = mValue;
-		return this;
-	}
-
-	wrapT(mValue) {
-		if(mValue !== gl.CLAMP_TO_EDGE && mValue !== gl.REPEAT && mValue !== gl.MIRRORED_REPEAT) { return this; }
-		this.wrapT = mValue;
-		return this;
+	set magFilter(mValue) {
+		this._textures.forEach( texture => {
+			texture.magFilter = mValue;
+		});
 	}
 
 
+	//	WRAPPING
+
+	get wrapS() {	return this._textures[0].wrapS;	}
+
+	set wrapS(mValue) {
+		this._textures.forEach( texture => {
+			texture.wrapS = mValue;
+		});
+	}
+
+
+	get wrapT() {	return this._textures[0].wrapT;	}
+
+	set wrapT(mValue) {
+		this._textures.forEach( texture => {
+			texture.wrapT = mValue;
+		});
+	}
+
+	//	UTILS
+
+	showParameters() {
+		this._textures[0].showParameters();
+	}
+
+	get numTargets() {	return this._numTargets;	}
 }
 
 
