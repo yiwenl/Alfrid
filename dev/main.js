@@ -2,7 +2,7 @@
 import './global.scss';
 import quickSetup from './utils/quickSetup';
 import AssetsLoader from 'assets-loader';
-import alfrid, { GL, Geom, GLShader, TouchDetector, BatchBall, BatchCopy, GLTexture, GLTexture2 } from '../src/alfrid';
+import alfrid, { GL, Geom, GLShader, TouchDetector, BatchBall, BatchCopy, GLTexture } from '../src/alfrid';
 import fs from './test.frag';
 import fsUV from './uv.frag';
 
@@ -128,17 +128,17 @@ function _onAssetsLoaded(o) {
 		255, 255, 255, 255
 	];	
 
-	texture = new GLTexture2(img, {minFilter:GL.NEAREST, wrapS:GL.MIRRORED_REPEAT}, 512, 512);
+	texture = new GLTexture(img, {minFilter:GL.NEAREST, wrapS:GL.MIRRORED_REPEAT}, 512, 512);
 
 	console.log('texture', texture);
-	textureData = new GLTexture2(source2, {magFilter:GL.NEAREST, minFilter:GL.NEAREST, type:GL.FLOAT});
+	textureData = new GLTexture(source2, {magFilter:GL.NEAREST, minFilter:GL.NEAREST, type:GL.FLOAT});
 
 	const video = document.createElement("Video");
 	video.src = 'assets/video/color1.mp4';
 	video.loop = true;
 	video.load();
 	video.play();
-	textureVideo = new GLTexture2(video);
+	textureVideo = new GLTexture(video);
 
 	const s = 1024;
 	fbo = new alfrid.FrameBuffer(s, s, {minFilter:GL.LINEAR_MIPMAP_NEAREST});
