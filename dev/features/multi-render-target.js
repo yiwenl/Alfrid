@@ -3,7 +3,7 @@ console.log('dev : multi-render-target');
 
 import '../global.scss';
 import quickSetup from '../utils/quickSetup';
-import alfrid, { GL } from 'src/alfrid';
+import alfrid, { GL, WebglNumber } from 'src/alfrid';
 import vs from 'shaders/cube.vert';
 import fs from 'shaders/cube.frag';
 
@@ -24,11 +24,11 @@ function init(o) {
 	shader = new alfrid.GLShader(vs, fs);
 
 	const fboSize = 1024;
-	fbo = new alfrid.FrameBuffer(fboSize, fboSize, {}, 9);
+	fbo = new alfrid.FrameBuffer(fboSize, fboSize, {}, 8);
+	fbo.wrapS = GL.REPEAT;
+	console.log(WebglNumber[fbo.wrapS]);
 
 	bCopy = new alfrid.BatchCopy();
-
-	console.log('DEPTH_COMPONENT16', GL.gl.DEPTH_COMPONENT16);
 }
 
 

@@ -4,10 +4,6 @@ import GL from './GLTool';
 import GLTexture2 from './GLTexture2';
 import WebglNumber from './utils/WebglNumber';
 
-function isPowerOfTwo(x) {	
-	return (x !== 0) && (!(x & (x - 1)));
-};
-
 let gl;
 let webglDepthTexture;
 let hasCheckedMultiRenderSupport = false;
@@ -38,15 +34,13 @@ class FrameBuffer {
 		this._parameters = mParameters;
 
 		if(!hasCheckedMultiRenderSupport) {
-			// console.log('Has multi render support  :', checkMultiRender());
 			checkMultiRender();
 		}
 
-		const maxNumDrawBuffers = GL.gl.getParameter(extDrawBuffer.MAX_DRAW_BUFFERS_WEBGL);
-		if(this._numTargets > maxNumDrawBuffers) {
-			console.error('Over max number of draw buffers supported : ', maxNumDrawBuffers)
-			this._numTargets = maxNumDrawBuffers;
+		if(this._multipleTargets) {
+			this._checkMaxNumRenderTarget();
 		}
+
 		this._init();
 	}
 
@@ -109,6 +103,14 @@ class FrameBuffer {
 		//	CLEAR FRAMEBUFFER 
 
 		this.clear();
+	}
+
+	_checkMaxNumRenderTarget() {
+		const maxNumDrawBuffers = GL.gl.getParameter(extDrawBuffer.MAX_DRAW_BUFFERS_WEBGL);
+		if(this._numTargets > maxNumDrawBuffers) {
+			console.error('Over max number of draw buffers supported : ', maxNumDrawBuffers)
+			this._numTargets = maxNumDrawBuffers;
+		}
 	}
 
 	_initTextures() {
@@ -180,41 +182,54 @@ class FrameBuffer {
 		return this.glDepthTexture;
 	}
 
+	//	TOUGHTS : Should I remove these from frame buffer ? 
+	//	Shouldn't these be set individually to each texture ? 
+	//	e.g. fbo.getTexture(0).minFilter = GL.NEAREST;
+	//		 fbo.getTexture(1).minFilter = GL.LINEAR; ... etc ? 
 
 	//	MIPMAP FILTER
 
-	minFilter(mValue) {
-		if(mValue !== gl.LINEAR && mValue !== gl.NEAREST && mValue !== gl.LINEAR_MIPMAP_NEAREST) { return this; }
-		this.minFilter = mValue;
-		return this;
+	get minFilter() {	return this._textures[0].minFilter;	}
+
+	set minFilter(mValue) {
+		this._textures.forEach( texture => {
+			texture.minFilter = mValue;
+		});
 	}
 
-	magFilter(mValue) {
-		if(mValue !== gl.LINEAR && mValue !== gl.NEAREST && mValue !== gl.LINEAR_MIPMAP_NEAREST) { return this; }
-		this.magFilter = mValue;
-		return this;
+	get magFilter() {	return this._textures[0].magFilter;	}
+
+	set magFilter(mValue) {
+		this._textures.forEach( texture => {
+			texture.magFilter = mValue;
+		});
 	}
 
 
-	//	WRAP
+	//	WRAPPING
 
-	wrapS(mValue) {
-		if(mValue !== gl.CLAMP_TO_EDGE && mValue !== gl.REPEAT && mValue !== gl.MIRRORED_REPEAT) { return this; }
-		this.wrapS = mValue;
-		return this;
+	get wrapS() {	return this._textures[0].wrapS;	}
+
+	set wrapS(mValue) {
+		this._textures.forEach( texture => {
+			texture.wrapS = mValue;
+		});
 	}
 
-	wrapT(mValue) {
-		if(mValue !== gl.CLAMP_TO_EDGE && mValue !== gl.REPEAT && mValue !== gl.MIRRORED_REPEAT) { return this; }
-		this.wrapT = mValue;
-		return this;
+
+	get wrapT() {	return this._textures[0].wrapT;	}
+
+	set wrapT(mValue) {
+		this._textures.forEach( texture => {
+			texture.wrapT = mValue;
+		});
 	}
 
+	//	UTILS
 
 	showParameters() {
 		this._textures[0].showParameters();
 	}
-
 
 	get numTargets() {	return this._numTargets;	}
 }

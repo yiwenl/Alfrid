@@ -115,6 +115,7 @@ class Alfrid {
 		this.View3D            = View3D;
 		this.Object3D          = Object3D;
 		this.ShaderLibs        = ShaderLibs;
+		this.WebglNumber       = WebglNumber;
 		
 		this.EffectComposer    = EffectComposer;
 		this.Pass        	   = Pass;
