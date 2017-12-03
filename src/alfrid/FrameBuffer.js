@@ -134,7 +134,7 @@ class FrameBuffer {
 		
 		parameters.internalFormat = mInternalformat || gl.RGBA;
 		parameters.format = mFormat;
-		parameters.type = parameters.type || mTexelType || GL.UNSIGNED_BYTE;
+		parameters.type = mTexelType || parameters.type || GL.UNSIGNED_BYTE;
 		for(const s in mParameters) {
 			parameters[s] = mParameters[s];
 		}
