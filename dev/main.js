@@ -32,7 +32,7 @@ function render() {
 
 	shaderCopy.bind();
 	shaderCopy.uniform("texture", "uniform1i", 0);
-	texture.bind(0);
+	textureVideo.bind(0);
 	GL.draw(floor);
 
 	let s = 200;
@@ -129,15 +129,16 @@ function _onAssetsLoaded(o) {
 	];	
 
 	texture = new GLTexture2(img, {minFilter:GL.NEAREST, wrapS:GL.MIRRORED_REPEAT}, 512, 512);
+
+	console.log('texture', texture);
 	textureData = new GLTexture2(source2, {magFilter:GL.NEAREST, minFilter:GL.NEAREST, type:GL.FLOAT});
 
 	const video = document.createElement("Video");
 	video.src = 'assets/video/color1.mp4';
 	video.loop = true;
+	video.load();
 	video.play();
 	textureVideo = new GLTexture2(video);
-
-	document.body.appendChild(video);
 
 	const s = 1024;
 	fbo = new alfrid.FrameBuffer(s, s, {minFilter:GL.LINEAR_MIPMAP_NEAREST});

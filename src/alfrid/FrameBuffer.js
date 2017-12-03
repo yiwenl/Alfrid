@@ -41,6 +41,12 @@ class FrameBuffer {
 			// console.log('Has multi render support  :', checkMultiRender());
 			checkMultiRender();
 		}
+
+		const maxNumDrawBuffers = GL.gl.getParameter(extDrawBuffer.MAX_DRAW_BUFFERS_WEBGL);
+		if(this._numTargets > maxNumDrawBuffers) {
+			console.error('Over max number of draw buffers supported : ', maxNumDrawBuffers)
+			this._numTargets = maxNumDrawBuffers;
+		}
 		this._init();
 	}
 
@@ -58,7 +64,7 @@ class FrameBuffer {
 			// gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.renderBufferDepth);
 
 			const buffers = [];
-			for (let i = 0; i < this._textures.length; i++) {
+			for (let i = 0; i < this._numTargets; i++) {
 				gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + i, gl.TEXTURE_2D, this._textures[i].texture, 0);
 				buffers.push(gl[`COLOR_ATTACHMENT${i}`]);
 			}
@@ -68,14 +74,13 @@ class FrameBuffer {
 			gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, this.glDepthTexture.texture, 0);
 
 		} else {
-			for (let i = 0; i < this._textures.length; i++) {
+			for (let i = 0; i < this._numTargets; i++) {
 				gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + i, gl.TEXTURE_2D, this._textures[i].texture, 0);	
 			}
 
 			if(this._multipleTargets) {
 				const drawBuffers = [];
 				for(let i=0; i<this._numTargets; i++) {
-					console.log(i, extDrawBuffer[`COLOR_ATTACHMENT${i}_WEBGL`]);
 					drawBuffers.push(extDrawBuffer[`COLOR_ATTACHMENT${i}_WEBGL`]);
 				}
 
@@ -91,7 +96,7 @@ class FrameBuffer {
 		//	CHECKING FBO
 		const FBOstatus = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
 		if(FBOstatus != gl.FRAMEBUFFER_COMPLETE) {
-			console.warn('GL_FRAMEBUFFER_COMPLETE failed, CANNOT use Framebuffer');
+			console.error('GL_FRAMEBUFFER_COMPLETE failed, CANNOT use Framebuffer');
 		}
 
 		//	UNBIND
@@ -209,6 +214,9 @@ class FrameBuffer {
 	showParameters() {
 		this._textures[0].showParameters();
 	}
+
+
+	get numTargets() {	return this._numTargets;	}
 }
 
 
