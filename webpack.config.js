@@ -11,6 +11,10 @@ const isProd = env === 'production';
 const libraryName = 'alfrid';
 console.log('Environment isProd :', isProd);
 
+let entryPoint = process.argv.filter( arg => arg.indexOf('.js') > -1)[0];
+let entryJs = entryPoint || './dev/main.js';
+console.log('Entry Point :', entryJs);
+
 const plugins = isProd ? 
 [	
 	new webpack.optimize.UglifyJsPlugin({
@@ -29,7 +33,7 @@ const plugins = isProd ?
 
 
 const entry = isProd ? {app:`./src/${libraryName}.js`}
-				: {app:'./dev/main.js'};
+				: {app:entryJs};
 const output = isProd ? {
 		path: pathBuild,
 		filename: `./${libraryName}.js`,
@@ -80,6 +84,12 @@ const config = {
 				exclude: pathNodeModules
 			}
 		]
+	},
+	resolve: {
+		alias: {
+			'shaders':path.resolve(__dirname, 'dev/shaders'),
+			'src':path.resolve(__dirname, 'src')
+		}
 	}
 }
 

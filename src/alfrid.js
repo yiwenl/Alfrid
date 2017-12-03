@@ -3,7 +3,8 @@
 import * as GLM 			from 'gl-matrix';
 import GL 					from './alfrid/GLTool';
 import GLShader 			from './alfrid/GLShader';
-import GLTexture 			from './alfrid/GLTexture';
+import GLTextureOld 		from './alfrid/GLTexture';
+import GLTexture 			from './alfrid/GLTexture2';
 import GLCubeTexture 		from './alfrid/GLCubeTexture';
 import Mesh 				from './alfrid/Mesh';
 import Geom					from './alfrid/Geom';
@@ -23,6 +24,8 @@ import TweenNumber 			from './alfrid/utils/TweenNumber';
 import OrbitalControl		from './alfrid/utils/OrbitalControl';
 import QuatRotation			from './alfrid/utils/QuatRotation';
 import TouchDetector		from './alfrid/utils/TouchDetector';
+import WebglNumber			from './alfrid/utils/WebglNumber';
+import WebglConst			from './alfrid/utils/WebglConst';
 
 //	CAMERAS
 import Camera 				from './alfrid/cameras/Camera';
@@ -76,6 +79,7 @@ class Alfrid {
 		this.GLTool            = GL;
 		this.GLShader          = GLShader;
 		this.GLTexture         = GLTexture;
+		this.GLTextureOld      = GLTextureOld;
 		this.GLCubeTexture     = GLCubeTexture;
 		this.Mesh              = Mesh;
 		this.Geom              = Geom;
@@ -111,6 +115,7 @@ class Alfrid {
 		this.View3D            = View3D;
 		this.Object3D          = Object3D;
 		this.ShaderLibs        = ShaderLibs;
+		this.WebglNumber       = WebglNumber;
 		
 		this.EffectComposer    = EffectComposer;
 		this.Pass        	   = Pass;
@@ -156,6 +161,7 @@ export {
 	GL,
 	GLShader,
 	GLTexture,
+	GLTextureOld,
 	GLCubeTexture,
 	Mesh,
 	Geom,
@@ -169,6 +175,7 @@ export {
 	EaseNumber,
 	TweenNumber,
 	OrbitalControl,
+	WebglNumber,
 	QuatRotation,
 	TouchDetector,
 	Camera,

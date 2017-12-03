@@ -52,16 +52,29 @@ class GLTool {
 		this.canvas = mCanvas;
 		this.setSize(window.innerWidth, window.innerHeight);
 
+		mParameters.useWebgl2 = mParameters.useWebgl2 || false;
+
 		let ctx;
-		if(mParameters.ignoreWebgl2) {
-			ctx = this.canvas.getContext('webgl', mParameters) || this.canvas.getContext('experimental-webgl', mParameters);
-		} else {
+		if(mParameters.useWebgl2) {
 			ctx = this.canvas.getContext('experimental-webgl2', mParameters) || this.canvas.getContext('webgl2', mParameters);
-			if(ctx) {
-				this._useWebGL2 = true;
+
+			if(!ctx) {
+				ctx = this.canvas.getContext('webgl', mParameters) || this.canvas.getContext('experimental-webgl', mParameters);	
+				this._useWebGL2 = false;
 			} else {
-				ctx = this.canvas.getContext('webgl', mParameters) || this.canvas.getContext('experimental-webgl', mParameters);
+				this._useWebGL2 = true;
 			}
+			
+		} else {
+			// ctx = this.canvas.getContext('experimental-webgl2', mParameters) || this.canvas.getContext('webgl2', mParameters);
+			// if(ctx) {
+			// 	this._useWebGL2 = true;
+			// } else {
+			// 	ctx = this.canvas.getContext('webgl', mParameters) || this.canvas.getContext('experimental-webgl', mParameters);
+			// }
+
+			ctx = this.canvas.getContext('webgl', mParameters) || this.canvas.getContext('experimental-webgl', mParameters);	
+			this._useWebGL2 = false;
 			
 		}
 
@@ -117,6 +130,11 @@ class GLTool {
 	clear(r, g, b, a) {
 		gl.clearColor(r, g, b, a);
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+	}
+
+
+	cullFace(mValue) {
+		gl.cullFace(mValue);
 	}
 
 

@@ -2,6 +2,7 @@
 
 import { GL, BatchDotsPlane, BatchAxis, CameraPerspective, OrbitalControl } from '../../src/alfrid';
 import Scheduler from 'scheduling';
+import dat from 'dat-gui';
 /*
 export default (mRender, mCallback, mResize) => {
 	
@@ -67,6 +68,8 @@ const quickSetup = (mRender, mResize) => new Promise((resolve, reject) => {
 		camera,
 		orbControl
 	}
+
+	window.gui = new dat.GUI({width:300});
 
 	resolve(o);
 });
