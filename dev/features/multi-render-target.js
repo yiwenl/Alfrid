@@ -21,12 +21,12 @@ function init(o) {
 
 	const s = 1;
 	mesh = alfrid.Geom.cube(s, s, s);
-	shader = new alfrid.GLShader(vs, fs);
+	shader = new alfrid.GLShader();
 
-	const fboSize = 1024;
-	fbo = new alfrid.FrameBuffer(fboSize, fboSize, {}, 8);
-	fbo.wrapS = GL.REPEAT;
-	console.log(WebglNumber[fbo.wrapS]);
+	console.log('HALF_FLOAT :', GL.HALF_FLOAT);
+
+	const fboSize = 1000;
+	fbo = new alfrid.FrameBuffer(fboSize, fboSize, {type:GL.HALF_FLOAT});
 
 	bCopy = new alfrid.BatchCopy();
 }
@@ -40,11 +40,9 @@ function render() {
 	GL.draw(mesh);
 	fbo.unbind();
 
-	const s = GL.width / fbo.numTargets;
-	for(let i=0; i<fbo.numTargets; i++) {
-		GL.viewport(s * i, 0, s, s/GL.aspectRatio);
-		bCopy.draw(fbo.getTexture(i));
-	}
-
+	
+	const s = 200;
+	GL.viewport(0, 0, s, s);
+	bCopy.draw(fbo.getTexture());
 	GL.viewport(0, 0, GL.width, GL.height);
 }

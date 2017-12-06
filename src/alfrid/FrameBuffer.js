@@ -90,7 +90,7 @@ class FrameBuffer {
 		//	CHECKING FBO
 		const FBOstatus = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
 		if(FBOstatus != gl.FRAMEBUFFER_COMPLETE) {
-			console.error('GL_FRAMEBUFFER_COMPLETE failed, CANNOT use Framebuffer');
+			console.error('GL_FRAMEBUFFER_COMPLETE failed, CANNOT use Framebuffer', WebglNumber[FBOstatus]);
 		}
 
 		//	UNBIND

@@ -158,7 +158,8 @@ class GLTexture {
 			return GL.UNSIGNED_BYTE;	
 		}
 
-		return GL[WebglNumber[this._sourceType]];
+		//	bad code here, if the type is not on the webglNumber list, it doesn't work
+		return GL[WebglNumber[this._sourceType]] || this._sourceType;
 	}
 
 	_checkMipmap() {
