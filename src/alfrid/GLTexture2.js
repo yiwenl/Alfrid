@@ -53,18 +53,21 @@ class GLTexture {
 			gl.texImage2D(gl.TEXTURE_2D, 0, this._params.internalFormat, this._width, this._height, 0, this._params.format, this._texelType, this._source);	
 		}
 		
-
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, this._params.magFilter);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, this._params.minFilter);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, this._params.wrapS);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, this._params.wrapT);
-		gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, this._premultiplyAlpha);
+		gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, this._params.premultiplyAlpha);
 
-		const ext = GL.getExtension('EXT_texture_filter_anisotropic');
-		if(ext) {
-			const max = gl.getParameter(ext.MAX_TEXTURE_MAX_ANISOTROPY_EXT);
-			gl.texParameterf(gl.TEXTURE_2D, ext.TEXTURE_MAX_ANISOTROPY_EXT, max);
+		if(this._params.anisotropy > 0) {
+			const ext = GL.getExtension('EXT_texture_filter_anisotropic');
+			if(ext) {
+				const max = gl.getParameter(ext.MAX_TEXTURE_MAX_ANISOTROPY_EXT);
+				const level = Math.min(max, this._params.anisotropy);
+				gl.texParameterf(gl.TEXTURE_2D, ext.TEXTURE_MAX_ANISOTROPY_EXT, level);
+			}	
 		}
+		
 
 		if(this._generateMipmap) {	gl.generateMipmap(gl.TEXTURE_2D);	}
 
