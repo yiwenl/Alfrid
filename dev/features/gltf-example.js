@@ -20,8 +20,8 @@ quickSetup(assetsToLoad, render).then((o)=>init(o)).catch(err=>{
 
 
 const mtx = mat4.create();
-const s = 10.0;
-// const s = 0.01;
+// const s = 1.0;
+const s = 0.1;
 mat4.scale(mtx, mtx, vec3.fromValues(s, s, s));
 
 
@@ -50,8 +50,9 @@ function init(o) {
 	console.log('Init', o, assets);
 
 	const gltfInfo = JSON.parse(getAsset('scene'));
-	// const url = 'assets/gltf/test/scene.gltf';
-	const url = 'assets/gltf/avacado/scene.gltf';
+	const url = 'assets/gltf/cube/scene.gltf';
+	// const url = 'assets/gltf/frank/scene.gltf';
+	// const url = 'assets/gltf/avacado/scene.gltf';
 
 	//	need to think about loading .bin / textures
 	// console.log('Images :', gltfData.images);
@@ -61,7 +62,7 @@ function init(o) {
 
 	// console.log('Mesh :', mesh);
 
-	shader = new alfrid.GLShader();
+	shader = new alfrid.GLShader(vs, fs);
 
 	GLTFLoader.load(url)
 	.then((gltfInfo)=> {
@@ -76,8 +77,10 @@ function init(o) {
 			for(let s in geometry) {
 				const data = geometry[s];
 				if(s !== 'indices') {
+					console.log(s, data);
 					m.bufferFlattenData(data.value, s, data.size);
 				} else {
+					console.log(data.value);
 					m.bufferIndex(data.value);
 				}
 			}

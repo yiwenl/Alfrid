@@ -46,6 +46,7 @@ const load = ( mSource ) => new Promise((resolve, reject) => {
 	.then(_getBufferViewData)
 	.then(_loadTextures)
 	.then(_parseMesh)
+	.then(_parseNodes)
 	.then((gltfInfo)=>{
 		resolve(gltfInfo);
 	})
@@ -89,6 +90,13 @@ const _getAccessorData = (gltf, accessorIdx, isIndices = false) => {
 
 	return arr;
 }
+
+
+const _parseNodes = (gltf) => new Promise((resolve, reject) => {
+	const { nodes } = gltf;
+	console.log('Nodes : ', nodes);
+	resolve(gltf);
+});
 
 const _parseMesh = (gltf) => new Promise((resolve, reject) => {
 	const { meshes } = gltf;
