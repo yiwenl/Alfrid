@@ -3,6 +3,8 @@
 import { GL, BatchDotsPlane, BatchAxis, CameraPerspective, OrbitalControl } from '../../src/alfrid';
 import Scheduler from 'scheduling';
 import dat from 'dat-gui';
+import AssetLoader from 'assets-loader';
+
 /*
 export default (mRender, mCallback, mResize) => {
 	
@@ -11,7 +13,7 @@ export default (mRender, mCallback, mResize) => {
 */
 
 
-const quickSetup = (mRender, mResize) => new Promise((resolve, reject) => {
+const quickSetup = (mAssetsList, mRender, mResize) => new Promise((resolve, reject) => {
 	// create canvas
 	const canvas = document.createElement("canvas");
 	document.body.appendChild(canvas);
@@ -47,7 +49,7 @@ const quickSetup = (mRender, mResize) => new Promise((resolve, reject) => {
 			mRender();
 		}
 	}
-	Scheduler.addEF(loop);
+	
 
 
 	//	resizing
@@ -70,8 +72,36 @@ const quickSetup = (mRender, mResize) => new Promise((resolve, reject) => {
 	}
 
 	window.gui = new dat.GUI({width:300});
+	mAssetsList = mAssetsList || [];
 
-	resolve(o);
+	console.log(mAssetsList);
+
+	const loader = new AssetLoader({
+		assets:mAssetsList
+	}).on('error', err => {
+		console.log('Error :', err);
+	}).on('progress', p => {
+		console.log('Progress :', p);
+	}).on('complete', (assets) => {
+		window.assets = assets;
+		window.getAsset = (id) => {
+			const a = assets.filter( a => {
+				return a.id === id;
+			});
+
+			if(!a) {
+				return null;
+			}
+
+			return a[0].file;
+		}
+
+		resolve(o);	
+		Scheduler.addEF(loop);
+	})
+	.start();
+
+	
 });
 
 
