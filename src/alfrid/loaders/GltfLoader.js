@@ -85,7 +85,7 @@ const _getAccessorData = (gltf, accessorIdx, isIndices = false) => {
 		arr = decodedArr;
 	}
 
-	console.log({buffer, byteOffset, ArrayCtor, size, arr});
+	// console.log({buffer, byteOffset, ArrayCtor, size, arr});
 
 	return arr;
 }
@@ -113,14 +113,6 @@ const _parseMesh = (gltf) => new Promise((resolve, reject) => {
 				if (attributeArray instanceof Uint32Array) {
 					attributeArray = new Float32Array(attributeArray);
 				}
-
-				// console.log({
-				// 	accessorIdx,
-				// 	attributeInfo,
-				// 	attributeName,
-				// 	size,
-				// 	attributeArray
-				// });
 
 				geometry[attributeName] = {
 					value:attributeArray,
