@@ -5,7 +5,7 @@ import AssetLoader from 'assets-loader';
 import '../global.scss';
 import quickSetup from '../utils/quickSetup';
 
-import alfrid, { GL, WebglNumber, GLTFLoader } from 'src/alfrid';
+import alfrid, { GL, WebglNumber } from 'src/alfrid';
 import vs from '../shaders/gltf.vert';
 import fs from '../shaders/gltf.frag';
 
@@ -19,6 +19,23 @@ quickSetup(assetsToLoad, render).then((o)=>init(o)).catch(err=>{
 });
 
 
+const ARRAY_CTOR_MAP = {
+    5120: Int8Array,
+    5121: Uint8Array,
+    5122: Int16Array,
+    5123: Uint16Array,
+    5125: Uint32Array,
+    5126: Float32Array
+};
+const SIZE_MAP = {
+    SCALAR: 1,
+    VEC2: 2,
+    VEC3: 3,
+    VEC4: 4,
+    MAT2: 4,
+    MAT3: 9,
+    MAT4: 16
+};
 
 
 
@@ -46,40 +63,28 @@ function init(o) {
 	console.log('Init', o, assets);
 
 	const gltfInfo = JSON.parse(getAsset('scene'));
-	const url = 'assets/gltf/cube/scene.gltf';
+	
 
+	console.log('GLTF Info :', gltfInfo);
 	//	need to think about loading .bin / textures
 	// console.log('Images :', gltfData.images);
 
-	// readAccessors(gltfInfo);
-	// mesh = readMesh(gltfInfo);
+	readAccessors(gltfInfo);
+	mesh = readMesh(gltfInfo);
 
-	// console.log('Mesh :', mesh);
+	console.log('Mesh :', mesh);
 
 	shader = new alfrid.GLShader(vs, fs);
 
-	GLTFLoader.load(url)
-	.then((gltfInfo)=> {
-		// console.log('GLTF :', o);
-		const { geometries } = gltfInfo;
-		const geometry = geometries[0];
-		mesh = new alfrid.Mesh();
 
-		for(let s in geometry) {
-			const data = geometry[s];
-			if(s !== 'indices') {
-				console.log(s, data);
-				mesh.bufferFlattenData(data.value, s, data.size);
-			} else {
-				console.log('Index buffer:', data.value);
-				mesh.bufferIndex(data.value);
-			}
-		}
+	const positions = [0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1];
+	const indices = [0, 1, 2, 3, 2, 1, 4, 5, 6, 7, 6, 5, 8, 9, 10, 11, 10, 9, 12, 13, 14, 15, 14, 13, 16, 17, 18, 19, 18, 17, 20, 21, 22, 23, 22, 21];
 
-	})
-	.catch(e => {
-		console.log('Error loading gltf:', e);
-	});
+	meshTest = new alfrid.Mesh();
+	meshTest.bufferFlattenData(positions, 'aVertexPosition', 3);
+	meshTest.bufferFlattenData(positions, 'aNormal', 3);
+	meshTest.bufferIndex(indices);
+
 }
 
 
@@ -181,7 +186,6 @@ function readMesh(data) {
 
 
 function render() {
-	if(!mesh) {	return;	}
 	shader.bind();
-	GL.draw(mesh);
+	// GL.draw(meshTest);
 }

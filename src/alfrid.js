@@ -44,6 +44,7 @@ import BinaryLoader			from './alfrid/loaders/BinaryLoader';
 import ObjLoader			from './alfrid/loaders/ObjLoader';
 import HDRLoader			from './alfrid/loaders/HDRLoader';
 import ColladaParser		from './alfrid/loaders/ColladaParser';
+import GLTFLoader			from './alfrid/loaders/GLTFLoader';
 
 //	POST EFFECT
 import EffectComposer 		from './alfrid/post/EffectComposer';
@@ -101,6 +102,7 @@ class Alfrid {
 		this.ObjLoader         = ObjLoader;
 		this.ColladaParser     = ColladaParser;
 		this.HDRLoader         = HDRLoader;
+		this.GLTFLoader        = GLTFLoader;
 		this.BatchCopy         = BatchCopy;
 		this.BatchAxis         = BatchAxis;
 		this.BatchBall         = BatchBall;
@@ -187,6 +189,7 @@ export {
 	BinaryLoader,
 	ObjLoader,
 	HDRLoader,
+	GLTFLoader,
 	ColladaParser,
 	EffectComposer,
 	Pass,

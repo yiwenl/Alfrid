@@ -86,7 +86,6 @@ class Mesh {
 
 
 	bufferIndex(mArrayIndices, isDynamic = false) {
-		console.log('here', mArrayIndices instanceof Array);
 		this._drawType        = isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW;
 		if(mArrayIndices instanceof Array) {
 			this._indices	  = new Uint16Array(mArrayIndices);	
