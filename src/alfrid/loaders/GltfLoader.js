@@ -1,6 +1,7 @@
 // GltfLoader.js
 
 import xhr from './xhr';
+import Mesh from '../Mesh';
 
 const ARRAY_CTOR_MAP = {
 	5120: Int8Array,
@@ -56,51 +57,30 @@ const load = ( mSource ) => new Promise((resolve, reject) => {
 });
 
 
-const _getAccessorData = (gltf, accessorIdx, isIndices = false) => {
-	const accessorInfo = gltf.accessors[accessorIdx];
-	const buffer = gltf.bufferViews[accessorInfo.bufferView].data;
-	const byteOffset = accessorInfo.byteOffset || 0;
-	const ArrayCtor = ARRAY_CTOR_MAP[accessorInfo.componentType] || Float32Array;
-	let size = SIZE_MAP[accessorInfo.type];
-	if (size == null && isIndices) {
-		size = 1;
-	}
-	let arr = new ArrayCtor(buffer, byteOffset, size * accessorInfo.count);
-	const quantizeExtension = accessorInfo.extensions && accessorInfo.extensions['WEB3D_quantized_attributes'];
-	if (quantizeExtension) {
-		var decodedArr = new Float32Array(size * accessorInfo.count);
-		var decodeMatrix = quantizeExtension.decodeMatrix;
-		var decodeOffset, decodeScale;
-		var decodeOffset = new Array(size);
-		var decodeScale = new Array(size);
-		for (var k = 0; k < size; k++) {
-			decodeOffset[k] = decodeMatrix[size * (size + 1) + k];
-			decodeScale[k] = decodeMatrix[k * (size + 1) + k];
-		}
-		for (var i = 0; i < accessorInfo.count; i++) {
-			for (var k = 0; k < size; k++) {
-				decodedArr[i * size + k] = arr[i * size + k] * decodeScale[k] + decodeOffset[k];
-			}
-		}
 
-		arr = decodedArr;
-	}
-
-	// console.log({buffer, byteOffset, ArrayCtor, size, arr});
-
-	return arr;
-}
 
 
 const _parseNodes = (gltf) => new Promise((resolve, reject) => {
 	const { nodes } = gltf;
-	console.log('Nodes : ', nodes);
+
+	nodes.forEach( (nodeInfo, i) => {
+		if (nodeInfo.camera != null && this.includeCamera) {
+			// setup camera
+		} else if(nodeInfo.mesh != null) {
+			console.log(i, 'Mesh index :', nodeInfo.mesh);
+		}
+
+	});
 	resolve(gltf);
 });
 
 const _parseMesh = (gltf) => new Promise((resolve, reject) => {
 	const { meshes } = gltf;
 	gltf.geometries = [];
+	gltf.output = {
+		meshes:[],
+		scene:{}
+	}
 
 	meshes.forEach( (mesh, i) => {
 		const { primitives } = mesh;
@@ -138,7 +118,19 @@ const _parseMesh = (gltf) => new Promise((resolve, reject) => {
 				}
 			}
 
-			// console.log('Geometry:', geometry);
+			const m = new Mesh();
+
+			for(let s in geometry) {
+				const data = geometry[s];
+				if(s !== 'indices') {
+					console.log(s, data);
+					m.bufferFlattenData(data.value, s, data.size);
+				} else {
+					console.log(data.value);
+					m.bufferIndex(data.value);
+				}
+			}
+			gltf.output.meshes.push(m);
 			gltf.geometries.push(geometry);
 		});
 	});
@@ -206,6 +198,41 @@ const parse = ( mGltfInfo, mBin ) => new Promise((resolve, reject) => {
 	resolve(mSource);
 });
 
+
+const _getAccessorData = (gltf, accessorIdx, isIndices = false) => {
+	const accessorInfo = gltf.accessors[accessorIdx];
+	const buffer = gltf.bufferViews[accessorInfo.bufferView].data;
+	const byteOffset = accessorInfo.byteOffset || 0;
+	const ArrayCtor = ARRAY_CTOR_MAP[accessorInfo.componentType] || Float32Array;
+	let size = SIZE_MAP[accessorInfo.type];
+	if (size == null && isIndices) {
+		size = 1;
+	}
+	let arr = new ArrayCtor(buffer, byteOffset, size * accessorInfo.count);
+	const quantizeExtension = accessorInfo.extensions && accessorInfo.extensions['WEB3D_quantized_attributes'];
+	if (quantizeExtension) {
+		var decodedArr = new Float32Array(size * accessorInfo.count);
+		var decodeMatrix = quantizeExtension.decodeMatrix;
+		var decodeOffset, decodeScale;
+		var decodeOffset = new Array(size);
+		var decodeScale = new Array(size);
+		for (var k = 0; k < size; k++) {
+			decodeOffset[k] = decodeMatrix[size * (size + 1) + k];
+			decodeScale[k] = decodeMatrix[k * (size + 1) + k];
+		}
+		for (var i = 0; i < accessorInfo.count; i++) {
+			for (var k = 0; k < size; k++) {
+				decodedArr[i * size + k] = arr[i * size + k] * decodeScale[k] + decodeOffset[k];
+			}
+		}
+
+		arr = decodedArr;
+	}
+
+	// console.log({buffer, byteOffset, ArrayCtor, size, arr});
+
+	return arr;
+}
 
 export default {
 	load,

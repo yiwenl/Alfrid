@@ -50,8 +50,8 @@ function init(o) {
 	console.log('Init', o, assets);
 
 	const gltfInfo = JSON.parse(getAsset('scene'));
-	const url = 'assets/gltf/cube/scene.gltf';
-	// const url = 'assets/gltf/frank/scene.gltf';
+	// const url = 'assets/gltf/cube/scene.gltf';
+	const url = 'assets/gltf/frank/scene.gltf';
 	// const url = 'assets/gltf/avacado/scene.gltf';
 
 	//	need to think about loading .bin / textures
@@ -67,26 +67,9 @@ function init(o) {
 	GLTFLoader.load(url)
 	.then((gltfInfo)=> {
 		// console.log('GLTF :', o);
-		const { geometries } = gltfInfo;
-		mesh = [];
-
-
-		geometries.forEach( geometry => {
-			const m = new alfrid.Mesh();
-
-			for(let s in geometry) {
-				const data = geometry[s];
-				if(s !== 'indices') {
-					console.log(s, data);
-					m.bufferFlattenData(data.value, s, data.size);
-				} else {
-					console.log(data.value);
-					m.bufferIndex(data.value);
-				}
-			}
-			mesh.push(m);
-		})
-
+		const { geometries } = gltfInfo.output;
+		mesh = gltfInfo.output.meshes;
+		console.log(mesh);
 	})
 	.catch(e => {
 		console.log('Error loading gltf:', e);

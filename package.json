@@ -11,7 +11,7 @@
     "lint:fix": "eslint -c .eslintrc --fix src/**",
     "start": "npm run dev",
     "dev": "NODE_ENV=development webpack-dev-server --open",
-    "build": "NODE_ENV=production webpack --progress --colors",
+    "build": "npm run lint && NODE_ENV=production webpack --progress --colors",
     "build:dev": "NODE_ENV=development webpack --progress --colors"
   },
   "author": "Yi-Wen Lin",

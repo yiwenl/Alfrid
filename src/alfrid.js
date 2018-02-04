@@ -44,7 +44,7 @@ import BinaryLoader			from './alfrid/loaders/BinaryLoader';
 import ObjLoader			from './alfrid/loaders/ObjLoader';
 import HDRLoader			from './alfrid/loaders/HDRLoader';
 import ColladaParser		from './alfrid/loaders/ColladaParser';
-import GLTFLoader			from './alfrid/loaders/GLTFLoader';
+import GLTFLoader			from './alfrid/loaders/GltfLoader';
 
 //	POST EFFECT
 import EffectComposer 		from './alfrid/post/EffectComposer';
