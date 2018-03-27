@@ -57,9 +57,6 @@ const load = ( mSource ) => new Promise((resolve, reject) => {
 });
 
 
-
-
-
 const _parseNodes = (gltf) => new Promise((resolve, reject) => {
 	const { nodes } = gltf;
 
@@ -67,7 +64,7 @@ const _parseNodes = (gltf) => new Promise((resolve, reject) => {
 		if (nodeInfo.camera != null && this.includeCamera) {
 			// setup camera
 		} else if(nodeInfo.mesh != null) {
-			console.log(i, 'Mesh index :', nodeInfo.mesh);
+			// console.log(i, 'Mesh index :', nodeInfo.mesh);
 		}
 
 	});
@@ -123,10 +120,10 @@ const _parseMesh = (gltf) => new Promise((resolve, reject) => {
 			for(let s in geometry) {
 				const data = geometry[s];
 				if(s !== 'indices') {
-					console.log(s, data);
+					// console.log(s, data);
 					m.bufferFlattenData(data.value, s, data.size);
 				} else {
-					console.log(data.value);
+					// console.log(data.value);
 					m.bufferIndex(data.value);
 				}
 			}

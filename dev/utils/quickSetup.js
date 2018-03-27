@@ -42,8 +42,8 @@ const quickSetup = (mAssetsList, mRender, mResize) => new Promise((resolve, reje
 	function loop() {
 		GL.clear(0, 0, 0, 0);
 		GL.setMatrices(camera);
-		batchDots.draw();
-		batchAxis.draw();
+		// batchDots.draw();
+		// batchAxis.draw();
 
 		if(mRender) {
 			mRender();
