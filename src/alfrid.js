@@ -45,6 +45,7 @@ import ObjLoader			from './alfrid/loaders/ObjLoader';
 import HDRLoader			from './alfrid/loaders/HDRLoader';
 import ColladaParser		from './alfrid/loaders/ColladaParser';
 import GLTFLoader			from './alfrid/loaders/GltfLoader';
+import loadImages			from './alfrid/loaders/loadImages';
 
 //	POST EFFECT
 import EffectComposer 		from './alfrid/post/EffectComposer';
@@ -98,11 +99,13 @@ class Alfrid {
 		this.CameraCube        = CameraCube;
 		this.OrbitalControl    = OrbitalControl;
 		this.QuatRotation      = QuatRotation;
+		this.TouchDetector     = TouchDetector;
 		this.BinaryLoader      = BinaryLoader;
 		this.ObjLoader         = ObjLoader;
 		this.ColladaParser     = ColladaParser;
 		this.HDRLoader         = HDRLoader;
 		this.GLTFLoader        = GLTFLoader;
+		this.loadImages		   = loadImages;
 		this.BatchCopy         = BatchCopy;
 		this.BatchAxis         = BatchAxis;
 		this.BatchBall         = BatchBall;
@@ -190,6 +193,7 @@ export {
 	ObjLoader,
 	HDRLoader,
 	GLTFLoader,
+	loadImages,
 	ColladaParser,
 	EffectComposer,
 	Pass,

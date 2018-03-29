@@ -1,7 +1,11 @@
 // GltfLoader.js
 
 import xhr from './xhr';
+import loadImages from './loadImages';
 import Mesh from '../Mesh';
+import GLTexture from '../GLTexture2';
+import Promise from 'promise-polyfill';
+
 
 const ARRAY_CTOR_MAP = {
 	5120: Int8Array,
@@ -23,19 +27,19 @@ const SIZE_MAP = {
 };
 
 const semanticAttributeMap = {
-	'NORMAL': 'aNormal',
-	'POSITION': 'aVertexPosition',
+	NORMAL: 'aNormal',
+	POSITION: 'aVertexPosition',
 	// 'TANGENT': 'aTangent',
-	'TEXCOORD_0': 'aTextureCoord',
-	'TEXCOORD_1': 'aTextureCoord1',
-	'WEIGHTS_0': 'aWeight',
-	'JOINTS_0': 'aJoint',
-	'COLOR': 'aColor'
+	TEXCOORD_0: 'aTextureCoord',
+	TEXCOORD_1: 'aTextureCoord1',
+	WEIGHTS_0: 'aWeight',
+	JOINTS_0: 'aJoint',
+	COLOR: 'aColor'
 };
 
 let base;
 
-const load = ( mSource ) => new Promise((resolve, reject) => {
+const load = (mSource) => new Promise((resolve, reject) => {
 	if((typeof mSource) === 'string') {
 		base = mSource.substring(0, mSource.lastIndexOf('/')+1);
 	} else {
@@ -43,24 +47,24 @@ const load = ( mSource ) => new Promise((resolve, reject) => {
 	}
 
 	_loadGltf(mSource)
-	.then(_loadBin)
-	.then(_getBufferViewData)
-	.then(_loadTextures)
-	.then(_parseMesh)
-	.then(_parseNodes)
-	.then((gltfInfo)=>{
-		resolve(gltfInfo);
-	})
-	.catch(e => {
-		console.log('Error:', e);
-	});
+		.then(_loadBin)
+		.then(_loadTextures)
+		.then(_getBufferViewData)
+		.then(_parseMesh)
+		.then(_parseNodes)
+		.then((gltfInfo)=>{
+			resolve(gltfInfo);
+		})
+		.catch(e => {
+			console.log('Error:', e);
+		});
 });
 
 
 const _parseNodes = (gltf) => new Promise((resolve, reject) => {
 	const { nodes } = gltf;
 
-	nodes.forEach( (nodeInfo, i) => {
+	nodes.forEach((nodeInfo, i) => {
 		if (nodeInfo.camera != null && this.includeCamera) {
 			// setup camera
 		} else if(nodeInfo.mesh != null) {
@@ -76,17 +80,18 @@ const _parseMesh = (gltf) => new Promise((resolve, reject) => {
 	gltf.geometries = [];
 	gltf.output = {
 		meshes:[],
-		scene:{}
-	}
+		scene:{},
+		textures:[]
+	};
 
-	meshes.forEach( (mesh, i) => {
+	meshes.forEach((mesh, i) => {
 		const { primitives } = mesh;
 		const geometry = {};
 
-		primitives.forEach( (primitiveInfo, i) => {
+		primitives.forEach((primitiveInfo, i) => {
 			const semantics = Object.keys(primitiveInfo.attributes);
 
-			semantics.forEach( (semantic, i) => {
+			semantics.forEach((semantic, i) => {
 				const accessorIdx = primitiveInfo.attributes[semantic];
 				const attributeInfo = gltf.accessors[accessorIdx];
 				const attributeName = semanticAttributeMap[semantic];
@@ -102,7 +107,7 @@ const _parseMesh = (gltf) => new Promise((resolve, reject) => {
 				geometry[attributeName] = {
 					value:attributeArray,
 					size,
-				}
+				};
 				// console.log('attribute', attributeName, geometry[attributeName]);
 			});
 
@@ -112,12 +117,12 @@ const _parseMesh = (gltf) => new Promise((resolve, reject) => {
 				geometry.indices = {
 					value:attributeArray,
 					size:1
-				}
+				};
 			}
 
 			const m = new Mesh();
 
-			for(let s in geometry) {
+			for(const s in geometry) {
 				const data = geometry[s];
 				if(s !== 'indices') {
 					// console.log(s, data);
@@ -135,11 +140,10 @@ const _parseMesh = (gltf) => new Promise((resolve, reject) => {
 	resolve(gltf);
 });
 
-
 const _getBufferViewData = (gltfInfo) => new Promise((resolve, reject) => {
 	const { bufferViews, buffers } = gltfInfo;
 
-	bufferViews.forEach( (bufferViewInfo, i) => {
+	bufferViews.forEach((bufferViewInfo, i) => {
 		const buffer = buffers[bufferViewInfo.buffer].data;
 		bufferViewInfo.data = buffer.slice(bufferViewInfo.byteOffset || 0, (bufferViewInfo.byteOffset || 0) + (bufferViewInfo.byteLength || 0));
 	});
@@ -147,7 +151,7 @@ const _getBufferViewData = (gltfInfo) => new Promise((resolve, reject) => {
 });
 
 const _loadGltf = (mSource) => new Promise((resolve, reject) => {
-	if( (typeof mSource) !== 'string') {
+	if((typeof mSource) !== 'string') {
 		resolve(mSource);
 	} else {
 		xhr(mSource).then((o)=>{
@@ -164,7 +168,7 @@ const _loadBin = (gltfInfo) => new Promise((resolve, reject) => {
 	if(gltfInfo.buffers) {
 		let count = gltfInfo.buffers.length;
 
-		gltfInfo.buffers.forEach( buffer => {
+		gltfInfo.buffers.forEach(buffer => {
 
 			const urlBin = `${base}${gltfInfo.buffers[0].uri}`;
 			xhr(urlBin, true).then((o)=> {
@@ -187,11 +191,25 @@ const _loadBin = (gltfInfo) => new Promise((resolve, reject) => {
 });
 
 const _loadTextures = (gltfInfo) => new Promise((resolve, reject) => {
-	console.log('TODO : Loading textures');
+	const { textures, images } = gltfInfo;
+	const imagesToLoad = images.map( img => `${base}${img.uri}`);
+
+	loadImages(imagesToLoad).then((o) => {
+		o.forEach( img => {
+			console.log(img.src);
+		});
+
+		gltfInfo.textures = o.map( img => new GLTexture(img));
+		console.table(gltfInfo.textures);
+	}, (e)=> {
+		reject(e);
+	});
+
+
 	resolve(gltfInfo);
 });
 
-const parse = ( mGltfInfo, mBin ) => new Promise((resolve, reject) => {
+const parse = (mGltfInfo, mBin) => new Promise((resolve, reject) => {
 	resolve(mSource);
 });
 
@@ -208,17 +226,16 @@ const _getAccessorData = (gltf, accessorIdx, isIndices = false) => {
 	let arr = new ArrayCtor(buffer, byteOffset, size * accessorInfo.count);
 	const quantizeExtension = accessorInfo.extensions && accessorInfo.extensions['WEB3D_quantized_attributes'];
 	if (quantizeExtension) {
-		var decodedArr = new Float32Array(size * accessorInfo.count);
-		var decodeMatrix = quantizeExtension.decodeMatrix;
-		var decodeOffset, decodeScale;
-		var decodeOffset = new Array(size);
-		var decodeScale = new Array(size);
-		for (var k = 0; k < size; k++) {
+		const decodedArr = new Float32Array(size * accessorInfo.count);
+		const decodeMatrix = quantizeExtension.decodeMatrix;
+		const decodeOffset = new Array(size);
+		const decodeScale = new Array(size);
+		for (let k = 0; k < size; k++) {
 			decodeOffset[k] = decodeMatrix[size * (size + 1) + k];
 			decodeScale[k] = decodeMatrix[k * (size + 1) + k];
 		}
-		for (var i = 0; i < accessorInfo.count; i++) {
-			for (var k = 0; k < size; k++) {
+		for (let i = 0; i < accessorInfo.count; i++) {
+			for (let k = 0; k < size; k++) {
 				decodedArr[i * size + k] = arr[i * size + k] * decodeScale[k] + decodeOffset[k];
 			}
 		}
@@ -229,7 +246,7 @@ const _getAccessorData = (gltf, accessorIdx, isIndices = false) => {
 	// console.log({buffer, byteOffset, ArrayCtor, size, arr});
 
 	return arr;
-}
+};
 
 export default {
 	load,

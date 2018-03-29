@@ -42,8 +42,8 @@ const quickSetup = (mAssetsList, mRender, mResize) => new Promise((resolve, reje
 	function loop() {
 		GL.clear(0, 0, 0, 0);
 		GL.setMatrices(camera);
-		// batchDots.draw();
-		// batchAxis.draw();
+		batchDots.draw();
+		batchAxis.draw();
 
 		if(mRender) {
 			mRender();
@@ -75,6 +75,10 @@ const quickSetup = (mAssetsList, mRender, mResize) => new Promise((resolve, reje
 	mAssetsList = mAssetsList || [];
 
 	console.log(mAssetsList);
+	if(mAssetsList.length == 0) {
+		Scheduler.addEF(loop);
+		resolve(o);
+	}
 
 	const loader = new AssetLoader({
 		assets:mAssetsList
