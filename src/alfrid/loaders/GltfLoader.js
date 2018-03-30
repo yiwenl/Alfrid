@@ -3,9 +3,15 @@
 import xhr from './xhr';
 import loadImages from './loadImages';
 import Mesh from '../Mesh';
+import GLShader from '../GLShader';
+import ShaderLibs from '../utils/ShaderLibs';
+import ShaderUtils from '../helpers/ShaderUtils';
+
 import GLTexture from '../GLTexture2';
 import Object3D from '../objects/Object3D';
 import Promise from 'promise-polyfill';
+import objectAssign from 'object-assign';
+
 
 
 const ARRAY_CTOR_MAP = {
@@ -32,7 +38,7 @@ const semanticAttributeMap = {
 	POSITION: 'aVertexPosition',
 	// 'TANGENT': 'aTangent',
 	TEXCOORD_0: 'aTextureCoord',
-	TEXCOORD_1: 'aTextureCoord1',
+	// TEXCOORD_1: 'aTextureCoord1',
 	WEIGHTS_0: 'aWeight',
 	JOINTS_0: 'aJoint',
 	COLOR: 'aColor'
@@ -50,6 +56,7 @@ const load = (mSource) => new Promise((resolve, reject) => {
 	_loadGltf(mSource)
 		.then(_loadBin)
 		.then(_loadTextures)
+		.then(_createMaterials)
 		.then(_getBufferViewData)
 		.then(_parseMesh)
 		.then(_parseNodes)
@@ -73,9 +80,6 @@ const _parseNodes = (gltf) => new Promise((resolve, reject) => {
 
 	});
 
-	nodes.forEach((nodeInfo, i) => {
-		if(nodeInfo.children);
-	});
 
 	const getTree = (nodeIndex) => {
 		const node = nodes[nodeIndex];
@@ -97,7 +101,7 @@ const _parseNodes = (gltf) => new Promise((resolve, reject) => {
 			obj3D.z = node.translation[2];
 		}
 
-		if(node.mesh) {
+		if(node.mesh !== undefined) {
 			obj3D.mesh = node.glMesh;
 		}
 
@@ -128,18 +132,16 @@ const _parseNodes = (gltf) => new Promise((resolve, reject) => {
 const _parseMesh = (gltf) => new Promise((resolve, reject) => {
 	const { meshes } = gltf;
 	gltf.geometries = [];
-	gltf.output = {
-		meshes:[],
-		scenes:[],
-		textures:[]
-	};
+	
 
 	meshes.forEach((mesh, i) => {
 		const { primitives } = mesh;
+
 		const geometry = {};
 
 		primitives.forEach((primitiveInfo, i) => {
 			const semantics = Object.keys(primitiveInfo.attributes);
+			let defines = {};
 
 			semantics.forEach((semantic, i) => {
 				const accessorIdx = primitiveInfo.attributes[semantic];
@@ -148,10 +150,22 @@ const _parseMesh = (gltf) => new Promise((resolve, reject) => {
 				if(!attributeName) {
 					return;
 				}
+				if(semantic === 'NORMAL') {
+					defines.HAS_NORMALS = 1;
+				} 
+				if(semantic.indexOf('TEXCOORD') > -1) {
+					defines.HAS_UV = 1;
+				}
+
+
 				const size = SIZE_MAP[attributeInfo.type];
 				let attributeArray = _getAccessorData(gltf, accessorIdx);
 				if (attributeArray instanceof Uint32Array) {
 					attributeArray = new Float32Array(attributeArray);
+				}
+
+				if(semantic === 'TEXCOORD_1') {
+					console.log(size, attributeArray);
 				}
 
 				geometry[attributeName] = {
@@ -175,14 +189,21 @@ const _parseMesh = (gltf) => new Promise((resolve, reject) => {
 			for(const s in geometry) {
 				const data = geometry[s];
 				if(s !== 'indices') {
-					// console.log(s, data);
 					m.bufferFlattenData(data.value, s, data.size);
 				} else {
-					// console.log(data.value);
 					m.bufferIndex(data.value);
 				}
 			}
+
 			gltf.output.meshes.push(m);
+			m.material = gltf.output.materials[primitiveInfo.material];
+			defines = objectAssign(defines, m.material.defines);
+			m.defines = defines;
+
+			const vs = ShaderUtils.injectDefines(ShaderLibs.gltfVert, defines);
+			const fs = ShaderUtils.injectDefines(ShaderLibs.gltfFrag, defines);
+
+			// console.log('defines', defines);
 			gltf.geometries.push(geometry);
 		});
 	});
@@ -205,7 +226,14 @@ const _loadGltf = (mSource) => new Promise((resolve, reject) => {
 		resolve(mSource);
 	} else {
 		xhr(mSource).then((o)=>{
-			resolve(JSON.parse(o));
+			const gltfInfo = JSON.parse(o);
+			gltfInfo.output = {
+				meshes:[],
+				scenes:[],
+				textures:[]
+			};
+
+			resolve(gltfInfo);
 		}, (e)=> {
 			reject(e);
 		});
@@ -241,17 +269,59 @@ const _loadBin = (gltfInfo) => new Promise((resolve, reject) => {
 });
 
 const _loadTextures = (gltfInfo) => new Promise((resolve, reject) => {
-	const { textures, images } = gltfInfo;
+	const { textures, images, samplers } = gltfInfo;
+	if(!images) {
+		resolve(gltfInfo);
+	}
 	const imagesToLoad = images.map( img => `${base}${img.uri}`);
 
 	loadImages(imagesToLoad).then((o) => {
-		gltfInfo.textures = o.map( img => new GLTexture(img));
+		gltfInfo.output.textures = o.map( (img, i) => {
+			const settings = samplers ? samplers[textures[i].sampler] : {};
+			return new GLTexture(img, settings);
+		});
+		resolve(gltfInfo);
 	}, (e)=> {
 		reject(e);
 	});
+});
 
-
+const _createMaterials = (gltfInfo) => new Promise((resolve, reject) => {
+	const { materials } = gltfInfo;
+	const { textures } = gltfInfo.output;
 	resolve(gltfInfo);
+
+	gltfInfo.output.materials = materials.map( material => {
+		material.defines = {
+			USE_IBL:1
+		}
+
+		if(material.normalTexture) {
+			material.defines.HAS_NORMALMAP = 1;
+			material.normalTexture.glTexture = textures[material.normalTexture.index];
+		}
+
+		if(material.occlusionTexture) {
+			material.defines.HAS_OCCLUSIONMAP = 1;
+			material.occlusionTexture.glTexture = textures[material.occlusionTexture.index];	
+		}
+
+
+		// if(material.pbrMetallicRoughness) {
+		if(material.pbrMetallicRoughness.baseColorTexture) {
+			material.defines.HAS_BASECOLORMAP = 1;
+			material.pbrMetallicRoughness.baseColorTexture.glTexture = textures[material.pbrMetallicRoughness.baseColorTexture.index];	
+		}
+
+		if(material.pbrMetallicRoughness.metallicRoughnessTexture) {
+			material.defines.HAS_METALROUGHNESSMAP = 1;
+			material.pbrMetallicRoughness.metallicRoughnessTexture.glTexture = textures[material.pbrMetallicRoughness.metallicRoughnessTexture.index];	
+		}
+
+		// }
+
+		return material;
+	});
 });
 
 const parse = (mGltfInfo, mBin) => new Promise((resolve, reject) => {

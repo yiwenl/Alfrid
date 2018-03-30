@@ -36,8 +36,8 @@ const cloneArray = (mArray) => {
 };
 
 let gl;
-const defaultVertexShader = require('./shaders/basic.vert');
-const defaultFragmentShader = require('./shaders/basic.frag');
+const defaultVertexShader = require('./glsl/basic.vert');
+const defaultFragmentShader = require('./glsl/basic.frag');
 
 const uniformMapping = {
 	float: 'uniform1f',

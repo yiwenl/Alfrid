@@ -5,8 +5,8 @@ import Mesh from '../Mesh';
 import GLShader from '../GLShader';
 import Batch from '../Batch';
 
-const vs = require('../shaders/axis.vert');
-const fs = require('../shaders/axis.frag');
+const vs = require('../glsl/axis.vert');
+const fs = require('../glsl/axis.frag');
 
 
 class BatchAxis extends Batch {

@@ -4,6 +4,17 @@ const ShaderUtils = {
 
 };
 
+const definesToString = function(defines) {
+    let outStr = '';
+    for (const def in defines) {
+    	if(defines[def]) {
+    		outStr += '#define ' + def + ' ' + defines[def] + '\n';	
+    	}
+        
+    }
+    return outStr;
+};
+
 const getUniformType = function (mValue) {
 	if(mValue.length) {
 		return `vec${mValue.length}`;
@@ -37,6 +48,12 @@ ShaderUtils.bindUniforms = function (mShader, mObjUniforms) {
 	}
 	
 };
+
+ShaderUtils.injectDefines = function (mShader, mDefines) {
+
+	return `${definesToString(mDefines)}\n${mShader}`;
+
+}
 
 
 export default ShaderUtils;

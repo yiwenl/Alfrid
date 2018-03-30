@@ -4,8 +4,8 @@ import Geom from '../Geom';
 import GLShader from '../GLShader';
 import Batch from '../Batch';
 
-const vs = require('../shaders/skybox.vert');
-const fs = require('../shaders/skybox.frag');
+const vs = require('../glsl/skybox.vert');
+const fs = require('../glsl/skybox.frag');
 
 
 class BatchSkybox extends Batch {

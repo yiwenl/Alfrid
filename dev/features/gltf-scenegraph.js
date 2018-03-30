@@ -21,7 +21,7 @@ quickSetup(assetsToLoad, render).then((o)=>init(o)).catch(err=>{
 function init(o) {
 	console.log('Init', o);
 	o.orbControl.rx.value = 0.1;
-	o.orbControl.radius.value = 12;
+	o.orbControl.radius.value = 5;
 	// o.orbControl.ry.value = Math.PI - 0.2;
 
 	matrix = mat4.create();
@@ -29,8 +29,11 @@ function init(o) {
 	mat4.identity(matrix, matrix);
 	mat4.scale(matrix, matrix, vec3.fromValues(s, s, s));
 
-	const url = 'assets/gltf/helmet/FlightHelmet.gltf';
-	// const url = 'assets/gltf/microphone/microphone.gltf';
+	// const url = 'assets/gltf/helmet/FlightHelmet.gltf';
+	const url = 'assets/gltf/microphone/microphone.gltf';
+	// const url = 'assets/gltf/cube/scene.gltf';
+	// const url = 'assets/gltf/frank/scene.gltf';
+	// const url = 'assets/gltf/avacado/scene.gltf';
 
 	GLTFLoader.load(url)
 	.then((gltfInfo)=> {
@@ -57,10 +60,10 @@ function init(o) {
 function renderTree(child) {
 	child.matrix;
 	if(child.mesh) {
-		// console.log('here');
 		GL.pushMatrix();
 		GL.rotate(child.matrix);
 		GL.draw(child.mesh);
+		// console.log(child.mesh.material);
 		GL.popMatrix();
 	}
 

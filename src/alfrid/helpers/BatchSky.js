@@ -4,8 +4,8 @@ import Geom from '../Geom';
 import GLShader from '../GLShader';
 import Batch from '../Batch';
 
-const vs = require('../shaders/sky.vert');
-const fs = require('../shaders/copy.frag');
+const vs = require('../glsl/sky.vert');
+const fs = require('../glsl/copy.frag');
 
 
 class BatchSky extends Batch {

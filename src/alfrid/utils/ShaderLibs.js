@@ -1,14 +1,14 @@
 // ShaderLbs.js
 
-'use strict';
-
-import simpleColorFrag from '../shaders/simpleColor.frag';
-import bigTriangleVert from '../shaders/bigTriangle.vert';
-import generalVert from '../shaders/general.vert';
-import copyFrag from '../shaders/copy.frag';
-import basicVert from '../shaders/basic.vert';
-import skyboxVert from '../shaders/skybox.vert';
-import skyboxFrag from '../shaders/skybox.frag';
+import simpleColorFrag from '../glsl/simpleColor.frag';
+import bigTriangleVert from '../glsl/bigTriangle.vert';
+import generalVert from '../glsl/general.vert';
+import copyFrag from '../glsl/copy.frag';
+import basicVert from '../glsl/basic.vert';
+import skyboxVert from '../glsl/skybox.vert';
+import skyboxFrag from '../glsl/skybox.frag';
+import gltfVert from '../glsl/gltf.vert';
+import gltfFrag from '../glsl/gltf.frag';
 
 const ShaderLibs = {
 	simpleColorFrag,
@@ -18,6 +18,8 @@ const ShaderLibs = {
 	basicVert,
 	skyboxVert,
 	skyboxFrag,
+	gltfVert,
+	gltfFrag,
 };
 
 
