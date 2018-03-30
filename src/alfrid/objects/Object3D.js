@@ -24,11 +24,14 @@ class Object3D {
 		this._rotation = vec3.create();
 
 		this._matrix = mat4.create();
+		this._matrixParent = mat4.create();
 		this._matrixRotation = mat4.create();
 		this._matrixScale = mat4.create();
 		this._matrixTranslation = mat4.create();
 		this._matrixQuaternion = mat4.create();
 		this._quat = quat.create();
+
+		this._children = [];
 	}
 
 	_update() {
@@ -53,14 +56,37 @@ class Object3D {
 
 		mat4.mul(this._matrix, this._matrixTranslation, this._matrixRotation);
 		mat4.mul(this._matrix, this._matrix, this._matrixScale);
+		mat4.mul(this._matrix, this._matrixParent, this._matrix);
+		// mat4.mul(this._matrix, this._matrix, this._matrixParent);
+
+		this._children.forEach( child => {
+			child.updateMatrix(this._matrix);
+		});
 
 		this._needUpdate = false;
 	}
 
+	updateMatrix(mParentMatrix) {
+		mParentMatrix = mParentMatrix || mat4.create();
+		mat4.copy(this._matrixParent, mParentMatrix);
+		this._needUpdate = true;
+	}
 
 	setRotationFromQuaternion(mQuat) {
 		quat.copy(this._quat, mQuat);
 		this._needUpdate = true;
+	}
+
+
+	addChild(mChild) {
+		this._children.push(mChild);
+	}
+
+	removeChild(mChild) {
+		const index = this._children.indexOf(mChild);
+		if(index == -1) {	console.warn('Child no exist'); return;	}
+
+		this._children.splice(index, 1);
 	}
 
 
@@ -124,6 +150,9 @@ class Object3D {
 		this._needUpdate = true;
 		this._rz = mValue;
 	}
+
+
+	get children() {	return this._children;	}
 
 }
 

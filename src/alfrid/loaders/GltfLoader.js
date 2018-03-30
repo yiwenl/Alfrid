@@ -4,6 +4,7 @@ import xhr from './xhr';
 import loadImages from './loadImages';
 import Mesh from '../Mesh';
 import GLTexture from '../GLTexture2';
+import Object3D from '../objects/Object3D';
 import Promise from 'promise-polyfill';
 
 
@@ -62,16 +63,65 @@ const load = (mSource) => new Promise((resolve, reject) => {
 
 
 const _parseNodes = (gltf) => new Promise((resolve, reject) => {
-	const { nodes } = gltf;
+	const { nodes, scenes } = gltf;
 
+	//	first parse to get meshes
 	nodes.forEach((nodeInfo, i) => {
-		if (nodeInfo.camera != null && this.includeCamera) {
-			// setup camera
-		} else if(nodeInfo.mesh != null) {
-			// console.log(i, 'Mesh index :', nodeInfo.mesh);
+		if(nodeInfo.mesh != null) {
+			nodeInfo.glMesh = gltf.output.meshes[nodeInfo.mesh];
 		}
 
 	});
+
+	nodes.forEach((nodeInfo, i) => {
+		if(nodeInfo.children);
+	});
+
+	const getTree = (nodeIndex) => {
+		const node = nodes[nodeIndex];
+
+		const obj3D = new Object3D();
+		if(node.scale) {
+			obj3D.scaleX = node.scale[0];
+			obj3D.scaleY = node.scale[1];
+			obj3D.scaleZ = node.scale[2];
+		}
+
+		if(node.rotation) {
+			obj3D.setRotationFromQuaternion(node.rotation);
+		}
+
+		if(node.translation) {
+			obj3D.x = node.translation[0];
+			obj3D.y = node.translation[1];
+			obj3D.z = node.translation[2];
+		}
+
+		if(node.mesh) {
+			obj3D.mesh = node.glMesh;
+		}
+
+		if(node.children) {
+			node.children.forEach( child => {
+				const _child = getTree(child);
+				obj3D.addChild(_child);
+			});	
+		}
+		
+
+		return obj3D;
+	}
+
+	gltf.output.scenes = scenes.map( scene => {
+		const container = new Object3D();
+		scene.nodes.forEach( node => {
+			const childTree = getTree(scene.nodes[0]);
+			container.addChild(childTree);
+		});
+
+		return container;
+	});
+
 	resolve(gltf);
 });
 
@@ -80,7 +130,7 @@ const _parseMesh = (gltf) => new Promise((resolve, reject) => {
 	gltf.geometries = [];
 	gltf.output = {
 		meshes:[],
-		scene:{},
+		scenes:[],
 		textures:[]
 	};
 
@@ -195,12 +245,7 @@ const _loadTextures = (gltfInfo) => new Promise((resolve, reject) => {
 	const imagesToLoad = images.map( img => `${base}${img.uri}`);
 
 	loadImages(imagesToLoad).then((o) => {
-		o.forEach( img => {
-			console.log(img.src);
-		});
-
 		gltfInfo.textures = o.map( img => new GLTexture(img));
-		console.table(gltfInfo.textures);
 	}, (e)=> {
 		reject(e);
 	});
