@@ -13,9 +13,8 @@ uniform samplerCube uIrradianceMap;
 uniform sampler2D uColorMap;
 #endif
 
-#ifdef HAS_OCCLUSIONMAP
-uniform sampler2D uAoMap;
-uniform float uOcclusionStrength;
+#ifdef HAS_METALROUGHNESSMAP
+uniform sampler2D uMetallicRoughnessMap;
 #endif
 
 #ifdef HAS_NORMALMAP
@@ -23,13 +22,14 @@ uniform sampler2D uNormalMap;
 uniform float uNormalScale;
 #endif
 
+#ifdef HAS_OCCLUSIONMAP
+uniform sampler2D uAoMap;
+uniform float uOcclusionStrength;
+#endif
+
 #ifdef HAS_EMISSIVEMAP
 uniform sampler2D uEmissiveMap;
 uniform vec3 uEmissiveFactor;
-#endif
-
-#ifdef HAS_METALROUGHNESSMAP
-uniform sampler2D uMetallicRoughnessMap;
 #endif
 
 uniform vec3 uLightDirection;

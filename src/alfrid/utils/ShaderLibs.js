@@ -9,6 +9,7 @@ import skyboxVert from '../glsl/skybox.vert';
 import skyboxFrag from '../glsl/skybox.frag';
 import gltfVert from '../glsl/gltf.vert';
 import gltfFrag from '../glsl/gltf.frag';
+import debugFrag from '../glsl/debug.frag';
 
 const ShaderLibs = {
 	simpleColorFrag,
@@ -20,6 +21,7 @@ const ShaderLibs = {
 	skyboxFrag,
 	gltfVert,
 	gltfFrag,
+	debugFrag,
 };
 
 

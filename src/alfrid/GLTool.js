@@ -163,7 +163,11 @@ class GLTool {
 	}
 
 
-	draw(mMesh, mDrawingType) {
+	draw(mMesh) {
+		if(mMesh.material) {
+			mMesh.material.shader.bind();
+			mMesh.material.shader.uniform(mMesh.material.uniforms);
+		}
 		if(mMesh.length) {
 			for(let i = 0; i < mMesh.length; i++) {
 				this.draw(mMesh[i]);
@@ -184,12 +188,8 @@ class GLTool {
 		this.shader.uniform('uModelViewMatrixInverse', 'mat3', this._inverseModelViewMatrix);
 
 		let drawType = mMesh.drawType;
-		if(mDrawingType !== undefined) {
-			drawType = mDrawingType;
-		}
 
 		if(mMesh.isInstanced) {
-			//	DRAWING
 			gl.drawElementsInstanced(mMesh.drawType, mMesh.iBuffer.numItems, gl.UNSIGNED_SHORT, 0, mMesh.numInstance);
 		} else {
 			if(drawType === gl.POINTS) {

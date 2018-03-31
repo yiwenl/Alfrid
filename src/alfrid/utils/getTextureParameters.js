@@ -11,7 +11,7 @@ const getTextureParameters = function (mParams, mSource, mWidth, mHeight) {
 		let minFilter = GL.LINEAR;
 		if(mWidth && mWidth) {
 			if(isPowerOfTwo(mWidth) && isPowerOfTwo(mHeight)) {
-				minFilter = GL.NEAREST_MIPMAP_LINEAR;
+				minFilter = GL.LINEAR_MIPMAP_NEAREST;
 			}
 		}
 

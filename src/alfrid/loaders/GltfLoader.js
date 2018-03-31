@@ -5,7 +5,7 @@ import loadImages from './loadImages';
 import Mesh from '../Mesh';
 import GLShader from '../GLShader';
 import ShaderLibs from '../utils/ShaderLibs';
-import ShaderUtils from '../helpers/ShaderUtils';
+import Shaders from '../shaders/Shaders';
 
 import GLTexture from '../GLTexture2';
 import Object3D from '../objects/Object3D';
@@ -196,14 +196,61 @@ const _parseMesh = (gltf) => new Promise((resolve, reject) => {
 			}
 
 			gltf.output.meshes.push(m);
-			m.material = gltf.output.materials[primitiveInfo.material];
+			const material = gltf.output.materials[primitiveInfo.material];
+			m.material = material;
 			defines = objectAssign(defines, m.material.defines);
 			m.defines = defines;
 
-			const vs = ShaderUtils.injectDefines(ShaderLibs.gltfVert, defines);
-			const fs = ShaderUtils.injectDefines(ShaderLibs.gltfFrag, defines);
+			const shader = Shaders.get(ShaderLibs.gltfVert, ShaderLibs.debugFrag, defines);
 
-			// console.log('defines', defines);
+			const {
+				emissiveFacotr,
+				normalTexture,
+				occlusionTexture,
+				pbrMetallicRoughness,
+			} = material;
+
+			const {
+				baseColorTexture,
+				metallicRoughnessTexture
+			} = pbrMetallicRoughness;
+
+			const uniforms = {
+				uEmissiveFactor:emissiveFacotr || [0, 0, 0],
+				uBaseColor:pbrMetallicRoughness.baseColorFactor || [1, 1, 1, 1],
+				uRoughness:pbrMetallicRoughness.roughnessFactor || 1,
+				uMetallic:pbrMetallicRoughness.metallicFactor || 1,
+				uScaleDiffBaseMR:[0, 0, 0, 0],
+				uScaleFGDSpec:[0, 0, 0, 0],
+				uScaleIBLAmbient:[1, 1, 1, 1],
+				uGamma:2.2
+			}
+
+
+			if (baseColorTexture) {
+				uniforms.uColorMap = baseColorTexture.glTexture;
+			}
+
+			if (metallicRoughnessTexture) {
+				uniforms.uMetallicRoughnessMap = metallicRoughnessTexture.glTexture;	
+			}
+
+			if (normalTexture) {
+				uniforms.uNormalScale = normalTexture.scale || 1;
+				uniforms.uNormalMap = normalTexture.glTexture;
+			}
+
+			if (occlusionTexture) {
+				uniforms.uAoMap = occlusionTexture.glTexture;
+				uniforms.uOcclusionStrength = occlusionTexture.strength || 1;
+			}
+
+			shader.bind();
+			shader.uniform(uniforms);
+
+
+			m.material.shader = shader;
+			m.material.uniforms = uniforms;
 			gltf.geometries.push(geometry);
 		});
 	});

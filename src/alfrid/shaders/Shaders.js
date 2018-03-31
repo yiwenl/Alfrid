@@ -1,8 +1,8 @@
-// ShaderUtils.js
+// Shaders.js
 
-const ShaderUtils = {
+import GLShader from '../GLShader';
 
-};
+const shaderCache = [];
 
 const definesToString = function(defines) {
 	let outStr = '';
@@ -23,7 +23,7 @@ const getUniformType = function (mValue) {
 	}
 };
 
-ShaderUtils.addUniforms = function (mShader, mObjUniforms) {
+const addUniforms = function (mShader, mObjUniforms) {
 
 	let strUniforms = '';
 	for(const uniformName in mObjUniforms) {
@@ -39,7 +39,7 @@ ShaderUtils.addUniforms = function (mShader, mObjUniforms) {
 };
 
 
-ShaderUtils.bindUniforms = function (mShader, mObjUniforms) {
+const bindUniforms = function (mShader, mObjUniforms) {
 
 	for(const uniformName in mObjUniforms) {
 		const uniformValue = mObjUniforms[uniformName];
@@ -49,11 +49,40 @@ ShaderUtils.bindUniforms = function (mShader, mObjUniforms) {
 	
 };
 
-ShaderUtils.injectDefines = function (mShader, mDefines) {
+const injectDefines = function (mShader, mDefines) {
 
 	return `${definesToString(mDefines)}\n${mShader}`;
 
 }
 
+const get = (vs, fs, defines = {}) => {
+	let _shader;
+	let _vs = injectDefines(vs, defines);
+	let _fs = injectDefines(fs, defines);
 
-export default ShaderUtils;
+	shaderCache.forEach ( shader => {
+		if(_vs === shader.vs && _fs === shader.fs) {
+			_shader = shader.glShader;
+		}
+	});
+
+	if (!_shader) {
+		_shader = new GLShader(_vs, _fs);
+		shaderCache.push({
+			vs:_vs,
+			fs:_fs,
+			glShader:_shader
+		});
+	}
+
+
+	return _shader;
+}
+
+
+export default {
+	get,
+	addUniforms,
+	bindUniforms,
+	injectDefines
+}
