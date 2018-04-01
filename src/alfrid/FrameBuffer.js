@@ -1,7 +1,7 @@
 // FrameBuffer.js
 
 import GL from './GLTool';
-import GLTexture2 from './GLTexture2';
+import GLTexture from './GLTexture';
 import WebglNumber from './utils/WebglNumber';
 import objectAssign from 'object-assign';
 
@@ -140,7 +140,7 @@ class FrameBuffer {
 			parameters[s] = mParameters[s];
 		}
 
-		const texture = new GLTexture2(null, parameters, this.width, this.height);
+		const texture = new GLTexture(null, parameters, this.width, this.height);
 		return texture;
 	}
 

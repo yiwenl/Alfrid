@@ -28,7 +28,7 @@ quickSetup(assetsToLoad, render).then((o)=>init(o)).catch(err=>{
 
 
 function init(o) {
-	console.log('Init', o);
+	// console.log('Init', o);
 	o.orbControl.rx.value = 0.1;
 	o.orbControl.radius.value = 10;
 	// o.orbControl.ry.value = Math.PI - 0.2;

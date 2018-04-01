@@ -7,7 +7,7 @@ import GLShader from '../GLShader';
 import ShaderLibs from '../shaders/ShaderLibs';
 import Shaders from '../shaders/Shaders';
 
-import GLTexture from '../GLTexture2';
+import GLTexture from '../GLTexture';
 import Object3D from '../objects/Object3D';
 import Promise from 'promise-polyfill';
 import objectAssign from 'object-assign';

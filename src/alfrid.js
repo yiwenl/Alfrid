@@ -3,8 +3,7 @@
 import * as GLM 			from 'gl-matrix';
 import GL 					from './alfrid/GLTool';
 import GLShader 			from './alfrid/GLShader';
-import GLTextureOld 		from './alfrid/GLTexture';
-import GLTexture 			from './alfrid/GLTexture2';
+import GLTexture 			from './alfrid/GLTexture';
 import GLCubeTexture 		from './alfrid/GLCubeTexture';
 import Mesh 				from './alfrid/Mesh';
 import Geom					from './alfrid/Geom';
@@ -85,7 +84,6 @@ class Alfrid {
 		this.GLTool            = GL;
 		this.GLShader          = GLShader;
 		this.GLTexture         = GLTexture;
-		this.GLTextureOld      = GLTextureOld;
 		this.GLCubeTexture     = GLCubeTexture;
 		this.Mesh              = Mesh;
 		this.Geom              = Geom;
@@ -171,7 +169,6 @@ export {
 	GL,
 	GLShader,
 	GLTexture,
-	GLTextureOld,
 	GLCubeTexture,
 	Mesh,
 	Geom,
