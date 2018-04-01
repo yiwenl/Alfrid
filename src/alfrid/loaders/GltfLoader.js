@@ -4,13 +4,14 @@ import xhr from './xhr';
 import loadImages from './loadImages';
 import Mesh from '../Mesh';
 import GLShader from '../GLShader';
-import ShaderLibs from '../utils/ShaderLibs';
+import ShaderLibs from '../shaders/ShaderLibs';
 import Shaders from '../shaders/Shaders';
 
 import GLTexture from '../GLTexture2';
 import Object3D from '../objects/Object3D';
 import Promise from 'promise-polyfill';
 import objectAssign from 'object-assign';
+import WebglNumber from '../utils/WebglNumber';
 
 
 
@@ -106,7 +107,7 @@ const _parseNodes = (gltf) => new Promise((resolve, reject) => {
 		}
 
 		if(node.children) {
-			node.children.forEach( child => {
+			node.children.forEach(child => {
 				const _child = getTree(child);
 				obj3D.addChild(_child);
 			});	
@@ -114,11 +115,11 @@ const _parseNodes = (gltf) => new Promise((resolve, reject) => {
 		
 
 		return obj3D;
-	}
+	};
 
-	gltf.output.scenes = scenes.map( scene => {
+	gltf.output.scenes = scenes.map(scene => {
 		const container = new Object3D();
-		scene.nodes.forEach( node => {
+		scene.nodes.forEach(node => {
 			const childTree = getTree(scene.nodes[0]);
 			container.addChild(childTree);
 		});
@@ -199,9 +200,10 @@ const _parseMesh = (gltf) => new Promise((resolve, reject) => {
 			const material = gltf.output.materials[primitiveInfo.material];
 			m.material = material;
 			defines = objectAssign(defines, m.material.defines);
+
 			m.defines = defines;
 
-			const shader = Shaders.get(ShaderLibs.gltfVert, ShaderLibs.debugFrag, defines);
+			const shader = Shaders.get(ShaderLibs.gltfVert, ShaderLibs.gltfFrag, defines);
 
 			const {
 				emissiveFacotr,
@@ -223,9 +225,10 @@ const _parseMesh = (gltf) => new Promise((resolve, reject) => {
 				uScaleDiffBaseMR:[0, 0, 0, 0],
 				uScaleFGDSpec:[0, 0, 0, 0],
 				uScaleIBLAmbient:[1, 1, 1, 1],
-				uGamma:2.2
-			}
-
+				uLightDirection:[1, 1, 1],
+				uLightColor:[1, 1, 1],
+				uGamma:1
+			};
 
 			if (baseColorTexture) {
 				uniforms.uColorMap = baseColorTexture.glTexture;
@@ -320,11 +323,13 @@ const _loadTextures = (gltfInfo) => new Promise((resolve, reject) => {
 	if(!images) {
 		resolve(gltfInfo);
 	}
-	const imagesToLoad = images.map( img => `${base}${img.uri}`);
+
+	console.log('samplers', samplers);
+	const imagesToLoad = images.map(img => `${base}${img.uri}`);
 
 	loadImages(imagesToLoad).then((o) => {
-		gltfInfo.output.textures = o.map( (img, i) => {
-			const settings = samplers ? samplers[textures[i].sampler] : {};
+		gltfInfo.output.textures = o.map((img, i) => {
+			const settings = objectAssign({}, samplers ? samplers[textures[i].sampler] : {});
 			return new GLTexture(img, settings);
 		});
 		resolve(gltfInfo);
@@ -338,10 +343,10 @@ const _createMaterials = (gltfInfo) => new Promise((resolve, reject) => {
 	const { textures } = gltfInfo.output;
 	resolve(gltfInfo);
 
-	gltfInfo.output.materials = materials.map( material => {
+	gltfInfo.output.materials = materials.map(material => {
 		material.defines = {
 			USE_IBL:1
-		}
+		};
 
 		if(material.normalTexture) {
 			material.defines.HAS_NORMALMAP = 1;

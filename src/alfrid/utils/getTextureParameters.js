@@ -28,6 +28,7 @@ const getTextureParameters = function (mParams, mSource, mWidth, mHeight) {
 	mParams.premultiplyAlpha = mParams.premultiplyAlpha || false;
 	mParams.level = mParams.level || 0;
 	mParams.anisotropy = mParams.anisotropy || 0;
+
 	return mParams;
 };
 

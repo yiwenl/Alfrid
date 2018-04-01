@@ -13,6 +13,10 @@ uniform samplerCube uIrradianceMap;
 uniform sampler2D uColorMap;
 #endif
 
+#ifdef HAS_METALROUGHNESSMAP
+uniform sampler2D uMetallicRoughnessMap;
+#endif
+
 #ifdef HAS_OCCLUSIONMAP
 uniform sampler2D uAoMap;
 uniform float uOcclusionStrength;
@@ -39,6 +43,7 @@ uniform vec4 uScaleIBLAmbient;
 uniform vec3 uBaseColor;
 uniform float uRoughness;
 uniform float uMetallic;
+uniform float uGamma;
 
 varying vec2 vTextureCoord;
 varying vec3 vPosition;
@@ -176,6 +181,13 @@ void main() {
 
 	float perceptualRoughness   = uRoughness;
 	float metallic              = uMetallic;
+#ifdef HAS_METALROUGHNESSMAP
+	// Roughness is stored in the 'g' channel, metallic is stored in the 'b' channel.
+	// This layout intentionally reserves the 'r' channel for (optional) occlusion map data
+	vec4 mrSample = texture2D(uMetallicRoughnessMap, vTextureCoord);
+	perceptualRoughness = mrSample.g * perceptualRoughness;
+	metallic = mrSample.b * metallic;
+#endif	
 	perceptualRoughness         = clamp(perceptualRoughness, c_MinRoughness, 1.0);
 	metallic                    = clamp(metallic, 0.0, 1.0);
 	float alphaRoughness        = perceptualRoughness * perceptualRoughness;
@@ -265,6 +277,7 @@ void main() {
 	color               = mix(color, vec3(perceptualRoughness), uScaleDiffBaseMR.w);
 	
 	// output the fragment color
-	gl_FragColor        = vec4(pow(color,vec3(1.0/2.2)), baseColor.a);
+	gl_FragColor        = vec4(pow(color,vec3(1.0/uGamma)), baseColor.a);
+	// gl_FragColor        = vec4(vec3(metallic), 1.0);
 
 }

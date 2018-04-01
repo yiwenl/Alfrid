@@ -4,6 +4,7 @@
 
 import GL from './GLTool';
 import GLTexture from './GLTexture2';
+import GLCubeTexture from './GLCubeTexture';
 const glslify = require('glslify');
 const isSame = (array1, array2) => {
 	if(array1.length !== array2.length) {
@@ -156,11 +157,12 @@ class GLShader {
 
 	uniformObject(mUniformObj) {
 		for(const uniformName in mUniformObj) {
-			if (mUniformObj[uniformName] instanceof GLTexture) {
+			
+			if (mUniformObj[uniformName] instanceof GLTexture || mUniformObj[uniformName] instanceof GLCubeTexture) {
 				const texture = mUniformObj[uniformName];
 
-				let textureIndex = -1;;
-				this._uniformTextures.forEach( (ut, i) => {
+				let textureIndex = -1; ;
+				this._uniformTextures.forEach((ut, i) => {
 					if(ut.name === uniformName) {
 						textureIndex = i;
 						ut.texture = texture;
@@ -175,7 +177,7 @@ class GLShader {
 					});
 				}
 
-				this.uniform(uniformName, "uniform1i", textureIndex);
+				this.uniform(uniformName, 'uniform1i', textureIndex);
 				texture.bind(textureIndex);
 			} else {
 				let uniformValue = mUniformObj[uniformName];

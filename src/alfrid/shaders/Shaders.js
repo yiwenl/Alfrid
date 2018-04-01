@@ -4,11 +4,11 @@ import GLShader from '../GLShader';
 
 const shaderCache = [];
 
-const definesToString = function(defines) {
+const definesToString = function (defines) {
 	let outStr = '';
 	for (const def in defines) {
 		if(defines[def]) {
-			outStr += '#define ' + def + ' ' + defines[def] + '\n';	
+			outStr += `#define ${def} ${defines[def]}\n`;	
 		}
 		
 	}
@@ -53,14 +53,14 @@ const injectDefines = function (mShader, mDefines) {
 
 	return `${definesToString(mDefines)}\n${mShader}`;
 
-}
+};
 
 const get = (vs, fs, defines = {}) => {
 	let _shader;
-	let _vs = injectDefines(vs, defines);
-	let _fs = injectDefines(fs, defines);
+	const _vs = injectDefines(vs, defines);
+	const _fs = injectDefines(fs, defines);
 
-	shaderCache.forEach ( shader => {
+	shaderCache.forEach(shader => {
 		if(_vs === shader.vs && _fs === shader.fs) {
 			_shader = shader.glShader;
 		}
@@ -77,7 +77,7 @@ const get = (vs, fs, defines = {}) => {
 
 
 	return _shader;
-}
+};
 
 
 export default {
@@ -85,4 +85,4 @@ export default {
 	addUniforms,
 	bindUniforms,
 	injectDefines
-}
+};

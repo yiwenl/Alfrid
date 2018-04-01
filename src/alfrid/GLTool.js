@@ -164,10 +164,17 @@ class GLTool {
 
 
 	draw(mMesh) {
-		if(mMesh.material) {
-			mMesh.material.shader.bind();
-			mMesh.material.shader.uniform(mMesh.material.uniforms);
+		const { material } = mMesh;
+		if(material) {
+			if(material.doubleSided) {
+				this.disable(GL.CULL_FACE);
+			} else {
+				this.enable(GL.CULL_FACE);
+			}
+			material.shader.bind();
+			material.shader.uniform(mMesh.material.uniforms);
 		}
+
 		if(mMesh.length) {
 			for(let i = 0; i < mMesh.length; i++) {
 				this.draw(mMesh[i]);
@@ -183,11 +190,12 @@ class GLTool {
 			this.shader.uniform('uViewMatrix', 'mat4', this.camera.matrix);
 		}
 		
+		this.shader.uniform('uCameraPos', 'vec3', this.camera.position);
 		this.shader.uniform('uModelMatrix', 'mat4', this._modelMatrix);
 		this.shader.uniform('uNormalMatrix', 'mat3', this._normalMatrix);
 		this.shader.uniform('uModelViewMatrixInverse', 'mat3', this._inverseModelViewMatrix);
 
-		let drawType = mMesh.drawType;
+		const drawType = mMesh.drawType;
 
 		if(mMesh.isInstanced) {
 			gl.drawElementsInstanced(mMesh.drawType, mMesh.iBuffer.numItems, gl.UNSIGNED_SHORT, 0, mMesh.numInstance);

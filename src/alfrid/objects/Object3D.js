@@ -59,7 +59,7 @@ class Object3D {
 		mat4.mul(this._matrix, this._matrixParent, this._matrix);
 		// mat4.mul(this._matrix, this._matrix, this._matrixParent);
 
-		this._children.forEach( child => {
+		this._children.forEach(child => {
 			child.updateMatrix(this._matrix);
 		});
 

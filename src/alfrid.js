@@ -27,6 +27,10 @@ import TouchDetector		from './alfrid/utils/TouchDetector';
 import WebglNumber			from './alfrid/utils/WebglNumber';
 import WebglConst			from './alfrid/utils/WebglConst';
 
+//	SHADERS
+import Shaders				from './alfrid/shaders/Shaders';
+import ShaderLibs			from './alfrid/shaders/ShaderLibs';
+
 //	CAMERAS
 import Camera 				from './alfrid/cameras/Camera';
 import CameraOrtho 			from './alfrid/cameras/CameraOrtho';
@@ -69,7 +73,7 @@ import BatchFXAA			from './alfrid/helpers/BatchFXAA';
 import Scene				from './alfrid/helpers/Scene';
 import View					from './alfrid/helpers/View';
 import View3D				from './alfrid/helpers/View3D';
-import ShaderLibs			from './alfrid/utils/ShaderLibs';
+
 
 
 const VERSION = '0.2.0';
@@ -119,6 +123,7 @@ class Alfrid {
 		this.View              = View;
 		this.View3D            = View3D;
 		this.Object3D          = Object3D;
+		this.Shaders           = Shaders;
 		this.ShaderLibs        = ShaderLibs;
 		this.WebglNumber       = WebglNumber;
 		
@@ -213,5 +218,6 @@ export {
 	Scene,
 	View,
 	View3D,
+	Shaders,
 	ShaderLibs
 };
