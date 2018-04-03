@@ -60,7 +60,7 @@ const load = (mSource) => new Promise((resolve, reject) => {
 		.then(_loadBin)
 		.then(_loadTextures)
 		.then(_getBufferViewData)
-		.then(_createMaterials)
+		.then(_parseMaterials)
 		.then(_parseMesh)
 		.then(_parseNodes)
 		.then((gltfInfo)=>{
@@ -123,7 +123,6 @@ const _parseNodes = (gltf) => new Promise((resolve, reject) => {
 
 const _parseMesh = (gltf) => new Promise((resolve, reject) => {
 	const { meshes } = gltf;
-	gltf.geometries = [];
 	
 
 	meshes.forEach( mesh => {
@@ -187,7 +186,6 @@ const _parseMesh = (gltf) => new Promise((resolve, reject) => {
 				}
 			}
 
-			gltf.output.geometries.push(geometry);
 			const materialInfo = gltf.output.materialInfo[primitiveInfo.material];
 			defines = objectAssign(defines, materialInfo.defines);
 			
@@ -261,7 +259,6 @@ const _loadGltf = (mSource) => new Promise((resolve, reject) => {
 		xhr(mSource).then((o)=>{
 			const gltfInfo = JSON.parse(o);
 			gltfInfo.output = {
-				geometries:[],
 				meshes:[],
 				scenes:[],
 				textures:[],
@@ -323,7 +320,7 @@ const _loadTextures = (gltfInfo) => new Promise((resolve, reject) => {
 	});
 });
 
-const _createMaterials = (gltfInfo) => new Promise((resolve, reject) => {
+const _parseMaterials = (gltfInfo) => new Promise((resolve, reject) => {
 	const { materials } = gltfInfo;
 	const { textures } = gltfInfo.output;
 	

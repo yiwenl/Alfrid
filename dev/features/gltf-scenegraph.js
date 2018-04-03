@@ -9,7 +9,7 @@ import fs from 'shaders/cube.frag';
 import fsTest from 'shaders/test.frag';
 
 
-let shader, matrix, scenes, batchSky;
+let scenes, batchSky;
 let textureIrr, textureRad, textureBrdf;
 let cube, container, meshCube;
 
@@ -29,15 +29,8 @@ quickSetup(assetsToLoad, render).then((o)=>init(o)).catch(err=>{
 
 
 function init(o) {
-	// console.log('Init', o);
 	o.orbControl.rx.value = 0.1;
 	o.orbControl.radius.value = 10;
-	// o.orbControl.ry.value = Math.PI - 0.2;
-
-	matrix = mat4.create();
-	const s = 1;
-	mat4.identity(matrix, matrix);
-	mat4.scale(matrix, matrix, vec3.fromValues(s, s, s));
 
 	const url = 'assets/gltf/helmet/FlightHelmet.gltf';
 	// const url = 'assets/gltf/microphone/microphone.gltf';
@@ -68,55 +61,26 @@ function init(o) {
 	});
 
 
-	container = new Object3D();
-	// cube = new Object3D();
-	// container.addChild(cube);
-	// meshCube = alfrid.Geom.cube(1, 1, 1);
-
-
+	
 	batchSky = new BatchSkybox();
 
-	// shader = new alfrid.GLShader();
-
+	container = new Object3D();
 	let geometry = alfrid.Geom.cube(1, 1, 1);
 	let material = new Material(vs, fsTest, {greyscale:0}, {'HAS_NORMAL':1});
-	gui.add(material.uniforms, 'greyscale', 0, 1);
-
 	meshCube = new Mesh(geometry, material);
 
 	container.addChild(meshCube);
 }
 
 
-function renderTree(child) {
-	// child.matrix;
-	if(child.mesh) {
-		// GL.pushMatrix();
-		// GL.rotate(child.matrix);
-		GL.draw(child.mesh, child.matrix);
-		// console.log(child.mesh.material);
-		// GL.popMatrix();
-	}
-
-	if(child.children) {
-		child.children.forEach( c => {
-			renderTree(c);
-		});
-
-	}
-}
-
 
 function render() {
-	if(!scenes) {
-		return;
-	}
-
 	batchSky.draw(textureRad);
-	
-	scenes.forEach( scene => {
-		GL.draw(scene);
-	});
 
+	if(scenes) {
+		scenes.forEach( scene => {
+			GL.draw(scene);
+		});	
+	}
 
 }
