@@ -54,7 +54,7 @@ function init(o) {
 	.then((gltfInfo)=> {
 		const { geometries, meshes } = gltfInfo.output;
 		scenes = gltfInfo.output.scenes;
-		console.log(meshes[0].material);
+		console.log(scenes);
 
 		meshes.forEach( mesh => {
 			mesh.material.uniforms.uBRDFMap = textureBrdf;
@@ -115,29 +115,8 @@ function render() {
 	batchSky.draw(textureRad);
 	
 	scenes.forEach( scene => {
-		GL.rotate(scene.matrix);
-		renderTree(scene);
+		GL.draw(scene);
 	});
-
-	// GL.rotate(matrix);
-	// shader.bind();
-	// container.x = Math.sin(alfrid.Scheduler.deltaTime);
-	// cube.y = Math.cos(alfrid.Scheduler.deltaTime);
-	// cube.scaleX = Math.cos(alfrid.Scheduler.deltaTime) * .3 + .4;
-	// cube.scaleY = Math.sin(alfrid.Scheduler.deltaTime) * .3 + .4;
-	// GL.rotate(cube.matrix);
-	// GL.draw(meshCube);
-
-	// GL.draw(meshCube);
-
-	// shader.bind();
-	// meshCube.material.shader.bind();
-	// GL.draw(meshCube.geometry);
-
-	container.x = Math.sin(alfrid.Scheduler.deltaTime);
-	meshCube.y = Math.cos(alfrid.Scheduler.deltaTime);
-
-	GL.draw(container);
 
 
 }

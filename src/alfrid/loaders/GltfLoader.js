@@ -59,8 +59,8 @@ const load = (mSource) => new Promise((resolve, reject) => {
 	_loadGltf(mSource)
 		.then(_loadBin)
 		.then(_loadTextures)
-		.then(_createMaterials)
 		.then(_getBufferViewData)
+		.then(_createMaterials)
 		.then(_parseMesh)
 		.then(_parseNodes)
 		.then((gltfInfo)=>{
@@ -75,19 +75,11 @@ const load = (mSource) => new Promise((resolve, reject) => {
 const _parseNodes = (gltf) => new Promise((resolve, reject) => {
 	const { nodes, scenes } = gltf;
 
-	//	first parse to get meshes
-	nodes.forEach((nodeInfo, i) => {
-		if(nodeInfo.mesh != null) {
-			nodeInfo.glMesh = gltf.output.meshes[nodeInfo.mesh];
-		}
-
-	});
-
-
 	const getTree = (nodeIndex) => {
 		const node = nodes[nodeIndex];
+		const obj3D = node.mesh === undefined ? new Object3D() : gltf.output.meshes[node.mesh];
 
-		const obj3D = new Object3D();
+
 		if(node.scale) {
 			obj3D.scaleX = node.scale[0];
 			obj3D.scaleY = node.scale[1];
@@ -104,10 +96,6 @@ const _parseNodes = (gltf) => new Promise((resolve, reject) => {
 			obj3D.z = node.translation[2];
 		}
 
-		if(node.mesh !== undefined) {
-			obj3D.mesh = node.glMesh;
-		}
-
 		if(node.children) {
 			node.children.forEach(child => {
 				const _child = getTree(child);
@@ -121,8 +109,8 @@ const _parseNodes = (gltf) => new Promise((resolve, reject) => {
 
 	gltf.output.scenes = scenes.map(scene => {
 		const container = new Object3D();
-		scene.nodes.forEach(node => {
-			const childTree = getTree(scene.nodes[0]);
+		scene.nodes.forEach(nodeIndex => {
+			const childTree = getTree(nodeIndex);
 			container.addChild(childTree);
 		});
 
@@ -132,21 +120,22 @@ const _parseNodes = (gltf) => new Promise((resolve, reject) => {
 	resolve(gltf);
 });
 
+
 const _parseMesh = (gltf) => new Promise((resolve, reject) => {
 	const { meshes } = gltf;
 	gltf.geometries = [];
 	
 
-	meshes.forEach((mesh, i) => {
+	meshes.forEach( mesh => {
 		const { primitives } = mesh;
 
-		const geometry = {};
+		const geometryInfo = {};
 
-		primitives.forEach((primitiveInfo, i) => {
+		primitives.forEach( primitiveInfo => {
 			const semantics = Object.keys(primitiveInfo.attributes);
 			let defines = {};
 
-			semantics.forEach((semantic, i) => {
+			semantics.forEach( semantic => {
 				const accessorIdx = primitiveInfo.attributes[semantic];
 				const attributeInfo = gltf.accessors[accessorIdx];
 				const attributeName = semanticAttributeMap[semantic];
@@ -171,7 +160,7 @@ const _parseMesh = (gltf) => new Promise((resolve, reject) => {
 					console.log(size, attributeArray);
 				}
 
-				geometry[attributeName] = {
+				geometryInfo[attributeName] = {
 					value:attributeArray,
 					size,
 				};
@@ -181,38 +170,34 @@ const _parseMesh = (gltf) => new Promise((resolve, reject) => {
 			//	parse index
 			if (primitiveInfo.indices != null) {
 				const attributeArray = _getAccessorData(gltf, primitiveInfo.indices, true);
-				geometry.indices = {
+				geometryInfo.indices = {
 					value:attributeArray,
 					size:1
 				};
 			}
 
-			const m = new Geometry();
+			const geometry = new Geometry();
 
-			for(const s in geometry) {
-				const data = geometry[s];
+			for(const s in geometryInfo) {
+				const data = geometryInfo[s];
 				if(s !== 'indices') {
-					m.bufferFlattenData(data.value, s, data.size);
+					geometry.bufferFlattenData(data.value, s, data.size);
 				} else {
-					m.bufferIndex(data.value);
+					geometry.bufferIndex(data.value);
 				}
 			}
 
-			gltf.output.meshes.push(m);
-			const material = gltf.output.materials[primitiveInfo.material];
-			m.material = material;
-			defines = objectAssign(defines, m.material.defines);
-
-			m.defines = defines;
-
-			const shader = Shaders.get(ShaderLibs.gltfVert, ShaderLibs.gltfFrag, defines);
+			gltf.output.geometries.push(geometry);
+			const materialInfo = gltf.output.materialInfo[primitiveInfo.material];
+			defines = objectAssign(defines, materialInfo.defines);
+			
 
 			const {
 				emissiveFacotr,
 				normalTexture,
 				occlusionTexture,
 				pbrMetallicRoughness,
-			} = material;
+			} = materialInfo;
 
 			const {
 				baseColorTexture,
@@ -250,13 +235,9 @@ const _parseMesh = (gltf) => new Promise((resolve, reject) => {
 				uniforms.uOcclusionStrength = occlusionTexture.strength || 1;
 			}
 
-			shader.bind();
-			shader.uniform(uniforms);
-
-
-			m.material.shader = shader;
-			m.material.uniforms = uniforms;
-			gltf.geometries.push(geometry);
+			const material = new Material(ShaderLibs.gltfVert, ShaderLibs.gltfFrag, uniforms, defines);
+			const mesh = new Mesh(geometry, material);
+			gltf.output.meshes.push(mesh);
 		});
 	});
 
@@ -280,9 +261,12 @@ const _loadGltf = (mSource) => new Promise((resolve, reject) => {
 		xhr(mSource).then((o)=>{
 			const gltfInfo = JSON.parse(o);
 			gltfInfo.output = {
+				geometries:[],
 				meshes:[],
 				scenes:[],
-				textures:[]
+				textures:[],
+				material:[],
+				materialInfo:[]
 			};
 
 			resolve(gltfInfo);
@@ -326,7 +310,6 @@ const _loadTextures = (gltfInfo) => new Promise((resolve, reject) => {
 		resolve(gltfInfo);
 	}
 
-	console.log('samplers', samplers);
 	const imagesToLoad = images.map(img => `${base}${img.uri}`);
 
 	loadImages(imagesToLoad).then((o) => {
@@ -343,9 +326,9 @@ const _loadTextures = (gltfInfo) => new Promise((resolve, reject) => {
 const _createMaterials = (gltfInfo) => new Promise((resolve, reject) => {
 	const { materials } = gltfInfo;
 	const { textures } = gltfInfo.output;
-	resolve(gltfInfo);
+	
 
-	gltfInfo.output.materials = materials.map(material => {
+	gltfInfo.output.materialInfo = materials.map(material => {
 		material.defines = {
 			USE_IBL:1
 		};
@@ -376,6 +359,9 @@ const _createMaterials = (gltfInfo) => new Promise((resolve, reject) => {
 
 		return material;
 	});
+
+
+	resolve(gltfInfo);
 });
 
 const parse = (mGltfInfo, mBin) => new Promise((resolve, reject) => {

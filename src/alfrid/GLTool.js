@@ -220,13 +220,13 @@ class GLTool {
 
 	draw(mObj) {
 		if(mObj instanceof Geometry) {
-			this.drawGeometry(mObj)
+			this.drawGeometry(mObj);
 		} else if(mObj instanceof Mesh) {
 			this.drawMesh(mObj);
 		} else if(mObj instanceof Object3D) {
 			// console.log('here');
 			mObj.updateMatrix();
-			mObj.children.forEach( child => {
+			mObj.children.forEach(child => {
 				this.draw(child);
 			});
 		}
