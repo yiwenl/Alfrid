@@ -1,7 +1,7 @@
 // BatchDotsPlane.js
 
 import GL from '../GLTool';
-import Mesh from '../Mesh';
+import Geometry from '../Geometry';
 import GLShader from '../GLShader';
 import Batch from '../Batch';
 
@@ -29,13 +29,13 @@ class BatchDotsPlane extends Batch {
 			}
 		}
 		
-		const mesh     = new Mesh(GL.POINTS);
-		mesh.bufferVertex(positions);
-		mesh.bufferIndex(indices);
+		const geometry     = new Geometry(GL.POINTS);
+		geometry.bufferVertex(positions);
+		geometry.bufferIndex(indices);
 		
 		const shader   = new GLShader(vs, fs);
 		
-		super(mesh, shader);
+		super(geometry, shader);
 		
 		this.color   = [1, 1, 1];
 		this.opacity = 0.5;
@@ -46,7 +46,6 @@ class BatchDotsPlane extends Batch {
 		this.shader.bind();
 		this.shader.uniform('color', 'uniform3fv', this.color);
 		this.shader.uniform('opacity', 'uniform1f', this.opacity);
-		// GL.draw(this.mesh);
 		super.draw();
 	}
 }

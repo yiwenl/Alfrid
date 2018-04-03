@@ -34,7 +34,9 @@ class Object3D {
 		this._children = [];
 	}
 
-	_update() {
+	updateMatrix() {
+		if(!this._needUpdate) {	return; }
+
 		vec3.set(this._scale, this._sx, this._sy, this._sz);
 		vec3.set(this._rotation, this._rx, this._ry, this._rz);
 		vec3.set(this._position, this._x, this._y, this._z);
@@ -57,16 +59,15 @@ class Object3D {
 		mat4.mul(this._matrix, this._matrixTranslation, this._matrixRotation);
 		mat4.mul(this._matrix, this._matrix, this._matrixScale);
 		mat4.mul(this._matrix, this._matrixParent, this._matrix);
-		// mat4.mul(this._matrix, this._matrix, this._matrixParent);
 
 		this._children.forEach(child => {
-			child.updateMatrix(this._matrix);
+			child.updateParentMatrix(this._matrix);
 		});
 
 		this._needUpdate = false;
 	}
 
-	updateMatrix(mParentMatrix) {
+	updateParentMatrix(mParentMatrix) {
 		mParentMatrix = mParentMatrix || mat4.create();
 		mat4.copy(this._matrixParent, mParentMatrix);
 		this._needUpdate = true;
@@ -91,7 +92,7 @@ class Object3D {
 
 
 	get matrix() {
-		if(this._needUpdate) {	this._update();	}
+		this.updateMatrix();
 		return this._matrix;
 	}
 

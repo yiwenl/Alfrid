@@ -10,9 +10,9 @@ const fs = require('../glsl/simpleColor.frag');
 class BatchBall extends Batch {
 
 	constructor() {
-		const mesh = Geom.sphere(1, 24);
+		const geometry = Geom.sphere(1, 24);
 		const shader = new GLShader(vs, fs);
-		super(mesh, shader);
+		super(geometry, shader);
 	}
 
 

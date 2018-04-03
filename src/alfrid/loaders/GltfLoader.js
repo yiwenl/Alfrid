@@ -2,6 +2,8 @@
 
 import xhr from './xhr';
 import loadImages from './loadImages';
+import Geometry from '../Geometry';
+import Material from '../Material';
 import Mesh from '../Mesh';
 import GLShader from '../GLShader';
 import ShaderLibs from '../shaders/ShaderLibs';
@@ -185,7 +187,7 @@ const _parseMesh = (gltf) => new Promise((resolve, reject) => {
 				};
 			}
 
-			const m = new Mesh();
+			const m = new Geometry();
 
 			for(const s in geometry) {
 				const data = geometry[s];

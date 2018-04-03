@@ -3,16 +3,17 @@
 
 import '../global.scss';
 import quickSetup from '../utils/quickSetup';
-import alfrid, { GL, GLTFLoader, Object3D, BatchSkybox } from 'src/alfrid';
+import alfrid, { GL, GLTFLoader, Object3D, BatchSkybox, Geometry, Mesh, Material } from 'src/alfrid';
 import vs from 'shaders/cube.vert';
 import fs from 'shaders/cube.frag';
+import fsTest from 'shaders/test.frag';
 
 
 let shader, matrix, scenes, batchSky;
 let textureIrr, textureRad, textureBrdf;
 let cube, container, meshCube;
 
-const env = 'pisa';
+const env = 'studio11';
 
 
 
@@ -34,7 +35,7 @@ function init(o) {
 	// o.orbControl.ry.value = Math.PI - 0.2;
 
 	matrix = mat4.create();
-	const s = 25;
+	const s = 1;
 	mat4.identity(matrix, matrix);
 	mat4.scale(matrix, matrix, vec3.fromValues(s, s, s));
 
@@ -48,7 +49,6 @@ function init(o) {
 	textureRad = alfrid.GLCubeTexture.parseDDS(getAsset('radiance'));
 	textureBrdf = new alfrid.GLTexture(getAsset('brdf'));
 
-	shader = new alfrid.GLShader();
 
 	GLTFLoader.load(url)
 	.then((gltfInfo)=> {
@@ -69,24 +69,33 @@ function init(o) {
 
 
 	container = new Object3D();
-	cube = new Object3D();
-	container.addChild(cube);
-	meshCube = alfrid.Geom.cube(1, 1, 1);
+	// cube = new Object3D();
+	// container.addChild(cube);
+	// meshCube = alfrid.Geom.cube(1, 1, 1);
 
 
 	batchSky = new BatchSkybox();
-	console.log('here', batchSky);
+
+	// shader = new alfrid.GLShader();
+
+	let geometry = alfrid.Geom.cube(1, 1, 1);
+	let material = new Material(vs, fsTest, {greyscale:0}, {'HAS_NORMAL':1});
+	gui.add(material.uniforms, 'greyscale', 0, 1);
+
+	meshCube = new Mesh(geometry, material);
+
+	container.addChild(meshCube);
 }
 
 
 function renderTree(child) {
-	child.matrix;
+	// child.matrix;
 	if(child.mesh) {
-		GL.pushMatrix();
-		GL.rotate(child.matrix);
-		GL.draw(child.mesh);
+		// GL.pushMatrix();
+		// GL.rotate(child.matrix);
+		GL.draw(child.mesh, child.matrix);
 		// console.log(child.mesh.material);
-		GL.popMatrix();
+		// GL.popMatrix();
 	}
 
 	if(child.children) {
@@ -104,20 +113,31 @@ function render() {
 	}
 
 	batchSky.draw(textureRad);
-
-	GL.rotate(matrix);
-	shader.bind();
+	
 	scenes.forEach( scene => {
 		GL.rotate(scene.matrix);
 		renderTree(scene);
 	});
 
-
+	// GL.rotate(matrix);
+	// shader.bind();
 	// container.x = Math.sin(alfrid.Scheduler.deltaTime);
 	// cube.y = Math.cos(alfrid.Scheduler.deltaTime);
 	// cube.scaleX = Math.cos(alfrid.Scheduler.deltaTime) * .3 + .4;
 	// cube.scaleY = Math.sin(alfrid.Scheduler.deltaTime) * .3 + .4;
 	// GL.rotate(cube.matrix);
 	// GL.draw(meshCube);
+
+	// GL.draw(meshCube);
+
+	// shader.bind();
+	// meshCube.material.shader.bind();
+	// GL.draw(meshCube.geometry);
+
+	container.x = Math.sin(alfrid.Scheduler.deltaTime);
+	meshCube.y = Math.cos(alfrid.Scheduler.deltaTime);
+
+	GL.draw(container);
+
 
 }

@@ -11,10 +11,10 @@ const fs = require('../glsl/copy.frag');
 class BatchSky extends Batch {
 
 	constructor(size = 50, seg = 24) {
-		const mesh = Geom.sphere(size, seg, true);
+		const geometry = Geom.sphere(size, seg, true);
 		const shader = new GLShader(vs, fs);
 
-		super(mesh, shader);
+		super(geometry, shader);
 	}
 
 	draw(texture) {

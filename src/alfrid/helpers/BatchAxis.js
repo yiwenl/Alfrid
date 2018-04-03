@@ -1,7 +1,7 @@
 // BatchAxis.js
 
 import GL from '../GLTool';
-import Mesh from '../Mesh';
+import Geometry from '../Geometry';
 import GLShader from '../GLShader';
 import Batch from '../Batch';
 
@@ -32,7 +32,7 @@ class BatchAxis extends Batch {
 		colors.push([0, 0, 1]);
 		colors.push([0, 0, 1]);
 
-		const mesh = new Mesh(GL.LINES);
+		const mesh = new Geometry(GL.LINES);
 		mesh.bufferVertex(positions);
 		mesh.bufferIndex(indices);
 		mesh.bufferData(colors, 'aColor', 3);

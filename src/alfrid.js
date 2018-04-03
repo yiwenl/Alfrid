@@ -6,6 +6,8 @@ import GLShader 			from './alfrid/GLShader';
 import GLTexture 			from './alfrid/GLTexture';
 import GLCubeTexture 		from './alfrid/GLCubeTexture';
 import Mesh 				from './alfrid/Mesh';
+import Geometry 			from './alfrid/Geometry';
+import Material 			from './alfrid/Material';
 import Geom					from './alfrid/Geom';
 import Batch				from './alfrid/Batch';
 import FrameBuffer			from './alfrid/FrameBuffer';
@@ -86,6 +88,8 @@ class Alfrid {
 		this.GLTexture         = GLTexture;
 		this.GLCubeTexture     = GLCubeTexture;
 		this.Mesh              = Mesh;
+		this.Geometry          = Geometry;
+		this.Material          = Material;
 		this.Geom              = Geom;
 		this.Batch             = Batch;
 		this.FrameBuffer       = FrameBuffer;
@@ -171,6 +175,8 @@ export {
 	GLTexture,
 	GLCubeTexture,
 	Mesh,
+	Geometry,
+	Material,
 	Geom,
 	Batch,
 	FrameBuffer,

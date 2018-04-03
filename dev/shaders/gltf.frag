@@ -118,7 +118,7 @@ vec3 getNormal() {
 
 vec3 getIBLContribution(PBRInfo pbrInputs, vec3 n, vec3 reflection)
 {
-	float mipCount = 8.0; // resolution of 128x128
+	float mipCount = 7.0; // resolution of 128x128
 	float lod = (pbrInputs.perceptualRoughness * mipCount);
 	// retrieve a scale and bias to F0. See [1], Figure 3
 	vec3 brdf = SRGBtoLINEAR(texture2D(uBRDFMap, vec2(pbrInputs.NdotV, 1.0 - pbrInputs.perceptualRoughness))).rgb;
