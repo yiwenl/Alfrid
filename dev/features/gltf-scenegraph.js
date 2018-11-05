@@ -32,8 +32,14 @@ function init(o) {
 	o.orbControl.rx.value = 0.1;
 	o.orbControl.radius.value = 10;
 
-	const url = 'assets/gltf/helmet/FlightHelmet.gltf';
+	// const url = 'assets/gltf/helmet/FlightHelmet.gltf';
+	// const url = 'assets/gltf/adamHead/adamHead.gltf';
+	const url = 'assets/gltf/lieutenantHead/lieutenantHead.gltf';
 	// const url = 'assets/gltf/microphone/microphone.gltf';
+	// const url = 'assets/gltf/htc/scene.gltf';
+	// const url = 'assets/gltf/htc_vive_controller/scene.gltf';
+	// const url = 'assets/gltf/nier/scene.gltf';
+	// const url = 'assets/gltf/mask/scene.gltf';
 	// const url = 'assets/gltf/cube/scene.gltf';
 	// const url = 'assets/gltf/frank/scene.gltf';
 	// const url = 'assets/gltf/avacado/scene.gltf';
@@ -79,6 +85,9 @@ function render() {
 
 	if(scenes) {
 		scenes.forEach( scene => {
+			// console.log('scene', scene);
+			let s = 10;
+			scene.scaleX = scene.scaleY = scene.scaleZ = s;
 			GL.draw(scene);
 		});	
 	}

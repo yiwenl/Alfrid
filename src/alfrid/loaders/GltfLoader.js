@@ -191,22 +191,44 @@ const _parseMesh = (gltf) => new Promise((resolve, reject) => {
 			
 
 			const {
-				emissiveFacotr,
+				emissiveFactor,
 				normalTexture,
 				occlusionTexture,
 				pbrMetallicRoughness,
+				extensions
 			} = materialInfo;
 
-			const {
-				baseColorTexture,
-				metallicRoughnessTexture
-			} = pbrMetallicRoughness;
+
+			let baseColorTexture, metallicRoughnessTexture;
+			let baseColorFactor, roughnessFactor, metallicFactor;
+			let glColorTexture;
+
+			if(pbrMetallicRoughness) {
+				baseColorTexture = pbrMetallicRoughness.baseColorTexture;
+				metallicRoughnessTexture = pbrMetallicRoughness.metallicRoughnessTexture;
+				baseColorFactor = pbrMetallicRoughness.baseColorFactor;
+				roughnessFactor = pbrMetallicRoughness.roughnessFactor;
+				metallicFactor = pbrMetallicRoughness.metallicFactor;
+				if(baseColorTexture) {
+					glColorTexture = baseColorTexture.glTexture;
+				}
+			} else if(extensions) {
+				if(extensions.KHR_materials_pbrSpecularGlossiness) {
+					const extension = extensions.KHR_materials_pbrSpecularGlossiness;
+					console.log(extension);
+
+					if(extension.glTexture) {
+						glColorTexture = extension.glTexture;
+					}
+				}
+			}
+
 
 			const uniforms = {
-				uEmissiveFactor:emissiveFacotr || [0, 0, 0],
-				uBaseColor:pbrMetallicRoughness.baseColorFactor || [1, 1, 1, 1],
-				uRoughness:pbrMetallicRoughness.roughnessFactor || 1,
-				uMetallic:pbrMetallicRoughness.metallicFactor || 1,
+				uEmissiveFactor:emissiveFactor || [0, 0, 0],
+				uBaseColor:baseColorFactor || [1, 1, 1, 1],
+				uRoughness:roughnessFactor || 1,
+				uMetallic:metallicFactor || 1,
 				uScaleDiffBaseMR:[0, 0, 0, 0],
 				uScaleFGDSpec:[0, 0, 0, 0],
 				uScaleIBLAmbient:[1, 1, 1, 1],
@@ -215,10 +237,10 @@ const _parseMesh = (gltf) => new Promise((resolve, reject) => {
 				uGamma:1
 			};
 
-			if (baseColorTexture) {
-				uniforms.uColorMap = baseColorTexture.glTexture;
+			if(glColorTexture) {
+				uniforms.uColorMap = glColorTexture;
 			}
-
+			
 			if (metallicRoughnessTexture) {
 				uniforms.uMetallicRoughnessMap = metallicRoughnessTexture.glTexture;	
 			}
@@ -340,19 +362,36 @@ const _parseMaterials = (gltfInfo) => new Promise((resolve, reject) => {
 			material.occlusionTexture.glTexture = textures[material.occlusionTexture.index];	
 		}
 
+		
 
-		// if(material.pbrMetallicRoughness) {
-		if(material.pbrMetallicRoughness.baseColorTexture) {
-			material.defines.HAS_BASECOLORMAP = 1;
-			material.pbrMetallicRoughness.baseColorTexture.glTexture = textures[material.pbrMetallicRoughness.baseColorTexture.index];	
+		if(material.pbrMetallicRoughness) {
+			if(material.pbrMetallicRoughness.baseColorTexture) {
+				material.defines.HAS_BASECOLORMAP = 1;
+				material.pbrMetallicRoughness.baseColorTexture.glTexture = textures[material.pbrMetallicRoughness.baseColorTexture.index];	
+			}
+
+			if(material.pbrMetallicRoughness.metallicRoughnessTexture) {
+				material.defines.HAS_METALROUGHNESSMAP = 1;
+				material.pbrMetallicRoughness.metallicRoughnessTexture.glTexture = textures[material.pbrMetallicRoughness.metallicRoughnessTexture.index];	
+			}
 		}
 
-		if(material.pbrMetallicRoughness.metallicRoughnessTexture) {
-			material.defines.HAS_METALROUGHNESSMAP = 1;
-			material.pbrMetallicRoughness.metallicRoughnessTexture.glTexture = textures[material.pbrMetallicRoughness.metallicRoughnessTexture.index];	
-		}
 
-		// }
+		if(material.extensions) {
+			
+			if(material.extensions.KHR_materials_pbrSpecularGlossiness) {
+
+				if(material.extensions.KHR_materials_pbrSpecularGlossiness.diffuseTexture) {
+					material.defines.HAS_BASECOLORMAP = 1;
+					const { index } = material.extensions.KHR_materials_pbrSpecularGlossiness.diffuseTexture;
+					material.extensions.KHR_materials_pbrSpecularGlossiness.glTexture = textures[index];
+					// console.log('material :', material.extensions.KHR_materials_pbrSpecularGlossiness, index);	
+				} else {
+					// console.log('non diffuse', material.extensions);		
+				}
+				
+			}
+		}
 
 		return material;
 	});

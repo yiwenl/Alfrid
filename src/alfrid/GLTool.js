@@ -161,13 +161,16 @@ class GLTool {
 		mat3.invert(this._normalMatrix, this._normalMatrix);
 		mat3.transpose(this._normalMatrix, this._normalMatrix);
 		
-
 		mat3.fromMat4(this._inverseModelViewMatrix, this._matrix);
 		mat3.invert(this._inverseModelViewMatrix, this._inverseModelViewMatrix);
 	}
 
 
 	drawGeometry(mGeometry, modelMatrix) {
+		if(modelMatrix) {
+			GL.rotate(modelMatrix);
+		}
+		
 		if(mGeometry.length) {
 			for(let i = 0; i < mGeometry.length; i++) {
 				this.draw(mGeometry[i]);
@@ -184,7 +187,7 @@ class GLTool {
 		}
 		
 		this.shader.uniform('uCameraPos', 'vec3', this.camera.position);
-		this.shader.uniform('uModelMatrix', 'mat4', modelMatrix || this._modelMatrix);
+		this.shader.uniform('uModelMatrix', 'mat4', this._modelMatrix);
 		this.shader.uniform('uNormalMatrix', 'mat3', this._normalMatrix);
 		this.shader.uniform('uModelViewMatrixInverse', 'mat3', this._inverseModelViewMatrix);
 
@@ -214,7 +217,8 @@ class GLTool {
 		}
 
 		material.update();
-		this.drawGeometry(geometry, mMesh.matrix);
+		GL.rotate(mMesh.matrix)
+		this.drawGeometry(geometry);
 	}
 
 
