@@ -7,11 +7,11 @@ class CameraOrtho extends Camera {
 	constructor() {
 		super();
 
-		const eye    = vec3.clone([0, 0, 15]);
+		const eye    = vec3.clone([0, 0, 5]);
 		const center = vec3.create();
-		const up     = vec3.clone([0, -1, 0]);
+		const up     = vec3.clone([0, 1, 0]);
 		this.lookAt(eye, center, up);
-		this.ortho(1, -1, 1, -1);
+		this.ortho(-1, 1, 1, -1);
 	}
 
 
@@ -21,11 +21,12 @@ class CameraOrtho extends Camera {
 
 
 	ortho(left, right, top, bottom, near=0.1, far=100) {
+		console.log('left, right, top, bottom', left, right, top, bottom);
 		this.left   = left;
 		this.right  = right;
 		this.top    = top;
 		this.bottom = bottom;
-		mat4.ortho(this._projection, left, right, top, bottom, near, far);
+		mat4.ortho(this._projection, left, right, bottom, top, near, far);
 	}
 
 }

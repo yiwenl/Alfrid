@@ -43,7 +43,7 @@ import Object3D 			from './alfrid/objects/Object3D';
 import BinaryLoader			from './alfrid/loaders/BinaryLoader';
 import ObjLoader			from './alfrid/loaders/ObjLoader';
 import HDRLoader			from './alfrid/loaders/HDRLoader';
-import ColladaParser		from './alfrid/loaders/ColladaParser';
+// import ColladaParser		from './alfrid/loaders/ColladaParser';
 
 //	POST EFFECT
 import EffectComposer 		from './alfrid/post/EffectComposer';
@@ -99,7 +99,7 @@ class Alfrid {
 		this.QuatRotation      = QuatRotation;
 		this.BinaryLoader      = BinaryLoader;
 		this.ObjLoader         = ObjLoader;
-		this.ColladaParser     = ColladaParser;
+		// this.ColladaParser     = ColladaParser;
 		this.HDRLoader         = HDRLoader;
 		this.BatchCopy         = BatchCopy;
 		this.BatchAxis         = BatchAxis;
@@ -187,7 +187,7 @@ export {
 	BinaryLoader,
 	ObjLoader,
 	HDRLoader,
-	ColladaParser,
+	// ColladaParser,
 	EffectComposer,
 	Pass,
 	PassMacro,
