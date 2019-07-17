@@ -4,8 +4,8 @@ import Geom from '../Geom';
 import GLShader from '../GLShader';
 import Batch from '../Batch';
 
-const vs = require('../shaders/bigTriangle.vert');
-const fs = require('../shaders/copy.frag');
+import vs from '../shaders/bigTriangle.vert';
+import fs from '../shaders/copy.frag';
 
 class BatchCopy extends Batch {
 

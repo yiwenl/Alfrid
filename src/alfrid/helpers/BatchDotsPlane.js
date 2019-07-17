@@ -5,8 +5,8 @@ import Mesh from '../Mesh';
 import GLShader from '../GLShader';
 import Batch from '../Batch';
 
-const vs = require('../shaders/dotsPlane.vert');
-const fs = require('../shaders/simpleColor.frag');
+import vs from '../shaders/dotsPlane.vert';
+import fs from '../shaders/simpleColor.frag';
 
 class BatchDotsPlane extends Batch {
 
@@ -46,6 +46,7 @@ class BatchDotsPlane extends Batch {
 		this.shader.bind();
 		this.shader.uniform('color', 'uniform3fv', this.color);
 		this.shader.uniform('opacity', 'uniform1f', this.opacity);
+		this.shader.uniform("viewport", "vec2", [GL.width, GL.height]);
 		// GL.draw(this.mesh);
 		super.draw();
 	}

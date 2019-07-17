@@ -4,8 +4,8 @@ import Geom from '../Geom';
 import GLShader from '../GLShader';
 import Batch from '../Batch';
 
-const vs = require('../shaders/general.vert');
-const fs = require('../shaders/simpleColor.frag');
+import vs from '../shaders/general.vert';
+import fs from '../shaders/simpleColor.frag';
 
 class BatchBall extends Batch {
 
