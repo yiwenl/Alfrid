@@ -43,16 +43,17 @@ import Object3D 			from './alfrid/objects/Object3D';
 import BinaryLoader			from './alfrid/loaders/BinaryLoader';
 import ObjLoader			from './alfrid/loaders/ObjLoader';
 import HDRLoader			from './alfrid/loaders/HDRLoader';
+import GLTFParser			from './alfrid/loaders/GLTFParser';
 // import ColladaParser		from './alfrid/loaders/ColladaParser';
 
 //	POST EFFECT
-import EffectComposer 		from './alfrid/post/EffectComposer';
-import Pass 				from './alfrid/post/Pass';
-import PassMacro 			from './alfrid/post/PassMacro';
-import PassBlur 			from './alfrid/post/PassBlur';
-import PassVBlur 			from './alfrid/post/PassVBlur';
-import PassHBlur 			from './alfrid/post/PassHBlur';
-import PassFxaa 			from './alfrid/post/PassFxaa';
+// import EffectComposer 		from './alfrid/post/EffectComposer';
+// import Pass 				from './alfrid/post/Pass';
+// import PassMacro 			from './alfrid/post/PassMacro';
+// import PassBlur 			from './alfrid/post/PassBlur';
+// import PassVBlur 			from './alfrid/post/PassVBlur';
+// import PassHBlur 			from './alfrid/post/PassHBlur';
+// import PassFxaa 			from './alfrid/post/PassFxaa';
 
 
 //	HELPERS
@@ -99,6 +100,7 @@ class Alfrid {
 		this.QuatRotation      = QuatRotation;
 		this.BinaryLoader      = BinaryLoader;
 		this.ObjLoader         = ObjLoader;
+		this.GLTFParser        = GLTFParser;
 		// this.ColladaParser     = ColladaParser;
 		this.HDRLoader         = HDRLoader;
 		this.BatchCopy         = BatchCopy;
@@ -117,13 +119,13 @@ class Alfrid {
 		this.ShaderLibs        = ShaderLibs;
 		this.WebglNumber       = WebglNumber;
 		
-		this.EffectComposer    = EffectComposer;
-		this.Pass        	   = Pass;
-		this.PassMacro         = PassMacro;
-		this.PassBlur          = PassBlur;
-		this.PassVBlur         = PassVBlur;
-		this.PassHBlur         = PassHBlur;
-		this.PassFxaa          = PassFxaa;
+		// this.EffectComposer    = EffectComposer;
+		// this.Pass        	   = Pass;
+		// this.PassMacro         = PassMacro;
+		// this.PassBlur          = PassBlur;
+		// this.PassVBlur         = PassVBlur;
+		// this.PassHBlur         = PassHBlur;
+		// this.PassFxaa          = PassFxaa;
 
 		this.MultisampleFrameBuffer   = MultisampleFrameBuffer;
 		this.TransformFeedbackObject  = TransformFeedbackObject;
@@ -187,14 +189,15 @@ export {
 	BinaryLoader,
 	ObjLoader,
 	HDRLoader,
+	GLTFParser,
 	// ColladaParser,
-	EffectComposer,
-	Pass,
-	PassMacro,
-	PassBlur,
-	PassVBlur,
-	PassHBlur,
-	PassFxaa,
+	// EffectComposer,
+	// Pass,
+	// PassMacro,
+	// PassBlur,
+	// PassVBlur,
+	// PassHBlur,
+	// PassFxaa,
 	BatchCopy,
 	BatchAxis,
 	BatchBall,

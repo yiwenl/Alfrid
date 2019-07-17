@@ -158,6 +158,13 @@ function _onAssetsLoaded(o) {
 	});
 
 
+	const fboFloa = new alfrid.FrameBuffer(256, 256, {
+		type:GL.FLOAT,
+		minFilter:GL.NEAREST,
+		magFilter:GL.NEAREST
+	}, 3)
+
+
 	setTimeout(()=> {
 		console.log('Update texture 3');
 		textureData.updateTexture(source3)

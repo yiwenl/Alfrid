@@ -1,6 +1,6 @@
 {
   "name": "alfrid",
-  "version": "0.3.0",
+  "version": "0.3.5",
   "description": "WebGL 3D toolkit",
   "main": "build/alfrid.js",
   "directories": {
@@ -30,6 +30,7 @@
     "scheduling": "^1.2.0"
   },
   "devDependencies": {
+    "assets-loader": "^0.5.2",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-plugin-add-module-exports": "^0.2.1",

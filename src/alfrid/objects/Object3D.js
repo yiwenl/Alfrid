@@ -98,6 +98,7 @@ class Object3D {
 	setRotationFromQuaternion(mQuat) {
 		quat.copy(this._quat, mQuat);
 		this._needUpdate = true;
+		Scheduler.next(()=>this._update());
 	}
 
 

@@ -21,7 +21,6 @@ class CameraOrtho extends Camera {
 
 
 	ortho(left, right, top, bottom, near=0.1, far=100) {
-		console.log('left, right, top, bottom', left, right, top, bottom);
 		this.left   = left;
 		this.right  = right;
 		this.top    = top;
