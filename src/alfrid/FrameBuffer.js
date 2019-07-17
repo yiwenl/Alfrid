@@ -90,6 +90,7 @@ class FrameBuffer {
 		//	CHECKING FBO
 		const FBOstatus = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
 		if(FBOstatus != gl.FRAMEBUFFER_COMPLETE) {
+			console.error('FBOstatus', FBOstatus);
 			console.error('GL_FRAMEBUFFER_COMPLETE failed, CANNOT use Framebuffer');
 		}
 
@@ -134,7 +135,12 @@ class FrameBuffer {
 		
 		parameters.internalFormat = mInternalformat || gl.RGBA;
 		parameters.format = mFormat;
+
 		parameters.type = parameters.type || mTexelType || GL.UNSIGNED_BYTE;
+		if(mTexelType === gl.UNSIGNED_SHORT) {	//	fix for depth textures
+			parameters.type = mTexelType;	
+		}
+
 		for(const s in mParameters) {
 			parameters[s] = mParameters[s];
 		}

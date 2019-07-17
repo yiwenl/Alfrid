@@ -70,8 +70,11 @@ import View					from './alfrid/helpers/View';
 import View3D				from './alfrid/helpers/View3D';
 import ShaderLibs			from './alfrid/utils/ShaderLibs';
 
+import FboArray				from './alfrid/FboArray';
+import FboPingPong		    from './alfrid/FboPingPong';
 
-const VERSION = '0.2.0';
+
+const VERSION = '0.3.6';
 
 class Alfrid {
 	constructor() {
@@ -118,6 +121,9 @@ class Alfrid {
 		this.Object3D          = Object3D;
 		this.ShaderLibs        = ShaderLibs;
 		this.WebglNumber       = WebglNumber;
+
+		this.FboArray		   = FboArray;
+		this.FboPingPong	   = FboPingPong;
 		
 		// this.EffectComposer    = EffectComposer;
 		// this.Pass        	   = Pass;
@@ -209,5 +215,7 @@ export {
 	Scene,
 	View,
 	View3D,
-	ShaderLibs
+	ShaderLibs,
+	FboArray,
+	FboPingPong
 };
