@@ -20,6 +20,7 @@ import TransformFeedbackObject from './alfrid/TransformFeedbackObject';
 import Scheduler 			from 'scheduling';
 import EventDispatcher 		from './alfrid/utils/EventDispatcher';
 import EaseNumber 			from './alfrid/utils/EaseNumber';
+import SpringNumber 		from './alfrid/utils/SpringNumber';
 import TweenNumber 			from './alfrid/utils/TweenNumber';
 import OrbitalControl		from './alfrid/utils/OrbitalControl';
 import QuatRotation			from './alfrid/utils/QuatRotation';
@@ -93,6 +94,7 @@ class Alfrid {
 		this.Scheduler         = Scheduler;
 		this.EventDispatcher   = EventDispatcher;
 		this.EaseNumber        = EaseNumber;
+		this.SpringNumber      = SpringNumber;
 		this.TweenNumber       = TweenNumber;
 		this.Camera            = Camera;
 		this.CameraOrtho       = CameraOrtho;
@@ -181,6 +183,7 @@ export {
 	Scheduler,
 	EventDispatcher,
 	EaseNumber,
+	SpringNumber,
 	TweenNumber,
 	OrbitalControl,
 	WebglNumber,

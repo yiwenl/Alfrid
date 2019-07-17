@@ -6,12 +6,15 @@ import alfrid, { GL, Geom, GLShader, TouchDetector, BatchBall, BatchCopy, GLText
 import fs from './test.frag';
 import fsUV from './uv.frag';
 
+var random = function(min, max) { return min + Math.random() * (max - min);	}
+
 
 let loader, bCopy, texture, textureData, textureHdr, textureVideo, fbo;
 let cube, shader, floor, shaderCopy;
 let hit = vec3.fromValues(999, 999, 99);
 let ball;
 let mtx = mat4.create();
+let x, y;
 mat4.translate(mtx, mtx, vec3.fromValues(1, 0, 0));
 
 let params = {
@@ -21,9 +24,14 @@ let params = {
 }
 
 function render() {
-	if(!texture) { return; }
+	if(!ball) {
+		return;
+	}
+	// if(!texture) { return; }
 
 
+	let s = .2;
+	ball.draw([x.value, y.value, 0], [s, s, s], [1, 0, 0]);
 }
 
 quickSetup(render)
@@ -114,6 +122,17 @@ function _onAssetsLoaded(o) {
 	// 	texture.wrapT = GL[o];
 	// });
 
+	ball = new BatchBall();
+	x = new alfrid.SpringNumber(0);
+	y = new alfrid.SpringNumber(0);
+	x.limit(0, 2);
+
+	window.addEventListener('mousedown', (e) => {
+		console.log('mouse down');
+		let r = 2;
+		x.value = random(-r, r);
+		y.value = random(-r, r);
+	})
 
 	const fboFloat = new FboPingPong(10, 256, 256, {
 		type:GL.FLOAT,
