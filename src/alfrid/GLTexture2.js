@@ -60,11 +60,15 @@ class GLTexture {
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, this._params.wrapT);
 		gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, this._premultiplyAlpha);
 
-		const ext = GL.getExtension('EXT_texture_filter_anisotropic');
-		if(ext) {
-			const max = gl.getParameter(ext.MAX_TEXTURE_MAX_ANISOTROPY_EXT);
-			gl.texParameterf(gl.TEXTURE_2D, ext.TEXTURE_MAX_ANISOTROPY_EXT, max);
-		}
+		// const ext = GL.getExtension('EXT_texture_filter_anisotropic');
+		// if(ext) {
+		// 	const max = gl.getParameter(ext.MAX_TEXTURE_MAX_ANISOTROPY_EXT);
+		// 	let level;
+		// 	if(!this._params.anisotropy) {
+		// 		level = max;
+		// 	}
+		// 	gl.texParameterf(gl.TEXTURE_2D, ext.TEXTURE_MAX_ANISOTROPY_EXT, level);
+		// }
 
 		if(this._generateMipmap) {	gl.generateMipmap(gl.TEXTURE_2D);	}
 

@@ -4,6 +4,7 @@ import quickSetup from './utils/quickSetup';
 import AssetsLoader from 'assets-loader';
 import alfrid, { GL, Geom, GLShader, TouchDetector, BatchBall, BatchCopy, GLTexture, FboPingPong } from '../src/alfrid';
 import fs from './test.frag';
+import fsNoise from './noise.frag';
 import fsUV from './uv.frag';
 
 var random = function(min, max) { return min + Math.random() * (max - min);	}
@@ -32,6 +33,14 @@ function render() {
 
 	let s = .2;
 	ball.draw([x.value, y.value, 0], [s, s, s], [1, 0, 0]);
+
+
+	s = 256;
+	GL.viewport(0, 0, s, s);
+	if(!bCopy) {
+		bCopy = new alfrid.BatchCopy();
+	}
+	bCopy.draw(fbo.getTexture());
 }
 
 quickSetup(render)
@@ -108,11 +117,12 @@ function _onAssetsLoaded(o) {
 	// const s = 1024;
 	// fbo = new alfrid.FrameBuffer(s, s, {minFilter:GL.LINEAR_MIPMAP_NEAREST});
 
-	// const MIP = ['LINEAR', 'LINEAR_MIPMAP_LINEAR', 'LINEAR_MIPMAP_NEAREST', 'NEAREST'];
-	// const WRAP = ['CLAMP_TO_EDGE', 'MIRRORED_REPEAT', 'REPEAT'];
-	// gui.add(params, 'minFilter', MIP).onChange(o=> {
-	// 	texture.minFilter = GL[o];
-	// });
+	const MIP = ['LINEAR', 'NEAREST', 'LINEAR_MIPMAP_LINEAR', 'LINEAR_MIPMAP_NEAREST'];
+	const WRAP = ['CLAMP_TO_EDGE', 'MIRRORED_REPEAT', 'REPEAT'];
+	gui.add(params, 'minFilter', MIP).onChange(o=> {
+		console.log('Change :', GL[o]);
+		fbo.getTexture().minFilter = GL[o];
+	});
 
 	// gui.add(params, 'wrapS', WRAP).onChange(o=> {
 	// 	texture.wrapS = GL[o];
@@ -121,6 +131,7 @@ function _onAssetsLoaded(o) {
 	// gui.add(params, 'wrapT', WRAP).onChange(o=> {
 	// 	texture.wrapT = GL[o];
 	// });
+
 
 	ball = new BatchBall();
 	x = new alfrid.SpringNumber(0);
@@ -134,11 +145,20 @@ function _onAssetsLoaded(o) {
 		y.value = random(-r, r);
 	})
 
-	const fboFloat = new FboPingPong(10, 256, 256, {
-		type:GL.FLOAT,
+
+	const size = 512;
+	fbo = new alfrid.FrameBuffer(size, size, {
 		minFilter:GL.NEAREST,
 		magFilter:GL.NEAREST
-	}, 3)
+	});
+
+	const shaderNoise = new alfrid.GLShader(alfrid.ShaderLibs.bigTriangleVert, fsNoise);
+	const mesh = alfrid.Geom.bigTriangle();
+	fbo.bind();
+	shaderNoise.bind();
+	GL.draw(mesh);
+	fbo.unbind();
+
 }
 
 
