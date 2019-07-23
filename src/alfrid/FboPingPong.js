@@ -2,10 +2,10 @@
 
 import FboFarray from './FboArray';
 
-class FboPingPong extends FboFarray{
+class FboPingPong extends FboFarray {
 
 	constructor(width, height, params={}, mNumTargets=1) {
-		super(2, width, height, params, mNumTargets)
+		super(2, width, height, params, mNumTargets);
 	}
 	
 }

@@ -27,7 +27,11 @@ class Draw {
 
 
 	useProgram(vs, fs) {
-		this._shader = new GLShader(vs, fs);
+		if(vs instanceof GLShader) {
+			this._shader = vs;
+		} else {
+			this._shader = new GLShader(vs, fs);	
+		}
 		
 		return this;
 	}
@@ -105,7 +109,7 @@ class Draw {
 		this._uniforms[name] = {
 			type,
 			value
-		}
+		};
 		
 		return this;
 	}
@@ -147,14 +151,14 @@ class Draw {
 		}
 
 		this._shader.bind();
-		for(let s in this._uniforms) {
+		for(const s in this._uniforms) {
 			const o = this._uniforms[s];
 			this._shader.uniform(s, o.type, o.value);
 		}
 
-		this._uniformTextures.forEach( (o, i) => {
+		this._uniformTextures.forEach((o, i) => {
 			if(o !== undefined) {
-				this._shader.uniform(o.name, "uniform1i", i);
+				this._shader.uniform(o.name, 'uniform1i', i);
 				o.texture.bind(i);	
 			}
 		});
@@ -171,6 +175,10 @@ class Draw {
 
 	get shader() {
 		return this._shader;
+	}
+
+	get framebuffer() {
+		return this._fbo;
 	}
 }
 

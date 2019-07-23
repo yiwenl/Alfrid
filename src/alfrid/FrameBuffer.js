@@ -188,6 +188,10 @@ class FrameBuffer {
 		return this.glDepthTexture;
 	}
 
+	get texture() {	return this._textures[0];	}
+
+	get depthTexture() { return this.glDepthTexture;	}
+
 	//	TOUGHTS : Should I remove these from frame buffer ? 
 	//	Shouldn't these be set individually to each texture ? 
 	//	e.g. fbo.getTexture(0).minFilter = GL.NEAREST;

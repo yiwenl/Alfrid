@@ -46,7 +46,7 @@ class BatchDotsPlane extends Batch {
 		this.shader.bind();
 		this.shader.uniform('color', 'uniform3fv', this.color);
 		this.shader.uniform('opacity', 'uniform1f', this.opacity);
-		this.shader.uniform("viewport", "vec2", [GL.width, GL.height]);
+		this.shader.uniform('viewport', 'vec2', [GL.width, GL.height]);
 		// GL.draw(this.mesh);
 		super.draw();
 	}

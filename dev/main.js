@@ -6,11 +6,13 @@ import alfrid, { GL, Geom, GLShader, TouchDetector, BatchBall, BatchCopy, GLText
 import fs from './test.frag';
 import fsNoise from './noise.frag';
 import fsUV from './uv.frag';
+import fsCopy from './test.frag';
+import vsInstance from './instance.vert';
 
 var random = function(min, max) { return min + Math.random() * (max - min);	}
 
 
-let loader, bCopy, texture, textureData, textureHdr, textureVideo, fbo, drawNoise;
+let loader, bCopy, texture, textureData, textureHdr, textureVideo, fbo, fboNoise, drawNoise;
 let cube, shader, floor, shaderCopy;
 let hit = vec3.fromValues(999, 999, 99);
 let ball;
@@ -32,8 +34,11 @@ function render() {
 
 
 	// console.log('drawNoise', drawNoise);
+
+	const t = Math.random() > .5 ? texture : fboNoise.getTexture();
 	drawNoise
 	.uniform('uTime', 'float', alfrid.Scheduler.deltaTime)
+	.uniformTexture('texture', t, 0)
 	.draw();
 
 
@@ -173,9 +178,12 @@ function _onAssetsLoaded(o) {
 	const size = 256;
 	fbo = new alfrid.FrameBuffer(size, size, {
 		minFilter:GL.NEAREST,
-		magFilter:GL.NEAREST,
-		type:GL.FLOAT,
-		mipmap:false
+		magFilter:GL.NEAREST
+	});
+
+	fboNoise = new alfrid.FrameBuffer(size, size, {
+		minFilter:GL.NEAREST,
+		magFilter:GL.NEAREST
 	});
 
 	// const shaderNoise = new alfrid.GLShader(alfrid.ShaderLibs.bigTriangleVert, fsNoise);
@@ -185,11 +193,42 @@ function _onAssetsLoaded(o) {
 	// GL.draw(mesh);
 	// fbo.unbind();
 
+	const positions = [
+		[0, 0, 0],
+		[1, 0, 0],
+		[0, 1, 0]
+	];
+	const uvs = [
+		[0, 0],
+		[1, 0],
+		[0, 1]
+	]
+	const indices = [0, 1, 2];
+
+	const posOffset = [
+		[2, 0, 0],
+		[0, 2, 0],
+		[0, 0, 2]
+	]
+
 	drawNoise = new Draw()
-		.setClearColor(1, 0, 0, 1)
+		.setClearColor(1, 1, 1, .5)
+		// .useProgram(alfrid.ShaderLibs.bigTriangleVert, fsNoise)
+		.useProgram(vsInstance, fsCopy)
+		// .useProgram(shaderNoise)
+		// .setMesh(alfrid.Geom.bigTriangle())
+		.bufferVertex(positions)
+		.bufferTexCoord(uvs)
+		.bufferIndex(indices)
+		.bufferInstance(posOffset, 'aPosOffset')
+		.bindFrameBuffer(fbo)
+		.uniformTexture('texture', texture, 0)
+		.draw();
+
+	new Draw()
 		.useProgram(alfrid.ShaderLibs.bigTriangleVert, fsNoise)
 		.setMesh(alfrid.Geom.bigTriangle())
-		.bindFrameBuffer(fbo)
+		.bindFrameBuffer(fboNoise)
 		.draw();
 
 }

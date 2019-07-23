@@ -76,4 +76,4 @@ class SpringNumber {
 }
 
 
-export default SpringNumber
+export default SpringNumber;

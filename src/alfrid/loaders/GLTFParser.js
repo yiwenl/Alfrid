@@ -42,13 +42,13 @@ const parse = (gltf, bin) => new Promise((resolve, reject) => {
 	};
 
 	_getBufferViewData(gltf, bin)
-	.then(_parseMesh)
-	.then((gltfInfo)=>{
-		resolve(gltfInfo);
-	})
-	.catch(e => {
-		console.log('Error:', e);
-	});
+		.then(_parseMesh)
+		.then((gltfInfo)=>{
+			resolve(gltfInfo);
+		})
+		.catch(e => {
+			console.log('Error:', e);
+		});
 	// resolve(o);
 });
 
@@ -237,4 +237,4 @@ const _getAccessorData = (gltf, accessorIdx, isIndices = false) => {
 
 export default {
 	parse
-}
+};
