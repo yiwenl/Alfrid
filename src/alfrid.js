@@ -69,6 +69,7 @@ import BatchFXAA			from './alfrid/helpers/BatchFXAA';
 import Scene				from './alfrid/helpers/Scene';
 import View					from './alfrid/helpers/View';
 import View3D				from './alfrid/helpers/View3D';
+import Draw					from './alfrid/helpers/Draw';
 import ShaderLibs			from './alfrid/utils/ShaderLibs';
 
 import FboArray				from './alfrid/FboArray';
@@ -120,6 +121,7 @@ class Alfrid {
 		this.Scene             = Scene;
 		this.View              = View;
 		this.View3D            = View3D;
+		this.Draw              = Draw;
 		this.Object3D          = Object3D;
 		this.ShaderLibs        = ShaderLibs;
 		this.WebglNumber       = WebglNumber;
@@ -218,6 +220,7 @@ export {
 	Scene,
 	View,
 	View3D,
+	Draw,
 	ShaderLibs,
 	FboArray,
 	FboPingPong

@@ -6,7 +6,7 @@ import GLShader from '../GLShader';
 import Batch from '../Batch';
 
 import vs from '../shaders/dotsPlane.vert';
-import fs from '../shaders/simpleColor.frag';
+import fs from '../shaders/dotsPlane.frag';
 
 class BatchDotsPlane extends Batch {
 
@@ -38,7 +38,7 @@ class BatchDotsPlane extends Batch {
 		super(mesh, shader);
 		
 		this.color   = [1, 1, 1];
-		this.opacity = 0.5;
+		this.opacity = 0.65;
 	}
 
 

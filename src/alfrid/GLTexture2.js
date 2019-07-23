@@ -193,6 +193,7 @@ class GLTexture {
 	get minFilter() {	return this._params.minFilter;	}
 
 	set minFilter(mValue) {
+		console.log('set min filter : ', WebglNumber[mValue]);
 		this._params.minFilter = mValue;
 		this._checkMipmap();
 
@@ -206,6 +207,7 @@ class GLTexture {
 	get magFilter() {	return this._params.minFilter;	}
 
 	set magFilter(mValue) {
+		console.log('set mag filter : ', WebglNumber[mValue]);
 		this._params.magFilter = mValue;
 
 		gl.bindTexture(gl.TEXTURE_2D, this._texture);

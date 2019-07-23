@@ -13,7 +13,7 @@ uniform vec2 viewport;
 
 varying vec3 vNormal;
 
-const float radius = 0.015;
+const float radius = 0.008;
 
 void main(void) {
     gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition + aNormal * 0.000001, 1.0);

@@ -5,6 +5,7 @@
 precision highp float;
 varying vec2 vTextureCoord;
 uniform sampler2D texture;
+uniform float uTime;
 
 
 vec3 mod289(vec3 x) {	return x - floor(x * (1.0 / 289.0)) * 289.0;	}
@@ -111,6 +112,7 @@ vec3 curlNoise( vec3 p ){
 }
 
 void main(void) {
-	vec3 noise = curlNoise(vec3(vTextureCoord * 10.0, 0.0));
-    gl_FragColor = vec4(noise, 1.0);
+  float scale = sin(uTime * 0.5) * 49.0 + 50.0;
+	vec3 noise = curlNoise(vec3(vTextureCoord * scale, 0.0));
+  gl_FragColor = vec4(noise, 1.0);
 }

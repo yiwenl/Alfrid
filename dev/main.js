@@ -2,7 +2,7 @@
 import './global.scss';
 import quickSetup from './utils/quickSetup';
 import AssetsLoader from 'assets-loader';
-import alfrid, { GL, Geom, GLShader, TouchDetector, BatchBall, BatchCopy, GLTexture, FboPingPong } from '../src/alfrid';
+import alfrid, { GL, Geom, GLShader, TouchDetector, BatchBall, BatchCopy, GLTexture, FboPingPong, Draw } from '../src/alfrid';
 import fs from './test.frag';
 import fsNoise from './noise.frag';
 import fsUV from './uv.frag';
@@ -10,7 +10,7 @@ import fsUV from './uv.frag';
 var random = function(min, max) { return min + Math.random() * (max - min);	}
 
 
-let loader, bCopy, texture, textureData, textureHdr, textureVideo, fbo;
+let loader, bCopy, texture, textureData, textureHdr, textureVideo, fbo, drawNoise;
 let cube, shader, floor, shaderCopy;
 let hit = vec3.fromValues(999, 999, 99);
 let ball;
@@ -20,27 +20,43 @@ mat4.translate(mtx, mtx, vec3.fromValues(1, 0, 0));
 
 let params = {
 	minFilter:'NEAREST',
+	magFilter:'NEAREST',
 	wrapS:'CLAMP_TO_EDGE',
 	wrapT:'CLAMP_TO_EDGE'
 }
 
 function render() {
-	if(!ball) {
-		return;
-	}
-	// if(!texture) { return; }
+	if(!ball) {	return; }
+	if(!texture) { return; }
+	if(!drawNoise) { return; }
 
+
+	// console.log('drawNoise', drawNoise);
+	drawNoise
+	.uniform('uTime', 'float', alfrid.Scheduler.deltaTime)
+	.draw();
+
+
+	GL.viewport(0, 0, GL.width, GL.height);
 
 	let s = .2;
 	ball.draw([x.value, y.value, 0], [s, s, s], [1, 0, 0]);
 
 
-	s = 256;
-	GL.viewport(0, 0, s, s);
+	s = 1024;
+	
 	if(!bCopy) {
 		bCopy = new alfrid.BatchCopy();
 	}
+	GL.disable(GL.DEPTH_TEST);
+	
+
+	GL.viewport(0, 0, s, s);
 	bCopy.draw(fbo.getTexture());
+	GL.viewport(s, 0, s, s);
+	bCopy.draw(texture);
+	GL.enable(GL.DEPTH_TEST);
+	GL.viewport(0, 0, GL.width, GL.height);
 }
 
 quickSetup(render)
@@ -65,12 +81,13 @@ quickSetup(render)
 
 
 function _onAssetsLoaded(o) {
-	// window.assets = o;
+	console.table(o);
+	window.assets = o;
 	// console.log('Assets Loaded : ');
 	// console.table(o);
 
-	// const img = getAsset('image');
-	// // texture = new GLTexture(img);
+	const img = getAsset('image');
+	// texture = new GLTexture(img);
 
 	// const source = new Float32Array([
 	// 	255, 0, 0, 255,
@@ -102,7 +119,7 @@ function _onAssetsLoaded(o) {
 	// 	255, 255, 255, 255
 	// ];	
 
-	// texture = new GLTexture(img, {minFilter:GL.NEAREST, wrapS:GL.MIRRORED_REPEAT}, 512, 512);
+	texture = new GLTexture(img, {minFilter:GL.NEAREST, wrapS:GL.MIRRORED_REPEAT});
 
 	// console.log('texture', texture);
 	// textureData = new GLTexture(source2, {magFilter:GL.NEAREST, minFilter:GL.NEAREST, type:GL.FLOAT});
@@ -120,8 +137,15 @@ function _onAssetsLoaded(o) {
 	const MIP = ['LINEAR', 'NEAREST', 'LINEAR_MIPMAP_LINEAR', 'LINEAR_MIPMAP_NEAREST'];
 	const WRAP = ['CLAMP_TO_EDGE', 'MIRRORED_REPEAT', 'REPEAT'];
 	gui.add(params, 'minFilter', MIP).onChange(o=> {
-		console.log('Change :', GL[o]);
 		fbo.getTexture().minFilter = GL[o];
+		// fbo.getTexture().showParameters();
+		texture.minFilter = GL[o];
+	});
+
+	gui.add(params, 'magFilter', MIP).onChange(o=> {
+		fbo.getTexture().magFilter = GL[o];
+		// fbo.getTexture().showParameters();
+		texture.magFilter = GL[o];
 	});
 
 	// gui.add(params, 'wrapS', WRAP).onChange(o=> {
@@ -146,18 +170,27 @@ function _onAssetsLoaded(o) {
 	})
 
 
-	const size = 512;
+	const size = 256;
 	fbo = new alfrid.FrameBuffer(size, size, {
 		minFilter:GL.NEAREST,
-		magFilter:GL.NEAREST
+		magFilter:GL.NEAREST,
+		type:GL.FLOAT,
+		mipmap:false
 	});
 
-	const shaderNoise = new alfrid.GLShader(alfrid.ShaderLibs.bigTriangleVert, fsNoise);
-	const mesh = alfrid.Geom.bigTriangle();
-	fbo.bind();
-	shaderNoise.bind();
-	GL.draw(mesh);
-	fbo.unbind();
+	// const shaderNoise = new alfrid.GLShader(alfrid.ShaderLibs.bigTriangleVert, fsNoise);
+	// const mesh = alfrid.Geom.bigTriangle();
+	// fbo.bind();
+	// shaderNoise.bind();
+	// GL.draw(mesh);
+	// fbo.unbind();
+
+	drawNoise = new Draw()
+		.setClearColor(1, 0, 0, 1)
+		.useProgram(alfrid.ShaderLibs.bigTriangleVert, fsNoise)
+		.setMesh(alfrid.Geom.bigTriangle())
+		.bindFrameBuffer(fbo)
+		.draw();
 
 }
 
