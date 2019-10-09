@@ -1,5 +1,5 @@
 // GLTool.js
-
+import * as GLM 			from 'gl-matrix';
 import { mat4, mat3 } from 'gl-matrix';
 
 import getAndApplyExtension from './utils/getAndApplyExtension';
@@ -28,17 +28,24 @@ class GLTool {
 		this._hasArrayInstance;
 		this._extArrayInstance;
 		this._hasCheckedExt = false;
-		mat4.identity(this.identityMatrix, this.identityMatrix);
+		GLM.mat4.identity(this.identityMatrix, this.identityMatrix);
 
 		this.isMobile = false;
-		if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(window.navigator.userAgent)) {
-			this.isMobile = true;
-		}
 	}
 
 	//	INITIALIZE
 
 	init(mCanvas, mParameters = {}) {
+
+		if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(window.navigator.userAgent)) {
+			this.isMobile = true;
+		}
+
+		for(const s in GLM) {
+			if(GLM[s]) {
+				window[s] = GLM[s];
+			}
+		}
 
 		if(mCanvas === null || mCanvas === undefined) {
 			console.error('Canvas not exist');

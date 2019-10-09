@@ -139,15 +139,6 @@ class Alfrid {
 
 		this.MultisampleFrameBuffer   = MultisampleFrameBuffer;
 		this.TransformFeedbackObject  = TransformFeedbackObject;
-
-
-		//	NOT SUPER SURE I'VE DONE THIS IS A GOOD WAY
-
-		for(const s in GLM) {
-			if(GLM[s]) {
-				window[s] = GLM[s];
-			}
-		}
 	}
 
 	log() {

@@ -14,11 +14,8 @@ var random = function(min, max) { return min + Math.random() * (max - min);	}
 
 let loader, bCopy, texture, textureData, textureHdr, textureVideo, fbo, fboNoise, drawNoise;
 let cube, shader, floor, shaderCopy;
-let hit = vec3.fromValues(999, 999, 99);
 let ball;
-let mtx = mat4.create();
 let x, y;
-mat4.translate(mtx, mtx, vec3.fromValues(1, 0, 0));
 
 let params = {
 	minFilter:'NEAREST',
