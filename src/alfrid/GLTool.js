@@ -31,7 +31,7 @@ class GLTool {
 		mat4.identity(this.identityMatrix, this.identityMatrix);
 
 		this.isMobile = false;
-		if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+		if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(window.navigator.userAgent)) {
 			this.isMobile = true;
 		}
 	}

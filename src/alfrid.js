@@ -151,7 +151,7 @@ class Alfrid {
 	}
 
 	log() {
-		if(navigator.userAgent.indexOf('Chrome') > -1) {
+		if(window.navigator.userAgent.indexOf('Chrome') > -1) {
 			console.log(`%clib alfrid : VERSION ${VERSION}`, 'background: #193441; color: #FCFFF5');
 		} else {
 			console.log('lib alfrid : VERSION ', VERSION);
