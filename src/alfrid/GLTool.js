@@ -49,7 +49,6 @@ class GLTool {
     this.canvas = mCanvas
     this.setSize(window.innerWidth, window.innerHeight)
 
-    console.log(mParameters)
     mParameters.useWebgl2 = mParameters.useWebgl2 || false
 
     let ctx
@@ -61,21 +60,12 @@ class GLTool {
         this._useWebGL2 = false
       } else {
         this._useWebGL2 = true
-        console.log(ctx)
+        console.log('Using WebGL 2 : ', ctx)
       }
     } else {
-      // ctx = this.canvas.getContext('experimental-webgl2', mParameters) || this.canvas.getContext('webgl2', mParameters);
-      // if(ctx) {
-      // 	this._useWebGL2 = true;
-      // } else {
-      // 	ctx = this.canvas.getContext('webgl', mParameters) || this.canvas.getContext('experimental-webgl', mParameters);
-      // }
-
       ctx = this.canvas.getContext('webgl', mParameters) || this.canvas.getContext('experimental-webgl', mParameters)
       this._useWebGL2 = false
     }
-
-    console.log('Using WebGL 2 ?', this.webgl2)
 
     // extensions
     this.initWithGL(ctx)
