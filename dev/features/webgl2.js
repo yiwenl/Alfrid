@@ -18,6 +18,8 @@ function init () {
   // GL.init(canvas, { useWebgl2: false })
   GL.setSize(window.innerWidth, window.innerHeight)
 
+  console.log(GL.webgl2)
+
   // cameras
   const camera = new alfrid.CameraPerspective()
   camera.setPerspective(Math.PI / 4, GL.aspectRatio, 1, 100)
@@ -61,8 +63,12 @@ function init () {
   s = 3
   const drawFloor = new alfrid.Draw()
     .setMesh(alfrid.Geom.plane(s, s, 1, 'xz'))
-    // .useProgram(vs, fs)
-    .useProgram(vsES, fsES)
+
+  if (GL.webgl2) {
+    drawFloor.useProgram(vsES, fsES)
+  } else {
+    drawFloor.useProgram(vs, fs)
+  }
 
   const render = () => {
     GL.clear(0, 0, 0, 1)
