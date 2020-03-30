@@ -13,7 +13,6 @@ let gl
 
 class GLTool {
   constructor () {
-    this.canvas
     this._viewport = [0, 0, 0, 0]
     this._enabledVertexAttribute = []
     this.identityMatrix = mat4.create()
@@ -21,11 +20,11 @@ class GLTool {
     this._inverseModelViewMatrix = mat3.create()
     this._modelMatrix = mat4.create()
     this._matrix = mat4.create()
-    this._matrixStacks 			 = []
-    this._lastMesh				 = null
+    this._matrixStacks = []
+    this._lastMesh = null
     this._useWebGL2 = false
-    this._hasArrayInstance
-    this._extArrayInstance
+    this._hasArrayInstance = false
+    this._extArrayInstance = false
     this._hasCheckedExt = false
     mat4.identity(this.identityMatrix, this.identityMatrix)
 
@@ -35,7 +34,7 @@ class GLTool {
     }
   }
 
-  //	INITIALIZE
+  // INITIALIZE
 
   init (mCanvas, mParameters = {}) {
     if (mCanvas === null || mCanvas === undefined) {
@@ -78,12 +77,12 @@ class GLTool {
 
     console.log('Using WebGL 2 ?', this.webgl2)
 
-    //	extensions
+    // extensions
     this.initWithGL(ctx)
   }
 
   initWithGL (ctx) {
-    if (!this.canvas) {	this.canvas = ctx.canvas	}
+    if (!this.canvas) { this.canvas = ctx.canvas }
     gl = this.gl = ctx
 
     this.extensions = {}
@@ -91,7 +90,7 @@ class GLTool {
       this.extensions[ExtensionsList[i]] = gl.getExtension(ExtensionsList[i])
     }
 
-    //	Copy gl Attributes
+    // Copy gl Attributes
     exposeAttributes()
     getAndApplyExtension(gl, 'OES_vertex_array_object')
     getAndApplyExtension(gl, 'ANGLE_instanced_arrays')
@@ -103,7 +102,7 @@ class GLTool {
     this.enableAlphaBlending()
   }
 
-  //	PUBLIC METHODS
+  // PUBLIC METHODS
 
   setViewport (x, y, w, h) {
     let hasChanged = false
