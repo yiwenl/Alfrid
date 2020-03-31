@@ -10,6 +10,7 @@
     "lint": "npm run lint:fix && eslint -c .eslintrc src/**",
     "lint:fix": "eslint -c .eslintrc --fix src/**",
     "start": "npm run dev",
+    "shader": "node ./tasks/shader-watcher.js",
     "dev": "NODE_ENV=development webpack-dev-server --open",
     "build": "NODE_ENV=production webpack --progress --colors",
     "build:dev": "NODE_ENV=development webpack --progress --colors"

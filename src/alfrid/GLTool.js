@@ -49,7 +49,7 @@ class GLTool {
     this.canvas = mCanvas
     this.setSize(window.innerWidth, window.innerHeight)
 
-    mParameters.useWebgl2 = mParameters.useWebgl2 || false
+    mParameters.useWebgl2 = mParameters.useWebgl2 === undefined ? false : mParameters.useWebgl2
 
     let ctx
     if (mParameters.useWebgl2) {
@@ -85,6 +85,9 @@ class GLTool {
     getAndApplyExtension(gl, 'OES_vertex_array_object')
     getAndApplyExtension(gl, 'ANGLE_instanced_arrays')
     getAndApplyExtension(gl, 'WEBGL_draw_buffers')
+    if (this.webgl2) {
+      gl.getExtension('EXT_color_buffer_float')
+    }
 
     this.enable(this.DEPTH_TEST)
     this.enable(this.CULL_FACE)
@@ -151,7 +154,7 @@ class GLTool {
 
     mMesh.bind(this.shaderProgram)
 
-    //	DEFAULT UNIFORMS
+    // DEFAULT UNIFORMS
     if (this.camera !== undefined) {
       this.shader.uniform('uProjectionMatrix', 'mat4', this.camera.projection)
       this.shader.uniform('uViewMatrix', 'mat4', this.camera.matrix)
@@ -167,7 +170,7 @@ class GLTool {
     }
 
     if (mMesh.isInstanced) {
-      //	DRAWING
+      // DRAWING
       gl.drawElementsInstanced(mMesh.drawType, mMesh.iBuffer.numItems, gl.UNSIGNED_SHORT, 0, mMesh.numInstance)
     } else {
       if (drawType === gl.POINTS) {
@@ -183,11 +186,11 @@ class GLTool {
   drawTransformFeedback (mTransformObject) {
     const { meshSource, meshDestination, numPoints, transformFeedback } = mTransformObject
 
-    //	BIND SOURCE BUFFERS -> setupVertexAttr(sourceVAO)
+    // BIND SOURCE BUFFERS -> setupVertexAttr(sourceVAO)
     meshSource.bind(this.shaderProgram)
     meshDestination.generateBuffers(this.shaderProgram)
 
-    //	BIND DESTINATION BUFFERS
+    // BIND DESTINATION BUFFERS
     gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, transformFeedback)
 
     meshDestination.attributes.forEach((attr, i) => {
@@ -200,7 +203,7 @@ class GLTool {
     gl.drawArrays(gl.POINTS, 0, numPoints)
     gl.endTransformFeedback()
 
-    //	reset state
+    // reset state
     gl.disable(gl.RASTERIZER_DISCARD)
     gl.useProgram(null)
     gl.bindBuffer(gl.ARRAY_BUFFER, null)
@@ -241,7 +244,7 @@ class GLTool {
     return this.extensions[mExtension]
   }
 
-  //	BLEND MODES
+  // BLEND MODES
 
   enableAlphaBlending () {
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
@@ -251,7 +254,7 @@ class GLTool {
     gl.blendFunc(gl.ONE, gl.ONE)
   }
 
-  //	matrices
+  // matrices
 
   pushMatrix () {
     const mtx = mat4.clone(this._modelMatrix)
@@ -259,36 +262,36 @@ class GLTool {
   }
 
   popMatrix () {
-    if (this._matrixStacks.length == 0) {
+    if (this._matrixStacks.length === 0) {
       return null
     }
     const mtx = this._matrixStacks.pop()
     this.rotate(mtx)
   }
 
-  //	GL NATIVE FUNCTIONS
+  // GL NATIVE FUNCTIONS
 
-  enable (mParameter) {	gl.enable(mParameter)		}
+  enable (mParameter) { gl.enable(mParameter) }
 
-  disable (mParameter) {	gl.disable(mParameter)	}
+  disable (mParameter) { gl.disable(mParameter) }
 
-  viewport (x, y, w, h) {	this.setViewport(x, y, w, h)	}
+  viewport (x, y, w, h) { this.setViewport(x, y, w, h) }
 
-  //	GETTER AND SETTERS
+  // GETTER AND SETTERS
 
   get FLOAT () { return getFloat() }
 
   get HALF_FLOAT () { return getHalfFloat() }
 
-  get width () {	return this._width		}
+  get width () { return this._width }
 
-  get height () {	return this._height	}
+  get height () { return this._height }
 
-  get aspectRatio () {	return this._aspectRatio	}
+  get aspectRatio () { return this._aspectRatio }
 
-  get webgl2 () {	return this._useWebGL2	}
+  get webgl2 () { return this._useWebGL2 }
 
-  //	DESTROY
+  // DESTROY
 
   destroy () {
     if (this.canvas.parentNode) {

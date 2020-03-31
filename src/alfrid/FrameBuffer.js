@@ -49,11 +49,6 @@ class FrameBuffer {
     gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer)
 
     if (GL.webgl2) {
-      // this.renderBufferDepth = gl.createRenderbuffer();
-      // gl.bindRenderbuffer(gl.RENDERBUFFER, this.renderBufferDepth);
-      // gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, this.width, this.height);
-      // gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.renderBufferDepth);
-
       const buffers = []
       for (let i = 0; i < this._numTargets; i++) {
         gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + i, gl.TEXTURE_2D, this._textures[i].texture, 0)
@@ -82,25 +77,29 @@ class FrameBuffer {
       }
     }
 
-    //	CHECKING FBO
+    // CHECKING FBO
     const FBOstatus = gl.checkFramebufferStatus(gl.FRAMEBUFFER)
-    if (FBOstatus != gl.FRAMEBUFFER_COMPLETE) {
-      console.error('FBOstatus', FBOstatus)
+    if (FBOstatus !== gl.FRAMEBUFFER_COMPLETE) {
+      console.error('FBOstatus', WebglNumber[FBOstatus], FBOstatus)
       console.error('GL_FRAMEBUFFER_COMPLETE failed, CANNOT use Framebuffer')
     }
 
-    //	UNBIND
+    // UNBIND
 
     gl.bindTexture(gl.TEXTURE_2D, null)
     gl.bindRenderbuffer(gl.RENDERBUFFER, null)
     gl.bindFramebuffer(gl.FRAMEBUFFER, null)
 
-    //	CLEAR FRAMEBUFFER
+    // CLEAR FRAMEBUFFER
 
     this.clear()
   }
 
   _checkMaxNumRenderTarget () {
+    if (GL.webgl2) {
+      return GL.gl.getParameter(GL.gl.MAX_DRAW_BUFFERS)
+    }
+
     const maxNumDrawBuffers = GL.gl.getParameter(extDrawBuffer.MAX_DRAW_BUFFERS_WEBGL)
     if (this._numTargets > maxNumDrawBuffers) {
       console.error('Over max number of draw buffers supported : ', maxNumDrawBuffers)
@@ -142,7 +141,7 @@ class FrameBuffer {
     return texture
   }
 
-  //	PUBLIC METHODS
+  // PUBLIC METHODS
 
   bind (mAutoSetViewport = true) {
     if (mAutoSetViewport) {
@@ -168,7 +167,7 @@ class FrameBuffer {
     this.unbind()
   }
 
-  //	TEXTURES
+  // TEXTURES
 
   getTexture (mIndex = 0) {
     return this._textures[mIndex]
@@ -178,18 +177,18 @@ class FrameBuffer {
     return this.glDepthTexture
   }
 
-  get texture () {	return this._textures[0]	}
+  get texture () { return this._textures[0] }
 
-  get depthTexture () { return this.glDepthTexture	}
+  get depthTexture () { return this.glDepthTexture }
 
-  //	TOUGHTS : Should I remove these from frame buffer ?
-  //	Shouldn't these be set individually to each texture ?
-  //	e.g. fbo.getTexture(0).minFilter = GL.NEAREST;
-  //		 fbo.getTexture(1).minFilter = GL.LINEAR; ... etc ?
+  // TOUGHTS : Should I remove these from frame buffer ?
+  // Shouldn't these be set individually to each texture ?
+  // e.g. fbo.getTexture(0).minFilter = GL.NEAREST;
+  //   fbo.getTexture(1).minFilter = GL.LINEAR; ... etc ?
 
-  //	MIPMAP FILTER
+  // MIPMAP FILTER
 
-  get minFilter () {	return this._textures[0].minFilter	}
+  get minFilter () { return this._textures[0].minFilter }
 
   set minFilter (mValue) {
     this._textures.forEach(texture => {
@@ -197,7 +196,7 @@ class FrameBuffer {
     })
   }
 
-  get magFilter () {	return this._textures[0].magFilter	}
+  get magFilter () { return this._textures[0].magFilter }
 
   set magFilter (mValue) {
     this._textures.forEach(texture => {
@@ -205,9 +204,9 @@ class FrameBuffer {
     })
   }
 
-  //	WRAPPING
+  // WRAPPING
 
-  get wrapS () {	return this._textures[0].wrapS	}
+  get wrapS () { return this._textures[0].wrapS }
 
   set wrapS (mValue) {
     this._textures.forEach(texture => {
@@ -215,7 +214,7 @@ class FrameBuffer {
     })
   }
 
-  get wrapT () {	return this._textures[0].wrapT	}
+  get wrapT () { return this._textures[0].wrapT }
 
   set wrapT (mValue) {
     this._textures.forEach(texture => {
@@ -223,13 +222,13 @@ class FrameBuffer {
     })
   }
 
-  //	UTILS
+  // UTILS
 
   showParameters () {
     this._textures[0].showParameters()
   }
 
-  get numTargets () {	return this._numTargets	}
+  get numTargets () { return this._numTargets }
 }
 
 export default FrameBuffer

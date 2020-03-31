@@ -1,6 +1,7 @@
 // getTextureParameters.js
 
 import GL from '../GLTool'
+import WebglNumber from './WebglNumber'
 
 function isPowerOfTwo (x) {
   return (x !== 0) && (!(x & (x - 1)))
@@ -26,6 +27,11 @@ const getTextureParameters = function (mParams, mSource, mWidth, mHeight) {
   mParams.format = mParams.format || GL.RGBA
   mParams.premultiplyAlpha = mParams.premultiplyAlpha === undefined ? false : mParams.premultiplyAlpha
   mParams.level = mParams.level || 0
+
+  if (GL.webgl2 && mParams.type === GL.FLOAT) {
+    mParams.internalFormat = GL.gl.RGBA32F
+    mParams.mipmap = false
+  }
   return mParams
 }
 

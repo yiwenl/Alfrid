@@ -58,17 +58,17 @@ class GLTexture {
 
     // const ext = GL.getExtension('EXT_texture_filter_anisotropic');
     // if(ext) {
-    // 	const max = gl.getParameter(ext.MAX_TEXTURE_MAX_ANISOTROPY_EXT);
-    // 	let level;
-    // 	if(!this._params.anisotropy) {
-    // 		level = max;
-    // 	}
-    // 	gl.texParameterf(gl.TEXTURE_2D, ext.TEXTURE_MAX_ANISOTROPY_EXT, level);
+    //  const max = gl.getParameter(ext.MAX_TEXTURE_MAX_ANISOTROPY_EXT);
+    //  let level;
+    //  if(!this._params.anisotropy) {
+    //   level = max;
+    //  }
+    //  gl.texParameterf(gl.TEXTURE_2D, ext.TEXTURE_MAX_ANISOTROPY_EXT, level);
     // }
 
-    if (this._generateMipmap) {	gl.generateMipmap(gl.TEXTURE_2D)	}
+    if (this._generateMipmap) { gl.generateMipmap(gl.TEXTURE_2D) }
 
-    //	unbind texture
+    // unbind texture
     gl.bindTexture(gl.TEXTURE_2D, null)
   }
 
@@ -233,7 +233,7 @@ class GLTexture {
 
   get texture () { return this._texture }
 
-  get isTextureReady () {	return this._isTextureReady	}
+  get isTextureReady () { return this._isTextureReady }
 }
 
 function isPowerOfTwo (x) {
@@ -241,8 +241,8 @@ function isPowerOfTwo (x) {
 };
 
 function getSourceType (mSource) {
-  //	possible source type : Image / Video / Unit8Array / Float32Array
-  //	this list must be flexible
+  // possible source type : Image / Video / Unit8Array / Float32Array
+  // this list must be flexible
 
   let type = GL.UNSIGNED_BYTE
 
