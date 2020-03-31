@@ -10,20 +10,19 @@ let hasCheckedMultiRenderSupport = false
 let extDrawBuffer
 
 const checkMultiRender = function () {
+  hasCheckedMultiRenderSupport = true
   if (GL.webgl2) {
     return true
   } else {
     extDrawBuffer = GL.getExtension('WEBGL_draw_buffers')
     return !!extDrawBuffer
   }
-
-  hasCheckedMultiRenderSupport = true
 }
 
 class FrameBuffer {
   constructor (mWidth, mHeight, mParameters = {}, mNumTargets = 1) {
     gl = GL.gl
-    webglDepthTexture = GL.checkExtension('WEBGL_depth_texture') || GL.webgl2
+    webglDepthTexture = (GL.checkExtension('WEBGL_depth_texture') || GL.webgl2) && mNumTargets < 2
 
     this.width = mWidth
     this.height = mHeight
