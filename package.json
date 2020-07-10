@@ -42,7 +42,7 @@
     "fs-extra": "^4.0.2",
     "glslify": "^6.1.0",
     "glslify-loader": "^1.0.2",
-    "node-sass": "^4.5.3",
+    "node-sass": "^4.14.1",
     "raw-loader": "^0.5.1",
     "sass-loader": "^6.0.6",
     "stats.js": "^0.17.0",
