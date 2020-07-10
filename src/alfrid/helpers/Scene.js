@@ -20,7 +20,9 @@ class Scene {
 		this._initViews();
 
 		this._efIndex = Scheduler.addEF(()=>this._loop());
-		window.addEventListener('resize', ()=>this.resize());
+
+		this._resize = this.resize.bind(this);
+		window.addEventListener('resize', this._resize);
 	}
 
 
@@ -97,6 +99,7 @@ class Scene {
 		this.camera                 = new CameraPerspective();
 		this.camera.setPerspective(45 * Math.PI / 180, GL.aspectRatio, 0.1, 100);
 		this.orbitalControl          = new OrbitalControl(this.camera, window, 15);
+		this.orbitalControl.connect();
 		this.orbitalControl.radius.value = 10;
 		
 		this.cameraOrtho            = new CameraOrtho();
@@ -113,6 +116,12 @@ class Scene {
 		this.update();
 		this._renderChildren();
 		this.render();
+	}
+
+	destroy() {
+		this.orbitalControl.disconnect();
+		Scheduler.removeEF(this._efIndex);
+		window.removeEventListener('resize', this._resize);
 	}
 
 }

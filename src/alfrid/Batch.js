@@ -23,6 +23,14 @@ class Batch {
 	get mesh() {	return this._mesh;	}
 
 	get shader() {	return this._shader;	}
+
+	destroy() {
+		this.mesh.destroy();
+		const gl = GL.gl;
+
+		gl.useProgram(null);
+		gl.deleteProgram(this._shader.shaderProgram);
+	}
 }
 
 export default Batch;

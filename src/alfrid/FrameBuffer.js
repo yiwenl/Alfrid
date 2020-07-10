@@ -238,6 +238,18 @@ class FrameBuffer {
 	}
 
 	get numTargets() {	return this._numTargets;	}
+  
+	// destroy
+	destroy() {
+		const gl = this.gl;
+		gl.deleteFramebuffer(this.framebuffer);
+
+		this._textures.forEach((texture)=>{
+			gl.deleteTexture(texture._texture);
+		});
+    
+		gl.deleteTexture(this.glDepthTexture._texture);
+	}
 }
 
 
