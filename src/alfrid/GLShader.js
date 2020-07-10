@@ -3,7 +3,10 @@
 'use strict';
 
 import GL from './GLTool';
-const glslify = require('glslify');
+import defaultFragmentShader from './shaders/basic.frag';
+import defaultVertexShader from './shaders/basic.vert';
+import glslify from 'glslify';
+
 const isSame = (array1, array2) => {
 	if(array1.length !== array2.length) {
 		return false;
@@ -36,8 +39,6 @@ const cloneArray = (mArray) => {
 };
 
 let gl;
-const defaultVertexShader = require('./shaders/basic.vert');
-const defaultFragmentShader = require('./shaders/basic.frag');
 
 const uniformMapping = {
 	float: 'uniform1f',
@@ -52,7 +53,7 @@ const uniformMapping = {
 class GLShader {
 	constructor(strVertexShader = defaultVertexShader, strFragmentShader = defaultFragmentShader, mVaryings) {
 
-		gl                   = GL.gl;
+		this.gl                   = GL.gl;
 		this.parameters      = [];
 		this.uniformTextures = [];
 		this._varyings 		 = mVaryings;
@@ -72,7 +73,7 @@ class GLShader {
 		if(GL.shader === this) {
 			return;
 		}
-		gl.useProgram(this.shaderProgram);
+		this.gl.useProgram(this.shaderProgram);
 		GL.useShader(this);
 		this.uniformTextures = [];
 
@@ -110,7 +111,7 @@ class GLShader {
 
 		if(!hasUniform) {
 			isNumber = uniformType === 'uniform1i' || uniformType === 'uniform1f';
-			this.shaderProgram[mName] = gl.getUniformLocation(this.shaderProgram, mName);
+			this.shaderProgram[mName] = this.gl.getUniformLocation(this.shaderProgram, mName);
 			if(isNumber) {
 				this.parameters.push({ name : mName, type: uniformType, value: mValue, uniformLoc: this.shaderProgram[mName], isNumber });	
 			} else {
@@ -132,20 +133,20 @@ class GLShader {
 		if(uniformType.indexOf('Matrix') === -1) {
 			if(!isNumber) {
 				if(!isSame(this.parameters[parameterIndex].value, mValue) || !hasUniform) {
-					gl[uniformType](this.shaderProgram[mName], mValue);	
+					this.gl[uniformType](this.shaderProgram[mName], mValue);	
 					this.parameters[parameterIndex].value = cloneArray(mValue);
 				}
 			} else {
 				const needUpdate = (this.parameters[parameterIndex].value !== mValue || !hasUniform);
 				if(needUpdate) {
-					gl[uniformType](this.shaderProgram[mName], mValue);	
+					this.gl[uniformType](this.shaderProgram[mName], mValue);	
 					this.parameters[parameterIndex].value = mValue;
 				}
 			}
 
 		} else {
 			if(!isSame(this.parameters[parameterIndex].value, mValue) || !hasUniform) {
-				gl[uniformType](this.shaderProgram[mName], false, mValue);	
+				this.gl[uniformType](this.shaderProgram[mName], false, mValue);	
 				this.parameters[parameterIndex].value = cloneArray(mValue);
 
 			}
@@ -173,7 +174,7 @@ class GLShader {
 
 
 	_createShaderProgram(mShaderStr, isVertexShader) {
-		
+		const gl = this.gl;
 		const shaderType = isVertexShader ? GL.VERTEX_SHADER : GL.FRAGMENT_SHADER;
 		const shader = gl.createShader(shaderType);
 
@@ -190,7 +191,7 @@ class GLShader {
 	}
 
 	_attachShaderProgram(mVertexShader, mFragmentShader) {
-
+		const gl = this.gl;
 		this.shaderProgram = gl.createProgram();
 		gl.attachShader(this.shaderProgram, mVertexShader);
 		gl.attachShader(this.shaderProgram, mFragmentShader);
@@ -205,6 +206,13 @@ class GLShader {
 
 		gl.linkProgram(this.shaderProgram);
 
+	}
+
+	destroy() {
+		const gl = GL.gl;
+
+		gl.useProgram(null);
+		gl.deleteProgram(this.shaderProgram);
 	}
 
 }

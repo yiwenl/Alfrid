@@ -1,8 +1,6 @@
 // OrbitalControl.js
-'use strict';
+import { EaseNumber, Scheduler } from '../../alfrid';
 
-import EaseNumber from './EaseNumber';
-import Scheduler from  'scheduling';
 import { vec3 } from 'gl-matrix';
 
 const getMouse = function (mEvent, mTarget) {
@@ -22,6 +20,7 @@ const getMouse = function (mEvent, mTarget) {
 class OrbitalControl {
 
 	constructor(mTarget, mListenerTarget = window, mRadius = 500) {
+		this.connected         = false;
 		this._target         = mTarget;
 		this._listenerTarget = mListenerTarget;
 		this._mouse          = {};
@@ -48,12 +47,13 @@ class OrbitalControl {
 		this._moveBind = (e) => this._onMove(e);
 		this._upBind = () => this._onUp();
 	
-		this.connect();		
-		Scheduler.addEF(() => this._loop());
+		this._efIndex = Scheduler.addEF(() => this._loop());
 	}
 
-	connect() {
+	connect(mListenerTarget) {
+		if (mListenerTarget) this._listenerTarget = mListenerTarget;
 		this.disconnect();
+		this.connected         = true;
 
 		this._listenerTarget.addEventListener('mousewheel', this._wheelBind);
 		this._listenerTarget.addEventListener('DOMMouseScroll', this._wheelBind);
@@ -64,9 +64,12 @@ class OrbitalControl {
 		this._listenerTarget.addEventListener('touchmove', this._moveBind);
 		window.addEventListener('touchend', this._upBind);
 		window.addEventListener('mouseup', this._upBind);
+    
+		
 	}
 
 	disconnect() {
+		this.connected         = false;
 		this._listenerTarget.removeEventListener('mousewheel', this._wheelBind);
 		this._listenerTarget.removeEventListener('DOMMouseScroll', this._wheelBind);
 
@@ -175,11 +178,18 @@ class OrbitalControl {
 		vec3.add(this.position, this.position, this.positionOffset);
 	}
 
+	getPosition(rx, ry, radius) {
+		const y = Math.sin(rx) * radius;
+		const tr = Math.cos(rx) * radius;
+		const x = Math.cos(ry + Math.PI * 0.5) * tr;
+		const z = Math.sin(ry + Math.PI * 0.5) * tr;
+		return [x, y, z];
+	}
+
 
 	_updateCamera() {
 		this._target.lookAt(this.position, this.center, this._up);
 	}
-
 
 	//	GETTER / SETTER
 

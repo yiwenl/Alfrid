@@ -1,5 +1,4 @@
 // View.js
-
 import GLShader from '../GLShader';
 
 class View {
@@ -20,6 +19,10 @@ class View {
 
 	render() {
 
+	}
+
+	destroy() {
+		this.shader.destroy();
 	}
 }
 

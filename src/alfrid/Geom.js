@@ -513,19 +513,16 @@ Geom.skybox = function skybox(size, drawType = 4) {
 
 Geom.bigTriangle = function bigTriangle() {
 
-	if(!meshTri) {
-		const indices = [2, 1, 0];
-		const positions = [
-			[-1, -1], 
-			[-1, 4], 
-			[4, -1]
-		];
-		
-		meshTri = new Mesh();
-		meshTri.bufferData(positions, 'aPosition', 2);
-		meshTri.bufferIndex(indices);	
-	}
+	const indices = [2, 1, 0];
+	const positions = [
+		[-1, -1], 
+		[-1, 4], 
+		[4, -1]
+	];
 	
+	const meshTri = new Mesh();
+	meshTri.bufferData(positions, 'aPosition', 2);
+	meshTri.bufferIndex(indices);		
 
 	return meshTri;
 };

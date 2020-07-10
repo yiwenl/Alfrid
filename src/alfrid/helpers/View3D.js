@@ -1,8 +1,8 @@
 // View3D.js
 
-import Object3D from '../objects/Object3D';
-import GLShader from '../GLShader';
 import GL from '../GLTool';
+import GLShader from '../GLShader';
+import Object3D from '../objects/Object3D';
 
 class View3D extends Object3D {
 	constructor(mStrVertex, mStrFrag) {
@@ -23,6 +23,10 @@ class View3D extends Object3D {
 	// 	PUBLIC METHODS
 
 	render() {
+	}
+
+	destroy() {
+		this.shader.destroy();
 	}
 
 }
