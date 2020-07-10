@@ -1,5 +1,5 @@
 // OrbitalControl.js
-import { EaseNumber, Scheduler } from 'alfrid';
+import { EaseNumber, Scheduler } from '../../alfrid';
 
 import { vec3 } from 'gl-matrix';
 
