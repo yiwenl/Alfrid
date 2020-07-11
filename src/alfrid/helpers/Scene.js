@@ -1,28 +1,31 @@
 // Scene.js
 
-import Scheduler from 'scheduling';
-import GL from '../GLTool';
-import CameraPerspective from '../cameras/CameraPerspective';
 import CameraOrtho from '../cameras/CameraOrtho';
+import CameraPerspective from '../cameras/CameraPerspective';
+import GL from '../GLTool';
 import OrbitalControl from '../utils/OrbitalControl';
-
+import Scheduler from 'scheduling';
 
 class Scene {
 
 
-	constructor() {
+	constructor(options = {}) {
 		this._children = [];
 		this._matrixIdentity = mat4.create();
 		GL.enableAlphaBlending();
 
-		this._init();
-		this._initTextures();
-		this._initViews();
+		this._init(options);
+		this._initTextures(options);
+		this._initViews(options);
 
 		this._efIndex = Scheduler.addEF(()=>this._loop());
-		window.addEventListener('resize', ()=>this.resize());
-	}
 
+		this._targetListener = options.container || window;
+
+		this._resize = this.resize.bind(this);
+		window.addEventListener('resize', this._resize);
+	}
+	
 
 	
 	//	PUBLIC METHODS
@@ -51,8 +54,8 @@ class Scene {
 	}
 
 
-	resize() {
-		GL.setSize(window.innerWidth, window.innerHeight);
+	resize(width, height) {
+		GL.setSize(width || window.innerWidth, height || window.innerHeight);
 		this.camera.setAspectRatio(GL.aspectRatio);
 	}
 
@@ -93,10 +96,9 @@ class Scene {
 
 	//	PRIVATE METHODS
 
-	_init() {
+	_init(options) {
 		this.camera                 = new CameraPerspective();
 		this.camera.setPerspective(45 * Math.PI / 180, GL.aspectRatio, 0.1, 100);
-		this.orbitalControl          = new OrbitalControl(this.camera, window, 15);
 		this.orbitalControl.radius.value = 10;
 		
 		this.cameraOrtho            = new CameraOrtho();
@@ -114,7 +116,6 @@ class Scene {
 		this._renderChildren();
 		this.render();
 	}
-
 }
 
 
