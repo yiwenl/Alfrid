@@ -27,7 +27,7 @@ function init () {
   orbControl.rx.value = orbControl.ry.value = 0.3
 
   const cameraSide = new alfrid.CameraPerspective()
-  cameraSide.setPerspective(Math.PI / 4, GL.aspectRatio, 3, 4.5)
+  cameraSide.setPerspective(Math.PI / 4, GL.aspectRatio, 2, 4.5)
   cameraSide.lookAt([0, 4, 1], [0, 0, 0])
 
   const biasMatrix = mat4.fromValues(

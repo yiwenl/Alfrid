@@ -49,6 +49,8 @@
     "stats.js": "^0.17.0",
     "style-loader": "^0.18.2",
     "webpack": "^3.6.0",
+    "randomutils": "github:yiwenl/randomUtils",
+    "glsl-utils": "github:yiwenl/glsl-utils",
     "webpack-dev-server": "^2.8.2"
   }
 }

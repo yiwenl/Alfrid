@@ -57,8 +57,7 @@ class OrbitalControl {
 
 		this._listenerTarget.addEventListener('mousewheel', this._wheelBind);
 		this._listenerTarget.addEventListener('DOMMouseScroll', this._wheelBind);
-
-		this._listenerTarget.addEventListener('mousedown', this._downBind);
+ this._listenerTarget.addEventListener('mousedown', this._downBind);
 		this._listenerTarget.addEventListener('touchstart', this._downBind);
 		this._listenerTarget.addEventListener('mousemove', this._moveBind);
 		this._listenerTarget.addEventListener('touchmove', this._moveBind);

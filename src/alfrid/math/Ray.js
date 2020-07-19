@@ -112,10 +112,6 @@ class Ray {
 		vec3.copy(b, mPB);
 		vec3.copy(c, mPC);
 
-		// const edge1 = vec3.create();
-		// const edge2 = vec3.create();
-		// const normal = vec3.create();
-		// const diff = vec3.create();
 
 		vec3.sub(edge1, b, a);
 		vec3.sub(edge2, c, a);
