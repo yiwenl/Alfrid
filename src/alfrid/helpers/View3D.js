@@ -1,31 +1,24 @@
 // View3D.js
 
-import Object3D from '../objects/Object3D';
-import GLShader from '../GLShader';
-import GL from '../GLTool';
+import Object3D from "../objects/Object3D";
+import GLShader from "../GLShader";
 
 class View3D extends Object3D {
-	constructor(mStrVertex, mStrFrag) {
-		super();
+  constructor(mStrVertex, mStrFrag) {
+    super();
 
-		this._children = [];
-		this.shader = new GLShader(mStrVertex, mStrFrag);
-		this._init();
-	}
+    this._children = [];
+    this.shader = new GLShader(mStrVertex, mStrFrag);
+    this._init();
+  }
 
+  //	PROTECTED METHODS
 
-	//	PROTECTED METHODS
+  _init() {}
 
-	_init() {
+  // 	PUBLIC METHODS
 
-	}
-
-	// 	PUBLIC METHODS
-
-	render() {
-	}
-
+  render() {}
 }
-
 
 export default View3D;

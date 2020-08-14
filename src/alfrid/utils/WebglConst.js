@@ -305,5 +305,5 @@ module.exports = {
   VERTEX_SHADER: 35633,
   VIEWPORT: 2978,
   ZERO: 0,
-  R8: 33321
-}
+  R8: 33321,
+};

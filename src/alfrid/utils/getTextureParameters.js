@@ -1,38 +1,38 @@
 // getTextureParameters.js
 
-import GL from '../GLTool'
-import WebglNumber from './WebglNumber'
+import GL from "../GLTool";
 
-function isPowerOfTwo (x) {
-  return (x !== 0) && (!(x & (x - 1)))
-};
+function isPowerOfTwo(x) {
+  return x !== 0 && !(x & (x - 1));
+}
 
 const getTextureParameters = function (mParams, mSource, mWidth, mHeight) {
   if (!mParams.minFilter) {
-    let minFilter = GL.LINEAR
+    let minFilter = GL.LINEAR;
     if (mWidth && mWidth) {
       if (isPowerOfTwo(mWidth) && isPowerOfTwo(mHeight)) {
-        minFilter = GL.NEAREST_MIPMAP_LINEAR
+        minFilter = GL.NEAREST_MIPMAP_LINEAR;
       }
     }
 
-    mParams.minFilter = minFilter
+    mParams.minFilter = minFilter;
   }
 
-  mParams.mipmap = mParams.mipmap === undefined ? true : mParams.mipmap
-  mParams.magFilter = mParams.magFilter || GL.LINEAR
-  mParams.wrapS = mParams.wrapS || GL.CLAMP_TO_EDGE
-  mParams.wrapT = mParams.wrapT || GL.CLAMP_TO_EDGE
-  mParams.internalFormat = mParams.internalFormat || GL.RGBA
-  mParams.format = mParams.format || GL.RGBA
-  mParams.premultiplyAlpha = mParams.premultiplyAlpha === undefined ? false : mParams.premultiplyAlpha
-  mParams.level = mParams.level || 0
+  mParams.mipmap = mParams.mipmap === undefined ? true : mParams.mipmap;
+  mParams.magFilter = mParams.magFilter || GL.LINEAR;
+  mParams.wrapS = mParams.wrapS || GL.CLAMP_TO_EDGE;
+  mParams.wrapT = mParams.wrapT || GL.CLAMP_TO_EDGE;
+  mParams.internalFormat = mParams.internalFormat || GL.RGBA;
+  mParams.format = mParams.format || GL.RGBA;
+  mParams.premultiplyAlpha =
+    mParams.premultiplyAlpha === undefined ? false : mParams.premultiplyAlpha;
+  mParams.level = mParams.level || 0;
 
   if (GL.webgl2 && mParams.type === GL.FLOAT) {
-    mParams.internalFormat = GL.gl.RGBA32F
-    mParams.mipmap = false
+    mParams.internalFormat = GL.gl.RGBA32F;
+    mParams.mipmap = false;
   }
-  return mParams
-}
+  return mParams;
+};
 
-export default getTextureParameters
+export default getTextureParameters;

@@ -1,26 +1,21 @@
 // View.js
 
-import GLShader from '../GLShader';
+import GLShader from "../GLShader";
 
 class View {
-	constructor(mStrVertex, mStrFrag) {
-		this.shader = new GLShader(mStrVertex, mStrFrag);
+  constructor(mStrVertex, mStrFrag) {
+    this.shader = new GLShader(mStrVertex, mStrFrag);
 
-		this._init();
-	}
+    this._init();
+  }
 
+  //	PROTECTED METHODS
 
-	//	PROTECTED METHODS
+  _init() {}
 
-	_init() {
+  // 	PUBLIC METHODS
 
-	}
-
-	// 	PUBLIC METHODS
-
-	render() {
-
-	}
+  render() {}
 }
 
 export default View;

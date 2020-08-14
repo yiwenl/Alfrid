@@ -1,6 +1,6 @@
 {
   "name": "alfrid",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "WebGL 3D toolkit",
   "main": "build/alfrid.js",
   "directories": {
@@ -33,6 +33,7 @@
   "devDependencies": {
     "assets-loader": "^0.5.2",
     "babel-core": "^6.26.0",
+    "babel-eslint": "^10.1.0",
     "babel-loader": "^7.1.2",
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-preset-env": "^1.6.0",
@@ -40,17 +41,14 @@
     "dat-gui": "^0.5.0",
     "eslint": "^4.7.1",
     "eslint-loader": "^1.9.0",
+    "eslint-plugin-prettier": "^3.1.4",
     "fs-extra": "^4.0.2",
     "glsl-utils": "github:yiwenl/glsl-utils",
     "glslify": "^6.1.0",
-<<<<<<< HEAD
     "glslify-loader": "^2.0.0",
     "node-sass": "^4.14.1",
+    "prettier": "^2.0.5",
     "randomutils": "github:yiwenl/randomUtils",
-=======
-    "glslify-loader": "^1.0.2",
-    "node-sass": "^4.14.1",
->>>>>>> 0b8da64d65cb238a6d26d43cd42806e649373560
     "raw-loader": "^0.5.1",
     "sass-loader": "^6.0.6",
     "stats.js": "^0.17.0",
