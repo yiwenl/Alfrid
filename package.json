@@ -44,7 +44,7 @@
     "glsl-utils": "github:yiwenl/glsl-utils",
     "glslify": "^6.1.0",
     "glslify-loader": "^2.0.0",
-    "node-sass": "^4.14.1",
+    "node-sass": "^7.0.0",
     "randomutils": "github:yiwenl/randomUtils",
     "raw-loader": "^0.5.1",
     "sass-loader": "^6.0.6",
